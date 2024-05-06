@@ -1,0 +1,40 @@
+\contentsline {section}{\numberline {1}Declaration of the package and packages loaded}{1}{section.0.1}%
+\contentsline {section}{\numberline {2}Security test}{2}{section.0.2}%
+\contentsline {section}{\numberline {3}Collecting options}{4}{section.0.3}%
+\contentsline {section}{\numberline {4}Technical definitions}{4}{section.0.4}%
+\contentsline {section}{\numberline {5}Parameters}{9}{section.0.5}%
+\contentsline {section}{\numberline {6}The command \textbackslash tabularnote}{19}{section.0.6}%
+\contentsline {section}{\numberline {7}Command for creation of rectangle nodes}{24}{section.0.7}%
+\contentsline {section}{\numberline {8}The options}{25}{section.0.8}%
+\contentsline {section}{\numberline {9}Important code used by \{NiceArrayWithDelims\} }{35}{section.0.9}%
+\contentsline {section}{\numberline {10}The \textbackslash CodeBefore}{49}{section.0.10}%
+\contentsline {section}{\numberline {11}The environment \{NiceArrayWithDelims\}}{53}{section.0.11}%
+\contentsline {section}{\numberline {12}We construct the preamble of the array}{58}{section.0.12}%
+\contentsline {section}{\numberline {13}The redefinition of \textbackslash multicolumn}{73}{section.0.13}%
+\contentsline {section}{\numberline {14}The environment \{NiceMatrix\} and its variants}{90}{section.0.14}%
+\contentsline {section}{\numberline {15}\{NiceTabular\}, \{NiceTabularX\} and \{NiceTabular*\}}{91}{section.0.15}%
+\contentsline {section}{\numberline {16}After the construction of the array}{93}{section.0.16}%
+\contentsline {section}{\numberline {17}We draw the dotted lines}{99}{section.0.17}%
+\contentsline {section}{\numberline {18}The actual instructions for drawing the dotted lines with Tikz}{112}{section.0.18}%
+\contentsline {section}{\numberline {19}User commands available in the new environments}{118}{section.0.19}%
+\contentsline {section}{\numberline {20}The command \textbackslash line accessible in code-after}{124}{section.0.20}%
+\contentsline {section}{\numberline {21}The command \textbackslash RowStyle}{126}{section.0.21}%
+\contentsline {section}{\numberline {22}Colors of cells, rows and columns}{128}{section.0.22}%
+\contentsline {section}{\numberline {23}The vertical and horizontal rules}{140}{section.0.23}%
+\contentsline {section}{\numberline {24}The empty corners}{155}{section.0.24}%
+\contentsline {section}{\numberline {25}The environment \{NiceMatrixBlock\}}{158}{section.0.25}%
+\contentsline {section}{\numberline {26}The extra nodes}{159}{section.0.26}%
+\contentsline {section}{\numberline {27}The blocks}{163}{section.0.27}%
+\contentsline {section}{\numberline {28}How to draw the dotted lines transparently}{183}{section.0.28}%
+\contentsline {section}{\numberline {29}Automatic arrays}{183}{section.0.29}%
+\contentsline {section}{\numberline {30}The redefinition of the command \textbackslash dotfill }{185}{section.0.30}%
+\contentsline {section}{\numberline {31}The command \textbackslash diagbox}{185}{section.0.31}%
+\contentsline {section}{\numberline {32}The keyword \textbackslash CodeAfter}{187}{section.0.32}%
+\contentsline {section}{\numberline {33}The delimiters in the preamble}{187}{section.0.33}%
+\contentsline {section}{\numberline {34}The command \textbackslash SubMatrix}{189}{section.0.34}%
+\contentsline {section}{\numberline {35}Les commandes \textbackslash UnderBrace et \textbackslash OverBrace}{197}{section.0.35}%
+\contentsline {section}{\numberline {36}The command TikzEveryCell}{200}{section.0.36}%
+\contentsline {section}{\numberline {37}The command \textbackslash ShowCellNames}{201}{section.0.37}%
+\contentsline {section}{\numberline {38}We process the options at package loading}{204}{section.0.38}%
+\contentsline {section}{\numberline {39}About the package underscore}{206}{section.0.39}%
+\contentsline {section}{\numberline {40}Error messages of the package}{206}{section.0.40}%

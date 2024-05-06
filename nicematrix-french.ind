@@ -1,0 +1,422 @@
+\begin{theindex}
+
+  \item \texttt{\textbackslash arraycolor} (commande du \texttt{\textbackslash   CodeBefore)}, 
+		\hyperpage{17}
+  \item \texttt  {\textbackslash arrayrulecolor}, \hyperpage{10}
+  \item \texttt  {\textbackslash arrayrulewidth}, \hyperpage{10}
+  \item auto-columns-width
+    \subitem (clé de \texttt{\{NiceMatrixBlock\}}), \hyperpage{24}, 
+		\hyperindexformat{\textit}{62}
+  \item \texttt  {\textbackslash AutoNiceMatrix}, \hyperpage{46}
+
+  \indexspace
+
+  \item baseline (clé pour un environnement), \hyperpage{3}
+  \item \texttt  {\textbackslash BAutoNiceMatrix}, \hyperpage{46}
+  \item \texttt  {\textbackslash bAutoNiceMatrix}, \hyperpage{46}
+  \item \pkg{blkarray} (extension), \hyperpage{33}
+  \item \texttt  {\textbackslash Block}, \hyperpage{4}
+  \item \textbf{Blocs dans les tableaux}, \hyperpage{4--9}
+  \item \texttt  {\{BNiceArray\}}, \hyperpage{2}
+  \item \texttt  {\{bNiceArray\}}, \hyperpage{2}
+  \item \texttt  {\{BNiceMatrix\}}, \hyperpage{2}
+  \item \texttt  {\{bNiceMatrix\}}, \hyperpage{2}
+  \item \texttt{\textbackslash Body}, 
+		\hyperindexformat{\see{\texttt{\textbackslash CodeBefore}}}{16}
+  \item bold (clé de \texttt{\textbackslash RowStyle}), \hyperpage{23}
+  \item \pkg{booktabs} (extension), \hyperpage{9}
+  \item borders (clé de \texttt{\textbackslash Block}), \hyperpage{5}
+  \item bottomrule (sous-clé de «notes»), \hyperpage{41}
+
+  \indexspace
+
+  \item caption (clé de \texttt{\{NiceTabular\}}), \hyperpage{38}
+  \item caption-above, \hyperpage{38}
+  \item ccommand (clé de «custom-line»), \hyperpage{13}
+  \item \texttt  {\textbackslash Cdots}, \hyperpage{27}
+  \item \texttt  {\textbackslash cdottedline}, \hyperpage{15}
+  \item cell-space-bottom-limit, \hyperpage{2}, \hyperpage{22}
+  \item cell-space-limits, \hyperpage{2}, \hyperpage{22}
+  \item cell-space-top-limit, \hyperpage{2}, \hyperpage{22}
+  \item \texttt{\textbackslash cellcolor}
+    \subitem commande du   \texttt{\textbackslash CodeBefore}, 
+		\hyperpage{17}
+    \subitem commande en tableau, \hyperpage{21}
+  \item \pkg{cellspace} (extension), \hyperpage{2}
+  \item \texttt{\textbackslash chessboardcolors}
+    \subitem (commande   du \texttt{\textbackslash CodeBefore}), 
+		\hyperpage{17}, \hyperindexformat{\textit}{67}
+  \item \texttt{\textbackslash cline} (commande de LaTeX), 
+		\hyperpage{10}
+  \item code (clé de \texttt{\textbackslash SubMatrix}), 
+		\hyperpage{36}
+  \item code-after, \hyperpage{34}
+  \item code-before
+    \subitem clé pour un environnement, \hyperpage{16}
+    \subitem sous-clé de «notes», \hyperpage{41}
+  \item code-for-first-col, \hyperpage{26}
+  \item code-for-first-row, \hyperpage{26}, 
+		\hyperindexformat{\textit}{45}, 
+		\hyperindexformat{\textit}{60}
+  \item code-for-last-col, \hyperpage{26}, 
+		\hyperindexformat{\textit}{45}, 
+		\hyperindexformat{\textit}{59, 60}
+  \item code-for-last-row, \hyperpage{26}, 
+		\hyperindexformat{\textit}{45}
+  \item \texttt{\textbackslash CodeAfter}, \hyperpage{34--38}, 
+		\hyperindexformat{\textit}{66}
+  \item \texttt{\textbackslash CodeBefore}...\texttt{\textbackslash Body}, 
+		\hyperpage{16}, \hyperindexformat{\textit}{66, 67}
+  \item Coins (les --- vides), \hyperpage{12}, 
+		\hyperindexformat{\textit}{67}
+  \item Coins arrondis
+    \subitem pour un bloc, \hyperpage{5}
+    \subitem pour un tableau, \hyperpage{43}
+  \item color
+    \subitem clé de \texttt{\textbackslash Block}, \hyperpage{4}
+    \subitem clé de \texttt{\textbackslash OverBrace} et \texttt{\textbackslash   UnderBrace}, 
+		\hyperpage{37}
+    \subitem clé de \texttt{\textbackslash RowStyle}, \hyperpage{23}
+    \subitem clé de «custom-line», \hyperpage{14}
+    \subitem clé pour les lignes pointillées, \hyperpage{31}
+    \subitem pour les délimiteurs de matrices, \hyperpage{47}
+  \item color-inside, \hyperpage{21}, \hyperindexformat{\textit}{65}
+  \item \pkg{colortbl} (extension), \hyperpage{16}
+  \item cols (clé de \texttt{\textbackslash rowcolors} du \texttt{\textbackslash CodeBefore}), 
+		\hyperpage{18}
+  \item \texttt{\textbackslash columncolor}
+    \subitem commande dans le   préambule d'un environnement, 
+		\hyperpage{21}
+    \subitem commande du   \texttt{\textbackslash CodeBefore}, 
+		\hyperpage{17}, \hyperindexformat{\textit}{56}
+  \item columns-type (clé de \texttt{\{NiceMatrix\}}, etc.), 
+		\hyperpage{44}
+  \item columns-width, \hyperpage{23}
+  \item command (clé de «custom-line»), \hyperpage{13}
+  \item corners (clé d'un environnement), \hyperpage{12}, 
+		\hyperindexformat{\textit}{20}
+  \item Couleur
+    \subitem de fond pour les cases, \hyperpage{16}
+    \subitem des délimiteurs de matrices, \hyperpage{47}
+    \subitem des filets, \hyperpage{10}
+  \item create-cell-nodes (clé de \texttt{\textbackslash CodeBefore}), 
+		\hyperpage{51}, \hyperindexformat{\textit}{66}
+  \item create-extra-nodes, \hyperpage{49}
+  \item create-large-nodes, \hyperpage{49}
+  \item create-medium-nodes, \hyperpage{49}, 
+		\hyperindexformat{\textit}{66}
+  \item \texttt{\textbackslash crossbox} (définie dans un exemple), 
+		\hyperindexformat{\textit}{53}
+  \item custom-line, \hyperpage{13--16}
+
+  \indexspace
+
+  \item \texttt{\textbackslash Ddots}, \hyperindexformat{\textbf}{27}, 
+		\hyperpage{54}, \hyperindexformat{\textit}{59}
+  \item \texttt{\textbackslash definecolorseries} (commande de \pkg{xcolor}), 
+		\hyperpage{19}
+  \item delimiters
+    \subitem ---/color pour \texttt{\textbackslash SubMatrix}, 
+		\hyperpage{35}
+    \subitem ---/color pour un environnement, \hyperpage{47}
+    \subitem ---/max-width, \hyperpage{62}
+  \item délimiteurs dans les préambules, \hyperpage{33}
+  \item detect-duplicates (sous-clé de «notes»), \hyperpage{41}
+  \item \texttt  {\textbackslash diagbox}, \hyperpage{13}
+  \item dotted (clé de «custom-line»), \hyperpage{15}
+  \item draw (clé de \texttt{\textbackslash Block}), \hyperpage{4}, 
+		\hyperindexformat{\textit}{65}
+  \item draw-first (clé de \texttt{\textbackslash Ddots} et   \texttt{\textbackslash Iddots}), 
+		\hyperpage{54}
+
+  \indexspace
+
+  \item empty (clé de \texttt{\textbackslash TikzEveryCell}), 
+		\hyperpage{38}
+  \item end-of-row (à utiliser avec light-syntax), \hyperpage{47}
+  \item \pkg{enumitem} (extension requise pour utiliser\newline \texttt{\textbackslash tabularnote}), 
+		\hyperpage{39}, \hyperindexformat{\textit}{57}
+  \item enumitem-keys (sous-clé de «notes»), \hyperpage{41}, 
+		\hyperindexformat{\textit}{57}
+  \item enumitem-keys-para (sous-clé de «notes»), \hyperpage{41}
+  \item exterior-arraycolsep, \hyperpage{55}
+  \item extra-height (clé de \texttt{\textbackslash SubMatrix}), 
+		\hyperpage{35}
+  \item extra-left-margin, \hyperpage{50}
+  \item extra-right-margin, \hyperpage{50}
+
+  \indexspace
+
+  \item \textbf{Filets dans les tableaux}, \hyperpage{9--16}
+  \item fill (clé de \texttt{\textbackslash Block}), \hyperpage{4}
+  \item first-col, \hyperpage{26}
+  \item first-row, \hyperpage{26}, \hyperindexformat{\textit}{45}
+  \item \pkg{footnote} (extension), \hyperpage{39}
+  \item footnote (clé), \hyperpage{39}
+  \item \pkg{footnotehyper} (extension), \hyperpage{39}
+  \item footnotehyper (clé), \hyperpage{39}
+
+  \indexspace
+
+  \item \texttt  {\textbackslash g\_nicematrix\_code\_after\_tl}, 
+		\hyperpage{53}
+  \item \texttt  {\textbackslash g\_nicematrix\_code\_before\_tl}, 
+		\hyperpage{53}
+
+  \indexspace
+
+  \item \texttt  {\textbackslash Hdotsfor}, \hyperpage{29}
+  \item \texttt  {\textbackslash hdottedline}, \hyperpage{15}
+  \item highlight (style TikZ défini dans\newline un exemple), 
+		\hyperindexformat{\textit}{65}
+  \item \texttt  {\textbackslash Hline}, \hyperpage{11}
+  \item hlines, \hyperindexformat{\see{Filets}}{11}
+    \subitem clé de \texttt{\textbackslash Block}, \hyperpage{5}
+    \subitem clé de \texttt{\textbackslash SubMatrix}, \hyperpage{36}
+    \subitem clé pour un environnement, \hyperpage{11}
+  \item horizontal-labels (clé pour les lignes pointillées), 
+		\hyperpage{31}
+  \item \texttt  {\textbackslash Hspace}, \hyperpage{28}
+  \item hvlines, \hyperindexformat{\see{Filets}}{12}
+    \subitem clé de   \texttt{\textbackslash Block}, \hyperpage{5}
+    \subitem clé de \texttt{\textbackslash SubMatrix}, \hyperpage{36}
+    \subitem clé pour un environnement, \hyperpage{12}
+  \item hvlines-except-borders, \hyperpage{12}, 
+		\hyperindexformat{\textit}{57}
+
+  \indexspace
+
+  \item \texttt{\textbackslash Iddots}, \hyperindexformat{\textbf}{27}, 
+		\hyperpage{54}
+  \item Incompatibilités, \hyperpage{55}
+  \item inter (clé pour les lignes pointillées), \hyperpage{31}
+  \item iRow (compteur LaTeX), \hyperpage{46}
+
+  \indexspace
+
+  \item jCol (compteur LaTeX), \hyperpage{46}
+
+  \indexspace
+
+  \item label (clé de \texttt{\{NiceTabular\}}), \hyperpage{38}
+  \item label-in-list (sous-clé de «notes»), \hyperpage{41}
+  \item label-in-tabular (sous-clé de «notes»), \hyperpage{41}
+  \item \textbf{Largeur des colonnes}, \hyperpage{23--25}
+  \item last-col, \hyperpage{26}, \hyperindexformat{\textit}{45}, 
+		\hyperindexformat{\textit}{59}
+  \item last-row, \hyperpage{26}, \hyperindexformat{\textit}{45}
+  \item \texttt  {\textbackslash Ldots}, \hyperpage{27}
+  \item \texttt{\textbackslash left} : utilisé par \pkg{nicematrix}\newline pour des   délimiteurs\newline dans les préambules, 
+		\hyperpage{33}
+  \item left-margin, \hyperpage{50}
+  \item left-shorten (clé de \texttt{\textbackslash OverBrace} et\newline \texttt{\textbackslash   UnderBrace}), 
+		\hyperpage{37}
+  \item left-xshift (clé de \texttt{\textbackslash SubMatrix}), 
+		\hyperpage{35}
+  \item \textbf{Légende des tableaux}, \hyperpage{38}
+  \item letter (clé de «custom-line»), \hyperpage{13}
+  \item light-syntax, \hyperpage{46}
+  \item light-syntax-expanded, \hyperpage{47}
+  \item Lignes en pointillés, \hyperindexformat{\see{Pointillés}}{27}
+  \item \texttt{\textbackslash line} (commande du \texttt{\textbackslash CodeAfter}), 
+		\hyperpage{34}
+  \item line-style (clé pour les lignes pointillées), \hyperpage{31}, 
+		\hyperindexformat{\textit}{59}
+  \item line-width (clé de \texttt{\textbackslash Block}), 
+		\hyperpage{5}
+
+  \indexspace
+
+  \item \pkg{mathdots} (extension), \hyperpage{27}
+  \item max-width (sous-clé de «delimiters»), \hyperpage{62}
+  \item multiplicity (clé de «custom-line»), \hyperpage{14}
+
+  \indexspace
+
+  \item name
+    \subitem clé de \texttt{\textbackslash Block}, \hyperpage{5}
+    \subitem clé de \texttt{\textbackslash SubMatrix}, \hyperpage{52}
+    \subitem clé pour un environnement, \hyperpage{48}
+  \item nb-rows (clé de \texttt{\textbackslash RowStyle}), 
+		\hyperpage{22}
+  \item \texttt  {\{NiceArray\}}, \hyperpage{2}
+  \item \texttt{\{NiceArrayWithDelims\}}, \hyperpage{47}
+  \item \texttt  {\{NiceMatrix\}}, \hyperpage{2}
+  \item \texttt{\{NiceMatrixBlock\}}, \hyperpage{24}, 
+		\hyperindexformat{\textit}{61}
+  \item \texttt  {\textbackslash NiceMatrixLastEnv}, \hyperpage{48}
+  \item \texttt  {\textbackslash NiceMatrixOptions}, \hyperpage{1}
+  \item \texttt  {\{NiceTabular\}}, \hyperpage{2}
+  \item \texttt  {\{NiceTabular*\}}, \hyperpage{2}
+  \item \texttt{\{NiceTabularX\}}, \hyperpage{24}
+  \item no-cell-nodes, \hyperpage{48}
+  \item nocolor, \hyperpage{22}
+  \item \textbf{Nœuds PGF/Tikz}, \hyperpage{48--52}
+  \item non empty (clé de \texttt{\textbackslash TikzEveryCell}), 
+		\hyperpage{38}
+  \item \textbf{Notes dans les tableaux}, \hyperpage{39--43}, 
+		\hyperindexformat{\textit}{57}
+  \item \texttt  {\textbackslash NotEmpty}, \hyperpage{12}
+  \item notes (clé pour paramétrer les notes de\newline tableau), 
+		\hyperpage{40}, \hyperindexformat{\textit}{57}
+  \item nullify-dots, \hyperpage{28}
+
+  \indexspace
+
+  \item \texttt  {\textbackslash OnlyMainNiceMatrix}, \hyperpage{47}
+  \item opacity
+    \subitem  (clé de la commande \texttt{\textbackslash Block}), 
+		\hyperpage{4}
+  \item opacity (clé des commandes comme\newline \texttt{\textbackslash     rowcolor}, etc.), 
+		\hyperpage{17}
+  \item \texttt{\textbackslash OverBrace} (commande du \texttt{\textbackslash CodeAfter}\newline et du \texttt{\textbackslash CodeBefore}), 
+		\hyperpage{37}
+
+  \indexspace
+
+  \item para (sous-clé de «notes»), \hyperpage{41}
+  \item parallelize-diags, \hyperpage{54}
+  \item \texttt  {\textbackslash pAutoNiceMatrix}, \hyperpage{46}
+  \item pgf-node-code, \hyperpage{49}, \hyperindexformat{\textit}{67}
+  \item \texttt  {\{pNiceArray\}}, \hyperpage{2}
+  \item \texttt  {\{pNiceMatrix\}}, \hyperpage{2}
+  \item \textbf{Pointillés (lignes en ---)}, \hyperpage{27--32}, 
+		\hyperindexformat{\textit}{58}
+
+  \indexspace
+
+  \item radius (clé pour les lignes pointillées), \hyperpage{31}
+  \item \texttt{\textbackslash rectanglecolor} (commande du   \texttt{\textbackslash CodeBefore}), 
+		\hyperpage{17}
+  \item renew-dots, \hyperpage{30}
+  \item renew-matrix, \hyperpage{30}
+  \item \texttt{\textbackslash resetcolorseries} (commande de \pkg{xcolor}), 
+		\hyperpage{19}
+  \item respect-arraystretch (clé de \texttt{\textbackslash Block}), 
+		\hyperpage{5}
+  \item respect-blocks (clé de \texttt{\textbackslash rowcolors} du\newline \texttt{\textbackslash CodeBefore}), 
+		\hyperpage{18}
+  \item restart (clé de \texttt{\textbackslash rowcolors} du \texttt{\textbackslash CodeBefore}), 
+		\hyperpage{18}
+  \item \texttt{\textbackslash right} : utilisé par \pkg{nicematrix}\newline pour des   délimiteurs\newline dans les préambules, 
+		\hyperpage{33}
+  \item right-margin, \hyperpage{50}
+  \item right-shorten (clé de \texttt{\textbackslash OverBrace} et\newline \texttt{\textbackslash   UnderBrace}), 
+		\hyperpage{37}
+  \item right-xshift (clé de \texttt{\textbackslash SubMatrix}), 
+		\hyperpage{35}
+  \item \texttt{\textbackslash rotate}, \hyperindexformat{\textit}{21}, 
+		\hyperindexformat{\textit}{23}, \hyperpage{45}
+  \item rounded-corners
+    \subitem clé de \texttt{\textbackslash Block}, \hyperpage{5}
+    \subitem clé de \texttt{\{NiceTabular\}}, \hyperpage{43}
+  \item \texttt{\textbackslash rowcolor}
+    \subitem commande du \texttt{\textbackslash CodeBefore}, 
+		\hyperpage{17}, \hyperindexformat{\textit}{57}
+    \subitem commande en tableau, \hyperpage{21}, 
+		\hyperindexformat{\textit}{65}
+  \item rowcolor (clé de \texttt{\textbackslash RowStyle}), 
+		\hyperpage{23}
+  \item \texttt{\textbackslash rowcolors} (commande du \texttt{\textbackslash CodeBefore}), 
+		\hyperpage{17}
+  \item \texttt{\textbackslash rowlistcolors} (commande du   \texttt{\textbackslash CodeBefore}), 
+		\hyperpage{17}
+  \item \texttt  {\textbackslash RowStyle}, \hyperpage{22}
+  \item rules (clé pour un environnement), \hyperpage{10}, 
+		\hyperindexformat{\textit}{57}
+
+  \indexspace
+
+  \item S (les colonnes S de \pkg{siunitx}), 
+		\hyperindexformat{\textit}{21}, \hyperpage{44}
+  \item sep-color (clé de «custom-line»), \hyperpage{14}
+  \item short-caption, \hyperpage{38}
+  \item shorten (clé pour les lignes pointillées), \hyperpage{31}
+  \item shorten-end (clé pour les lignes pointillées), \hyperpage{31}
+  \item shorten-start (clé pour les lignes pointillées), 
+		\hyperpage{31}
+  \item \texttt{\textbackslash ShowCellNames} (commande du \texttt{\textbackslash CodeAfter}\newline et du \texttt{\textbackslash CodeBefore}), 
+		\hyperpage{44}
+  \item \pkg{siunitx} (extension), \hyperpage{44}
+  \item slim (clé de \texttt{\textbackslash SubMatrix}), 
+		\hyperpage{35}
+  \item small (clé pour un environnement), \hyperpage{45}
+  \item \texttt{\{smallmatrix\}} (environnement de \pkg{amsmath}), 
+		\hyperpage{45}
+  \item standard-cline, \hyperpage{10}
+  \item style (sous-clé de «notes»), \hyperpage{41}, 
+		\hyperindexformat{\textit}{57}
+  \item sub-matrix (clé de \texttt{\textbackslash CodeAfter}, avec sous-clés), 
+		\hyperpage{34}
+  \item \texttt{\textbackslash SubMatrix} (commande du \texttt{\textbackslash CodeAfter}\newline et du \texttt{\textbackslash CodeBefore}), 
+		\hyperindexformat{\textbf}{34}, \hyperpage{52}, 
+		\hyperindexformat{\textit}{63}, 
+		\hyperindexformat{\textit}{66}
+  \item \texttt{\textbackslash TikzEveryCell} (commande du \texttt{\textbackslash CodeAfter}\newline et du \texttt{\textbackslash CodeBefore}), 
+		\hyperindexformat{\textbf}{38}
+
+  \indexspace
+
+  \item \texttt{\textbackslash tabularnote}, \hyperpage{39}, 
+		\hyperindexformat{\textit}{57}
+  \item tabularnote (clé de \texttt{\{NiceTabular\}}), \hyperpage{40}
+  \item \texttt{\{TabularNote\}}, \hyperpage{40}
+  \item \pkg{tabularx} (extension), \hyperpage{24}
+  \item \pkg{tcolorbox} (extension), \hyperindexformat{\textit}{57}
+  \item \pkg{threeparttable} (extension), \hyperpage{43}
+  \item TikZ (utilisation avec \pkg{nicematrix}), \hyperpage{48}
+  \item tikz
+    \subitem clé de \texttt{\textbackslash Block}, \hyperpage{5}, 
+		\hyperindexformat{\textit}{56}
+    \subitem clé de «borders» de \texttt{\textbackslash Block}, 
+		\hyperpage{5}, \hyperindexformat{\textit}{61}
+    \subitem clé de «custom-line», \hyperpage{14}
+  \item total-width (clé de «custom-line»), \hyperpage{14}
+  \item transparent (clé de \texttt{\textbackslash Block}), 
+		\hyperpage{5}, \hyperindexformat{\textit}{56}
+
+  \indexspace
+
+  \item \texttt{\textbackslash UnderBrace} (commande du \texttt{\textbackslash CodeAfter}\newline et du \texttt{\textbackslash CodeBefore}), 
+		\hyperpage{37}
+
+  \indexspace
+
+  \item V (les colonnes V de \pkg{varwidth}), \hyperpage{25}, 
+		\hyperpage{49}
+  \item v-center (clé de \texttt{\textbackslash Block)}), 
+		\hyperpage{8}
+  \item \pkg{varwidth} (extension), \hyperpage{25}, \hyperpage{49}
+  \item \texttt  {\textbackslash VAutoNiceMatrix}, \hyperpage{46}
+  \item \texttt  {\textbackslash vAutoNiceMatrix}, \hyperpage{46}
+  \item \texttt  {\textbackslash Vdots}, \hyperpage{27}
+  \item \texttt  {\textbackslash Vdotsfor}, \hyperpage{29}
+  \item vlines, \hyperindexformat{\see{Filets}}{11}
+    \subitem clé de \texttt{\textbackslash Block}, \hyperpage{5}
+    \subitem clé de \texttt{\textbackslash SubMatrix}, \hyperpage{36}
+    \subitem clé pour un environnement, \hyperpage{11}
+  \item vlines-in-sub-matrix, \hyperpage{64}
+  \item \texttt  {\{VNiceArray\}}, \hyperpage{2}
+  \item \texttt  {\{vNiceArray\}}, \hyperpage{2}
+  \item \texttt  {\{VNiceMatrix\}}, \hyperpage{2}
+  \item \texttt  {\{vNiceMatrix\}}, \hyperpage{2}
+
+  \indexspace
+
+  \item width
+    \subitem clé de \texttt{\{NiceTabular\}}, \hyperpage{24}
+    \subitem sous-clé de «rules», \hyperpage{10}
+
+  \indexspace
+
+  \item X (les colonnes X), \hyperpage{24}
+  \item xdots (et ses sous-clés), \hyperpage{27}
+  \item xshift (clé de \texttt{\textbackslash SubMatrix}), 
+		\hyperpage{35}
+
+  \indexspace
+
+  \item yshift (clé de \texttt{\textbackslash OverBrace} et \texttt{\textbackslash   UnderBrace}), 
+		\hyperpage{37}
+
+\end{theindex}

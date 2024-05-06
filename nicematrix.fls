@@ -1,0 +1,9 @@
+PWD c:\Users\panti\Documents\Travail\texmf\tex\latex\nicematrix
+INPUT C:\Users\panti\AppData\Local\MiKTeX\miktex\data\le\xetex\xelatex.fmt
+INPUT nicematrix.ins
+OUTPUT nicematrix.log
+INPUT C:\Users\panti\AppData\Local\Programs\MiKTeX\tex\latex\l3kernel\l3docstrip.tex
+INPUT C:\Users\panti\AppData\Local\Programs\MiKTeX\tex\latex\base\docstrip.tex
+INPUT nicematrix.sty
+INPUT nicematrix-code.dtx
+OUTPUT .\nicematrix.sty

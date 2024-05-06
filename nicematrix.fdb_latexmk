@@ -1,0 +1,20 @@
+# Fdb version 4
+["xdvipdfmx"] 1699217291 "nicematrix.xdv" "nicematrix.pdf" "nicematrix" 1699217293 0
+  "nicematrix.xdv" 0 -1 0 "xelatex"
+  (generated)
+  "nicematrix.pdf"
+  (rewritten before read)
+["xelatex"] 1712316721.91705 "nicematrix.ins" "nicematrix.xdv" "nicematrix" 1712316724.07525 1
+  "C:/Users/panti/AppData/Local/MiKTeX/miktex/data/le/xetex/xelatex.fmt" 1712316717 34131570 5c272941797ca7357c030b576c15e2be ""
+  "C:/Users/panti/AppData/Local/Programs/MiKTeX/tex/latex/base/docstrip.tex" 1705277179 34781 f4e8478d6dce246c11fa12e50163a6a9 ""
+  "C:/Users/panti/AppData/Local/Programs/MiKTeX/tex/latex/l3kernel/l3docstrip.tex" 1710416732 723 0727a4f66fa94db41dbb89d6aea3feff ""
+  "nicematrix-code.dtx" 1712316698 609409 e0ea9e12a05e5d8c64ecd188650e1a9b ""
+  "nicematrix.aux" 1712316289 323705 4170e0e7492ea881d747d8522955b653 "xelatex"
+  "nicematrix.ins" 1703853881 1428 c880b89b8618ec1493e9d2fb0b9eb500 ""
+  "nicematrix.sty" 1712316723 382031 503b14c2ae15b544da7f9d2e09ba1d2a "xelatex"
+  (generated)
+  "nicematrix.aux"
+  "nicematrix.log"
+  "nicematrix.sty"
+  "nicematrix.xdv"
+  (rewritten before read)
