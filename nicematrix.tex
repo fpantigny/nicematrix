@@ -1625,6 +1625,51 @@ Product C & 5 & 4 & 1 \\
 
 
 \bigskip
+The key |sep-color| with the value |white| may also be used in cas of an
+horizontal double-rule on the top of a colored cell (if we want the space
+between both rules above the cell not colored by the color of the cell).
+
+\begin{scope}
+\NiceMatrixOptions
+  {
+    custom-line = 
+     {
+       command = DoubleRule , 
+       multiplicity = 2 , 
+       sep-color = white
+     }
+  }
+
+
+\begin{Code}[width=10cm]
+\NiceMatrixOptions
+  {
+    custom-line = 
+     {
+       command = DoubleRule , 
+       multiplicity = 2 , 
+       \emph{sep-color = white}
+     }
+  }
+
+\begin{NiceTabular}{ccc}[color-inside]
+one & two & three \\
+\emph{\DoubleRule}
+four & \cellcolor{yellow} five & six \\
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{ccc}[color-inside]
+one & two & three \\
+\DoubleRule
+four & \cellcolor{yellow} five & six \\
+\end{NiceTabular}
+
+\end{scope}
+
+
+
+
+\bigskip
 \item \emph{Second possibility}\par\nobreak
 
 \index{tikzz@tikz!key of ``custom-line''}
@@ -1682,7 +1727,7 @@ seven & eight & nine
 \end{scope}
 
 \bigskip
-\item \emph{Third possibility} : the key |dotted|
+\item \emph{Third possibility} : the key \Definition{dotted}
 \label{dotted}
 \index{dotted (key of ``custom-line'')}
 \indexcommand{hdottedline}

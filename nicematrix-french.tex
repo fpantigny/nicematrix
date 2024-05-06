@@ -1680,6 +1680,51 @@ Produit C & 5 & 4 & 1 \\
 \end{center}
 
 
+\bigskip
+La clé |sep-color| avec la valeur |white| peut être en particulier utile en cas
+de filet double au-dessus d'une case colorée (pour éviter que la couleur ne
+s'applique aussi entre les deux filets).
+
+
+\begin{scope}
+\NiceMatrixOptions
+  {
+    custom-line = 
+     {
+       command = DoubleRule , 
+       multiplicity = 2 , 
+       sep-color = white
+     }
+  }
+
+
+\begin{Code}[width=10cm]
+\NiceMatrixOptions
+  {
+    custom-line = 
+     {
+       command = DoubleRule , 
+       multiplicity = 2 , 
+       \emph{sep-color = white}
+     }
+  }
+
+\begin{NiceTabular}{ccc}[color-inside]
+un & deux & trois \\
+\emph{\DoubleRule}
+quatre & \cellcolor{yellow} cinq & six \\
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{ccc}[color-inside]
+un & deux & trois \\
+\DoubleRule
+quatre & \cellcolor{yellow} cinq & six \\
+\end{NiceTabular}
+
+\end{scope}
+
+
+\bigskip
 \item \emph{Deuxième possibilité}\par\nobreak
 
 \index{tikzz@tikz!clé de «custom-line»}
@@ -1691,7 +1736,7 @@ directement avec TikZ en utilisant comme paramètres la valeur de la clé |tikz|
 qui doit être une liste de couples \textsl{clé=valeur} applicables à un chemin
 TikZ.
 
-Par défaut aucune réservation de place n'est faite pour le filet qui sera tracé
+Par défaut, aucune réservation de place n'est faite pour le filet qui sera tracé
 avec TikZ. On peut demander une réservation (horizontale pour un filet vertical
 et verticale pour un filet horizontal) avec la clé |total-width| qui est donc en
 quelque sorte la largeur du filet qui sera tracé (cette largeur n'est \emph{pas}
@@ -1736,7 +1781,7 @@ sept & huit & neuf
 \end{center}
 
 \medskip
-\item \emph{Troisième possibilité} : la clé |dotted|\par\nobreak
+\item \emph{Troisième possibilité} : la clé \Definition{dotted}\par\nobreak
 \label{dotted}
 \index{dotted (clé de «custom-line»)}
 \indexcommand{hdottedline}
