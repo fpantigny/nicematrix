@@ -4,6 +4,8 @@ Author: F. Pantigny (`fpantigny@wanadoo.fr`).
 
 CTAN page: `https://ctan.org/pkg/nicematrix`
 
+GitHub page: `github.com/fpantigny/nicematrix`
+
 ## License
 The LaTeX extension `nicematrix` is distributed under the LPPL 1.3 license.
 
