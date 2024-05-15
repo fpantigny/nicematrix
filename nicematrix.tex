@@ -800,8 +800,8 @@ first mandatory argument of |\Block| is |1-1|.}
 
 \label{horizontal-block}
 
-The command |\Block| accepts the keys |l|, |c| and |r| for the horizontal
-position of its content.
+The command |\Block| accepts the keys \Definition{l}, \Definition{c} and
+\Definition{r} for the horizontal position of its content.
 
 \medskip
 \begin{Code}[width=10.6cm]
@@ -863,10 +863,10 @@ Rank & \Block{1-3}{First group} & & & \Block{1-3}{Second group} \\
 \end{center}
 
 \medskip
-In order to have an horizontal positionning of the content of the block
-computed with the limits of the columns of the LaTeX array (and not with the
-contents of those columns), one may use the key |L|, |R| and |C| of the
-command |\Block|.
+In order to have an horizontal positionning of the content of the block computed
+with the limits of the columns of the LaTeX array (and not with the contents of
+those columns), one may use the key \Definition{L}, \Definition{R} and
+\Definition{C} of the command |\Block|.
 
 \medskip
 Here is the same example with the key |C| for the first block.
@@ -1264,7 +1264,7 @@ argument between square brackets for the characteristics of the rule.
 
 \medskip
 \begin{Code}[width=10cm]
-\begin{NiceTabular}{|c\emph{|[color=blue]}c|}
+\begin{NiceTabular}{ | c \emph{|[color=blue]} c |}
 \Hline
 a & b \\
 \emph{\Hline[color=red]}
@@ -1587,7 +1587,8 @@ created by |\hline\hline| or \verb+||+ in the preamble of an environment;
 \item the key |color| sets the color of the rules ;
 
 \item the key |sep-color| sets the color between two successive rules (should be
-used only in conjonction with |multiplicity|).
+used only in conjonction with |multiplicity|). The name of that key is inspired
+by the command |\doublerulesepcolor| of \pkg{colortbl}.
 \end{itemize}
 
 \medskip
@@ -1741,15 +1742,15 @@ value of the key |total-width| is, in this case, equal to the diameter of the do
 dotted rules are also used by \pkg{nicematrix} to draw continuous dotted rules
 between cells of the matrix with |\Cdots|, |\Vdots|, etc. (cf. p.~\pageref{Cdots}).
 
-In fact, \pkg{nicematrix} defines by default the commands |\hdottedline| and
-|\cdottedline |and the letter ``|:|'' for those dotted
-rules.\footnote{However, it's possible to overwrite those definitions with a
-|custom-line| (in order, for example, to switch to dashed lines).}
+In fact, \pkg{nicematrix} defines by default the commands
+\Definition{hdottedline} and \Definition{cdottedline} and the letter ``|:|'' for
+those dotted rules.\footnote{However, it's possible to overwrite those
+  definitions with a |custom-line| (in order, for example, to switch to dashed
+  lines).}
 
 \smallskip
 \begin{Code}
-
-\NiceMatrixOptions % \textsl{present in nicematrix.sty}
+\NiceMatrixOptions \emph{% \textsl{present in nicematrix.sty}}
   { 
     custom-line = 
       { 

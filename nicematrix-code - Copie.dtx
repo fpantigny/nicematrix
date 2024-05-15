@@ -952,6 +952,11 @@ version 2005/12/01 or later.
 \bool_new:N \g_@@_rotate_bool
 %    \end{macrocode}
 %
+% \bigskip
+% The following parameter corresponds to the key |split| of the command |\Block|.
+%    \begin{macrocode}
+\bool_new:N \l_@@_split_bool
+%    \end{macrocode}
 %
 % \bigskip
 % The following boolean will be raise then the command |\rotate| is used with
@@ -12919,6 +12924,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { NiceMatrix / Block / FirstPass }
   {
+    split .bool_set:N = \l_@@_split_bool ,
     j .code:n = \str_set:Nn \l_@@_hpos_block_str j 
                 \bool_set_true:N \l_@@_p_block_bool , 
     j .value_forbidden:n = true ,
@@ -13079,7 +13085,7 @@ version 2005/12/01 or later.
 % and |\@@_Block_v:nnnnn| and |\@@_Block_vi:nnnn|(the five arguments of those
 % macros are provided by curryfication).
 %    \begin{macrocode}
-    \tl_if_in:nnTF { #5 } { & }
+    \bool_if:NTF \l_@@_split_bool
       { \exp_args:Nee \@@_Block_vii:nnnnn }
       {
         \bool_if:NTF \l_@@_p_block_bool 
@@ -13103,6 +13109,7 @@ version 2005/12/01 or later.
 % widths of the columns will be wrong.
 %    \begin{macrocode}
                 && ! \l_@@_X_bool 
+                && ! \l_@@_split_bool
               }
               { \exp_args:Nee \@@_Block_iv:nnnnn }
               { \exp_args:Nee \@@_Block_v:nnnnn }
@@ -13530,6 +13537,7 @@ version 2005/12/01 or later.
 %   \begin{macrocode}
 \keys_define:nn { NiceMatrix / Block / SecondPass }
   {
+    split .bool_set:N = \l_@@_split_bool ,
     tikz .code:n = 
       \IfPackageLoadedTF { tikz }
         { \seq_put_right:Nn \l_@@_tikz_seq { { #1 } } }
@@ -13999,11 +14007,11 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
-  \tl_if_in:nnTF { #6 } { & } 
+  \bool_if:NTF \l_@@_split_bool
     { 
-      \seq_set_split:Nnn \l_tmpa_seq { & } {  #6 }
+      \clist_set:Nn \l_tmpa_clist { #6 }
       \int_zero_new:N \l_@@_split_int % number of sub-cells
-      \int_set:Nn \l_@@_split_int { \seq_count:N \l_tmpa_seq } 
+      \int_set:Nn \l_@@_split_int { \clist_count:N \l_tmpa_clist } 
       \pgfpicture 
       \pgfrememberpicturepositiononpagetrue
       \pgf@relevantforpicturesizefalse 
@@ -14052,7 +14060,7 @@ version 2005/12/01 or later.
           \pgfnode 
             { rectangle }
             { base }
-            { \seq_item:Nn \l_tmpa_seq { ##1 } } { } { }
+            { \clist_item:Nn \l_tmpa_clist { ##1 } } { } { }
           }
         }
       \endpgfpicture
@@ -17126,7 +17134,7 @@ version 2005/12/01 or later.
   {
     The~available~keys~are~(in~alphabetic~order):~b,~B,~borders,~c,~draw,~fill,~
     hlines,~hvlines,~l,~line-width,~name,~opacity,~rounded-corners,~r,~
-    respect-arraystretch,~t,~T,~tikz,~transparent~and~vlines.  
+    respect-arraystretch,~split,~t,~T,~tikz,~transparent~and~vlines.  
   }
 %    \end{macrocode}
 % 

@@ -153,8 +153,8 @@
 \str_const:Nn \c__nicematrix_j_str { j }
 \str_const:Nn \c__nicematrix_si_str { si }
 \tl_new:N \l__nicematrix_argspec_tl
-\cs_generate_variant:Nn \seq_set_split:Nnn { N V n }
-\cs_generate_variant:Nn \str_lowercase:n { V }
+\cs_generate_variant:Nn \seq_set_split:Nnn { N o n }
+\cs_generate_variant:Nn \str_lowercase:n { o }
 \hook_gput_code:nnn { begindocument } { . }
   {
     \IfPackageLoadedTF { tikz }
@@ -318,7 +318,6 @@
 \cs_new_protected:Npn \__nicematrix_color:n #1
   { \tl_if_blank:nF { #1 } { \__nicematrix_exp_color_arg:Nn \color { #1 } } }
 \cs_generate_variant:Nn \__nicematrix_color:n { o }
-\cs_set_eq:NN \__nicematrix_old_pgfpointanchor \pgfpointanchor
 \cs_new_protected:Npn \__nicematrix_rescan_for_spanish:N #1
   {
     \tl_set_rescan:Nno
@@ -396,7 +395,7 @@
 \bool_new:N \l__nicematrix_bold_row_style_bool
 \cs_new:Npn \__nicematrix_full_name_env:
   {
-    \str_if_eq:VnTF \g__nicematrix_com_or_env_str { command }
+    \str_if_eq:onTF \g__nicematrix_com_or_env_str { command }
       { command \space \c_backslash_str \g__nicematrix_name_env_str }
       { environment \space \{ \g__nicematrix_name_env_str \} }
   }
@@ -468,6 +467,7 @@
 \str_new:N \l__nicematrix_hpos_block_str
 \str_set:Nn \l__nicematrix_hpos_block_str { c }
 \bool_new:N \l__nicematrix_hpos_of_block_cap_bool
+\bool_new:N \l__nicematrix_p_block_bool
 \bool_new:N \l__nicematrix_nocolor_used_bool
 \str_new:N \l__nicematrix_vpos_block_str
 \str_set:Nn \l__nicematrix_vpos_block_str { c }
@@ -1448,7 +1448,7 @@
       { \cs_set_nopar:Npn \@halignto { } }
       { \cs_set_nopar:Npx \@halignto { to \dim_use:N \l__nicematrix_tabular_width_dim } }
     \@tabarray
-    [ \str_if_eq:VnTF \l__nicematrix_baseline_tl c c t ]
+    [ \str_if_eq:onTF \l__nicematrix_baseline_tl c c t ]
   }
 \bool_if:NTF \c__nicematrix_tagging_array_bool
   { \cs_set_eq:NN \__nicematrix_old_ar@ialign: \ar@ialign }
@@ -2390,7 +2390,7 @@
               { \tl_clear:N \exp_not:N \l__nicematrix_hpos_cell_tl }
               {
                 \cs_set_nopar:Npn \exp_not:N \l__nicematrix_hpos_cell_tl
-                  { \str_lowercase:V \l__nicematrix_hpos_col_str }
+                  { \str_lowercase:o \l__nicematrix_hpos_col_str }
               }
             \str_case:on \l__nicematrix_hpos_col_str
               {
@@ -2413,7 +2413,7 @@
                 { j } { c }
                 { si } { c }
               }
-              { \str_lowercase:V \l__nicematrix_hpos_col_str }
+              { \str_lowercase:o \l__nicematrix_hpos_col_str }
           }
       }
     \int_gincr:N \c@jCol
@@ -3293,7 +3293,7 @@
     \tl_set_rescan:Nno \l__nicematrix_end_of_row_tl { } \l__nicematrix_end_of_row_tl
     \bool_if:NTF \l__nicematrix_light_syntax_expanded_bool
       \seq_set_split:Nee
-      \seq_set_split:NVn
+      \seq_set_split:Non
       \l__nicematrix_rows_seq \l__nicematrix_end_of_row_tl { #1 }
     \seq_pop_right:NN \l__nicematrix_rows_seq \l_tmpa_tl
     \tl_if_empty:NF \l_tmpa_tl
@@ -7032,6 +7032,9 @@
   }
 \keys_define:nn { NiceMatrix / Block / FirstPass }
   {
+    j .code:n = \str_set:Nn \l__nicematrix_hpos_block_str j
+                \bool_set_true:N \l__nicematrix_p_block_bool ,
+    j .value_forbidden:n = true ,
     l .code:n = \str_set:Nn \l__nicematrix_hpos_block_str l ,
     l .value_forbidden:n = true ,
     r .code:n = \str_set:Nn \l__nicematrix_hpos_block_str r ,
@@ -7052,6 +7055,8 @@
     b .value_forbidden:n = true ,
     B .code:n = \str_set:Nn \l__nicematrix_vpos_block_str B ,
     B .value_forbidden:n = true ,
+    p .code:n = \bool_set_true:N \l__nicematrix_p_block_bool ,
+    p .value_forbidden:n = true ,
     color .code:n =
       \__nicematrix_color:n { #1 }
       \tl_set_rescan:Nnn
@@ -7110,18 +7115,26 @@
         { \int_eval:n { \c@iRow + \l_tmpa_int - 1 } }
         { \int_eval:n { \c@jCol + \l_tmpb_int - 1 } }
       }
-    \bool_if:nTF
+    \tl_if_in:nnTF { #5 } { & }
+      { \exp_args:Nee \__nicematrix_Block_vii:nnnnn }
       {
-        (
-          \int_compare_p:nNn \l_tmpa_int = \c_one_int
-             ||
-          \int_compare_p:nNn \l_tmpb_int = \c_one_int
-        )
-        && ! \tl_if_empty_p:n { #5 }
-        && ! \l__nicematrix_X_bool
-      }
-      { \exp_args:Nee \__nicematrix_Block_iv:nnnnn }
-      { \exp_args:Nee \__nicematrix_Block_v:nnnnn }
+        \bool_if:NTF \l__nicematrix_p_block_bool
+          { \exp_args:Nee \__nicematrix_Block_vi:nnnnn }
+          {
+            \bool_if:nTF
+              {
+                (
+                  \int_compare_p:nNn \l_tmpa_int = \c_one_int
+                     ||
+                  \int_compare_p:nNn \l_tmpb_int = \c_one_int
+                )
+                && ! \tl_if_empty_p:n { #5 }
+                && ! \l__nicematrix_X_bool
+              }
+              { \exp_args:Nee \__nicematrix_Block_iv:nnnnn }
+              { \exp_args:Nee \__nicematrix_Block_v:nnnnn }
+          }
+       }
     { \l_tmpa_int } { \l_tmpb_int } { #3 } { #4 } { #5 }
   }
 \cs_new_protected:Npn \__nicematrix_Block_iv:nnnnn #1 #2 #3 #4 #5
@@ -7174,7 +7187,7 @@
                 \use:e
                   {
                     \exp_not:N \begin { minipage }%
-                      [ \str_lowercase:V \l__nicematrix_vpos_block_str ]
+                      [ \str_lowercase:o \l__nicematrix_vpos_block_str ]
                       { \l__nicematrix_col_width_dim }
                      \str_case:on \l__nicematrix_hpos_block_str
                        { c \centering r \raggedleft l \raggedright }
@@ -7186,7 +7199,7 @@
                 \use:e
                   {
                     \exp_not:N \begin { tabular }%
-                      [ \str_lowercase:V \l__nicematrix_vpos_block_str ]
+                      [ \str_lowercase:o \l__nicematrix_vpos_block_str ]
                       { @ { } \l__nicematrix_hpos_block_str @ { } }
                   }
                   #5
@@ -7198,7 +7211,7 @@
             \use:e
               {
                 \exp_not:N \begin { array }%
-                  [ \str_lowercase:V \l__nicematrix_vpos_block_str ]
+                  [ \str_lowercase:o \l__nicematrix_vpos_block_str ]
                   { @ { } \l__nicematrix_hpos_block_str @ { } }
               }
               #5
@@ -7219,27 +7232,24 @@
               }
           }
       }
-     \str_if_eq:VnT \l__nicematrix_vpos_block_str { c }
+     \int_compare:nNnT { #1 } = \c_one_int
        {
-         \int_compare:nNnT { #1 } = \c_one_int
+         \dim_gset:Nn \g__nicematrix_blocks_ht_dim
            {
-             \dim_gset:Nn \g__nicematrix_blocks_ht_dim
+             \dim_max:nn
+               \g__nicematrix_blocks_ht_dim
                {
-                 \dim_max:nn
-                   \g__nicematrix_blocks_ht_dim
-                   {
-                     \box_ht:c
-                       { g__nicematrix_ block _ box _ \int_use:N \g__nicematrix_block_box_int _ box }
-                   }
+                 \box_ht:c
+                   { g__nicematrix_ block _ box _ \int_use:N \g__nicematrix_block_box_int _ box }
                }
-             \dim_gset:Nn \g__nicematrix_blocks_dp_dim
+           }
+         \dim_gset:Nn \g__nicematrix_blocks_dp_dim
+           {
+             \dim_max:nn
+               \g__nicematrix_blocks_dp_dim
                {
-                 \dim_max:nn
-                   \g__nicematrix_blocks_dp_dim
-                   {
-                     \box_dp:c
-                       { g__nicematrix_ block _ box _ \int_use:N \g__nicematrix_block_box_int _ box }
-                   }
+                 \box_dp:c
+                   { g__nicematrix_ block _ box _ \int_use:N \g__nicematrix_block_box_int _ box }
                }
            }
        }
@@ -7358,6 +7368,28 @@
         }
       }
   }
+\cs_new_protected:Npn \__nicematrix_Block_vi:nnnnn #1 #2 #3 #4 #5
+  {
+    \seq_gput_right:Nx \g__nicematrix_blocks_seq
+      {
+        \l_tmpa_tl
+        { \exp_not:n { #3 } }
+        {
+          \group_begin:
+          \exp_not:n { #4 #5 }
+          \group_end:
+        }
+      }
+  }
+\cs_new_protected:Npn \__nicematrix_Block_vii:nnnnn #1 #2 #3 #4 #5
+  {
+    \seq_gput_right:Nx \g__nicematrix_blocks_seq
+      {
+        \l_tmpa_tl
+        { \exp_not:n { #3 } }
+        { \exp_not:n { #4 #5 } }
+      }
+  }
 \keys_define:nn { NiceMatrix / Block / SecondPass }
   {
     tikz .code:n =
@@ -7396,6 +7428,8 @@
     hlines .default:n = true ,
     line-width .dim_set:N = \l__nicematrix_line_width_dim ,
     line-width .value_required:n = true ,
+    j .code:n = \str_set:Nn \l__nicematrix_hpos_block_str j
+                \bool_set_true:N \l__nicematrix_p_block_bool ,
     l .code:n = \str_set:Nn \l__nicematrix_hpos_block_str l ,
     r .code:n = \str_set:Nn \l__nicematrix_hpos_block_str r ,
     c .code:n = \str_set:Nn \l__nicematrix_hpos_block_str c ,
@@ -7409,9 +7443,11 @@
     T .code:n = \str_set:Nn \l__nicematrix_vpos_block_str T ,
     b .code:n = \str_set:Nn \l__nicematrix_vpos_block_str b ,
     B .code:n = \str_set:Nn \l__nicematrix_vpos_block_str B ,
-    m .code:n = \str_set:Nn \l__nicematrix_vpos_block_str { c } ,
+    m .code:n = \str_set:Nn \l__nicematrix_vpos_block_str c ,
     m .value_forbidden:n = true ,
     v-center .meta:n = m ,
+    p .code:n = \bool_set_true:N \l__nicematrix_p_block_bool ,
+    p .value_forbidden:n = true ,
     name .tl_set:N = \l__nicematrix_block_name_str ,
     name .value_required:n = true ,
     name .initial:n = ,
@@ -7571,78 +7607,76 @@
               { \exp_not:n { ##1 } } { \exp_not:n { ##2 } }
           }
       }
-    \hbox_set:Nn \l__nicematrix_cell_box { \set@color #6 }
-    \bool_if:NT \g__nicematrix_rotate_bool \__nicematrix_rotate_cell_box:
     \pgfpicture
-      \pgfrememberpicturepositiononpagetrue
-      \pgf@relevantforpicturesizefalse
-      \__nicematrix_qpoint:n { row - #1 }
-      \dim_set_eq:NN \l_tmpa_dim \pgf@y
-      \__nicematrix_qpoint:n { col - #2 }
-      \dim_set_eq:NN \l_tmpb_dim \pgf@x
-      \__nicematrix_qpoint:n { row - \int_eval:n { \l__nicematrix_last_row_int + 1 } }
-      \dim_set_eq:NN \l__nicematrix_tmpc_dim \pgf@y
-      \__nicematrix_qpoint:n { col - \int_eval:n { \l__nicematrix_last_col_int + 1 } }
-      \dim_set_eq:NN \l__nicematrix_tmpd_dim \pgf@x
-      \__nicematrix_pgf_rect_node:nnnnn
-        { \__nicematrix_env: - #1 - #2 - block }
-        \l_tmpb_dim \l_tmpa_dim \l__nicematrix_tmpd_dim \l__nicematrix_tmpc_dim
-      \str_if_empty:NF \l__nicematrix_block_name_str
-        {
-          \pgfnodealias
-            { \__nicematrix_env: - \l__nicematrix_block_name_str }
-            { \__nicematrix_env: - #1 - #2 - block }
-          \str_if_empty:NF \l__nicematrix_name_str
-            {
-              \pgfnodealias
-                { \l__nicematrix_name_str - \l__nicematrix_block_name_str }
-                { \__nicematrix_env: - #1 - #2 - block }
-            }
-        }
-      \bool_if:NF \l__nicematrix_hpos_of_block_cap_bool
-        {
-          \dim_set_eq:NN \l_tmpb_dim \c_max_dim
-          \int_step_inline:nnn \l__nicematrix_first_row_int \g__nicematrix_row_total_int
-            {
-              \cs_if_exist:cT
-                { pgf @ sh @ ns @ \__nicematrix_env: - ##1 - #2 }
-                {
-                  \seq_if_in:NnF \g__nicematrix_multicolumn_cells_seq { ##1 - #2 }
-                    {
-                      \pgfpointanchor { \__nicematrix_env: - ##1 - #2 } { west }
-                      \dim_set:Nn \l_tmpb_dim { \dim_min:nn \l_tmpb_dim \pgf@x }
-                    }
-                }
-            }
-          \dim_compare:nNnT \l_tmpb_dim = \c_max_dim
-            {
-              \__nicematrix_qpoint:n { col - #2 }
-              \dim_set_eq:NN \l_tmpb_dim \pgf@x
-            }
-          \dim_set:Nn \l__nicematrix_tmpd_dim { - \c_max_dim }
-          \int_step_inline:nnn \l__nicematrix_first_row_int \g__nicematrix_row_total_int
-            {
-              \cs_if_exist:cT
-                { pgf @ sh @ ns @ \__nicematrix_env: - ##1 - \int_use:N \l__nicematrix_last_col_int }
-                {
-                  \seq_if_in:NnF \g__nicematrix_multicolumn_cells_seq { ##1 - #2 }
-                    {
-                      \pgfpointanchor
-                        { \__nicematrix_env: - ##1 - \int_use:N \l__nicematrix_last_col_int }
-                        { east }
-                      \dim_set:Nn \l__nicematrix_tmpd_dim { \dim_max:nn \l__nicematrix_tmpd_dim \pgf@x }
-                    }
-                }
-            }
-          \dim_compare:nNnT \l__nicematrix_tmpd_dim = { - \c_max_dim }
-            {
-              \__nicematrix_qpoint:n { col - \int_eval:n { \l__nicematrix_last_col_int + 1 } }
-              \dim_set_eq:NN \l__nicematrix_tmpd_dim \pgf@x
-            }
-          \__nicematrix_pgf_rect_node:nnnnn
-            { \__nicematrix_env: - #1 - #2 - block - short }
-            \l_tmpb_dim \l_tmpa_dim \l__nicematrix_tmpd_dim \l__nicematrix_tmpc_dim
-        }
+    \pgfrememberpicturepositiononpagetrue
+    \pgf@relevantforpicturesizefalse
+    \__nicematrix_qpoint:n { row - #1 }
+    \dim_set_eq:NN \l_tmpa_dim \pgf@y
+    \__nicematrix_qpoint:n { col - #2 }
+    \dim_set_eq:NN \l_tmpb_dim \pgf@x
+    \__nicematrix_qpoint:n { row - \int_eval:n { \l__nicematrix_last_row_int + 1 } }
+    \dim_set_eq:NN \l__nicematrix_tmpc_dim \pgf@y
+    \__nicematrix_qpoint:n { col - \int_eval:n { \l__nicematrix_last_col_int + 1 } }
+    \dim_set_eq:NN \l__nicematrix_tmpd_dim \pgf@x
+    \__nicematrix_pgf_rect_node:nnnnn
+      { \__nicematrix_env: - #1 - #2 - block }
+      \l_tmpb_dim \l_tmpa_dim \l__nicematrix_tmpd_dim \l__nicematrix_tmpc_dim
+    \str_if_empty:NF \l__nicematrix_block_name_str
+      {
+        \pgfnodealias
+          { \__nicematrix_env: - \l__nicematrix_block_name_str }
+          { \__nicematrix_env: - #1 - #2 - block }
+        \str_if_empty:NF \l__nicematrix_name_str
+          {
+            \pgfnodealias
+              { \l__nicematrix_name_str - \l__nicematrix_block_name_str }
+              { \__nicematrix_env: - #1 - #2 - block }
+          }
+      }
+    \bool_if:NF \l__nicematrix_hpos_of_block_cap_bool
+      {
+        \dim_set_eq:NN \l_tmpb_dim \c_max_dim
+        \int_step_inline:nnn \l__nicematrix_first_row_int \g__nicematrix_row_total_int
+          {
+            \cs_if_exist:cT
+              { pgf @ sh @ ns @ \__nicematrix_env: - ##1 - #2 }
+              {
+                \seq_if_in:NnF \g__nicematrix_multicolumn_cells_seq { ##1 - #2 }
+                  {
+                    \pgfpointanchor { \__nicematrix_env: - ##1 - #2 } { west }
+                    \dim_set:Nn \l_tmpb_dim { \dim_min:nn \l_tmpb_dim \pgf@x }
+                  }
+              }
+          }
+        \dim_compare:nNnT \l_tmpb_dim = \c_max_dim
+          {
+            \__nicematrix_qpoint:n { col - #2 }
+            \dim_set_eq:NN \l_tmpb_dim \pgf@x
+          }
+        \dim_set:Nn \l__nicematrix_tmpd_dim { - \c_max_dim }
+        \int_step_inline:nnn \l__nicematrix_first_row_int \g__nicematrix_row_total_int
+          {
+            \cs_if_exist:cT
+              { pgf @ sh @ ns @ \__nicematrix_env: - ##1 - \int_use:N \l__nicematrix_last_col_int }
+              {
+                \seq_if_in:NnF \g__nicematrix_multicolumn_cells_seq { ##1 - #2 }
+                  {
+                    \pgfpointanchor
+                      { \__nicematrix_env: - ##1 - \int_use:N \l__nicematrix_last_col_int }
+                      { east }
+                    \dim_set:Nn \l__nicematrix_tmpd_dim { \dim_max:nn \l__nicematrix_tmpd_dim \pgf@x }
+                  }
+              }
+          }
+        \dim_compare:nNnT \l__nicematrix_tmpd_dim = { - \c_max_dim }
+          {
+            \__nicematrix_qpoint:n { col - \int_eval:n { \l__nicematrix_last_col_int + 1 } }
+            \dim_set_eq:NN \l__nicematrix_tmpd_dim \pgf@x
+          }
+        \__nicematrix_pgf_rect_node:nnnnn
+          { \__nicematrix_env: - #1 - #2 - block - short }
+          \l_tmpb_dim \l_tmpa_dim \l__nicematrix_tmpd_dim \l__nicematrix_tmpc_dim
+      }
     \bool_if:NT \l__nicematrix_medium_nodes_bool
       {
         \__nicematrix_pgf_rect_node:nnn
@@ -7657,109 +7691,208 @@
               { south~east }
           }
       }
-    \bool_lazy_any:nTF
-      {
-        { \str_if_eq_p:on \l__nicematrix_vpos_block_str { c } }
-        { \str_if_eq_p:on \l__nicematrix_vpos_block_str { T } }
-        { \str_if_eq_p:on \l__nicematrix_vpos_block_str { B } }
-      }
-      {
-        \int_if_zero:nT { #2 } { \str_set_eq:NN \l__nicematrix_hpos_block_str \c__nicematrix_r_str }
-        \bool_if:nT \g__nicematrix_last_col_found_bool
+    \endpgfpicture
+  \tl_if_in:nnTF { #6 } { & }
+    {
+      \seq_set_split:Nnn \l_tmpa_seq { & } {  #6 }
+      \int_zero_new:N \l__nicematrix_split_int % number of sub-cells
+      \int_set:Nn \l__nicematrix_split_int { \seq_count:N \l_tmpa_seq }
+      \pgfpicture
+      \pgfrememberpicturepositiononpagetrue
+      \pgf@relevantforpicturesizefalse
+      \__nicematrix_qpoint:n { row - #1 }
+      \dim_set_eq:NN \l__nicematrix_tmpc_dim \pgf@y
+      \__nicematrix_qpoint:n { row - \int_eval:n { #3 + 1 } }
+      \dim_set_eq:NN \l__nicematrix_tmpd_dim \pgf@y
+      \__nicematrix_qpoint:n { col - #2 }
+      \dim_set_eq:NN \l_tmpa_dim \pgf@x
+      \__nicematrix_qpoint:n { col - \int_eval:n { #4 + 1 } }
+      \dim_set:Nn \l_tmpb_dim
+        { ( \pgf@x - \l_tmpa_dim ) / \int_use:N \l__nicematrix_split_int }
+      \bool_if:NT \l__nicematrix_vlines_block_bool
+        {
+          \int_step_inline:nn { \l__nicematrix_split_int - 1 }
+            {
+              \pgfpathmoveto
+                {
+                  \pgfpoint
+                    { \l_tmpa_dim + ##1 \l_tmpb_dim }
+                    \l__nicematrix_tmpc_dim
+                }
+              \pgfpathlineto
+                {
+                  \pgfpoint
+                    { \l_tmpa_dim + ##1 \l_tmpb_dim }
+                    \l__nicematrix_tmpd_dim
+                }
+              \CT@arc@
+              \pgfsetlinewidth { 1.1 \arrayrulewidth }
+              \pgfsetrectcap
+              \pgfusepathqstroke
+            }
+        }
+      \__nicematrix_qpoint:n { row - #1 - base }
+      \dim_set_eq:NN \l__nicematrix_tmpc_dim \pgf@y
+      \int_step_inline:nn \l__nicematrix_split_int
+        {
           {
-            \int_compare:nNnT { #2 } = \g__nicematrix_col_total_int
-              { \str_set_eq:NN \l__nicematrix_hpos_block_str \c__nicematrix_l_str }
+          \pgftransformshift
+            {
+              \pgfpoint
+                { \l_tmpa_dim + ##1 \l_tmpb_dim - 0.5 \l_tmpb_dim }
+                { \l__nicematrix_tmpc_dim }
+            }
+          \pgfnode
+            { rectangle }
+            { base }
+            { \seq_item:Nn \l_tmpa_seq { ##1 } } { } { }
           }
-        \tl_set:Nx \l_tmpa_tl
-          {
-            \str_case:on \l__nicematrix_vpos_block_str
+        }
+      \endpgfpicture
+    }
+    {
+      \bool_if:NTF \l__nicematrix_p_block_bool
+        {
+            \pgfpicture
+              \pgfrememberpicturepositiononpagetrue
+              \pgf@relevantforpicturesizefalse
+              \bool_if:NTF \l__nicematrix_hpos_of_block_cap_bool
+                {
+                  \__nicematrix_qpoint:n { col - #2 }
+                  \dim_gset_eq:NN \g_tmpa_dim \pgf@x
+                  \__nicematrix_qpoint:n { col - \int_eval:n { \l__nicematrix_last_col_int + 1 } }
+                }
+                {
+                  \pgfpointanchor { \__nicematrix_env: - #1 - #2 - block - short } { west }
+                  \dim_gset_eq:NN \g_tmpa_dim \pgf@x
+                  \pgfpointanchor { \__nicematrix_env: - #1 - #2 - block - short } { east }
+                }
+              \dim_gset:Nn \g_tmpb_dim { \pgf@x - \g_tmpa_dim }
+            \endpgfpicture
+            \hbox_set:Nn \l__nicematrix_cell_box
               {
-                c {
-                    \str_case:on \l__nicematrix_hpos_block_str
-                      {
-                        c { center }
-                        l { west }
-                        r { east }
-                      }
-
-                  }
-                T {
-                    \str_case:on \l__nicematrix_hpos_block_str
-                      {
-                        c { north }
-                        l { north~west }
-                        r { north~east }
-                      }
-
-                  }
-                B {
-                    \str_case:on \l__nicematrix_hpos_block_str
-                      {
-                        c { south}
-                        l { south~west }
-                        r { south~east }
-                      }
-
-                  }
+                \begin { minipage } [ \str_lowercase:o \l__nicematrix_vpos_block_str ]
+                  { \g_tmpb_dim }
+                \str_case:on \l__nicematrix_hpos_block_str
+                  { c \centering r \raggedleft l \raggedright j { } }
+                #6
+                \end { minipage }
               }
           }
-        \pgftransformshift
+          { \hbox_set:Nn \l__nicematrix_cell_box { \set@color #6 } }
+        \bool_if:NT \g__nicematrix_rotate_bool \__nicematrix_rotate_cell_box:
+        \pgfpicture
+        \pgfrememberpicturepositiononpagetrue
+        \pgf@relevantforpicturesizefalse
+        \bool_lazy_any:nTF
           {
+            { \str_if_eq_p:on \l__nicematrix_vpos_block_str { c } }
+            { \str_if_eq_p:on \l__nicematrix_vpos_block_str { T } }
+            { \str_if_eq_p:on \l__nicematrix_vpos_block_str { B } }
+          }
+          {
+            \int_if_zero:nT { #2 } { \str_set_eq:NN \l__nicematrix_hpos_block_str \c__nicematrix_r_str }
+            \bool_if:nT \g__nicematrix_last_col_found_bool
+              {
+                \int_compare:nNnT { #2 } = \g__nicematrix_col_total_int
+                  { \str_set_eq:NN \l__nicematrix_hpos_block_str \c__nicematrix_l_str }
+              }
+            \tl_set:Nx \l_tmpa_tl
+              {
+                \str_case:on \l__nicematrix_vpos_block_str
+                  {
+                    c {
+                        \str_case:on \l__nicematrix_hpos_block_str
+                          {
+                            c { center }
+                            l { west }
+                            r { east }
+                            j { center }
+                          }
+
+                      }
+                    T {
+                        \str_case:on \l__nicematrix_hpos_block_str
+                          {
+                            c { north }
+                            l { north~west }
+                            r { north~east }
+                            j { north }
+                          }
+
+                      }
+                    B {
+                        \str_case:on \l__nicematrix_hpos_block_str
+                          {
+                            c { south }
+                            l { south~west }
+                            r { south~east }
+                            j { south }
+                          }
+
+                      }
+                  }
+              }
+            \pgftransformshift
+              {
+                \pgfpointanchor
+                  {
+                    \__nicematrix_env: - #1 - #2 - block
+                    \bool_if:NF \l__nicematrix_hpos_of_block_cap_bool { - short }
+                  }
+                  { \l_tmpa_tl }
+              }
+            \pgfset
+              {
+                inner~xsep = \c_zero_dim ,
+                inner~ysep = \c_zero_dim
+              }
+            \pgfnode
+              { rectangle }
+              { \l_tmpa_tl }
+              { \box_use_drop:N \l__nicematrix_cell_box } { } { }
+          }
+          {
+            \pgfextracty \l_tmpa_dim
+              {
+                \__nicematrix_qpoint:n
+                  {
+                    row - \str_if_eq:onTF \l__nicematrix_vpos_block_str { b } { #3 } { #1 }
+                    - base
+                  }
+              }
+            \dim_sub:Nn \l_tmpa_dim { 0.5 \arrayrulewidth }
             \pgfpointanchor
               {
                 \__nicematrix_env: - #1 - #2 - block
                 \bool_if:NF \l__nicematrix_hpos_of_block_cap_bool { - short }
               }
-              { \l_tmpa_tl }
+              {
+                \str_case:on \l__nicematrix_hpos_block_str
+                  {
+                    c { center }
+                    l { west }
+                    r { east }
+                    j { center }
+                  }
+              }
+            \pgftransformshift { \pgfpoint \pgf@x \l_tmpa_dim }
+            \pgfset { inner~sep = \c_zero_dim }
+            \pgfnode
+              { rectangle }
+              {
+                 \str_case:on \l__nicematrix_hpos_block_str
+                  {
+                    c { base }
+                    l { base~west }
+                    r { base~east }
+                    j { base }
+                  }
+              }
+              { \box_use_drop:N \l__nicematrix_cell_box } { } { }
           }
-        \pgfset
-          {
-            inner~xsep = \c_zero_dim ,
-            inner~ysep = \c_zero_dim
-          }
-        \pgfnode
-          { rectangle }
-          { \l_tmpa_tl }
-          { \box_use_drop:N \l__nicematrix_cell_box } { } { }
+        \endpgfpicture
       }
-      {
-        \pgfextracty \l_tmpa_dim
-          {
-            \__nicematrix_qpoint:n
-              {
-                row - \str_if_eq:onTF \l__nicematrix_vpos_block_str { b } { #3 } { #1 }
-                - base
-              }
-          }
-        \dim_sub:Nn \l_tmpa_dim { 0.5 \arrayrulewidth }
-        \pgfpointanchor
-          {
-            \__nicematrix_env: - #1 - #2 - block
-            \bool_if:NF \l__nicematrix_hpos_of_block_cap_bool { - short }
-          }
-          {
-            \str_case:on \l__nicematrix_hpos_block_str
-              {
-                c { center }
-                l { west }
-                r { east }
-              }
-          }
-        \pgftransformshift { \pgfpoint \pgf@x \l_tmpa_dim }
-        \pgfset { inner~sep = \c_zero_dim }
-        \pgfnode
-          { rectangle }
-          {
-             \str_case:on \l__nicematrix_hpos_block_str
-              {
-                c { base }
-                l { base~west }
-                r { base~east }
-              }
-          }
-          { \box_use_drop:N \l__nicematrix_cell_box } { } { }
-      }
-    \endpgfpicture
     \group_end:
   }
 \cs_new_protected:Npn \__nicematrix_stroke_block:nnn #1 #2 #3
@@ -9438,7 +9571,7 @@
 \__nicematrix_msg_new:nn { ragged2e~not~loaded }
   {
     You~have~to~load~'ragged2e'~in~order~to~use~the~key~'\l_keys_key_str'~in~
-    your~column~'\l__nicematrix_vpos_col_str'~(or~'X').~The~key~'\str_lowercase:V
+    your~column~'\l__nicematrix_vpos_col_str'~(or~'X').~The~key~'\str_lowercase:o
     \l_keys_key_str'~will~be~used~instead.
   }
 \__nicematrix_msg_new:nn { Invalid~name }

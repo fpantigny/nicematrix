@@ -836,8 +836,9 @@ défaut de ce premier argument obligatoire est |1-1|.}.
 
 \label{horizontal-bloc}
 
-La commande |\Block| admet les clés |l|, |c| et |r| pour la position horizontale
-du contenu du bloc (calé à gauche, centré ou bien calé à droite).
+La commande |\Block| admet les clés \Definition{l}, \Definition{c} et
+\Definition{r} pour la position horizontale du contenu du bloc (calé à gauche,
+centré ou bien calé à droite).
 
 \medskip
 \begin{Code}[width=10.6cm]
@@ -899,7 +900,8 @@ Rang & \Block{1-3}{Premier groupe} & & & \Block{1-3}{Deuxième groupe} \\
 \medskip
 Pour avoir un positionnement horizontal du contenu du bloc qui s'appuie sur les
 limites des colonnes du tableau LaTeX (et non sur le contenu de ces colonnes),
-il faut utiliser les clés |L|, |R| et |C| de la commande |\Block|.
+il faut utiliser les clés \Definition{L}, \Definition{R} et \Definition{C} de la
+commande |\Block|. 
 
 \medskip
 Voici le même exemple avec la clé |C| pour le premier bloc.
@@ -1315,7 +1317,7 @@ des options qui caractérisent le filet à tracer.
 
 \medskip
 \begin{Code}[width=10cm]
-\begin{NiceTabular}{|c|\emph{[color=blue]}c|}
+\begin{NiceTabular}{| c | \emph{[color=blue]} c |}
 \Hline
 a & b \\
 \emph{\Hline[color=red]}
@@ -1643,7 +1645,8 @@ d'un environnement ;
 \item la clé \Definition{color} fixe la couleur des filets ;
 
 \item la clé \Definition{sep-color} fixe la couleur entre deux filets consécutifs (n'a
-d'intérêt que dans le cas où la clé |multiplicity| est utilisée).
+d'intérêt que dans le cas où la clé |multiplicity| est utilisée). Le nom de
+cette clé est inspirée par la commande |\doublerulesepcolor| de \pkg{colortbl}.
 \end{itemize}
 
 \medskip
@@ -1798,15 +1801,14 @@ composantes de la matrice par |\Cdots|, |\Vdots|, etc. (voir
 p.~\pageref{Cdots}).
 
 \medskip
-L'extension \pkg{nicematrix} prédéfinit en fait les commandes |\hdottedline| et
-|\cdottedline| et la lettre «|:|» pour ces filets en
-pointillés.\footnote{Néanmoins, l'utilisateur peut écraser ces définitions de
+L'extension \pkg{nicematrix} prédéfinit en fait les commandes \Definition{hdottedline} et
+\Definition{cdottedline} et la lettre «|:|» pour ces filets en pointillés.\footnote{Néanmoins, l'utilisateur peut écraser ces définitions de
   |\hdottedline|, |\cdottedline| et de «|:|» avec |custom-line| s'il le souhaite
   (par exemple pour les remplacer par des lignes en tiretés).}
 
 \smallskip
 \begin{Code}
-% présent dans nicematrix.sty
+\emph{% présent dans nicematrix.sty}
 \NiceMatrixOptions
   { 
     custom-line = 
