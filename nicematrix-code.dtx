@@ -551,8 +551,8 @@ version 2005/12/01 or later.
 % the rules even if \pkg{colortbl} is not loaded. 
 %    \begin{macrocode}
         \cs_set_protected:Npn \CT@arc@ { }
-        \cs_set:Npn \arrayrulecolor #1 # { \CT@arc { #1 } }
-        \cs_set:Npn \CT@arc #1 #2
+        \cs_set_nopar:Npn \arrayrulecolor #1 # { \CT@arc { #1 } }
+        \cs_set_nopar:Npn \CT@arc #1 #2
           {
             \dim_compare:nNnT \baselineskip = \c_zero_dim \noalign 
               { \cs_gset_nopar:Npn \CT@arc@ { \color #1 { #2 } } } 
@@ -560,13 +560,13 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % Idem for |\CT@drs@|.
 %    \begin{macrocode}
-        \cs_set:Npn \doublerulesepcolor #1 # { \CT@drs { #1 } }
-        \cs_set:Npn \CT@drs #1 #2 
+        \cs_set_nopar:Npn \doublerulesepcolor #1 # { \CT@drs { #1 } }
+        \cs_set_nopar:Npn \CT@drs #1 #2 
           {
             \dim_compare:nNnT \baselineskip = \c_zero_dim \noalign 
               { \cs_gset:Npn \CT@drsc@ { \color #1 { #2 } } }
           }
-        \cs_set:Npn \hline
+        \cs_set_nopar:Npn \hline
           {
             \noalign { \ifnum 0 = `} \fi
             \cs_set_eq:NN \hskip \vskip
@@ -585,8 +585,8 @@ version 2005/12/01 or later.
 % be linked to |\cline| in the beginning of |{NiceArrayWithDelims}|. The
 % following commands must \emph{not} be protected.
 %    \begin{macrocode}
-\cs_set:Npn \@@_standard_cline #1 { \@@_standard_cline:w #1 \q_stop }
-\cs_set:Npn \@@_standard_cline:w #1-#2 \q_stop
+\cs_set_nopar:Npn \@@_standard_cline #1 { \@@_standard_cline:w #1 \q_stop }
+\cs_set_nopar:Npn \@@_standard_cline:w #1-#2 \q_stop
   {
     \int_if_zero:nT \l_@@_first_col_int { \omit & }
     \int_compare:nNnT { #1 } > \c_one_int 
@@ -680,8 +680,8 @@ version 2005/12/01 or later.
     \tl_if_blank:nF { #1 }
       {
         \tl_if_head_eq_meaning:nNTF { #1 } [
-          { \cs_set:Npn \CT@arc@ { \color #1 } }
-          { \cs_set:Npn \CT@arc@ { \color { #1 } } }
+          { \cs_set_nopar:Npn \CT@arc@ { \color #1 } }
+          { \cs_set_nopar:Npn \CT@arc@ { \color { #1 } } }
       }
   }
 \cs_generate_variant:Nn \@@_set_CT@arc@:n { o }
@@ -692,8 +692,8 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_set_CT@drsc@:n #1 
   { 
     \tl_if_head_eq_meaning:nNTF { #1 } [
-      { \cs_set:Npn \CT@drsc@ { \color #1 } }
-      { \cs_set:Npn \CT@drsc@ { \color { #1 } } }
+      { \cs_set_nopar:Npn \CT@drsc@ { \color #1 } }
+      { \cs_set_nopar:Npn \CT@drsc@ { \color { #1 } } }
   }
 \cs_generate_variant:Nn \@@_set_CT@drsc@:n { o }
 %    \end{macrocode}
@@ -1144,6 +1144,14 @@ version 2005/12/01 or later.
 % \bigskip
 %    \begin{macrocode}
 \bool_new:N \l_@@_in_code_after_bool
+%    \end{macrocode}
+% 
+% 
+% \bigskip
+% The following parameter will be raised when a block content a |&| in its
+% content (=label).
+%    \begin{macrocode}
+\bool_new:N \l_@@_ampersand_bool
 %    \end{macrocode}
 % 
 % \bigskip
@@ -3684,7 +3692,7 @@ version 2005/12/01 or later.
   {
     \dim_gset:Nn \g_@@_dp_row_zero_dim { \box_dp:N \@arstrutbox }
     \dim_gset:Nn \g_@@_ht_row_zero_dim { \box_ht:N \@arstrutbox }
-    \dim_gset:Nn \g_@@_ht_row_one_dim { \box_ht:N \@arstrutbox }
+    \dim_gset_eq:NN \g_@@_ht_row_one_dim \g_@@_ht_row_zero_dim
     \dim_gzero:N \g_@@_dp_ante_last_row_dim
     \dim_gset:Nn \g_@@_ht_last_row_dim { \box_ht:N \@arstrutbox }
     \dim_gset:Nn \g_@@_dp_last_row_dim { \box_dp:N \@arstrutbox }
@@ -3754,7 +3762,7 @@ version 2005/12/01 or later.
           { 
             \tbl_init_cell_data_for_table:
             \@@_redefine_everycr:
-            \tabskip = \c_zero_skip
+            \dim_zero:N \tabskip 
             \@@_some_initialization:
 %    \end{macrocode}
 %
@@ -3775,7 +3783,7 @@ version 2005/12/01 or later.
         \cs_set_nopar:Npn \ialign 
           { 
             \@@_redefine_everycr:
-            \tabskip = \c_zero_skip
+            \dim_zero:N \tabskip 
             \@@_some_initialization:
             \cs_set_eq:NN \ialign \@@_old_ialign:
             \halign 
@@ -4417,6 +4425,7 @@ version 2005/12/01 or later.
     \tl_gset:Nn \g_@@_left_delim_tl { #1 }
     \tl_gset:Nn \g_@@_right_delim_tl { #2 }
     \tl_gset:Nn \g_@@_user_preamble_tl { #4 }
+    \tl_if_empty:NT \g_@@_user_preamble_tl { \@@_fatal:n { empty~preamble } } 
 %    \end{macrocode}
 %   
 %
@@ -4789,7 +4798,7 @@ version 2005/12/01 or later.
 %
 % \bigskip 
 % The final user provides a preamble, but we must convert that preamble into a
-% preamble that will be given to |{array}| (of the package \pkg{array}).
+% preamble which will be given to |{array}| (of the package \pkg{array}).
 %
 % \bigskip
 % The preamble given by the final user is stored in |\g_@@_user_preamble_tl|.
@@ -6029,7 +6038,7 @@ version 2005/12/01 or later.
     \begingroup
     \bool_if:NT \c_@@_tagging_array_bool
       { \tbl_update_multicolumn_cell_data:n { #1 } }
-    \cs_set:Npn \@addamp 
+    \cs_set_nopar:Npn \@addamp 
       { \legacy_if:nTF { @firstamp } { \@firstampfalse } { \@preamerr 5 } } 
 %    \end{macrocode}
 %
@@ -6083,7 +6092,7 @@ version 2005/12/01 or later.
 % \medskip
 % The following lines were in the original definition of |\multicolumn|.
 %    \begin{macrocode}
-    \cs_set:Npn \@sharp { #3 }
+    \cs_set_nopar:Npn \@sharp { #3 }
     \@arstrut 
     \@preamble
     \null
@@ -13687,8 +13696,17 @@ version 2005/12/01 or later.
     \keys_set:nn { NiceMatrix / Block / SecondPass } { #5 }
 %    \end{macrocode}
 % 
+%
+% If the content of the block contains |&|, we will have a special treatement
+% (since the cell must be divided in several sub-cells).
 %    \begin{macrocode}
-    \bool_if:NT \l_@@_vlines_block_bool
+    \tl_if_in:nnT { #6 } { & } { \bool_set_true:N \l_@@_ampersand_bool }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \bool_lazy_and:nnT 
+      \l_@@_vlines_block_bool 
+      { ! \l_@@_ampersand_bool }
       {
         \tl_gput_right:Nx \g_nicematrix_code_after_tl
           { 
@@ -13999,10 +14017,10 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
-  \tl_if_in:nnTF { #6 } { & } 
+  \bool_if:NTF \l_@@_ampersand_bool
     { 
-      \seq_set_split:Nnn \l_tmpa_seq { & } {  #6 }
-      \int_zero_new:N \l_@@_split_int % number of sub-cells
+      \seq_set_split:Nnn \l_tmpa_seq { & } { #6 }
+      \int_zero_new:N \l_@@_split_int 
       \int_set:Nn \l_@@_split_int { \seq_count:N \l_tmpa_seq } 
       \pgfpicture 
       \pgfrememberpicturepositiononpagetrue
@@ -14016,7 +14034,9 @@ version 2005/12/01 or later.
       \@@_qpoint:n { col - \int_eval:n { #4 + 1 } } 
       \dim_set:Nn \l_tmpb_dim 
         { ( \pgf@x - \l_tmpa_dim ) / \int_use:N \l_@@_split_int }
-      \bool_if:NT \l_@@_vlines_block_bool
+      \bool_lazy_or:nnT 
+        \l_@@_vlines_block_bool 
+        { \tl_if_eq_p:NN \l_@@_vlines_clist \c_@@_all_tl }
         {
           \int_step_inline:nn { \l_@@_split_int - 1 } 
             { 
@@ -14042,18 +14062,39 @@ version 2005/12/01 or later.
       \dim_set_eq:NN \l_@@_tmpc_dim \pgf@y 
       \int_step_inline:nn \l_@@_split_int 
         { 
-          {
+          \group_begin:
+          \dim_set:Nn \col@sep
+            { \bool_if:NTF \l_@@_tabular_bool \tabcolsep \arraycolsep }
           \pgftransformshift
             {
               \pgfpoint
-                { \l_tmpa_dim + ##1 \l_tmpb_dim - 0.5 \l_tmpb_dim }
+                {
+                  \str_case:on \l_@@_hpos_block_str
+                    {
+                      l { \l_tmpa_dim + ##1 \l_tmpb_dim - \l_tmpb_dim + \col@sep}
+                      c { \l_tmpa_dim + ##1 \l_tmpb_dim - 0.5 \l_tmpb_dim }
+                      r { \l_tmpa_dim + ##1 \l_tmpb_dim - \col@sep }
+                    }
+                }
                 { \l_@@_tmpc_dim }
             }      
+          \pgfset 
+            { 
+              inner~xsep = \c_zero_dim ,
+              inner~ysep = \c_zero_dim 
+            } 
           \pgfnode 
             { rectangle }
-            { base }
+            {
+              \str_case:on \l_@@_hpos_block_str
+                {
+                  c { base }
+                  l { base~west }
+                  r { base~east }
+                }
+            }
             { \seq_item:Nn \l_tmpa_seq { ##1 } } { } { }
-          }
+           \group_end:
         }
       \endpgfpicture
     }
@@ -16377,6 +16418,15 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\@@_msg_new:nn { empty~preamble }
+  {
+    Empty~preamble.\\
+    The~preamble~of~your~\@@_full_name_env:\ is~empty.\\
+    This~error~is~fatal.
+  }
+%    \end{macrocode}
+% 
 %
 %    \begin{macrocode}
 \@@_msg_new:nn { in~first~col }
@@ -16624,7 +16674,7 @@ version 2005/12/01 or later.
     Incompatible~keys.\\
     You~can't~use~the~keys~'hlines',~'vlines'~or~'hvlines'~for~a~
     '\token_to_str:N \Block'~when~the~key~'color'~or~'draw'~is~used.\\
-    Maybe~it~will~possible~in~future~version.\\
+    Maybe~it~will~be~possible~in~a~future~version.\\
     Your~key~will~be~discarded.
   }
 %    \end{macrocode}
