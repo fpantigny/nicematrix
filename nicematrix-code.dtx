@@ -112,7 +112,7 @@ version 2005/12/01 or later.
 % \section{Declaration of the package and packages loaded}
 %
 %
-% The prefix |nicematrix| has been registred for this package.
+% The prefix |nicematrix| has been registered for this package.
 %
 % See: |http://mirrors.ctan.org/macros/latex/contrib/l3kernel/l3prefixes.pdf|
 % 
@@ -320,12 +320,12 @@ version 2005/12/01 or later.
 % \bigskip
 % \section{Collecting options}
 %
-% The following technic allows to create user commands with the ability to put 
+% The following technique allows to create user commands with the ability to put 
 % an arbitrary number of |[|\textsl{list of (key=val)}|]| after the name of the
 % command.
 %
 % \medskip
-% \emph{Exemple} :\par\nobreak
+% \emph{Example} :\par\nobreak
 %
 % |\@@_collect_options:n { \F } [x=a,y=b] [z=c,t=d] { arg }|
 %
@@ -980,7 +980,7 @@ version 2005/12/01 or later.
 \tl_new:N \g_@@_aux_tl
 %    \end{macrocode}  
 %
-% During the second run, if informations concerning the current environment has
+% During the second run, if information concerning the current environment has
 % been found in the |aux| file, the following flag will be raised.
 %    \begin{macrocode}
 \bool_new:N \g_@@_aux_found_bool
@@ -989,7 +989,7 @@ version 2005/12/01 or later.
 % \bigskip
 % In particuler, in that |aux| file, there will be, for each environment of
 % \pkg{nicematrix}, an affectation for the the following sequence that will
-% contain informations about the size of the array.
+% contain information about the size of the array.
 %    \begin{macrocode}
 \seq_new:N \g_@@_size_seq 
 %    \end{macrocode}
@@ -1037,7 +1037,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% We will store in the following sequence informations provided by the
+% We will store in the following sequence information provided by the
 % instructions |\rowlistcolors| in the main array (not in the |\CodeBefore|). 
 %    \begin{macrocode}
 \seq_new:N \g_@@_rowlistcolors_seq
@@ -1121,7 +1121,7 @@ version 2005/12/01 or later.
 % 
 %
 % \bigskip
-% The so-called |\CodeBefore| is splitted in two parts because we want to control
+% The so-called |\CodeBefore| is split in two parts because we want to control
 % the order of execution of some instructions.
 %    \begin{macrocode} 
 \tl_new:N \g_@@_pre_code_before_tl
@@ -1132,7 +1132,7 @@ version 2005/12/01 or later.
 % |\Body|. 
 % 
 % \bigskip
-% The so-called |\CodeAfter| is splitted in two parts because we want to control
+% The so-called |\CodeAfter| is split in two parts because we want to control
 % the order of execution of some instructions.
 %    \begin{macrocode}
 \tl_new:N \g_@@_pre_code_after_tl
@@ -1191,7 +1191,7 @@ version 2005/12/01 or later.
 % If there is at least one |X|-column in the preamble of the array, the
 % following flag will be raised via the |aux| file. The length
 % |l_@@_x_columns_dim| will be the width of |X|-columns of weight $1$ (the width
-% of a column of weigth $n$ will be that dimension multiplied by~$n$). That
+% of a column of weight $n$ will be that dimension multiplied by~$n$). That
 % value is computed after the construction of the array during the first
 % compilation in order to be used in the following run.
 %    \begin{macrocode}
@@ -1221,7 +1221,7 @@ version 2005/12/01 or later.
 %
 % 
 % \bigskip
-% It's possible to use the command |\NotEmpty| to specify explicitely that a
+% It's possible to use the command |\NotEmpty| to specify explicitly that a
 % cell must be considered as non empty by \pkg{nicematrix} (the Tikz nodes are
 % constructed only in the non empty cells).
 %    \begin{macrocode}
@@ -1229,7 +1229,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% |\l_@@_code_before_tl| may contain two types of informations:
+% |\l_@@_code_before_tl| may contain two types of information:
 % \begin{itemize}
 % \item A |code-before| written in the |aux| file by a previous run. When the
 % |aux| file is read, this |code-before| is stored in
@@ -1372,7 +1372,7 @@ version 2005/12/01 or later.
 % The sequence |\g_@@_multicolumn_cells_seq| will contain the list of the cells
 % of the array where a command |\multicolumn{|$n$|}{...}{...}| with $n>1$ is
 % issued. In |\g_@@_multicolumn_sizes_seq|, the ``sizes'' (that is to say the
-% values of $n$) correspondant will be stored. These lists will be used for the
+% values of $n$) correspondent will be stored. These lists will be used for the
 % creation of the ``medium nodes'' (if they are created). 
 %    \begin{macrocode}
 \seq_new:N \g_@@_multicolumn_cells_seq
@@ -1728,7 +1728,7 @@ version 2005/12/01 or later.
 % However, in that case, one must remind that the caption is composed
 % \emph{after} the composition of the box which contains the main tabular
 % (that's mandatory since that caption must be wrapped with a line width equal
-% to the width ot the tabular). However, we want the labels of the successive
+% to the width of the tabular). However, we want the labels of the successive
 % tabular notes in the logical order. That's why:
 % \begin{itemize}
 % \item The number of tabular notes present in the caption will be written on
@@ -1797,7 +1797,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% The following fonction can be redefined by using the key
+% The following function can be redefined by using the key
 % |notes/label-in-tabular|. 
 %    \begin{macrocode}
 \cs_new:Npn \@@_notes_label_in_tabular:n #1 { \textsuperscript { #1 } } 
@@ -2465,7 +2465,7 @@ version 2005/12/01 or later.
     middle .code:n = \tl_put_right:Nn \l_@@_xdots_middle_tl { #1 } , 
 %    \end{macrocode}
 % The key |draw-first|, which is meant to be used only with |\Ddots| and
-% |\Iddots|, will be catched when |\Ddots| or |\Iddots| is used (during the
+% |\Iddots|, will be caught when |\Ddots| or |\Iddots| is used (during the
 % construction of the array and not when we draw the dotted lines).
 %    \begin{macrocode}
     draw-first .code:n = \prg_do_nothing: ,
@@ -3116,7 +3116,7 @@ version 2005/12/01 or later.
 %
 % \interitem
 % The following code is used in each cell of the array. It actualises quantities
-% that, at the end of the array, will give informations about the vertical
+% that, at the end of the array, will give information about the vertical
 % dimension of the two first rows and the two last rows. If the user uses the
 % |last-row|, some lines of code will be dynamically added to this command.
 %    \begin{macrocode}
@@ -3245,7 +3245,7 @@ version 2005/12/01 or later.
 % cell is empty when we search the extremities of a dotted line.
 % \end{itemize}
 % However, it's very difficult to determine whether a cell is empty. Up to now
-% we use the following technic:
+% we use the following technique:
 % \begin{itemize}
 % \item for the columns of type |p|, |m|, |b|, |V| (of \pkg{varwidth}) or |X|,
 % we test whether the cell is syntactically empty with |\@@_test_if_empty:| and
@@ -3292,7 +3292,7 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % The following variant of |\@@_cell_end:| is only for the columns of type
-% |w{s}{...}| or |W{s}{...}| (which use the horizontal alignement key |s| of
+% |w{s}{...}| or |W{s}{...}| (which use the horizontal alignment key |s| of
 % |\makebox|). 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cell_end_for_w_s:
@@ -3374,7 +3374,7 @@ version 2005/12/01 or later.
                 \pgfsys@markposition 
                   { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol - NW } 
 %    \end{macrocode}
-% I don't know why the following adjustement is needed when the compilation is
+% I don't know why the following adjustment is needed when the compilation is
 % done with XeLaTeX or with the classical way |latex|, |divps|, |ps2pdf| (or
 % Adobe Distiller). However, it seems to work.
 %    \begin{macrocode}
@@ -3568,7 +3568,7 @@ version 2005/12/01 or later.
         \@@_create_row_node:
 %    \end{macrocode}
 % We don't draw now the rules of the key |hlines| (or |hvlines|) but we reserve the
-% vertical space for theses rules (the rules will be drawn by \textsc{pgf}).
+% vertical space for these rules (the rules will be drawn by \textsc{pgf}).
 %    \begin{macrocode}
         \tl_if_empty:NF \l_@@_hlines_clist 
           {
@@ -3867,7 +3867,7 @@ version 2005/12/01 or later.
 % The sequence |\g_@@_multicolumn_cells_seq| will contain the list of the cells
 % of the array where a command |\multicolumn{|$n$|}{...}{...}| with $n>1$ is
 % issued. In |\g_@@_multicolumn_sizes_seq|, the ``sizes'' (that is to say the
-% values of $n$) correspondant will be stored. These lists will be used for the
+% values of $n$) correspondent will be stored. These lists will be used for the
 % creation of the ``medium nodes'' (if they are created). 
 %    \begin{macrocode}
     \seq_gclear:N \g_@@_multicolumn_cells_seq
@@ -4006,7 +4006,7 @@ version 2005/12/01 or later.
 % \bigskip
 % The command |\create_row_node:| will create a row-node (and not a row of
 % nodes!). However, at the end of the array we construct a ``false row'' (for
-% the col-nodes) and it interfers with the construction of the last row-node
+% the col-nodes) and it interferes with the construction of the last row-node
 % of the array. We don't want to create such row-node twice (to avaid warnings
 % or, maybe, errors). That's why the command |\@@_create_row_node:| will use the
 % following counter to avoid such construction.
@@ -4100,7 +4100,7 @@ version 2005/12/01 or later.
 % \section{The \textbackslash CodeBefore}
 % 
 % The following command will be executed if the |\CodeBefore| has to be actually
-% executed (that commmand will be used only once and is present alone only for legibility).
+% executed (that command will be used only once and is present alone only for legibility).
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_pre_code_before:
   {
@@ -4119,7 +4119,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %
-% Now, we will create all the |col| nodes and |row| nodes with the informations
+% Now, we will create all the |col| nodes and |row| nodes with the information
 % written in the |aux| file. You use the technique described in the page~1229 of
 % |pgfmanual.pdf|, version~3.1.4b.
 %    \begin{macrocode}
@@ -4495,7 +4495,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% We load all the informations written in the |aux| file during previous
+% We load all the information written in the |aux| file during previous
 % compilations corresponding to the current environment.
 %    \begin{macrocode}
     \tl_if_exist:cTF { c_@@ _ \int_use:N \g_@@_env_int _ tl }
@@ -4773,7 +4773,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% We write on the |aux| file all the informations corresponding to the
+% We write on the |aux| file all the information corresponding to the
 % current environment.
 %    \begin{macrocode}
     \iow_now:Nn \@mainaux { \ExplSyntaxOn }
@@ -5322,7 +5322,7 @@ version 2005/12/01 or later.
 %
 % |#7| is the type of environment: |minipage| or |varwidth|.
 %
-% |#8| is the letter |c| or |r| or |l| which is the basic specificier of column
+% |#8| is the letter |c| or |r| or |l| which is the basic specifier of column
 % which is used \emph{in fine}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_ii_v:nnnnnnnn #1 #2 #3 #4 #5 #6 #7 #8
@@ -5853,7 +5853,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % The token |\NC@find| is at the head of the definition of the columns type done
-% by |\newcolumntype|. We wan't that token to be no-op here.
+% by |\newcolumntype|. We want that token to be no-op here.
 %    \begin{macrocode}
 \cs_new:cpn { @@ _ \token_to_str:N \NC@find } #1 { \@@_rec_preamble:n }
 %    \end{macrocode}
@@ -6774,7 +6774,7 @@ version 2005/12/01 or later.
 % Now, you extract the |\CodeAfter| of the body of the environment. Maybe, there
 % is no command |\CodeAfter| in the body. That's why you put a marker
 % |\CodeAfter| after |#1|. If there is yet a |\CodeAfter| in |#1|, this second
-% (or third...) |\CodeAfter| will be catched in the value of
+% (or third...) |\CodeAfter| will be caught in the value of
 % |\g_nicematrix_code_after_tl|. That doesn't matter because |\CodeAfter| will
 % be set to \textsl{no-op} before the execution of
 % |\g_nicematrix_code_after_tl|.
@@ -6803,7 +6803,7 @@ version 2005/12/01 or later.
     \tl_gput_right:Nn \g_nicematrix_code_after_tl { #2 } 
 %    \end{macrocode}
 % The body of the array, which is stored in the argument |#1|, is now
-% splitted into items (and \emph{not} tokens).
+% split into items (and \emph{not} tokens).
 %    \begin{macrocode}
     \seq_clear_new:N \l_@@_rows_seq
 %    \end{macrocode}
@@ -7082,7 +7082,7 @@ version 2005/12/01 or later.
         \omit
 %    \end{macrocode}
 % The two following lines have been added on 2021-12-15 to solve a bug
-% mentionned by Joao Luis Soares by mail.
+% mentioned by Joao Luis Soares by mail.
 %    \begin{macrocode}
         \int_if_zero:nT \g_@@_col_total_int 
           { \skip_gset:Nn \g_tmpa_skip { 0 pt~plus 1 fill } }
@@ -8119,8 +8119,8 @@ version 2005/12/01 or later.
     \int_set:Nn \l_@@_final_i_int { #1 }
     \int_set:Nn \l_@@_final_j_int { #2 }
 %    \end{macrocode}
-% We will do two loops: one when determinating the initial cell and the other
-% when determinating the final cell. The boolean |\l_@@_stop_loop_bool| will be
+% We will do two loops: one when determining the initial cell and the other
+% when determining the final cell. The boolean |\l_@@_stop_loop_bool| will be
 % used to control these loops. In the first loop, we search the ``final''
 % extremity of the line.
 %    \begin{macrocode}
@@ -8315,7 +8315,7 @@ version 2005/12/01 or later.
 % level of an environment (such as |{pNiceMatrix}|, etc.), only the so called
 % ``closed extremities'' will be shortened by that key. The following command
 % will be used \emph{after} the detection of the extremities of a dotted line
-% (hence at a time when we known wheter the extremities are closed or open) but
+% (hence at a time when we known whether the extremities are closed or open) but
 % before the analyse of the keys of the individual command |\Cdots|, |\Vdots|.
 % Hence, the keys |shorten|, |shorten-start| and |shorten-end| of that
 % individual command will be applied.
@@ -8330,7 +8330,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \medskip
-% The following commmand (\emph{when it will be written}) will set the four
+% The following command (\emph{when it will be written}) will set the four
 % counters |\l_@@_row_min_int|, |\l_@@_row_max_int|, |\l_@@_col_min_int| and
 % |\l_@@_col_max_int| to the intersections of the sub-matrices which contains
 % the cell of row |#1| and column |#2|. As of now, it's only the whole array
@@ -9091,7 +9091,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % The following Tikz styles are for the three labels (set by the symbols |_|,
-% |^| and |=|) of a continous line with a non-standard style.
+% |^| and |=|) of a continuous line with a non-standard style.
 %    \begin{macrocode}
 \hook_gput_code:nnn { begindocument } { . }
   {
@@ -9436,7 +9436,7 @@ version 2005/12/01 or later.
 % 
 % \medskip 
 % The syntax of these commands uses the character |_| as embellishment and
-% thats' why we have to insert a character |_| in the \emph{arg spec} of these
+% that's why we have to insert a character |_| in the \emph{arg spec} of these
 % commands. However, we don't know the future catcode of |_| in the main
 % document (maybe the user will use \pkg{underscore}, and, in that case, the
 % catcode is $13$ because \pkg{underscore} activates |_|). That's why these
@@ -9646,7 +9646,7 @@ version 2005/12/01 or later.
     \cs_set_nopar:Npn \l_@@_argspec_tl { m m O { } E { _ ^ : } { { } { } { } } }
     \tl_set_rescan:Nno \l_@@_argspec_tl { } \l_@@_argspec_tl
 %    \end{macrocode}
-% We don't put |!| before the last optionnal argument for homogeneity with
+% We don't put |!| before the last optional argument for homogeneity with
 % |\Cdots|, etc. which have only one optional argument.
 %    \begin{macrocode}
     \cs_new_protected:Npn \@@_Hdotsfor_i 
@@ -10135,7 +10135,7 @@ version 2005/12/01 or later.
             \tl_gput_right:Nn \exp_not:N \g_@@_cell_after_hook_tl 
               { 
 %    \end{macrocode}
-% It's not possible to chanage the following code by using |\dim_set_eq:NN|
+% It's not possible to change the following code by using |\dim_set_eq:NN|
 % (because of expansion).
 %    \begin{macrocode}
                 \dim_set:Nn \l_@@_cell_space_top_limit_dim 
@@ -10229,7 +10229,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_add_to_colors_seq:nn #1 #2
   {
 %    \end{macrocode}
-% Firt, we look for the number of the color and, if it's found, we store it in
+% First, we look for the number of the color and, if it's found, we store it in
 % |\l_tmpa_int|. If the color is not present in |\l_@@_colors_seq|,
 % |\l_tmpa_int| will remain equal to $0$.
 %    \begin{macrocode}
@@ -10555,7 +10555,7 @@ version 2005/12/01 or later.
 %
 % Here is an example: |\rowcolors{1}{blue!10}{}[respect-blocks]|.
 %
-% In \pkg{nicematrix}, the commmand |\@@_rowcolors| appears as a special case of
+% In \pkg{nicematrix}, the command |\@@_rowcolors| appears as a special case of
 % |\@@_rowlistcolors|. 
 % 
 % |#1| (optional) is the color space;
@@ -11247,7 +11247,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% It's possible that the rule won't be drawn continuously from |start| ot |end|
+% It's possible that the rule won't be drawn continuously from |start| to |end|
 % because of the blocks (created with the command |\Block|), the virtual blocks
 % (created by |\Cdots|, etc.), etc. That's why an analyse is done and the rule
 % is cut in small rules which will actually be drawn. The small continuous rules
@@ -11289,7 +11289,7 @@ version 2005/12/01 or later.
     total-width .dim_set:N = \l_@@_rule_width_dim ,
     total-width .value_required:n = true ,
     width .meta:n = { total-width = #1 } ,
-    unknown .code:n = \@@_error:n { Unknow~key~for~RulesBis }
+    unknown .code:n = \@@_error:n { Unknown~key~for~RulesBis }
   }
 %    \end{macrocode}
 % 
@@ -12779,7 +12779,7 @@ version 2005/12/01 or later.
 %
 %
 % \bigskip
-% For ``large nodes'', the exterior rows and columns don't interfer. That's why
+% For ``large nodes'', the exterior rows and columns don't interfere. That's why
 % the loop over the columns will start at 1 and stop at $|\c@jCol|$ (and not
 % |\g_@@_col_total_int|). Idem for the rows.
 %     \begin{macrocode}
@@ -12873,7 +12873,7 @@ version 2005/12/01 or later.
 % Now, we create the nodes for the cells of the |\multicolumn|. We recall that
 % we have stored in |\g_@@_multicolumn_cells_seq| the list of the cells where a
 % |\multicolumn{|$n$|}{...}{...}| with $n$>1 was issued and in
-% |\g_@@_multicolumn_sizes_seq| the correspondant values of $n$. 
+% |\g_@@_multicolumn_sizes_seq| the correspondent values of $n$. 
 %    \begin{macrocode}
       \seq_map_pairwise_function:NNN 
       \g_@@_multicolumn_cells_seq 
@@ -13383,7 +13383,7 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % Despite its name the following command rotates the box of the block \emph{but
-% also does vertical adjustement of the baseline of the block}.
+% also does vertical adjustment of the baseline of the block}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_rotate_box_of_block:
   {
@@ -13697,7 +13697,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 %
-% If the content of the block contains |&|, we will have a special treatement
+% If the content of the block contains |&|, we will have a special treatment
 % (since the cell must be divided in several sub-cells).
 %    \begin{macrocode}
     \tl_if_in:nnT { #6 } { & } { \bool_set_true:N \l_@@_ampersand_bool }
@@ -14780,7 +14780,7 @@ version 2005/12/01 or later.
 %
 % The command |\@@_if_row_less:nn| is fully expandable and, thus, the
 % instructions will be inserted in the |\g_@@_pre_code_after_tl| only if
-% |\diagbox| is used in a row which is the scope of that chunck of instructions.
+% |\diagbox| is used in a row which is the scope of that chunk of instructions.
 %    \begin{macrocode}
           { \g_@@_row_style_tl \exp_not:n { #1 } } 
           { \g_@@_row_style_tl \exp_not:n { #2 } }
@@ -14945,7 +14945,7 @@ version 2005/12/01 or later.
 % 
 % \smallskip
 % The first argument is the type of delimiter (|(|, |[|, |\{|, |)|, |]| or
-% |\}|). The second argument is the number of colummn. The third argument is a
+% |\}|). The second argument is the number of column. The third argument is a
 % boolean equal to |\c_true_bool| (resp. |\c_false_true|) when the delimiter
 % must be put on the left (resp. right) side.
 %
@@ -15476,7 +15476,7 @@ version 2005/12/01 or later.
 % In the key |code| of the command |\SubMatrix| there may be Tikz instructions.
 % We want that, in these instructions, the $i$ and $j$ in specifications of
 % nodes of the forms $i$|-|$j$, |row-|$i$, |col-|$j$ and $i$\verb+-|+$j$ refer
-% to the number of row and columm \emph{relative} of the current |\SubMatrix|.
+% to the number of row and column \emph{relative} of the current |\SubMatrix|.
 % That's why we will patch (locally in the |\SubMatrix|) the command
 % |\pgfpointanchor|. 
 %    \begin{macrocode}
@@ -16145,7 +16145,7 @@ version 2005/12/01 or later.
 %
 % \medskip
 % The boolean |\g_@@_footnote_bool| will indicate if the option |footnote| is
-% used, but quicky, it will also be set to |true| if the option |footnotehyper|
+% used, but quickly, it will also be set to |true| if the option |footnotehyper|
 % is used.
 %    \begin{macrocode}
 \bool_new:N \g_@@_footnote_bool
@@ -17148,9 +17148,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 %    \begin{macrocode}
-\@@_msg_new:nnn { Unknow~key~for~RulesBis }
+\@@_msg_new:nnn { Unknown~key~for~RulesBis }
   {
-    Unkown~key.\\
+    Unknown~key.\\
     Your~key~'\l_keys_key_str'~is~unknown~for~a~rule.\\
     \c_@@_available_keys_str
   }
