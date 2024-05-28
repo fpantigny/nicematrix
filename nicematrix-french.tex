@@ -516,10 +516,11 @@ Si cet argument est laissé blanc, la valeur par défaut est |1-1|. Si le nombre
 de rangées n'est pas indiqué, ou bien est égal à |*|, le bloc s'étend jusqu'à la
 dernière rangée (idem pour les colonnes).
 
-\item Le deuxième argument est le contenu du bloc. On peut utiliser |\\| dans ce
-contenu pour avoir un contenu sur plusieurs lignes. Dans |{NiceTabular}|,
-|{NiceTabular*}| et |{NiceTabularX}|, le contenu est composé en mode texte
-tandis que, dans les autres environnements, il est composé en mode mathématique.
+\item Le deuxième argument est le contenu du bloc. 
+
+Dans |{NiceTabular}|, |{NiceTabular*}| et |{NiceTabularX}|, le contenu est
+composé en mode texte tandis que, dans les autres environnements, il est composé
+en mode mathématique.
 \end{itemize}
 
 \interitem
@@ -641,12 +642,12 @@ options la valeur de cette clé |tikz| (qui doit donc être une liste de clés T
 applicables à un chemin de TikZ). Pour des exemples d'utilisation de cette clé
 |tikz|, voir p.~\pageref{tikz-key-examples}.
 
-\colorbox{yellow!50}{\textbf{Nouveau 6.24}}\enskip En fait, dans la liste des
-clés fournies à |tikz|, on peut mettre une clé \Definition{offset}. Cette clé
-n'est pas fournie par TikZ mais par \pkg{nicematrix}. Elle réduit le rectangle
-correspondant au bloc par une marge (horizontalement et verticalement) égale à
-la valeur (passée à |offset|). C'est ce rectangle réduit qui sera le chemin
-exécuté par TikZ avec comme options les autres clés passées à la clé |tikz|.
+En fait, dans la liste des clés fournies à |tikz|, on peut mettre une clé
+\Definition{offset}. Cette clé n'est pas fournie par TikZ mais par
+\pkg{nicematrix}. Elle réduit le rectangle correspondant au bloc par une marge
+(horizontalement et verticalement) égale à la valeur (passée à |offset|). C'est
+ce rectangle réduit qui sera le chemin exécuté par TikZ avec comme options les
+autres clés passées à la clé |tikz|.
 \end{itemize}
 
 
@@ -725,10 +726,11 @@ Dans les colonnes à largeur fixée (|p{...}|, |b{...}|, |m{...}|, |w{...}{...}|
 |W{...}{...}|, |V{...}| et~|X|), le contenu du bloc est mis en forme comme un
 paragraphe de cette largeur.
 
-\item La spécification d'alignement horizontal donnée par le type de
-colonne (|c|, |r| ou |l|) est prise en compte pour le bloc (mais le bloc peut
-avoir sa propre spécification d'alignement horizontal :
-cf.~\ref{horizontal-bloc} p.~\pageref{horizontal-bloc}). 
+\item La spécification d'alignement horizontal donnée par le type de colonne
+(|c|, |r| ou |l|) est prise en compte pour le bloc. Pour un bloc dans une
+colonne de type |p{...}| (sans option à |p|), c'est un alignement |c| qui est
+retenu. Le bloc peut bien sûr avoir sa propre spécification d'alignement
+horizontal : cf.~\ref{horizontal-bloc} p.~\pageref{horizontal-bloc}.
 
 \item Les spécifications de fontes imposées à une colonne via la construction
 |>{...}| dans le préambule du tableau sont prises en compte pour les
@@ -937,6 +939,16 @@ Rang & \Block[C]{1-3}{Premier groupe} & & & \Block{1-3}{Deuxième groupe} \\
 \end{NiceTabular}
 \end{center}
 
+\bigskip
+\colorbox{yellow!50}{\bfseries Nouveau 6.28}\par\nobreak
+
+\smallskip
+La commande |\Block| accepte aussi la clé |p|. Avec cette clé, le contenu du
+bloc est composé comme un paragraphe (de manière similaire à une colonne
+standard de type |p|). Cette clé peut s'utiliser en conjonction avec les clés
+|l|, |c| ou |r| et, alors, le paragraphe est composé avec |\raggedright|,
+|\centering| ou |\raggedleft|. Avec la clé |j|, le paragraphe est composé de
+manière justifiée.
 
 
 \subsection{Positionnement vertical du contenu des blocs}
@@ -1065,6 +1077,67 @@ text & text \\
 \end{NiceTabular}
 
 \end{scope}
+
+
+\subsection{\textbackslash\textbackslash\ et \& dans les blocs}
+
+\index{ampersand-in-blocks}
+
+On peut utiliser |\\| dans un bloc pour composer du texte sur plusieurs lignes.
+
+\vspace{1cm}
+\colorbox{yellow!50}{\bfseries Nouveau 6.28}\par\nobreak
+
+Quand la clé |ampersand-in-blocks| est activée, il est possible d'utiliser |&|
+pour diviser horizontalement le contenu du bloc en plusieurs sous-cases de même taille.
+
+\medskip
+\begin{Code}[width=85mm]
+\begin{NiceTabular}{ll}%
+   [hvlines,ampersand-in-blocks]
+  & les cinq premiers entiers naturels \\
+3 & \Block{un&deux&trois} \\
+4 & \Block{un&deux&trois& quatre} \\
+5 & \Block{un&deux&trois&quatre&cinq} \\
+\end{NiceTabular}
+\end{Code}
+%
+\begin{NiceTabular}{ll}%
+   [hvlines,ampersand-in-blocks]
+  & les cinq premiers entiers naturels \\ 
+3 & \Block{}{un & deux & trois} \\
+4 & \Block{}{un& deux & trois & quatre} \\
+5 & \Block{}{un & deux & trois & quatre & cinq} \\
+\end{NiceTabular}
+
+\medskip
+Comme on le voit, le bloc (qui était ici mono-case) a été divisé en sous-cases
+de même taille. Dans le cas présent, on aurait peut-être préféré le codage
+suivant :
+
+\medskip
+\begin{Code}[width=85mm]
+\begin{NiceTabular}{lccccc}%
+   [hvlines,ampersand-in-blocks]
+  & \Block{1-5}{les cinq premiers 
+                 entiers naturels} \\ 
+3 & \Block{1-5}{un & deux & trois} \\
+4 & \Block{1-5}{un& deux & trois & quatre} \\
+5 & un & deux & trois & quatre & cinq \\
+\end{NiceTabular}
+\end{Code}
+%
+\begin{NiceTabular}{lccccc}%
+   [hvlines,ampersand-in-blocks]
+  & \Block{1-5}{les cinq premiers entiers naturels} \\ 
+3 & \Block{1-5}{un & deux & trois} \\
+4 & \Block{1-5}{un& deux & trois & quatre} \\
+5 & un & deux & trois & quatre & cinq \\
+\end{NiceTabular}
+
+Dans ce codage, il s'agit de blocs de taille |1-5| qui sont coupés en trois et
+quatre sous-blocs.
+
 
 \index{Blocs@\textbf{Blocs dans les tableaux}|)}
 
@@ -2575,12 +2648,11 @@ Dupont & Chantal & 15 janvier 1998 \\
 \end{center}
 
 \bigskip
-\colorbox{yellow!50}{\textbf{Nouveau 6.25}}\enskip Chaque utilisation de
-|\rowlistcolors| (et de |\rowcolors| qui en est un cas particulier) met un
-terme aux éventuels schémas\footnote{On a écrit \emph{schémas} au pluriel car on
-  peut avoir plusieurs schémas en cours s'ils portent sur des colonnes
-  différentes.} de coloriage en cours qui auraient été spécifiés par une
-commande |\rowlistcolors| précédente.
+Chaque utilisation de |\rowlistcolors| (et de |\rowcolors| qui en est un cas
+particulier) met un terme aux éventuels schémas\footnote{On a écrit
+  \emph{schémas} au pluriel car on peut avoir plusieurs schémas en cours s'ils
+  portent sur des colonnes différentes.} de coloriage en cours qui auraient été
+spécifiés par une commande |\rowlistcolors| précédente.
 
 En particulier, on peut engager un coloriage des rangées avec
 |\rowlistcolors{...}| et l'arrêter par un |\rowlistcolors{}| avec argument vide.
@@ -2615,10 +2687,9 @@ sept \\
 
 \index{nocolor}
 
-\colorbox{yellow!50}{\textbf{Nouveau 6.26}}\enskip L'extension \pkg{nicematrix}
-propose la couleur spéciale |nocolor| utilisable dans toutes les commandes de
-coloriage fournies par \pkg{nicematrix} (dans le |\CodeBefore| ou bien dans le
-tableau proprement dit).
+L'extension \pkg{nicematrix} propose la couleur spéciale |nocolor| utilisable
+dans toutes les commandes de coloriage fournies par \pkg{nicematrix} (dans le
+|\CodeBefore| ou bien dans le tableau proprement dit).
 
 Les cases marquées par cette couleur ne seront pas coloriées, quelles que soient
 les autres commandes de coloriage qui auraient pu s'appliquer à ces cases. 
@@ -2815,7 +2886,7 @@ $\begin{array}{c}
  \end{bNiceMatrix} \\ \\
 \begin{bNiceMatrix}
  1   & 1245345 \\  345 & 2
-\end{bNiceMatrix}
+\end{bNiceMatrix} \\
 \end{array}$
 \emph{\end{NiceMatrixBlock}}
 \end{Code}
@@ -2826,8 +2897,8 @@ $\begin{array}{c}
  \end{bNiceMatrix} \\ \\
 \begin{bNiceMatrix}
  1   & 1245345 \\  345 & 2
-\end{bNiceMatrix}
-\end{array}$
+\end{bNiceMatrix} \\
+\end{array}$ 
 \end{NiceMatrixBlock}
 
 
@@ -4339,16 +4410,16 @@ $\begin{pNiceMatrix}
 \index{empty (clé de \texttt{\textbackslash TikzEveryCell})}
 \index{non empty (clé de \texttt{\textbackslash TikzEveryCell})}
 
-\colorbox{yellow!50}{\textbf{Nouveau 6.24}}\enskip La commande |\TikzEveryCell|
-exécute avec TikZ le chemin rectangulaire qui correspond à chaque case du
-tableau, avec comme paramètres TikZ l'argument de |\TikzEveryCell|. Cet argument
-doit être une liste de couples \textsl{clé=valeur} applicables à un chemin TikZ.
-En fait, cette commande s'applique à chaque case du tableau, exceptées celles
-situées dans les rangées et colonnes extérieures (cf.~p.~\pageref{exterior}) et
-celles situées dans les coins vides (quand la clé |corners| est utilisée:
-cf.~p.~\pageref{corners}). Elle s'applique en fait aussi à chaque bloc (sauf
-ceux qui ont la clé |transparent|) et ne s'applique pas aux cases individuelles
-situées dans ces blocs.
+La commande |\TikzEveryCell| exécute avec TikZ le chemin rectangulaire qui
+correspond à chaque case du tableau, avec comme paramètres TikZ l'argument de
+|\TikzEveryCell|. Cet argument doit être une liste de couples
+\textsl{clé=valeur} applicables à un chemin TikZ. En fait, cette commande
+s'applique à chaque case du tableau, exceptées celles situées dans les rangées
+et colonnes extérieures (cf.~p.~\pageref{exterior}) et celles situées dans les
+coins vides (quand la clé |corners| est utilisée: cf.~p.~\pageref{corners}).
+Elle s'applique en fait aussi à chaque bloc (sauf ceux qui ont la clé
+|transparent|) et ne s'applique pas aux cases individuelles situées dans ces
+blocs.
 
 \medskip
 En fait, dans la liste des clés passée en argument on peut mettre une clé
@@ -5257,12 +5328,11 @@ dans les cases du tableau.\footnote{La raison en est que lorsque l'option |light
 
 \medskip
 \index{light-syntax-expanded}
-\colorbox{yellow!50}{\textbf{Nouveau 6.27}}\enskip La clé
-|light-syntax-expanded| a le même comportement que la clé |light-syntax| mais
-avec cette différence que le corps de l'environnement est complètement développé
-(au sens de TeX\footnote{Plus précisément, il s'agit d'une expansion de type |e|
-de L3.}) avant découpe en lignes (mais après l'extraction de l'éventuel
-|\CodeAfter|).
+La clé |light-syntax-expanded| a le même comportement que la clé |light-syntax|
+mais avec cette différence que le corps de l'environnement est complètement
+développé (au sens de TeX\footnote{Plus précisément, il s'agit d'une expansion
+  de type |e| de L3.}) avant découpe en lignes (mais après l'extraction de
+l'éventuel |\CodeAfter|).
 
 
 \subsection{Couleur des délimiteurs}
@@ -5822,9 +5892,14 @@ L'extension \pkg{nicematrix} crée un nœud PGF-TikZ nommé simplement $i$ (pré
 du préfixe habituel) à l'intersection du filet horizontal de numéro $i$ et du
 filet vertical de numéro~$i$ (ou plutôt la position potentielle de ces filets
 car ils ne sont peut-être pas tracés). Le dernier nœud a aussi un alias nommé
-simplement |last|. Il existe aussi un nœud nommé $i$|.5| à mi-chemin entre le
-nœud $i$ et le nœud $i+1$.
+simplement |last|. 
 
+\smallskip
+\colorbox{yellow!50}{\textbf{Modification 6.28}}\enskip Il existe aussi des nœuds nommés
+$i$|.1|, $i$|.2|, ... , $i$|.9| intermédiaires entre le nœud~$i$ et le
+nœud~$i+1$ (avant la version 6.28, seul le nœud $i$|.5| existait).
+
+\smallskip
 Ces nœuds sont accessibles dans le
 |\CodeAfter| mais aussi dans le |\CodeBefore|.
 

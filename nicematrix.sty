@@ -31,6 +31,8 @@
 \RequirePackage { amsmath }
 \RequirePackage { array }
 \bool_const:Nn \c__nicematrix_tagging_array_bool { \cs_if_exist_p:N \ar@ialign }
+\bool_const:Nn \c__nicematrix_testphase_table_bool
+  { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool }
 \cs_new_protected:Npn \__nicematrix_error:n { \msg_error:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_warning:n { \msg_warning:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_error:nn { \msg_error:nnn { nicematrix } }
@@ -768,6 +770,7 @@
 \bool_new:N \l__nicematrix_light_syntax_expanded_bool
 \tl_new:N \l__nicematrix_baseline_tl
 \tl_set:Nn \l__nicematrix_baseline_tl { c }
+\bool_new:N \l__nicematrix_amp_in_blocks_bool
 \bool_new:N \l__nicematrix_exterior_arraycolsep_bool
 \bool_new:N \l__nicematrix_parallelize_diags_bool
 \bool_set_true:N \l__nicematrix_parallelize_diags_bool
@@ -847,6 +850,8 @@
   }
 \keys_define:nn { NiceMatrix / Global }
   {
+    ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
+    ampersand-in-blocks .default:n = true ,
     no-cell-nodes .code:n =
       \cs_set_protected:Npn \__nicematrix_node_for_cell:
         { \box_use_drop:N \l__nicematrix_cell_box } ,
@@ -1492,7 +1497,7 @@
 \cs_new:Npn \__nicematrix_everycr: { \noalign { \__nicematrix_everycr_i: } }
 \cs_new_protected:Npn \__nicematrix_everycr_i:
   {
-    \bool_if:NT \c__nicematrix_tagging_array_bool
+    \bool_if:NT \c__nicematrix_testphase_table_bool
       {
         \tbl_if_row_was_started:T { \UseTaggingSocket { tbl / row / end } }
         \tbl_update_cell_data_for_next_row:
@@ -1540,21 +1545,21 @@
       }
   }
 \cs_new_protected:Npn \__nicematrix_redefine_everycr: { \everycr { \__nicematrix_everycr: } }
-\hook_gput_code:nnn { begindocument } { . }
-  {
-    \IfPackageLoadedTF { colortbl }
-      {
-        \cs_set_protected:Npn \__nicematrix_redefine_everycr:
-          {
-            \CT@everycr
-              {
-                \noalign { \cs_gset_eq:NN \CT@row@color \prg_do_nothing: }
-                \__nicematrix_everycr:
-              }
-          }
-      }
-      { }
-  }
+   \hook_gput_code:nnn { begindocument } { . }
+     {
+       \IfPackageLoadedTF { colortbl }
+         {
+           \cs_set_protected:Npn \__nicematrix_redefine_everycr:
+             {
+               \CT@everycr
+                 {
+                   \noalign { \cs_gset_eq:NN \CT@row@color \prg_do_nothing: }
+                   \__nicematrix_everycr:
+                 }
+             }
+         }
+         { }
+    }
 \hook_gput_code:nnn { begindocument } { . }
   {
     \IfPackageLoadedTF { booktabs }
@@ -1599,7 +1604,7 @@
       {
         \cs_set_nopar:Npn \ar@ialign
           {
-            \tbl_init_cell_data_for_table:
+            \bool_if:NT \c__nicematrix_testphase_table_bool \tbl_init_cell_data_for_table:
             \__nicematrix_redefine_everycr:
             \dim_zero:N \tabskip
             \__nicematrix_some_initialization:
@@ -1733,7 +1738,7 @@
         \dim_gset_eq:NN \l__nicematrix_right_delim_dim \l__nicematrix_left_delim_dim
       }
     \hbox_set:Nw \l__nicematrix_the_array_box
-    \bool_if:NT \c__nicematrix_tagging_array_bool
+    \bool_if:NT \c__nicematrix_testphase_table_bool
       { \UseTaggingSocket { tbl / hmode / begin } }
     \skip_horizontal:N \l__nicematrix_left_margin_dim
     \skip_horizontal:N \l__nicematrix_extra_left_margin_dim
@@ -1982,7 +1987,7 @@
       { \keys_set:nn { NiceMatrix / NiceArray } }
     { #3 , #5 }
     \__nicematrix_set_CT@arc@:o \l__nicematrix_rules_color_tl
-    \IfBooleanTF { #6 } \__nicematrix_CodeBefore_Body:w \__nicematrix_pre_array:
+    \bool_if:nTF { #6 } \__nicematrix_CodeBefore_Body:w \__nicematrix_pre_array:
   }
   {
     \bool_if:NTF \l__nicematrix_light_syntax_bool
@@ -1991,6 +1996,18 @@
     \c_math_toggle_token
     \skip_horizontal:N \l__nicematrix_right_margin_dim
     \skip_horizontal:N \l__nicematrix_extra_right_margin_dim
+
+    % % awful workaround
+    \int_compare:nNnT \g__nicematrix_col_total_int = \c_one_int
+      {
+        \dim_compare:nNnT \l__nicematrix_columns_width_dim > \c_zero_dim
+          {
+            \skip_horizontal:N - \l__nicematrix_columns_width_dim
+            \bool_if:NTF \l__nicematrix_tabular_bool
+              { \skip_horizontal:n { - 2 \tabcolsep } }
+              { \skip_horizontal:n { - 2 \arraycolsep } }
+          }
+      }
     \hbox_set_end:
     \bool_if:NT \l__nicematrix_width_used_bool
       {
@@ -2432,7 +2449,7 @@
       {
         > {
             \dim_set:Nn \l__nicematrix_col_width_dim { #2 }
-            \bool_if:NT \c__nicematrix_tagging_array_bool
+            \bool_if:NT \c__nicematrix_testphase_table_bool
               { \tag_struct_begin:n { tag = Div } }
             \__nicematrix_cell_begin:w
             \use:c { #7 } [ #1 ] { #2 }
@@ -2441,7 +2458,7 @@
                 \vrule height \box_ht:N \@arstrutbox width \c_zero_dim
                 \everypar { }
               }
-            \bool_if:NT \c__nicematrix_tagging_array_bool \tagpdfparaOn
+            \bool_if:NT \c__nicematrix_testphase_table_bool \tagpdfparaOn
             #3
             \g__nicematrix_row_style_tl
             \arraybackslash
@@ -2454,7 +2471,7 @@
             \use:c { end #7 }
             #4
             \__nicematrix_cell_end:
-            \bool_if:NT \c__nicematrix_tagging_array_bool \tag_struct_end:
+            \bool_if:NT \c__nicematrix_testphase_table_bool \tag_struct_end:
           }
       }
   }
@@ -2835,7 +2852,7 @@
     \multispan { #1 }
     \cs_set_eq:NN \__nicematrix_update_max_cell_width: \prg_do_nothing:
     \begingroup
-    \bool_if:NT \c__nicematrix_tagging_array_bool
+    \bool_if:NT \c__nicematrix_testphase_table_bool
       { \tbl_update_multicolumn_cell_data:n { #1 } }
     \cs_set_nopar:Npn \@addamp
       { \legacy_if:nTF { @firstamp } { \@firstampfalse } { \@preamerr 5 } }
@@ -2844,7 +2861,7 @@
     \exp_args:No \@mkpream \g__nicematrix_preamble_tl
     \@addtopreamble \@empty
     \endgroup
-    \bool_if:NT \c__nicematrix_tagging_array_bool
+    \bool_if:NT \c__nicematrix_testphase_table_bool
       { \UseTaggingSocket { tbl / colspan } { #1 } }
     \int_compare:nNnT { #1 } > \c_one_int
       {
@@ -3470,7 +3487,7 @@
           { \skip_gset:Nn \g_tmpa_skip { 0 pt~plus 1 fill } }
         \skip_horizontal:N \g_tmpa_skip
         \int_gincr:N \g_tmpa_int
-        \bool_lazy_any:nF % modified 2023/12/13
+        \bool_lazy_any:nF
           {
             \g__nicematrix_delims_bool
             \l__nicematrix_tabular_bool
@@ -3540,7 +3557,7 @@
             \endpgfpicture
           }
       }
-    \cr
+  % \cr
   }
 \tl_const:Nn \c__nicematrix_preamble_first_col_tl
   {
@@ -3750,7 +3767,7 @@
   }
   {
     \endNiceArray
-    \bool_if:NT \c__nicematrix_tagging_array_bool
+    \bool_if:NT \c__nicematrix_testphase_table_bool
       { \UseTaggingSocket { tbl / hmode / end } }
   }
 \cs_new_protected:Npn \__nicematrix_settings_for_tabular:
@@ -4020,6 +4037,14 @@
       }
     \anchor { 5 } { \five }
     \anchor { center } { \pgfpointorigin }
+    \anchor { 1 } { \five \pgf@x = 0.2 \pgf@x \pgf@y = 0.2 \pgf@y }
+    \anchor { 2 } { \five \pgf@x = 0.4 \pgf@x \pgf@y = 0.4 \pgf@y }
+    \anchor { 3 } { \five \pgf@x = 0.6 \pgf@x \pgf@y = 0.6 \pgf@y }
+    \anchor { 4 } { \five \pgf@x = 0.8 \pgf@x \pgf@y = 0.8 \pgf@y }
+    \anchor { 6 } { \five \pgf@x = 1.2 \pgf@x \pgf@y = 1.2 \pgf@y }
+    \anchor { 7 } { \five \pgf@x = 1.4 \pgf@x \pgf@y = 1.4 \pgf@y }
+    \anchor { 8 } { \five \pgf@x = 1.6 \pgf@x \pgf@y = 1.6 \pgf@y }
+    \anchor { 9 } { \five \pgf@x = 1.8 \pgf@x \pgf@y = 1.8 \pgf@y }
   }
 \cs_new_protected:Npn \__nicematrix_create_diag_nodes:
   {
@@ -7117,7 +7142,10 @@
         { \int_eval:n { \c@iRow + \l_tmpa_int - 1 } }
         { \int_eval:n { \c@jCol + \l_tmpb_int - 1 } }
       }
-    \tl_if_in:nnTF { #5 } { & }
+    \bool_set_false:N \l_tmpa_bool
+    \bool_if:NT \l__nicematrix_amp_in_blocks_bool
+      { \tl_if_in:nnT { #5 } { & } { \bool_set_true:N \l_tmpa_bool } }
+    \bool_if:NTF \l_tmpa_bool
       { \exp_args:Nee \__nicematrix_Block_vii:nnnnn }
       {
         \bool_if:NTF \l__nicematrix_p_block_bool
@@ -7136,7 +7164,7 @@
               { \exp_args:Nee \__nicematrix_Block_iv:nnnnn }
               { \exp_args:Nee \__nicematrix_Block_v:nnnnn }
           }
-       }
+      }
     { \l_tmpa_int } { \l_tmpb_int } { #3 } { #4 } { #5 }
   }
 \cs_new_protected:Npn \__nicematrix_Block_iv:nnnnn #1 #2 #3 #4 #5
@@ -7337,7 +7365,8 @@
                 {
                   \dim_zero:N \extrarowheight
                   #4
-                  \bool_if:NT \c__nicematrix_tagging_array_bool { \tag_stop:n { table } }
+                  \bool_if:NT \c__nicematrix_testphase_table_bool
+                     { \tag_stop:n { table } }
                   \use:e
                     {
                       \exp_not:N \begin { tabular } [ \l__nicematrix_vpos_block_str ]
@@ -9576,7 +9605,7 @@
     Incompatible~keys.\\
     You~can't~use~the~keys~'hlines',~'vlines'~or~'hvlines'~for~a~
     '\token_to_str:N \Block'~when~the~key~'color'~or~'draw'~is~used.\\
-    Maybe~it~will~be~possible~in~a~future~version.\\
+    However,~you~can~put~several~commands~\token_to_str:N \Block.\\
     Your~key~will~be~discarded.
   }
 \__nicematrix_msg_new:nn { bad~value~for~baseline }

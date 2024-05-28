@@ -156,6 +156,8 @@ version 2005/12/01 or later.
 % the Tagging Project. 
 %    \begin{macrocode}
 \bool_const:Nn \c_@@_tagging_array_bool { \cs_if_exist_p:N \ar@ialign }
+\bool_const:Nn \c_@@_testphase_table_bool
+  { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool }
 %    \end{macrocode}
 % 
 %
@@ -2263,6 +2265,12 @@ version 2005/12/01 or later.
 \tl_new:N \l_@@_baseline_tl 
 \tl_set:Nn \l_@@_baseline_tl { c }
 %    \end{macrocode}
+%
+% \bigskip
+% The following parameter corresponds to the key |ampersand-in-blocks|
+%    \begin{macrocode}
+\bool_new:N \l_@@_amp_in_blocks_bool
+%    \end{macrocode}
 % 
 % \bigskip
 % The flag |\l_@@_exterior_arraycolsep_bool| corresponds to the option
@@ -2494,6 +2502,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { NiceMatrix / Global }
   {
+    ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
+    ampersand-in-blocks .default:n = true , 
     no-cell-nodes .code:n = 
       \cs_set_protected:Npn \@@_node_for_cell: 
         { \box_use_drop:N \l_@@_cell_box } ,
@@ -3556,7 +3566,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_everycr_i:
   { 
-    \bool_if:NT \c_@@_tagging_array_bool
+    \bool_if:NT \c_@@_testphase_table_bool
       {
         \tbl_if_row_was_started:T { \UseTaggingSocket { tbl / row / end } }
         \tbl_update_cell_data_for_next_row:
@@ -3589,10 +3599,7 @@ version 2005/12/01 or later.
                   {
                     \int_compare:nNnF \c@iRow = \l_@@_last_row_int 
 %    \end{macrocode}
-% The command |\CT@arc@| is a command of \pkg{colortbl} which sets the color of
-% the rules in the array. The package \pkg{nicematrix} uses it even if
-% \pkg{colortbl} is not loaded. We use a TeX group in order to limit the scope
-% of |\CT@arc@|.
+%
 %    \begin{macrocode}
                       { \hrule height \arrayrulewidth width \c_zero_dim }
                   } 
@@ -3638,21 +3645,21 @@ version 2005/12/01 or later.
 % \bigskip
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_redefine_everycr: { \everycr { \@@_everycr: } } 
-\hook_gput_code:nnn { begindocument } { . }
-  {
-    \IfPackageLoadedTF { colortbl }
-      {
-        \cs_set_protected:Npn \@@_redefine_everycr:
-          {
-            \CT@everycr 
-              { 
-                \noalign { \cs_gset_eq:NN \CT@row@color \prg_do_nothing: }
-                \@@_everycr:
-              }
-          }
-      }
-      { } 
-  }
+   \hook_gput_code:nnn { begindocument } { . }
+     {
+       \IfPackageLoadedTF { colortbl }
+         {
+           \cs_set_protected:Npn \@@_redefine_everycr:
+             {
+               \CT@everycr 
+                 { 
+                   \noalign { \cs_gset_eq:NN \CT@row@color \prg_do_nothing: }
+                   \@@_everycr:
+                 }
+             }
+         }
+         { } 
+    }
 %    \end{macrocode}
 % 
 % If \pkg{booktabs} is loaded, we have to patch the macro |\@BTnormal| which is
@@ -3760,7 +3767,7 @@ version 2005/12/01 or later.
       {
         \cs_set_nopar:Npn \ar@ialign 
           { 
-            \tbl_init_cell_data_for_table:
+            \bool_if:NT \c_@@_testphase_table_bool \tbl_init_cell_data_for_table:
             \@@_redefine_everycr:
             \dim_zero:N \tabskip 
             \@@_some_initialization:
@@ -4059,7 +4066,7 @@ version 2005/12/01 or later.
 % part of the environment (and the closing |\c_math_toggle_token| also).
 %    \begin{macrocode}
     \hbox_set:Nw \l_@@_the_array_box
-    \bool_if:NT \c_@@_tagging_array_bool
+    \bool_if:NT \c_@@_testphase_table_bool
       { \UseTaggingSocket { tbl / hmode / begin } }
 %    \end{macrocode}
 %
@@ -4545,7 +4552,7 @@ version 2005/12/01 or later.
 % command |\@@_CodeBefore_Body:w|. After that job, the command |\@@_CodeBefore_Body:w|
 % will go on with |\@@_pre_array:|.
 %    \begin{macrocode}
-    \IfBooleanTF { #6 } \@@_CodeBefore_Body:w \@@_pre_array: 
+    \bool_if:nTF { #6 } \@@_CodeBefore_Body:w \@@_pre_array: 
   }
 %    \end{macrocode}
 % 
@@ -4558,6 +4565,18 @@ version 2005/12/01 or later.
     \c_math_toggle_token
     \skip_horizontal:N \l_@@_right_margin_dim 
     \skip_horizontal:N \l_@@_extra_right_margin_dim 
+ 
+    % % awful workaround
+    \int_compare:nNnT \g_@@_col_total_int = \c_one_int
+      {
+        \dim_compare:nNnT \l_@@_columns_width_dim > \c_zero_dim 
+          { 
+            \skip_horizontal:N - \l_@@_columns_width_dim 
+            \bool_if:NTF \l_@@_tabular_bool 
+              { \skip_horizontal:n { - 2 \tabcolsep } }
+              { \skip_horizontal:n { - 2 \arraycolsep } }
+          }
+      }
     \hbox_set_end:
 %    \end{macrocode}
 % End of the construction of the array (in the box |\l_@@_the_array_box|).
@@ -4872,6 +4891,12 @@ version 2005/12/01 or later.
   {
     \IfPackageLoadedTF { colortbl } 
       {
+%    \end{macrocode}
+% When \pkg{colortbl} is used, we have to catch the tokens |\columncolor| in the
+% preamble because, otherwise, \pkg{colortbl} will catch them and the colored
+% panels won't be drawn by \pkg{nicematrix} but by \pkg{colortbl} (with an
+% output which is not perfect).
+%    \begin{macrocode}
         \regex_const:Nn \c_@@_columncolor_regex { \c { columncolor } } 
         \cs_new_protected:Npn \@@_replace_columncolor:
           {
@@ -5341,7 +5366,7 @@ version 2005/12/01 or later.
 % mono-column blocks.
 %    \begin{macrocode}
             \dim_set:Nn \l_@@_col_width_dim { #2 }
-            \bool_if:NT \c_@@_tagging_array_bool
+            \bool_if:NT \c_@@_testphase_table_bool
               { \tag_struct_begin:n { tag = Div } }
             \@@_cell_begin:w 
 %    \end{macrocode}
@@ -5357,7 +5382,7 @@ version 2005/12/01 or later.
                 \vrule height \box_ht:N \@arstrutbox width \c_zero_dim
                 \everypar { }
               }
-            \bool_if:NT \c_@@_tagging_array_bool \tagpdfparaOn
+            \bool_if:NT \c_@@_testphase_table_bool \tagpdfparaOn
 %    \end{macrocode}
 % Now, the potential code for the horizontal position of the content of the cell
 % (|\centering|, |\raggedright|, |\RaggedRight|, etc.).
@@ -5384,7 +5409,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
             #4
             \@@_cell_end: 
-            \bool_if:NT \c_@@_tagging_array_bool \tag_struct_end:
+            \bool_if:NT \c_@@_testphase_table_bool \tag_struct_end:
           } 
       }
   }
@@ -6036,7 +6061,7 @@ version 2005/12/01 or later.
     \multispan { #1 }
     \cs_set_eq:NN \@@_update_max_cell_width: \prg_do_nothing: 
     \begingroup
-    \bool_if:NT \c_@@_tagging_array_bool
+    \bool_if:NT \c_@@_testphase_table_bool
       { \tbl_update_multicolumn_cell_data:n { #1 } }
     \cs_set_nopar:Npn \@addamp 
       { \legacy_if:nTF { @firstamp } { \@firstampfalse } { \@preamerr 5 } } 
@@ -6057,7 +6082,7 @@ version 2005/12/01 or later.
     \exp_args:No \@mkpream \g_@@_preamble_tl
     \@addtopreamble \@empty
     \endgroup
-    \bool_if:NT \c_@@_tagging_array_bool
+    \bool_if:NT \c_@@_testphase_table_bool
       { \UseTaggingSocket { tbl / colspan } { #1 } }
 %    \end{macrocode}
 %
@@ -6921,7 +6946,7 @@ version 2005/12/01 or later.
 % The command |\@@_create_col_nodes:| will construct a special last row.
 % That last row is a false row used to create the |col| nodes and to fix the
 % width of the columns (when the array is constructed with an option which
-% specifies the width of the columns).
+% specifies the width of the columns such as |columns-width|).
 %    \begin{macrocode}
 \cs_new:Npn \@@_create_col_nodes:
   {
@@ -7088,7 +7113,7 @@ version 2005/12/01 or later.
           { \skip_gset:Nn \g_tmpa_skip { 0 pt~plus 1 fill } }
         \skip_horizontal:N \g_tmpa_skip 
         \int_gincr:N \g_tmpa_int 
-        \bool_lazy_any:nF % modified 2023/12/13
+        \bool_lazy_any:nF 
           { 
             \g_@@_delims_bool 
             \l_@@_tabular_bool 
@@ -7168,7 +7193,7 @@ version 2005/12/01 or later.
             \endpgfpicture
           }
       }
-    \cr
+  % \cr
   }
 %    \end{macrocode}
 %
@@ -7502,7 +7527,7 @@ version 2005/12/01 or later.
   }
   { 
     \endNiceArray 
-    \bool_if:NT \c_@@_tagging_array_bool
+    \bool_if:NT \c_@@_testphase_table_bool
       { \UseTaggingSocket { tbl / hmode / end } }
   }
 %    \end{macrocode}
@@ -7994,7 +8019,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % We define a new \textsc{pgf} shape for the diag nodes because we want to
-% provide a anchor called |.5| for those nodes.
+% provide an anchor called |.5| for those nodes.
 %    \begin{macrocode}
 \pgfdeclareshape { @@_diag_node }
   {
@@ -8005,6 +8030,14 @@ version 2005/12/01 or later.
       }
     \anchor { 5 } { \five }
     \anchor { center } { \pgfpointorigin }
+    \anchor { 1 } { \five \pgf@x = 0.2 \pgf@x \pgf@y = 0.2 \pgf@y }
+    \anchor { 2 } { \five \pgf@x = 0.4 \pgf@x \pgf@y = 0.4 \pgf@y }
+    \anchor { 3 } { \five \pgf@x = 0.6 \pgf@x \pgf@y = 0.6 \pgf@y }
+    \anchor { 4 } { \five \pgf@x = 0.8 \pgf@x \pgf@y = 0.8 \pgf@y }
+    \anchor { 6 } { \five \pgf@x = 1.2 \pgf@x \pgf@y = 1.2 \pgf@y }
+    \anchor { 7 } { \five \pgf@x = 1.4 \pgf@x \pgf@y = 1.4 \pgf@y }
+    \anchor { 8 } { \five \pgf@x = 1.6 \pgf@x \pgf@y = 1.6 \pgf@y }
+    \anchor { 9 } { \five \pgf@x = 1.8 \pgf@x \pgf@y = 1.8 \pgf@y }
   }
 %    \end{macrocode}
 % 
@@ -13084,11 +13117,14 @@ version 2005/12/01 or later.
 %
 % \medskip
 % We have different treatments when the key |p| is used and when the block is
-% mono-column or mono-row. That's why we have three macros: |\@@_Block_iv:nnnnn|
-% and |\@@_Block_v:nnnnn| and |\@@_Block_vi:nnnn|(the five arguments of those
-% macros are provided by curryfication).
+% mono-column or mono-row, etc. That's why we have several macros:
+% |\@@_Block_iv:nnnnn|, |\@@_Block_v:nnnnn|, |\@@_Block_vi:nnnn|, etc. (the five
+% arguments of those macros are provided by curryfication).
 %    \begin{macrocode}
-    \tl_if_in:nnTF { #5 } { & }
+    \bool_set_false:N \l_tmpa_bool
+    \bool_if:NT \l_@@_amp_in_blocks_bool
+      { \tl_if_in:nnT { #5 } { & } { \bool_set_true:N \l_tmpa_bool } }
+    \bool_if:NTF \l_tmpa_bool
       { \exp_args:Nee \@@_Block_vii:nnnnn }
       {
         \bool_if:NTF \l_@@_p_block_bool 
@@ -13116,7 +13152,7 @@ version 2005/12/01 or later.
               { \exp_args:Nee \@@_Block_iv:nnnnn }
               { \exp_args:Nee \@@_Block_v:nnnnn }
           }
-       }
+      }
     { \l_tmpa_int } { \l_tmpb_int } { #3 } { #4 } { #5 } 
   }
 %    \end{macrocode}
@@ -13455,7 +13491,8 @@ version 2005/12/01 or later.
 % the tabular is the same as the external alignment of the tabular (that is to
 % say the position of the block in its zone of merged cells).
 %    \begin{macrocode}
-                  \bool_if:NT \c_@@_tagging_array_bool { \tag_stop:n { table } } 
+                  \bool_if:NT \c_@@_testphase_table_bool 
+                     { \tag_stop:n { table } } 
                   \use:e 
                     { 
                       \exp_not:N \begin { tabular } [ \l_@@_vpos_block_str ] 
@@ -16674,7 +16711,7 @@ version 2005/12/01 or later.
     Incompatible~keys.\\
     You~can't~use~the~keys~'hlines',~'vlines'~or~'hvlines'~for~a~
     '\token_to_str:N \Block'~when~the~key~'color'~or~'draw'~is~used.\\
-    Maybe~it~will~be~possible~in~a~future~version.\\
+    However,~you~can~put~several~commands~\token_to_str:N \Block.\\
     Your~key~will~be~discarded.
   }
 %    \end{macrocode}

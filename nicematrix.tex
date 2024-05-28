@@ -486,8 +486,7 @@ If this argument is empty, its default
 value is |1-1|. If the number of rows is not specified, or equal to |*|, the
 block extends until the last row (idem for the columns).
 
-\item The second argument is the content of the block. It's possible to use
-|\\| in that content to have a content on several lines. In |{NiceTabular}|,
+\item The second argument is the content of the block. In |{NiceTabular}|,
 |{NiceTabular*}| and |{NiceTabularX}|, the content of the block is composed in
 text mode whereas, in the other environments, it is composed in math mode.
 \end{itemize}
@@ -614,13 +613,13 @@ should be loaded (by default, \pkg{nicematrix} only loads \textsc{pgf}) and,
 if it's not, an error will be raised.} by using as options the value of that
 key |tikz| (which must be a list of keys allowed for a TikZ path). 
 
-\colorbox{yellow!50}{\textbf{New 6.24}}\enskip In fact, in the list of the keys
-provided  by the user as value of |tikz|, it's possible to put a key
-\Definition{offset}. That key is not provided by TikZ but by \pkg{nicematrix}.
-It will narrow the rectangular frame corresponding to the block by a margin
-(horizontally and vertically) equal to the value (of that key |offset|). That
-new frame, a bit narrower, will be executed by TikZ with options which are the
-other keys in the list of keys provided as value to the key |tikz| of |\Block|.
+In fact, in the list of the keys provided by the user as value of |tikz|, it's
+possible to put a key \Definition{offset}. That key is not provided by TikZ but
+by \pkg{nicematrix}. It will narrow the rectangular frame corresponding to the
+block by a margin (horizontally and vertically) equal to the value (of that key
+|offset|). That new frame, a bit narrower, will be executed by TikZ with options
+which are the other keys in the list of keys provided as value to the key |tikz|
+of |\Block|.
 
 For examples, cf. p.~\pageref{tikz-key-examples}.
 \end{itemize}
@@ -694,9 +693,10 @@ In the columns with a fixed width (columns |w{...}{...}|, |W{...}{...}|,
 formatted as a paragraph of that width.
 
 \item The specification of the horizontal position provided by the type of
-column (|c|, |r| or |l|) is taken into account for the blocks (but the
-|\Block| may have its own specification of alignment:
-cf.~\ref{horizontal-block} p.~\pageref{horizontal-block}).
+column (|c|, |r| or |l|) is taken into account for the blocks. For a block in a
+column ot type |p{...}| (without option for |p|) , the alignment |c| will be
+used for the block. Of course, the |\Block| may have its own specification of
+alignment: cf.~\ref{horizontal-block} p.~\pageref{horizontal-block}.
 
 \item The specifications of font specified for the column by a construction
 |>{...}| in the preamble of the array are taken into account for the
@@ -904,6 +904,16 @@ Rank & \Block[C]{1-3}{First group} & & & \Block{1-3}{Second group} \\
 \end{center}
 
 
+\bigskip
+\colorbox{yellow!50}{\bfseries New 6.28}\par\nobreak
+
+\smallskip
+The command |\Block| supports also a key |p|. With that key, the content of the
+block is formatted like a paragraph (as in a column of type |p|). That key may
+be used in conjunction with the key |l|, |c| or |r|, and, in that case, the
+paragraph is formatted with |\raggedright|, |\centering| or |\raggedleft|. With
+the key |j|, the paragraph is justified.
+
 \subsection{Vertical position of the content of the block}
 
 \label{vertical-pos-block}
@@ -1028,6 +1038,45 @@ text & text \\
 
 
 \end{scope}
+
+\subsection{\textbackslash\textbackslash\ and \& in the blocks}
+
+\index{ampersand-in-blocks}
+
+It's possible to use |\\| in a block in order to compose the text on several rows.
+
+\vspace{1cm}
+\colorbox{yellow!50}{\bfseries New 6.28}\par\nobreak
+
+When the key |ampersand-in-blocks|
+As we can see, the blocks (which was are in fact mono-cell blocks) are divided
+into sub-blocks of the same size. However, maybe the following code would be prefered.
+
+\medskip
+\begin{Code}[width=85mm]
+\begin{NiceTabular}{lccccc}%
+   [hvlines,ampersand-in-blocks]
+  & \Block{1-5}{the five first
+                 natural numbers} \\ 
+3 & \Block{1-5}{one & two & three} \\
+4 & \Block{1-5}{one& two & three & four} \\
+5 & one & two & three & four & five \\
+\end{NiceTabular}
+\end{Code}
+%
+\begin{NiceTabular}{lccccc}%
+   [hvlines,ampersand-in-blocks]
+  & \Block{1-5}{the five first natural numbers} \\ 
+3 & \Block{1-5}{one & two & three} \\
+4 & \Block{1-5}{one& two & three & four} \\
+5 & one & two & three & four & five \\
+\end{NiceTabular}
+
+\medskip
+In this code, we have blocks of size |1-5| which are divided into three or four
+sub-blocks. 
+
+
 
 \index{Blocks@\textbf{Blocks in the tabulars}|)}
 
@@ -1627,7 +1676,7 @@ Product C & 5 & 4 & 1 \\
 
 
 \bigskip
-The key |sep-color| with the value |white| may also be used in cas of an
+The key |sep-color| with the value |white| may also be used in case of an
 horizontal double-rule on the top of a colored cell (if we want the space
 between both rules above the cell not colored by the color of the cell).
 
@@ -2500,14 +2549,13 @@ Dupont & Chantal & 15 janvier 1998 \\
 \end{center}
 
 \bigskip
-\colorbox{yellow!50}{\textbf{New 6.25}}\enskip Each use of the command
-|\rowlistcolors| (or |\rowcolors|, which is, in fact, a special case of
-|\rowlistcolors|) stops the potential coloring schemes\footnote{We say
-  \emph{schemes} in plural form because it's possible to start simultaneously
-  several coloring schemes if they apply on different columns.} specified by a
-previous command |\rowlistcolors|. In particular, it's possible to start
-coloring the rows with |\rowlistcolors{...}| and stop coloring by a command
-|\rowlistcolors| with an empty argument.
+Each use of the |\rowlistcolors| (or |\rowcolors|, which is, in fact, a
+special case of |\rowlistcolors|) stops the potential coloring
+schemes\footnote{We say \emph{schemes} in plural form because it's possible to
+  start simultaneously several coloring schemes if they apply on different
+  columns.} specified by a previous command |\rowlistcolors|. In particular,
+it's possible to start coloring the rows with |\rowlistcolors{...}| and stop
+coloring by a command |\rowlistcolors| with an empty argument.
 
 \bigskip
 \begin{Code}[width=10cm]
@@ -2540,10 +2588,9 @@ seven \\
 
 \index{nocolor}
 
-\colorbox{yellow!50}{\textbf{New 6.26}}\enskip The extension \pkg{nicematrix}
-provides the special color |nocolor| which may be used in all the coloring
-commands provided by \pkg{nicematrix} (in the |\CodeBefore| or the array
-itself).
+The extension \pkg{nicematrix} provides the special color |nocolor| which may be
+used in all the coloring commands provided by \pkg{nicematrix} (in the
+|\CodeBefore| or the array itself).
 
 The cells marked by this color won't be colored, whatever the other instructions
 of coloring which may apply to these cells.
@@ -2733,7 +2780,7 @@ $\begin{array}{c}
  \end{bNiceMatrix} \\ \\
 \begin{bNiceMatrix}
  1   & 1245345 \\  345 & 2 
-\end{bNiceMatrix}
+\end{bNiceMatrix} \\
 \end{array}$
 \emph{\end{NiceMatrixBlock}}
 \end{Code}
@@ -2744,7 +2791,7 @@ $\begin{array}{c}
  \end{bNiceMatrix} \\ \\
 \begin{bNiceMatrix}
  1   & 1245345 \\  345 & 2 
-\end{bNiceMatrix}
+\end{bNiceMatrix} \\
 \end{array}$
 \end{NiceMatrixBlock}
 
@@ -4245,9 +4292,8 @@ $\begin{pNiceMatrix}
 \index{empty (key of \texttt{\textbackslash TikzEveryCell})}
 \index{non empty (key of \texttt{\textbackslash TikzEveryCell})}
 
-
-\colorbox{yellow!50}{\textbf{New 6.24}}\enskip The command |\TikzEveryCell|
-execute with TikZ the rectangular path corresponding to each cell of the tabular
+The command |\TikzEveryCell|
+executes with TikZ the rectangular path corresponding to each cell of the tabular
 with parameters of TikZ the argument of |\TikzEveryCell|. That argument must be
 a list of \textsl{key=value} pairs which may be applied to a TikZ path. In fact,
 the command applies to each of the tabular, except those in the exterior rows
@@ -5136,9 +5182,9 @@ environment of LaTeX which only put TeX commands before and after the content.}
 
 \medskip
 \index{light-syntax-expanded}
-\colorbox{yellow!50}{\textbf{New 6.27}}\enskip The key |light-syntax-expanded|
-has the same behaviour as the key |light-syntax| but the body of the
-environment is expanded (in the TeX sens\footnote{More precisely, it's a
+
+The key |light-syntax-expanded| has the same behaviour as the key |light-syntax|
+but the body of the environment is expanded (in the TeX sens\footnote{More precisely, it's a
 expansion of type |e| of L3.}) before being splitted in lines (but
 after the extraction of a potential |\CodeAfter|).
 
@@ -5696,9 +5742,14 @@ The package \pkg{nicematrix} creates a PGF/TikZ node merely called $i$ (with
 the classical prefix) at the intersection of the horizontal rule of number~$i$
 and the vertical rule of number~$i$ (more specifically the potential position
 of those rules because maybe there are not actually drawn). The last node has
-also an alias called |last|. There is also a node called $i$|.5| midway
-between the node $i$ and the node $i+1$.
+also an alias called |last|. 
 
+\smallskip
+\colorbox{yellow!50}{\bfseries Modification 6.28}\enskip There are also nodes
+called $i$|.1|, $i$|.2|, … , $i$|.9| between the node~$i$ and the node~$i+1$
+(before the version 6.28, there was only the node $i$|.5|).
+
+\smallskip
 These nodes are available in the |\CodeBefore| and the |\CodeAfter|.
 
 \begin{center}
