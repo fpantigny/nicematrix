@@ -1083,13 +1083,31 @@ text & text \\
 
 \index{ampersand-in-blocks}
 
-On peut utiliser |\\| dans un bloc pour composer du texte sur plusieurs lignes.
-
-\vspace{1cm}
 \colorbox{yellow!50}{\bfseries Nouveau 6.28}\par\nobreak
 
-Quand la clé |ampersand-in-blocks| est activée, il est possible d'utiliser |&|
-pour diviser horizontalement le contenu du bloc en plusieurs sous-cases de même taille.
+\medskip
+L'extension \pkg{nicematrix} offre la possibilité d'utiliser directement |\\| et
+|&| dans le contenu d'un bloc (dans le but de formater son contenu) mais il y a
+quelques restrictions.
+
+\begin{itemize}
+\item On ne doit pas utiliser |&| et |\\| dans le même bloc.
+
+\item Pour |\\|, il n'y a pas d'autres restrictions. On peut utiliser
+|\\| dans un bloc pour composer du texte sur plusieurs lignes.  
+
+\item Pour pouvoir utiliser |&|, la clé |ampersand-in-blocks| doit avoir été
+activée. Le bloc est alors divisé en sous-blocs comme illustré ci-desous.
+Attention toutefois : quand |ampersand-in-blocks| est utilisée, l'argument
+(principal) de la commande |\Block| est découpé syntaxiquement au niveau des
+esperluettes |&|, celles entre accolades sont masquées mais pas celles dans un
+environnement.\footnote{On ne peut donc écrire :
+  |\Block[ampersand-in-blocks]{}{\begin{array}{cc}1&2\end{array}}|. Bien sûr, on
+  peut le faire sans la clé |ampersand-in-blocks|.}
+\end{itemize}
+
+\bigskip
+L'esperluette |&| permet de diviser horizontalement un bloc en sous-blocs \emph{de même taille}.
 
 \medskip
 \begin{Code}[width=85mm]

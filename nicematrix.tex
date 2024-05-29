@@ -1043,10 +1043,26 @@ text & text \\
 
 \index{ampersand-in-blocks}
 
-It's possible to use |\\| in a block in order to compose the text on several rows.
-
-\vspace{1cm}
 \colorbox{yellow!50}{\bfseries New 6.28}\par\nobreak
+
+The extension \pkg{nicemtrix} provides the ability to use |\\| and |&| directly
+in the content of a block (in order to format its contents) but there is some rectrictions.
+
+\begin{itemize}
+\item One must not use both |\\| and |&| in the same block.
+
+\item For |\\|, there is no other restriction. It's possible to use |\\| in a
+block to format a text on several rows.
+
+\item In order to use |&|, the key |ampersand-in-blocks| must been activated. Then,
+the block is divided in sub-blocks as illustrated below. Be careful: with
+|ampersand-in-blocks| is in force, the (main) argument of the command |\Block|
+is syntactically divided into sub-blocks by splitting on the ampersands~|&|, the
+ampersands between curly braced are protected but not those in an
+environment.\footnote{It's not possible to write
+  |\Block[ampersand-in-blocks]{}{\begin{array}{cc}1&2\end{array}}|. Of course,
+  it's possible without the key |ampersand-in-blocks|.}
+\end{itemize}
 
 When the key |ampersand-in-blocks|
 As we can see, the blocks (which was are in fact mono-cell blocks) are divided
@@ -7390,7 +7406,16 @@ The successive versions of the file |nicematrix.sty| provided by TeXLive are ava
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
 
-\subsection*{Changes between version 6.25 and 6.26}
+\subsection*{Changes between version 6.27 and 6.28}
+
+Sub-blocks with the character |&| (when the key |ampersand-in-block| is in
+force).
+
+Keys |p| and |j| for the command |\Block|.
+
+PGF nodes i.1, i.2, i.3, etc.
+
+\subsection*{Changes between version 6.26 and 6.27}
 
 New key |light-syntax-expanded|.
 
