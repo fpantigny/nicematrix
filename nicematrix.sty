@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{6.28}
-\def\myfiledate{2024/05/29}
+\def\myfileversion{6.28a}
+\def\myfiledate{2024/06/24}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \RequirePackage{l3keys2e}
@@ -30,7 +30,8 @@
   {Enhanced arrays with the help of PGF/TikZ}
 \RequirePackage { amsmath }
 \RequirePackage { array }
-\bool_const:Nn \c__nicematrix_tagging_array_bool { \cs_if_exist_p:N \ar@ialign }
+\bool_const:Nn \c__nicematrix_tagging_array_bool
+  { \IfPackageAtLeastTF { array } { 2024/05/01 } \c_true_bool \c_false_bool }
 \bool_const:Nn \c__nicematrix_testphase_table_bool
   { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool }
 \cs_new_protected:Npn \__nicematrix_error:n { \msg_error:nn { nicematrix } }
@@ -97,12 +98,22 @@
       { \__nicematrix_error:n { Internal~error } }
     #1
   }
-\cs_new_protected:Npn \__nicematrix_security_test_i:w \ignorespaces #1
+\bool_if:NTF \c__nicematrix_tagging_array_bool
   {
-    \peek_meaning:NF \unskip { \__nicematrix_error:n { Internal~error } }
-    #1
+    \cs_new_protected:Npn \__nicematrix_security_test_i:w \ignorespaces #1
+      {
+        \peek_meaning:NF \textonly@unskip { \__nicematrix_error:n { Internal~error } }
+        #1
+      }
   }
-\hook_gput_code:nnn { begindocument / after } { . }
+  {
+    \cs_new_protected:Npn \__nicematrix_security_test_i:w \ignorespaces #1
+      {
+        \peek_meaning:NF \unskip { \__nicematrix_error:n { Internal~error } }
+        #1
+      }
+  }
+\hook_gput_code:nnn { begindocument / end } { . }
   {
     \IfPackageLoadedTF { mdwtab }
       { \__nicematrix_fatal:n { mdwtab~loaded } }
@@ -146,6 +157,7 @@
 \tl_const:Nn \c__nicematrix_dot_tl { . }
 \tl_const:Nn \c__nicematrix_default_tl { default }
 \tl_const:Nn \c__nicematrix_star_tl { * }
+\str_const:Nn \c__nicematrix_star_str { * }
 \str_const:Nn \c__nicematrix_r_str { r }
 \str_const:Nn \c__nicematrix_c_str { c }
 \str_const:Nn \c__nicematrix_l_str { l }
@@ -852,6 +864,7 @@
   {
     ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
     ampersand-in-blocks .default:n = true ,
+    &-in-blocks .meta:n = ampersand-in-blocks ,
     no-cell-nodes .code:n =
       \cs_set_protected:Npn \__nicematrix_node_for_cell:
         { \box_use_drop:N \l__nicematrix_cell_box } ,
@@ -2478,7 +2491,8 @@
 \str_new:N \c__nicematrix_ignorespaces_str
 \str_set:Nx \c__nicematrix_ignorespaces_str { \ignorespaces }
 \str_remove_all:Nn \c__nicematrix_ignorespaces_str { ~ }
-\cs_new_protected:Npn \__nicematrix_test_if_empty: { \peek_after:Nw \__nicematrix_test_if_empty_i:  }
+\cs_new_protected:Npn \__nicematrix_test_if_empty:
+  { \peek_after:Nw \__nicematrix_test_if_empty_i: }
 \cs_new_protected:Npn \__nicematrix_test_if_empty_i:
   {
     \str_set:Nx \l_tmpa_str { \token_to_meaning:N \l_peek_token }
@@ -2486,15 +2500,23 @@
       { \__nicematrix_test_if_empty:w }
   }
 \cs_new_protected:Npn \__nicematrix_test_if_empty:w \ignorespaces
+  { \peek_after:Nw \__nicematrix_test_if_empty_ii: }
+\cs_new_protected:Npn \__nicematrix_nullify_cell:
   {
-    \peek_meaning:NT \unskip
+    \tl_gput_right:Nn \g__nicematrix_cell_after_hook_tl
       {
-        \tl_gput_right:Nn \g__nicematrix_cell_after_hook_tl
-          {
-            \box_set_wd:Nn \l__nicematrix_cell_box \c_zero_dim
-            \skip_horizontal:N \l__nicematrix_col_width_dim
-          }
+        \box_set_wd:Nn \l__nicematrix_cell_box \c_zero_dim
+        \skip_horizontal:N \l__nicematrix_col_width_dim
       }
+  }
+\bool_if:NTF \c__nicematrix_tagging_array_bool
+  {
+    \cs_new_protected:Npn \__nicematrix_test_if_empty_ii:
+      { \peek_meaning:NT \textonly@unskip \__nicematrix_nullify_cell: }
+  }
+  {
+    \cs_new_protected:Npn \__nicematrix_test_if_empty_ii:
+      { \peek_meaning:NT \unskip \__nicematrix_nullify_cell: }
   }
 \cs_new_protected:Npn \__nicematrix_test_if_empty_for_S:
   {
@@ -7119,12 +7141,12 @@
   {
     \bool_lazy_or:nnTF
       { \tl_if_blank_p:n { #1 } }
-      { \str_if_eq_p:nn { #1 } { * } }
+      { \str_if_eq_p:Vn \c__nicematrix_star_str { #1 } }
       { \int_set:Nn \l_tmpa_int { 100 } }
       { \int_set:Nn \l_tmpa_int { #1 } }
     \bool_lazy_or:nnTF
       { \tl_if_blank_p:n { #2 } }
-      { \str_if_eq_p:nn { #2 } { * } }
+      { \str_if_eq_p:Vn \c__nicematrix_star_str { #2 } }
       { \int_set:Nn \l_tmpb_int { 100 } }
       { \int_set:Nn \l_tmpb_int { #2 } }
     \int_compare:nNnTF \l_tmpb_int = \c_one_int
@@ -7423,6 +7445,9 @@
   }
 \keys_define:nn { NiceMatrix / Block / SecondPass }
   {
+    ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
+    ampersand-in-blocks .default:n = true ,
+    &-in-blocks .meta:n = ampersand-in-blocks ,
     tikz .code:n =
       \IfPackageLoadedTF { tikz }
         { \seq_put_right:Nn \l__nicematrix_tikz_seq { { #1 } } }
@@ -7525,9 +7550,18 @@
       {
         \int_compare:nNnTF \l__nicematrix_last_row_int > \g__nicematrix_row_total_int
           { \msg_error:nnnn { nicematrix } { Block~too~large~1 } { #1 } { #2 } }
-          { \__nicematrix_Block_v:nnnnnn { #1 } { #2 } { #3 } { #4 } { #5 } { #6 } }
+          {
+            \__nicematrix_Block_v:nnVVnn
+              { #1 }
+              { #2 }
+              \l__nicematrix_last_row_int
+              \l__nicematrix_last_col_int
+              { #5 }
+              { #6 }
+          }
       }
   }
+\cs_generate_variant:Nn \__nicematrix_Block_v:nnnnnn { n n V V n n }
 \cs_new_protected:Npn \__nicematrix_Block_v:nnnnnn #1 #2 #3 #4 #5 #6
   {
     \group_begin:
@@ -9416,7 +9450,7 @@
     ~you~try~to~use~more~columns~than~allowed~by~your~
     \__nicematrix_full_name_env:.\__nicematrix_message_hdotsfor:\ The~maximal~number~of~columns~is~
     \int_use:N \g__nicematrix_static_num_of_col_int\
-    ~(plus~the~potential~exterior~ones).
+    ~(plus~the~potential~exterior~ones).~
     This~error~is~fatal.
   }
 \__nicematrix_msg_new:nn { columns~not~used }
@@ -9964,9 +9998,10 @@
     \c__nicematrix_available_keys_str
   }
   {
-    The~available~keys~are~(in~alphabetic~order):~b,~B,~borders,~c,~draw,~fill,~
-    hlines,~hvlines,~l,~line-width,~name,~opacity,~rounded-corners,~r,~
-    respect-arraystretch,~t,~T,~tikz,~transparent~and~vlines.
+    The~available~keys~are~(in~alphabetic~order):~&-in-blocks,~ampersand-in-blocks,~
+    b,~B,~borders,~c,~draw,~fill,~hlines,~hvlines,~l,~line-width,~name,~
+    opacity,~rounded-corners,~r,~respect-arraystretch,~t,~T,~tikz,~transparent~
+    and~vlines.
   }
 \__nicematrix_msg_new:nnn { Unknown~key~for~Brace }
   {
@@ -10079,6 +10114,7 @@
   {
     The~available~keys~are~(in~alphabetic~order):~
     allow-duplicate-names,~
+    ampersand-in-blocks,~
     caption-above,~
     cell-space-bottom-limit,~
     cell-space-limits,~
@@ -10131,6 +10167,7 @@
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    ampersand-in-blocks,~
     b,~
     baseline,~
     c,~
@@ -10188,6 +10225,7 @@
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    ampersand-in-blocks,~
     b,~
     baseline,~
     c,~
@@ -10248,6 +10286,7 @@
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    ampersand-in-blocks,~
     b,~
     baseline,~
     c,~

@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{6.28}
-\def\myfiledate{2024/05/29}
+\def\myfileversion{6.28a}
+\def\myfiledate{2024/06/24}
 %
 %
 %<*batchfile>  
@@ -155,7 +155,8 @@ version 2005/12/01 or later.
 % In the version 2.6a of \pkg{array}, important modifications have been done for
 % the Tagging Project. 
 %    \begin{macrocode}
-\bool_const:Nn \c_@@_tagging_array_bool { \cs_if_exist_p:N \ar@ialign }
+\bool_const:Nn \c_@@_tagging_array_bool
+  { \IfPackageAtLeastTF { array } { 2024/05/01 } \c_true_bool \c_false_bool }
 \bool_const:Nn \c_@@_testphase_table_bool
   { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool }
 %    \end{macrocode}
@@ -287,19 +288,27 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_security_test_i:w \ignorespaces #1
+\bool_if:NTF \c_@@_tagging_array_bool
   {
-    \peek_meaning:NF \unskip { \@@_error:n { Internal~error } }
-    #1 
+    \cs_new_protected:Npn \@@_security_test_i:w \ignorespaces #1
+      {
+        \peek_meaning:NF \textonly@unskip { \@@_error:n { Internal~error } }
+        #1 
+      }  
+  }
+  {
+    \cs_new_protected:Npn \@@_security_test_i:w \ignorespaces #1
+      {
+        \peek_meaning:NF \unskip { \@@_error:n { Internal~error } }
+        #1 
+      }  
   }
 %    \end{macrocode}
 %
 % \bigskip
 % Here, the box |\l_tmpa_box| will be used as sandbox to take our security test.
-% This code has been modified in version 6.18 (see question 682891 on TeX
-% StackExchange). 
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument / after } { . }
+\hook_gput_code:nnn { begindocument / end } { . }
   {
     \IfPackageLoadedTF { mdwtab }
       { \@@_fatal:n { mdwtab~loaded } }
@@ -385,6 +394,7 @@ version 2005/12/01 or later.
 \tl_const:Nn \c_@@_dot_tl { . }
 \tl_const:Nn \c_@@_default_tl { default }
 \tl_const:Nn \c_@@_star_tl { * }
+\str_const:Nn \c_@@_star_str { * }
 \str_const:Nn \c_@@_r_str { r }
 \str_const:Nn \c_@@_c_str { c }
 \str_const:Nn \c_@@_l_str { l }
@@ -2504,6 +2514,7 @@ version 2005/12/01 or later.
   {
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
     ampersand-in-blocks .default:n = true , 
+    &-in-blocks .meta:n = ampersand-in-blocks ,
     no-cell-nodes .code:n = 
       \cs_set_protected:Npn \@@_node_for_cell: 
         { \box_use_drop:N \l_@@_cell_box } ,
@@ -5416,22 +5427,12 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% 
 %    \begin{macrocode}
 \str_new:N \c_@@_ignorespaces_str
 \str_set:Nx \c_@@_ignorespaces_str { \ignorespaces }
 \str_remove_all:Nn \c_@@_ignorespaces_str { ~ }
-%    \end{macrocode}
-%
-% \bigskip
-% In order to test whether a cell is empty, we test whether it begins by
-% |\ignorespaces\unskip|. However, in some circunstancies, for example when
-% |\collectcell| of \pkg{collcell} is used, the cell does not begin with
-% |\ignorespaces|. In that case, we consider as not empty...
-%
-% First, we test if the next token is |\ignorespaces| and it's not very easy...
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_test_if_empty: { \peek_after:Nw \@@_test_if_empty_i:  }
+\cs_new_protected:Npn \@@_test_if_empty: 
+  { \peek_after:Nw \@@_test_if_empty_i: }
 \cs_new_protected:Npn \@@_test_if_empty_i:
   {
     \str_set:Nx \l_tmpa_str { \token_to_meaning:N \l_peek_token }
@@ -5439,15 +5440,38 @@ version 2005/12/01 or later.
       { \@@_test_if_empty:w }
   }
 \cs_new_protected:Npn \@@_test_if_empty:w \ignorespaces 
-  { 
-    \peek_meaning:NT \unskip 
-      {
-        \tl_gput_right:Nn \g_@@_cell_after_hook_tl 
-          { 
-            \box_set_wd:Nn \l_@@_cell_box \c_zero_dim 
-            \skip_horizontal:N \l_@@_col_width_dim 
-          }
+  { \peek_after:Nw \@@_test_if_empty_ii: }
+%    \end{macrocode}
+% 
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_nullify_cell:
+  {
+    \tl_gput_right:Nn \g_@@_cell_after_hook_tl 
+      { 
+        \box_set_wd:Nn \l_@@_cell_box \c_zero_dim 
+        \skip_horizontal:N \l_@@_col_width_dim 
       }
+  }
+%    \end{macrocode}
+%
+% \bigskip
+%    \begin{macrocode}
+\bool_if:NTF \c_@@_tagging_array_bool
+  {
+    \cs_new_protected:Npn \@@_test_if_empty_ii:
+      { \peek_meaning:NT \textonly@unskip \@@_nullify_cell: }
+  }
+%    \end{macrocode}
+% In the old version of \pkg{array}, we test whether it begins by
+% |\ignorespaces\unskip|. However, in some circunstancies, for example when
+% |\collectcell| of \pkg{collcell} is used, the cell does not begin with
+% |\ignorespaces|. In that case, we consider as not empty...
+% First, we test if the next token is |\ignorespaces| and it's not very easy... 
+%    \begin{macrocode}
+  {
+    \cs_new_protected:Npn \@@_test_if_empty_ii:
+      { \peek_meaning:NT \unskip \@@_nullify_cell: }  
   }
 %    \end{macrocode}
 % 
@@ -6769,7 +6793,7 @@ version 2005/12/01 or later.
       }
   }
   { 
-    \@@_create_col_nodes:
+    \@@_create_col_nodes: 
     \endarray 
   }
 %    \end{macrocode}
@@ -6817,7 +6841,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
   { 
     \@@_create_col_nodes:
-    \endarray
+    \endarray 
   }
 %    \end{macrocode}
 %
@@ -7193,7 +7217,7 @@ version 2005/12/01 or later.
             \endpgfpicture
           }
       }
-  % \cr
+  % \cr 
   }
 %    \end{macrocode}
 %
@@ -13071,12 +13095,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \bool_lazy_or:nnTF
       { \tl_if_blank_p:n { #1 } }
-      { \str_if_eq_p:nn { #1 } { * } }
+      { \str_if_eq_p:Vn \c_@@_star_str { #1 } }
       { \int_set:Nn \l_tmpa_int { 100 } }
       { \int_set:Nn \l_tmpa_int { #1 } }
     \bool_lazy_or:nnTF
       { \tl_if_blank_p:n { #2 } }
-      { \str_if_eq_p:nn { #2 } { * } }
+      { \str_if_eq_p:Vn \c_@@_star_str { #2 } }
       { \int_set:Nn \l_tmpb_int { 100 } }
       { \int_set:Nn \l_tmpb_int { #2 } }
 %    \end{macrocode}
@@ -13576,6 +13600,9 @@ version 2005/12/01 or later.
 %   \begin{macrocode}
 \keys_define:nn { NiceMatrix / Block / SecondPass }
   {
+    ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
+    ampersand-in-blocks .default:n = true , 
+    &-in-blocks .meta:n = ampersand-in-blocks ,
     tikz .code:n = 
       \IfPackageLoadedTF { tikz }
         { \seq_put_right:Nn \l_@@_tikz_seq { { #1 } } }
@@ -13707,9 +13734,21 @@ version 2005/12/01 or later.
       {  
         \int_compare:nNnTF \l_@@_last_row_int > \g_@@_row_total_int
           { \msg_error:nnnn { nicematrix } { Block~too~large~1 } { #1 } { #2 } } 
-          { \@@_Block_v:nnnnnn { #1 } { #2 } { #3 } { #4 } { #5 } { #6 } }
+          { 
+            \@@_Block_v:nnVVnn 
+              { #1 } 
+              { #2 } 
+              \l_@@_last_row_int 
+              \l_@@_last_col_int 
+              { #5 } 
+              { #6 } 
+          }
       }
   }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_generate_variant:Nn \@@_Block_v:nnnnnn { n n V V n n }
 %    \end{macrocode}
 % 
 %
@@ -16438,7 +16477,7 @@ version 2005/12/01 or later.
     ~you~try~to~use~more~columns~than~allowed~by~your~
     \@@_full_name_env:.\@@_message_hdotsfor:\ The~maximal~number~of~columns~is~ 
     \int_use:N \g_@@_static_num_of_col_int\ 
-    ~(plus~the~potential~exterior~ones).
+    ~(plus~the~potential~exterior~ones).~
     This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -17211,9 +17250,10 @@ version 2005/12/01 or later.
     \c_@@_available_keys_str
   }
   {
-    The~available~keys~are~(in~alphabetic~order):~b,~B,~borders,~c,~draw,~fill,~
-    hlines,~hvlines,~l,~line-width,~name,~opacity,~rounded-corners,~r,~
-    respect-arraystretch,~t,~T,~tikz,~transparent~and~vlines.  
+    The~available~keys~are~(in~alphabetic~order):~&-in-blocks,~ampersand-in-blocks,~
+    b,~B,~borders,~c,~draw,~fill,~hlines,~hvlines,~l,~line-width,~name,~
+    opacity,~rounded-corners,~r,~respect-arraystretch,~t,~T,~tikz,~transparent~
+    and~vlines.  
   }
 %    \end{macrocode}
 % 
@@ -17348,6 +17388,7 @@ version 2005/12/01 or later.
   { 
     The~available~keys~are~(in~alphabetic~order):~
     allow-duplicate-names,~
+    ampersand-in-blocks,~
     caption-above,~
     cell-space-bottom-limit,~
     cell-space-limits,~
@@ -17405,6 +17446,7 @@ version 2005/12/01 or later.
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    ampersand-in-blocks,~
     b,~
     baseline,~
     c,~
@@ -17469,6 +17511,7 @@ version 2005/12/01 or later.
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    ampersand-in-blocks,~
     b,~
     baseline,~
     c,~
@@ -17532,6 +17575,7 @@ version 2005/12/01 or later.
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    ampersand-in-blocks,~
     b,~
     baseline,~
     c,~

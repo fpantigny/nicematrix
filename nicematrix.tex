@@ -1042,6 +1042,7 @@ text & text \\
 \subsection{\textbackslash\textbackslash\ and \& in the blocks}
 
 \index{ampersand-in-blocks}
+\index{\&-in-blocks}
 
 \colorbox{yellow!50}{\bfseries New 6.28}\par\nobreak
 
@@ -1054,12 +1055,12 @@ in the content of a block (in order to format its contents) but there is some re
 \item For |\\|, there is no other restriction. It's possible to use |\\| in a
 block to format a text on several rows.
 
-\item In order to use |&|, the key |ampersand-in-blocks| must been activated. Then,
-the block is divided in sub-blocks as illustrated below. Be careful: with
-|ampersand-in-blocks| is in force, the (main) argument of the command |\Block|
-is syntactically divided into sub-blocks by splitting on the ampersands~|&|, the
-ampersands between curly braced are protected but not those in an
-environment.\footnote{It's not possible to write
+\item In order to use |&|, the key |ampersand-in-blocks| (alias: |&-in-blocks|)
+must been activated. Then, the block is divided in sub-blocks as illustrated
+below. Be careful: with |ampersand-in-blocks| is in force, the (main) argument
+of the command |\Block| is syntactically divided into sub-blocks by splitting on
+the ampersands~|&|, the ampersands between curly braced are protected but not
+those in an environment.\footnote{It's not possible to write
   |\Block[ampersand-in-blocks]{}{\begin{array}{cc}1&2\end{array}}|. Of course,
   it's possible without the key |ampersand-in-blocks|.}
 \end{itemize}
@@ -4499,12 +4500,10 @@ space at all between them}, the labels of the corresponding notes are composed
 together, separated by commas (this is similar to the option |multiple| of
 \pkg{footmisc} for the footnotes).
 
-\item If a command |\tabularnote{...}| is exactly at the end of a cell (with
-no space at all after), the label of the note is composed in an overlapping
-position (towards the right). This structure may provide a better alignment of
-the cells of a given column. However, since the version 6.20a, that behaviour is
-in force only when the horizontal alignment mode of the corresponding column is
-|c| or |r|.
+\item If a command |\tabularnote{...}| is exactly at the end of a cell (with no
+space at all after) and if the alignment mode of the column is |c| or |r|, the
+label of the note is composed in an overlapping position (towards the right).
+This structure may provide a better alignment of the cells of a given column.
 
 \item If the key |notes/para| is used, the notes are composed at the end of
 the array in a single paragraph (as with the key |para| of \pkg{threeparttable}).
@@ -5326,8 +5325,8 @@ counter).
 
 \smallskip
 \index{name!key for an environment}
-However, it's advisable to use instead the key |name|\footnote{Since the version
-  6.20a, the value of that key is \emph{expanded} (in the TeX sens).}. This key
+However, it's advisable to use instead the key |name|\footnote{The value of the
+key |name| is \emph{expanded} (in the TeX sens).}. This key
 gives a name to the current environment. When the environment has a name, the
 nodes are accessible with the name ``\textsl{name}-$i$-$j$'' where \textsl{name}
 is the name given to the array and $i$ and $j$ the numbers of row and column.
@@ -7775,305 +7774,6 @@ Environment |{NiceTabular*}|
 Command |\Vdotsfor| similar to |\Hdotsfor|
 
 The variable |\g_nicematrix_code_after_tl| is now public.
-
-\subsection*{Changes between versions 4.4 and 5.0}
-
-Use of the standard column types |l|, |c| and |r| instead of |L|, |C| and |R|.
-
-It's now possible to use the command |\diagbox| in a |\Block|.
-
-Command |\tabularnote|
-
-\subsection*{Changes between versions 4.3 and 4.4}
-
-New key |hvlines-except-corners| (now deprecated).
-
-\subsection*{Changes between versions 4.2 and 4.3}
-
-The horizontal centering of the content of a |\Block| is correct even when an
-instruction such as |!{\qquad}| is used in the preamble of the array.
-
-It's now possible to use the command |\Block| in the ``last row''.
-
-\subsection*{Changes between versions 4.1 and 4.2}
-
-It's now possible to write |\begin{pNiceMatrix}a&b\\c&d\end{pNiceMatrix}^2|
-with the expected result.
-
-\subsection*{Changes between versions 4.0 and 4.1}
-
-New keys |cell-space-top-limit| and |cell-space-bottom-limit|
-
-New command |\diagbox|
-
-The key |hvline| don't draw rules in the blocks (commands |\Block|) and in the
-virtual blocks corresponding to the dotted lines.
-
-\subsection*{Changes between versions 3.15 and 4.0}
-
-New environment |{NiceTabular}|
-
-Commands to color cells, rows and columns with a perfect result in the \textsc{pdf}.
-
-\subsection*{Changes between versions 3.14 and 3.15}
-
-It's possible to put labels on the dotted lines drawn by |\Ldots|, |\Cdots|,
-|\Vdots|, |\Ddots|, |\Iddots|, |\Hdotsfor| and the command |\line| in the
-|code-after| with the tokens |_| and |^|.
-
-The option |baseline| is now available in all the environments of
-\pkg{nicematrix}. Before, it was available only in |{NiceArray}|.
-
-New keyword |\CodeAfter| (in the environments of \pkg{nicematrix}).
-
-\subsection*{Changes between versions 3.13 and 3.14}
-
-Correction of a bug (question 60761504 on |stackoverflow|).
-
-Better error messages when the user uses |&| or |\\| when |light-syntax| is in
-force. 
-
-\subsection*{Changes between versions 3.12 and 3.13}
-
-The behaviour of the command |\rotate| is improved when used in the ``last
-row''.
-
-The option |dotted-lines-margin| has been renamed in |xdots/shorten| and the
-options |xdots/color| and |xdots/line-style| have been added for a complete
-customisation of the dotted lines.
-
-In the environments without preamble (|{NiceMatrix}|, |{pNiceMatrix}|, etc.),
-it's possible to use the options |l| (=|L|) or |r| (=|R|) to specify the type
-of the columns.
-
-The code of \pkg{nicematrix} no longer uses TikZ but only \textsc{pgf}. By
-default, TikZ is \emph{not} loaded by \pkg{nicematrix}.
-
-\subsection*{Changes between versions 3.11 and 3.12}
-
-Command |\rotate| in the cells of the array.
-
-Options |vlines|, |hlines| and |hvlines|.
-
-Option |baseline| pour |{NiceArray}| (not for the other environments).
-
-The name of the TikZ nodes created by the command |\Block| has changed: when
-the command has been issued in the cell $i$|-|$j$, the name is
-$i$|-|$j$|-block| and, if the creation of the ``medium nodes'' is required, a
-node $i$|-|$j$|-block-medium| is created.
-
-If the user tries to use more columns than allowed by its environment, an error
-is raised by nicematrix (instead of a low-level error).
-
-The package must be loaded with the option |obsolete-environments| if we want
-to use the deprecated environments.
-
-\subsection*{Changes between versions 3.10 and 3.11}
-
-Correction of a bug linked to |first-row| and |last-row|.
-
-\subsection*{Changes between version 3.9 and 3.10} 
-
-New option |light-syntax| (and |end-of-row|).
-
-New option |dotted-lines-margin| for fine tuning of the dotted lines.
-
-\subsection*{Changes between version 3.8 and 3.9} 
-
-New commands |\NiceMatrixLastEnv| and |\OnlyMainNiceMatrix|.
-
-New options |create-medium-nodes| and |create-large-nodes|.
-
-\subsection*{Changes between version 3.7 and 3.8} 
-
-New programmation for the command |\Block| when the block has only one row. 
-With this programmation, the vertical rules drawn by the specifier
-``\verb+|+'' at the end of the block is actually drawn. In previous versions,
-they were not because the block of one row was constructed with
-|\multicolumn|. 
-
-An error is raised when an obsolete environment is used.
-
-\subsection*{Changes between version 3.6 and 3.7} 
-
-The four ``corners'' of the matrix are correctly protected against the four
-codes: |code-for-first-col|, |code-for-last-col|, |code-for-first-row| and
-|code-for-last-row|. 
-
-New command |\pAutoNiceMatrix| and its variants (suggestion of Christophe
-Bal).
-
-\subsection*{Changes between version 3.5 and 3.6} 
-
-LaTeX counters |iRow| and |jCol| available in the cells of the array.
-
-Addition of |\normalbaselines| before the construction of the array: in
-environments like |{align}| of \pkg{amsmath} the value of |\baselineskip| is
-changed and if the options |first-row| and |last-row| were used in an
-environment of \pkg{nicematrix}, the position of the delimiters was wrong.
-
-A warning is written in the |.log| file if an obsolete environment is used.
-
-There is no longer artificial errors |Duplicate~name| in the environments of
-\pkg{amsmath}. 
-
-\subsection*{Changes between version 3.4 and 3.5} 
-
-Correction on a bug on the two previous versions where the |code-after| was
-not executed.
-
-\subsection*{Changes between version 3.3 and 3.4}
-
-Following a discussion on TeX StackExchange\footnote{cf.
-|tex.stackexchange.com/questions/510841/nicematrix-and-tikz-external-optimize|}, 
-optimization of TikZ externalization is disabled in the environments of
-\pkg{nicematrix} when the class \cls{standalone} or the package
-\pkg{standalone} is used. 
-
-\subsection*{Changes between version 3.2 and 3.3}
-
-The options |first-row|, |last-row|, |first-col| and |last-col| are now
-available in the environments |{NiceMatrix}|, |{pNiceMatrix}|,
-|{bNiceMatrix}|, etc.
-
-The option |columns-width=auto| doesn't need any more a second compilation.
-
-\subsection*{Changes between version 3.1 and 3.2 (and 3.2a)}
-
-Option |small|.
-
-\subsection*{Changes between version 3.0 and 3.1}
-
-Command |\Block| to draw block matrices.
-
-Error message when the user gives an incorrect value for |last-row|.
-
-The vertical rules in the matrices (drawn by ``\verb+|+'') are now compatible with
-the color fixed by \pkg{colortbl}.
-
-Correction of a bug: it was not possible to use the colon ``|:|'' in the
-preamble of an array when |pdflatex| was used with \pkg{french-babel} (because
-\pkg{french-babel} activates the colon in the beginning of the document).
-
-\subsection*{Changes between version 2.3 and 3.0}
-
-Modification of |\Hdotsfor|. Now |\Hdotsfor| erases the |\vlines| (of ``\verb+|+'')
-as |\hdotsfor| does.
-
-Composition of exterior rows and columns on the four sides of the matrix (and
-not only on two sides) with the options |first-row|, |last-row|, |first-col|
-and |last-col|.
-
-\subsection*{Changes between version 2.2.1 and 2.3}
-
-Compatibility with the column type |S| of \pkg{siunitx}.
-
-Option |hlines|.
-
-\subsection*{Changes between version 2.2 and 2.2.1}
-
-Improvment of the vertical dotted lines drawn by the specifier ``:'' in the
-preamble. 
-
-Modification of the position of the dotted lines drawn by |\hdottedline|.
-
-\subsection*{Changes between version 2.1.5 and 2.2}
-
-Possibility to draw horizontal dotted lines to separate rows with the command 
-|\hdottedline| (similar to the classical command |\hline| and the command
-|\hdashline| of \pkg{arydshln}). 
-
-Possibility to draw vertical dotted lines to separate columns with the
-specifier ``|:|'' in the preamble (similar to the classical specifier
-``\verb+|+'' and the specifier ``|:|'' of \pkg{arydshln}).
-
-\subsection*{Changes between version 2.1.4 and 2.1.5}
-
-Compatibility with the classes \cls{revtex4-1} and \cls{revtex4-2}.
-
-Option |allow-duplicate-names|.
-
-\subsection*{Changes between version 2.1.3 and 2.1.4}
-
-Replacement of some options |O { }| in commands and environments defined with
-\pkg{xparse} by |! O { }| (because a recent version of \pkg{xparse} introduced
-the specifier |!| and modified the default behaviour of the last optional
-arguments). 
-
-See |www.texdev.net/2018/04/21/xparse-optional-arguments-at-the-end|
-
-\subsection*{Changes between version 2.1.2 and 2.1.3}
-
-When searching the end of a dotted line from a command like |\Cdots| issued in
-the ``main matrix'' (not in the exterior column), the cells in the exterior
-column are considered as outside the matrix. That means that it's possible to
-do the following matrix with only a |\Cdots| command (and a single |\Vdots|).
-\[\begin{pNiceArray}{Wc{5mm}cWc{5mm}}[first-row,last-col]
-& C_j & \\
-\mbox{\Large $0$} & \Vdots & \mbox{\Large $0$} \\
-\strut            & a & \Cdots &  L_i \\
-\mbox{\Large $0$} &  & \mbox{\Large $0$} \\
-\end{pNiceArray}\]
-
-\subsection*{Changes between version 2.1 and 2.1.1}
-
-Small corrections: for example, the option |code-for-first-row| is now
-available in the command |\NiceMatrixOptions|. 
-
-Following a discussion on
-TeX StackExchange\footnote{cf.
-|tex.stackexchange.com/questions/450841/tikz-externalize-and-nicematrix-package|},  
-TikZ externalization is now deactivated in the environments of the
-package \pkg{nicematrix}.\footnote{Before this version, there was an error
-when using \pkg{nicematrix} with TikZ externalization. In any case, it's not
-possible to externalize the TikZ elements constructed by \pkg{nicematrix}
-because they use the options |overlay| and |remember picture|.} 
-
-\subsection*{Changes between version 2.0 and 2.1}
-
-New implementation of the environment |{pNiceArrayRC}|. With this new
-implementation, there is no restriction on the width of the columns.
-
-The package \pkg{nicematrix} no longer loads \pkg{mathtools} but only
-\pkg{amsmath}. 
-
-Creation of ``medium nodes'' and ``large nodes''.
-
-\subsection*{Changes between version 1.4 and 2.0}
-
-The versions 1.0 to 1.4 of \pkg{nicematrix} were focused on the continuous
-dotted lines whereas the version 2.0 of \pkg{nicematrix} provides different
-features to improve the typesetting of mathematical matrices. 
-
-\subsection*{Changes between version 1.3 and 1.4}
-
-The column types |w| and |W| can now be used in the environments
-|{NiceArray}|, |{pNiceArrayC}| and its variants with the same meaning as in
-the package \pkg{array}. 
-
-New option |columns-width| to fix the same width for all the columns of the
-array. 
-
-\subsection*{Changes between version 1.2 and 1.3}
-
-New environment |{pNiceArrayC}| and its variants.
-
-Correction of a bug in the definition of |{BNiceMatrix}|, |{vNiceMatrix}| and
-|{VNiceMatrix}| (in fact, it was a typo).
-
-Options are now available locally in |{pNiceMatrix}| and its variants. 
-
-The names of the options are changed. The old names were names in ``camel
-style''. 
-
-\subsection*{Changes between versions 1.1 and 1.2}
-
-New environment |{NiceArray}| with column types |L|, |C| and |R|.
-
-\subsection*{Changes between versions 1.0 and 1.1}
-
-The dotted lines are no longer drawn with TikZ nodes but with TikZ circles
-(for efficiency). 
 
 
 \cleardoublepage

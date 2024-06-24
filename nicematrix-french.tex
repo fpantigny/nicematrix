@@ -1082,6 +1082,7 @@ text & text \\
 \subsection{\textbackslash\textbackslash\ et \& dans les blocs}
 
 \index{ampersand-in-blocks}
+\index{\&-in-blocks}
 
 \colorbox{yellow!50}{\bfseries Nouveau 6.28}\par\nobreak
 
@@ -1096,14 +1097,14 @@ quelques restrictions.
 \item Pour |\\|, il n'y a pas d'autres restrictions. On peut utiliser
 |\\| dans un bloc pour composer du texte sur plusieurs lignes.  
 
-\item Pour pouvoir utiliser |&|, la clé |ampersand-in-blocks| doit avoir été
-activée. Le bloc est alors divisé en sous-blocs comme illustré ci-desous.
-Attention toutefois : quand |ampersand-in-blocks| est utilisée, l'argument
-(principal) de la commande |\Block| est découpé syntaxiquement au niveau des
-esperluettes |&|, celles entre accolades sont masquées mais pas celles dans un
-environnement.\footnote{On ne peut donc écrire :
-  |\Block[ampersand-in-blocks]{}{\begin{array}{cc}1&2\end{array}}|. Bien sûr, on
-  peut le faire sans la clé |ampersand-in-blocks|.}
+\item Pour pouvoir utiliser |&|, la clé |ampersand-in-blocks| (alias:
+|&-in-blocks|) doit avoir été activée. Le bloc est alors divisé en sous-blocs
+comme illustré ci-dessous. Attention toutefois : quand |ampersand-in-blocks| est
+utilisée, l'argument (principal) de la commande |\Block| est découpé
+syntaxiquement au niveau des esperluettes |&|, celles entre accolades sont
+masquées mais pas celles dans un environnement.\footnote{On ne peut donc écrire
+  : |\Block[ampersand-in-blocks]{}{\begin{array}{cc}1&2\end{array}}|. Bien sûr,
+  on peut le faire sans la clé |ampersand-in-blocks|.}
 \end{itemize}
 
 \bigskip
@@ -1153,6 +1154,7 @@ suivant :
 5 & un & deux & trois & quatre & cinq \\
 \end{NiceTabular}
 
+\medskip
 Dans ce codage, il s'agit de blocs de taille |1-5| qui sont coupés en trois et
 quatre sous-blocs.
 
@@ -2616,7 +2618,7 @@ On a alors accès aux commandes suivantes (les trois premières sont inspirées 
 \item \DefinitionCommande{rowcolor} à utiliser dans une case et qui colorie le
 reste de la rangée;\footnote{Si vous souhaitez une commande pour colorier les
   $n$~rangées suivantes, considérez la commande |\RowStyle| et sa clé
-  |rowcolor|, p.~\pageref{RowStyle}} 
+  |rowcolor|, p.~\pageref{RowStyle}.} 
 \item \DefinitionCommande{columncolor} à utiliser dans le préambule du tableau
 de la même manière que la commande éponyme de \pkg{colortbl} (néanmoins,
 contrairement à la commande |\columncolor| de \pkg{colortbl}, celle de
@@ -4635,12 +4637,10 @@ de l'environnement |{NiceTabular}|.
 séparés par une virgule (comme avec l'option |multiple| de \pkg{footmisc} pour
 les notes de pied de page).
 
-\item Si une commande |\tabularnote{...}| se trouve exactement à la fin d'une case
-(sans aucun espace après), l'appel de note est composé en débordement vers la
-droite (cela peut permettre de mieux conserver l'alignement des contenus d'une
-colonne). Depuis la version 6.20a, ce comportement n'a lieu que si le mode
-l'alignement de la case est |c| ou |r| (alignement horizontal centré ou en
-butée à droite). 
+\item Si une commande |\tabularnote{...}| se trouve exactement à la fin d'une
+case (sans aucun espace après) et que le mode d'alignement de la colonne est |c|
+ou~|r|, l'appel de note est composé en débordement vers la droite (cela peut
+permettre de mieux conserver l'alignement des contenus d'une colonne).
 
 \item Si la clé |notes/para| est utilisée, les notes sont composées à la fin du
 tableau en un seul paragraphe.
@@ -4702,7 +4702,7 @@ Barrère   & Bertrand & 86\\
 Nightingale\emph{\tabularnote{Souvent considérée comme la première infirmière.}%
            \tabularnote{Surnommée «la Dame à la Lampe».}} 
           & Florence\emph{\tabularnote{Cette note est commune à deux appels de notes.}} & 90 \\
-Schœlcher & Victor   & 89\emph{\tabularnote{L’appel de note déborde à droite.}} \\
+Schœlcher & Victor   & 89\emph{\tabularnote{L’appel de note déborde à droite.}}\\
 Touchet   & Marie\emph{\tabularnote{Cette note est commune à deux appels de notes.}} & 89 \\
 Wallis    & John     & 87 \\
 \bottomrule
@@ -5475,16 +5475,16 @@ environnements (pour LaTeX, il s'agit d'une commande — complètement développ
 
 \smallskip
 \index{name!clé pour un environnement}
-Il est néanmoins recommandé de passer plutôt par la clé |name|\footnote{Depuis
-  la version 6.20a, la valeur passée à cette clé est \emph{développée}, au sens
-  de TeX.}. Celle-ci permet de donner un nom à l'environnement. Une fois
-l'environnement nommé, les nœuds sont accessibles à travers les noms
-«\textsl{nom}-$i$-$j$» où \textsl{nom} est le nom donné au tableau et $i$ et $j$
-les numéros de rangée et de colonne de la case considérée. On peut les utiliser
-avec \textsc{pgf} mais l'utilisateur final préférera sans doute utiliser TikZ
-(qui est une sur-couche de \textsc{pgf}). Il faut néanmoins se souvenir que
-\pkg{nicematrix} ne charge pas TikZ par défaut. Dans les exemples qui suivent,
-on suppose que TikZ a été chargé par l'utilisateur.
+Il est néanmoins recommandé de passer plutôt par la clé |name|\footnote{La
+  valeur passée à la clé |name| est \emph{développée}, au sens de TeX.}.
+Celle-ci permet de donner un nom à l'environnement. Une fois l'environnement
+nommé, les nœuds sont accessibles à travers les noms «\textsl{nom}-$i$-$j$» où
+\textsl{nom} est le nom donné au tableau et $i$ et $j$ les numéros de rangée et
+de colonne de la case considérée. On peut les utiliser avec \textsc{pgf} mais
+l'utilisateur final préférera sans doute utiliser TikZ (qui est une sur-couche
+de \textsc{pgf}). Il faut néanmoins se souvenir que \pkg{nicematrix} ne charge
+pas TikZ par défaut. Dans les exemples qui suivent, on suppose que TikZ a été
+chargé par l'utilisateur.
 
 \medskip
 \begin{Code}[width=11cm]
@@ -7618,8 +7618,5 @@ TeXLive sont disponibles sur le serveur \textsc{svn} de TeXLive :
 % TeX-fold-preserve-comments: nil
 % fill-column: 80
 % End:
-
-
-
 
 
