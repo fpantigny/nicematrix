@@ -1,6 +1,6 @@
 % \iffalse meta-comment 
 %
-% This file should be compiled with $xelatex$.
+% This file should be compiled with $lualatex$.
 %
 % Copyright (C) 2018-2024 by F. Pantigny
 % ------------------------------------------
@@ -158,7 +158,8 @@ version 2005/12/01 or later.
 \bool_const:Nn \c_@@_tagging_array_bool
   { \IfPackageAtLeastTF { array } { 2024/05/01 } \c_true_bool \c_false_bool }
 \bool_const:Nn \c_@@_testphase_table_bool
-  { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool }
+  { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool
+  }
 %    \end{macrocode}
 % 
 %
@@ -1499,10 +1500,11 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \medskip
-% For the vertical position, the possible values are |c|, |t| and |b|. 
+% For the vertical position, the possible values are |c|, |t|, |b|, |T| and |B|
+% (but |\l_@@_vpos_block_str| will remain empty if the user doesn't use a key
+% for the vertical position).
 %    \begin{macrocode}
 \str_new:N \l_@@_vpos_block_str
-\str_set:Nn \l_@@_vpos_block_str { c }
 %    \end{macrocode}
 %
 % 
@@ -1775,6 +1777,14 @@ version 2005/12/01 or later.
 \newcounter { tabularnote }
 %    \end{macrocode}
 %
+% We want to avoid error messages for duplicate labels when the package
+% \pkg{hyperref} is used. That's why we will count all the tabular notes of the
+% whole document with |\g_@@_tabularnote_int|.
+%    \begin{macrocode}
+\int_new:N \g_@@_tabularnote_int 
+\cs_set:Npn \theHtabularnote { \int_use:N \g_@@_tabularnote_int } 
+%    \end{macrocode}
+%
 %    \begin{macrocode}
 \seq_new:N \g_@@_notes_seq
 \seq_new:N \g_@@_notes_in_caption_seq
@@ -2000,7 +2010,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \int_gdecr:N \c@tabularnote
         \int_set_eq:NN \l_tmpa_int \c@tabularnote
-        \refstepcounter { tabularnote }
+%    \end{macrocode}
+% The following line is only to avoid error messages for multipy defined labels
+% when the package \pkg{hyperref} is used.
+%    \begin{macrocode}
+        \int_gincr:N \g_@@_tabularnote_int
+        \refstepcounter { tabularnote } 
         \int_compare:nNnT \l_tmpa_int = \c@tabularnote
           { \int_gincr:N \c@tabularnote }
         \seq_clear:N \l_@@_notes_labels_seq 
@@ -13008,6 +13023,9 @@ version 2005/12/01 or later.
     b .value_forbidden:n = true ,
     B .code:n = \str_set:Nn \l_@@_vpos_block_str B ,
     B .value_forbidden:n = true ,
+    m .code:n = \str_set:Nn \l_@@_vpos_block_str c , 
+    m .value_forbidden:n = true ,
+    v-center .meta:n = m ,
     p .code:n = \bool_set_true:N \l_@@_p_block_bool , 
     p .value_forbidden:n = true ,
     color .code:n = 
@@ -13148,20 +13166,10 @@ version 2005/12/01 or later.
     \bool_set_false:N \l_tmpa_bool
     \bool_if:NT \l_@@_amp_in_blocks_bool
       { \tl_if_in:nnT { #5 } { & } { \bool_set_true:N \l_tmpa_bool } }
-    \bool_if:NTF \l_tmpa_bool
-      { \exp_args:Nee \@@_Block_vii:nnnnn }
-      {
-        \bool_if:NTF \l_@@_p_block_bool 
-          { \exp_args:Nee \@@_Block_vi:nnnnn }
-          {
-            \bool_if:nTF 
-              { 
-                ( 
-                  \int_compare_p:nNn \l_tmpa_int = \c_one_int 
-                     ||
-                  \int_compare_p:nNn \l_tmpb_int = \c_one_int  
-                ) 
-                && ! \tl_if_empty_p:n { #5 }
+    \bool_case:nF
+      { 
+        \l_tmpa_bool               { \exp_args:Nee \@@_Block_vii:nnnnn }
+        \l_@@_p_block_bool         { \exp_args:Nee \@@_Block_vi:nnnnn } 
 %    \end{macrocode}
 % For the blocks mono-column, we will compose right now in a box in order to
 % compute its width and take that width into account for the width of the
@@ -13171,12 +13179,14 @@ version 2005/12/01 or later.
 % column, it's imperative. Otherwise, the process for the determination of the
 % widths of the columns will be wrong.
 %    \begin{macrocode}
-                && ! \l_@@_X_bool 
-              }
-              { \exp_args:Nee \@@_Block_iv:nnnnn }
-              { \exp_args:Nee \@@_Block_v:nnnnn }
-          }
-      }
+        \l_@@_X_bool                { \exp_args:Nee \@@_Block_v:nnnnn }
+        { \tl_if_empty_p:n { #5 } } { \exp_args:Nee \@@_Block_v:nnnnn }
+        { \int_compare_p:nNn \l_tmpa_int = \c_one_int } 
+            { \exp_args:Nee \@@_Block_iv:nnnnn } 
+        { \int_compare_p:nNn \l_tmpb_int = \c_one_int }
+            { \exp_args:Nee \@@_Block_iv:nnnnn } 
+       }       
+       { \exp_args:Nee \@@_Block_v:nnnnn }
     { \l_tmpa_int } { \l_tmpb_int } { #3 } { #4 } { #5 } 
   }
 %    \end{macrocode}
@@ -13289,7 +13299,7 @@ version 2005/12/01 or later.
                 { ! \g_@@_rotate_bool } 
               }
 %    \end{macrocode}
-% When the block is mono-column in a column with a fixed width (eg |p{3cm}|), we
+% When the block is mono-column in a column with a fixed width (e.g. |p{3cm}|), we
 % use a |{minipage}|.
 %    \begin{macrocode}
               { 
@@ -13363,9 +13373,16 @@ version 2005/12/01 or later.
       }
 %    \end{macrocode}
 % If we are in a mono-row block we take into account the height and the depth of
-% that block for the height and the depth of the row.
+% that block for the height and the depth of the row, excepted when the block
+% uses explicitely an option of vertical position.
 %    \begin{macrocode}
-     \int_compare:nNnT { #1 } = \c_one_int
+     \bool_lazy_and:nnT
+       { \int_compare_p:nNn { #1 } = \c_one_int }
+%    \end{macrocode}
+% If the user has not used a key for the vertical position of the block, then
+% |\l_@@_vpos_block_str| remains empty.
+%    \begin{macrocode}
+       { \str_if_empty_p:N \l_@@_vpos_block_str }
        {
          \dim_gset:Nn \g_@@_blocks_ht_dim
            {
@@ -14211,13 +14228,15 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% Now, we will put the label of the block.
+% Now, we will put the label of the block. We recall that |\l_@@_vpos_block_str|
+% is empty when the user has not used a key for the vertical position of the block.
 %    \begin{macrocode}
         \pgfpicture
         \pgfrememberpicturepositiononpagetrue
         \pgf@relevantforpicturesizefalse 
         \bool_lazy_any:nTF
           {
+            { \str_if_empty_p:N \l_@@_vpos_block_str } % added 2024/06/29
             { \str_if_eq_p:on \l_@@_vpos_block_str { c } }
             { \str_if_eq_p:on \l_@@_vpos_block_str { T } }
             { \str_if_eq_p:on \l_@@_vpos_block_str { B } }
@@ -14245,6 +14264,19 @@ version 2005/12/01 or later.
               {
                 \str_case:on \l_@@_vpos_block_str
                   {
+%    \end{macrocode}
+% We recall that |\l_@@_vpos_block_str| is empty when the user has not used a key
+% for the vertical position of the block.
+%    \begin{macrocode}
+                    { } { % added 2024-06-29
+                          \str_case:on \l_@@_hpos_block_str
+                            {
+                              c { center } 
+                              l { west } 
+                              r { east } 
+                              j { center }
+                            }
+                        } 
                     c { 
                         \str_case:on \l_@@_hpos_block_str
                           {
@@ -15695,6 +15727,7 @@ version 2005/12/01 or later.
       {
         \nullfont
         \c_math_toggle_token
+        \colorlet { current-color } { . }
         \@@_color:o \l_@@_delimiters_color_tl 
         \left .
         \vcenter 
@@ -15706,7 +15739,7 @@ version 2005/12/01 or later.
           } 
         \right #1 
         \tl_if_empty:nF { #3 } { _ { \smash { #3 } } }
-        ^ { \smash { #4 } } 
+        ^ { \color { current-color } \smash { #4 } } 
         \c_math_toggle_token
       } 
       { #2 }
@@ -15744,9 +15777,12 @@ version 2005/12/01 or later.
   {
     left-shorten .bool_set:N = \l_@@_brace_left_shorten_bool ,
     left-shorten .default:n = true ,
+    left-shorten .value_forbidden:n = true ,
     right-shorten .bool_set:N = \l_@@_brace_right_shorten_bool ,
-    shorten .meta:n = { left-shorten , right-shorten } , 
     right-shorten .default:n = true ,
+    right-shorten .value_forbidden:n = true ,
+    shorten .meta:n = { left-shorten , right-shorten } , 
+    shorten .value_forbidden:n = true ,
     yshift .dim_set:N = \l_@@_brace_yshift_dim , 
     yshift .value_required:n = true ,
     yshift .initial:n = \c_zero_dim ,
@@ -17387,6 +17423,7 @@ version 2005/12/01 or later.
   }
   { 
     The~available~keys~are~(in~alphabetic~order):~
+    &-in-blocks,~
     allow-duplicate-names,~
     ampersand-in-blocks,~
     caption-above,~
@@ -17446,6 +17483,7 @@ version 2005/12/01 or later.
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    &-in-blocks,~
     ampersand-in-blocks,~
     b,~
     baseline,~
@@ -17511,6 +17549,7 @@ version 2005/12/01 or later.
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    &-in-blocks,~
     ampersand-in-blocks,~
     b,~
     baseline,~
@@ -17575,6 +17614,7 @@ version 2005/12/01 or later.
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    &-in-blocks,~
     ampersand-in-blocks,~
     b,~
     baseline,~

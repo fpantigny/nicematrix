@@ -33,7 +33,8 @@
 \bool_const:Nn \c__nicematrix_tagging_array_bool
   { \IfPackageAtLeastTF { array } { 2024/05/01 } \c_true_bool \c_false_bool }
 \bool_const:Nn \c__nicematrix_testphase_table_bool
-  { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool }
+  { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool
+  }
 \cs_new_protected:Npn \__nicematrix_error:n { \msg_error:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_warning:n { \msg_warning:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_error:nn { \msg_error:nnn { nicematrix } }
@@ -485,7 +486,6 @@
 \bool_new:N \l__nicematrix_p_block_bool
 \bool_new:N \l__nicematrix_nocolor_used_bool
 \str_new:N \l__nicematrix_vpos_block_str
-\str_set:Nn \l__nicematrix_vpos_block_str { c }
 \bool_new:N \l__nicematrix_draw_first_bool
 \bool_new:N \l__nicematrix_vlines_block_bool
 \bool_new:N \l__nicematrix_hlines_block_bool
@@ -543,6 +543,8 @@
     \dim_const:Nn \c__nicematrix_innersep_middle_dim { 0.17 em }
   }
 \newcounter { tabularnote }
+\int_new:N \g__nicematrix_tabularnote_int
+\cs_set:Npn \theHtabularnote { \int_use:N \g__nicematrix_tabularnote_int }
 \seq_new:N \g__nicematrix_notes_seq
 \seq_new:N \g__nicematrix_notes_in_caption_seq
 \tl_new:N \g__nicematrix_tabularnote_tl
@@ -658,6 +660,7 @@
           }
         \int_gdecr:N \c@tabularnote
         \int_set_eq:NN \l_tmpa_int \c@tabularnote
+        \int_gincr:N \g__nicematrix_tabularnote_int
         \refstepcounter { tabularnote }
         \int_compare:nNnT \l_tmpa_int = \c@tabularnote
           { \int_gincr:N \c@tabularnote }
@@ -7104,6 +7107,9 @@
     b .value_forbidden:n = true ,
     B .code:n = \str_set:Nn \l__nicematrix_vpos_block_str B ,
     B .value_forbidden:n = true ,
+    m .code:n = \str_set:Nn \l__nicematrix_vpos_block_str c ,
+    m .value_forbidden:n = true ,
+    v-center .meta:n = m ,
     p .code:n = \bool_set_true:N \l__nicematrix_p_block_bool ,
     p .value_forbidden:n = true ,
     color .code:n =
@@ -7167,26 +7173,22 @@
     \bool_set_false:N \l_tmpa_bool
     \bool_if:NT \l__nicematrix_amp_in_blocks_bool
       { \tl_if_in:nnT { #5 } { & } { \bool_set_true:N \l_tmpa_bool } }
-    \bool_if:NTF \l_tmpa_bool
-      { \exp_args:Nee \__nicematrix_Block_vii:nnnnn }
+    \bool_case:nF
       {
-        \bool_if:NTF \l__nicematrix_p_block_bool
-          { \exp_args:Nee \__nicematrix_Block_vi:nnnnn }
-          {
-            \bool_if:nTF
-              {
-                (
-                  \int_compare_p:nNn \l_tmpa_int = \c_one_int
-                     ||
-                  \int_compare_p:nNn \l_tmpb_int = \c_one_int
-                )
-                && ! \tl_if_empty_p:n { #5 }
-                && ! \l__nicematrix_X_bool
-              }
-              { \exp_args:Nee \__nicematrix_Block_iv:nnnnn }
-              { \exp_args:Nee \__nicematrix_Block_v:nnnnn }
-          }
-      }
+        \l_tmpa_bool
+            { \exp_args:Nee \__nicematrix_Block_vii:nnnnn }
+        \l__nicematrix_p_block_bool
+            { \exp_args:Nee \__nicematrix_Block_vi:nnnnn }
+        \l__nicematrix_X_bool
+            { \exp_args:Nee \__nicematrix_Block_v:nnnnn }
+        { \tl_if_empty_p:n { #5 } }
+            { \exp_args:Nee \__nicematrix_Block_v:nnnnn }
+        { \int_compare_p:nNn \l_tmpa_int = \c_one_int }
+            { \exp_args:Nee \__nicematrix_Block_iv:nnnnn }
+        { \int_compare_p:nNn \l_tmpb_int = \c_one_int }
+            { \exp_args:Nee \__nicematrix_Block_iv:nnnnn }
+       }
+       { \exp_args:Nee \__nicematrix_Block_v:nnnnn }
     { \l_tmpa_int } { \l_tmpb_int } { #3 } { #4 } { #5 }
   }
 \cs_new_protected:Npn \__nicematrix_Block_iv:nnnnn #1 #2 #3 #4 #5
@@ -7284,7 +7286,9 @@
               }
           }
       }
-     \int_compare:nNnT { #1 } = \c_one_int
+     \bool_lazy_and:nnT
+       { \int_compare_p:nNn { #1 } = \c_one_int }
+       { \str_if_empty_p:N \l__nicematrix_vpos_block_str }
        {
          \dim_gset:Nn \g__nicematrix_blocks_ht_dim
            {
@@ -7877,6 +7881,7 @@
         \pgf@relevantforpicturesizefalse
         \bool_lazy_any:nTF
           {
+            { \str_if_empty_p:N \l__nicematrix_vpos_block_str } % added 2024/06/29
             { \str_if_eq_p:on \l__nicematrix_vpos_block_str { c } }
             { \str_if_eq_p:on \l__nicematrix_vpos_block_str { T } }
             { \str_if_eq_p:on \l__nicematrix_vpos_block_str { B } }
@@ -7892,6 +7897,15 @@
               {
                 \str_case:on \l__nicematrix_vpos_block_str
                   {
+                    { } { % added 2024-06-29
+                          \str_case:on \l__nicematrix_hpos_block_str
+                            {
+                              c { center }
+                              l { west }
+                              r { east }
+                              j { center }
+                            }
+                        }
                     c {
                         \str_case:on \l__nicematrix_hpos_block_str
                           {
@@ -8847,6 +8861,7 @@
       {
         \nullfont
         \c_math_toggle_token
+        \colorlet { current-color } { . }
         \__nicematrix_color:o \l__nicematrix_delimiters_color_tl
         \left .
         \vcenter
@@ -8858,7 +8873,7 @@
           }
         \right #1
         \tl_if_empty:nF { #3 } { _ { \smash { #3 } } }
-        ^ { \smash { #4 } }
+        ^ { \color { current-color } \smash { #4 } }
         \c_math_toggle_token
       }
       { #2 }
@@ -8878,9 +8893,12 @@
   {
     left-shorten .bool_set:N = \l__nicematrix_brace_left_shorten_bool ,
     left-shorten .default:n = true ,
+    left-shorten .value_forbidden:n = true ,
     right-shorten .bool_set:N = \l__nicematrix_brace_right_shorten_bool ,
-    shorten .meta:n = { left-shorten , right-shorten } ,
     right-shorten .default:n = true ,
+    right-shorten .value_forbidden:n = true ,
+    shorten .meta:n = { left-shorten , right-shorten } ,
+    shorten .value_forbidden:n = true ,
     yshift .dim_set:N = \l__nicematrix_brace_yshift_dim ,
     yshift .value_required:n = true ,
     yshift .initial:n = \c_zero_dim ,
@@ -10113,6 +10131,7 @@
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    &-in-blocks,~
     allow-duplicate-names,~
     ampersand-in-blocks,~
     caption-above,~
@@ -10167,6 +10186,7 @@
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    &-in-blocks,~
     ampersand-in-blocks,~
     b,~
     baseline,~
@@ -10225,6 +10245,7 @@
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    &-in-blocks,~
     ampersand-in-blocks,~
     b,~
     baseline,~
@@ -10286,6 +10307,7 @@
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
+    &-in-blocks,~
     ampersand-in-blocks,~
     b,~
     baseline,~

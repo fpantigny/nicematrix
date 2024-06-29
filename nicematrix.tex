@@ -1046,7 +1046,7 @@ text & text \\
 
 \colorbox{yellow!50}{\bfseries New 6.28}\par\nobreak
 
-The extension \pkg{nicemtrix} provides the ability to use |\\| and |&| directly
+The extension \pkg{nicematrix} provides the ability to use |\\| and |&| directly
 in the content of a block (in order to format its contents) but there is some rectrictions.
 
 \begin{itemize}
@@ -1056,7 +1056,9 @@ in the content of a block (in order to format its contents) but there is some re
 block to format a text on several rows.
 
 \item In order to use |&|, the key |ampersand-in-blocks| (alias: |&-in-blocks|)
-must been activated. Then, the block is divided in sub-blocks as illustrated
+must been activated\footnote{Otherwise, the use of~|&| in the command |\Block|
+  will raise a TeX error :\\ 
+|! Extra alignment tab has been changed to \cr.|}. Then, the block is divided in sub-blocks as illustrated
 below. Be careful: with |ampersand-in-blocks| is in force, the (main) argument
 of the command |\Block| is syntactically divided into sub-blocks by splitting on
 the ampersands~|&|, the ampersands between curly braced are protected but not
@@ -1065,7 +1067,33 @@ those in an environment.\footnote{It's not possible to write
   it's possible without the key |ampersand-in-blocks|.}
 \end{itemize}
 
-When the key |ampersand-in-blocks|
+
+\bigskip
+With the ampserand |&|, it's possible to divide horizontally a block in
+sub-blocks of \emph{the same size}.
+
+\medskip
+\begin{Code}[width=85mm]
+\begin{NiceTabular}{ll}%
+   [hvlines,ampersand-in-blocks]
+  & les cinq premiers entiers naturels \\
+3 & \Block{un&deux&trois} \\
+4 & \Block{un&deux&trois& quatre} \\
+5 & \Block{un&deux&trois&quatre&cinq} \\
+\end{NiceTabular}
+\end{Code}
+%
+\begin{NiceTabular}{ll}%
+   [hvlines,ampersand-in-blocks]
+  & les cinq premiers entiers naturels \\ 
+3 & \Block{}{un & deux & trois} \\
+4 & \Block{}{un& deux & trois & quatre} \\
+5 & \Block{}{un & deux & trois & quatre & cinq} \\
+\end{NiceTabular}
+
+
+
+
 As we can see, the blocks (which was are in fact mono-cell blocks) are divided
 into sub-blocks of the same size. However, maybe the following code would be prefered.
 
@@ -1610,19 +1638,19 @@ individual environments. That key takes in as argument a list of
 will be used to use that new type of rule.
 
 \begin{itemize}
-\item the key |command| is the name (without the backslash) of a command that
-will be created by \pkg{nicematrix} and that will be available for the final
-user in order to draw horizontal rules (similarly to |\hline|);
+\item the key \Definition{command} is the name (without the backslash) of a
+command that will be created by \pkg{nicematrix} and that will be available for
+the final user in order to draw horizontal rules (similarly to |\hline|);
 
-\item the key |ccommand| is the name (without the backslash) of a command
-that will be created by \pkg{nicematrix} and that will be available for the
-final user to order to draw partial horizontal rules (similarly to |\cline|,
-hence the name |ccommand|): the argument of that command is a list of
-intervals of columns specified by the syntax~$i$ or $i$-$j$.\footnote{It's
-recommended to use such commands only once in a row because each use will
-create space between the rows corresponding to the total width of the rule.}
+\item the key \Definition{ccommand} is the name (without the backslash) of a
+command that will be created by \pkg{nicematrix} and that will be available for
+the final user to order to draw partial horizontal rules (similarly to |\cline|,
+hence the name |ccommand|): the argument of that command is a list of intervals
+of columns specified by the syntax~$i$ or $i$-$j$.\footnote{It's recommended to
+  use such commands only once in a row because each use will create space
+  between the rows corresponding to the total width of the rule.}
 
-\item the key |letter| takes in as argument a letter\footnote{The following
+\item the key \Definition{letter} takes in as argument a letter\footnote{The following
 letters are forbidden: \verb+lcrpmbVX|()[]!@<>+} that the user will use in
 the preamble of an environment with preamble (such as |{NiceTabular}| in order
 to specify a vertical rule.
@@ -1647,15 +1675,15 @@ inter-rule space (as possible with \pkg{colortbl} for instance).
 \index{multiplicity (key of ``custom-line'')}
 \index{color!key of ``custom-line''}
 \index{sep-color (key of ``custom-line'')}
-\item the key |multiplicity| is the number of consecutive rules that will be
-drawn: for instance, a value of $2$ will create double rules such those
+\item the key \Definition{multiplicity} is the number of consecutive rules that
+will be drawn: for instance, a value of $2$ will create double rules such those
 created by |\hline\hline| or \verb+||+ in the preamble of an environment;
 
-\item the key |color| sets the color of the rules ;
+\item the key \Definition{color} sets the color of the rules ;
 
-\item the key |sep-color| sets the color between two successive rules (should be
-used only in conjonction with |multiplicity|). The name of that key is inspired
-by the command |\doublerulesepcolor| of \pkg{colortbl}.
+\item the key \Definition{sep-color} sets the color between two successive rules
+(should be used only in conjonction with |multiplicity|). The name of that key
+is inspired by the command |\doublerulesepcolor| of \pkg{colortbl}.
 \end{itemize}
 
 \medskip
@@ -1743,10 +1771,10 @@ four & \cellcolor{yellow} five & six \\
 \index{tikzz@tikz!key of ``custom-line''}
 \index{total-width (key of ``custom-line'')}
 
-It's possible to use the key |tikz| (if TikZ is loaded). In that case, the
-rule is drawn directly with TikZ by using as parameters the value of the key
-|tikz| which must be a list of \textsl{key=value} pairs which may be applied
-to a TikZ path.
+It's possible to use the key \Definition{tikz} (if TikZ is loaded). In that
+case, the rule is drawn directly with TikZ by using as parameters the value of
+the key |tikz| which must be a list of \textsl{key=value} pairs which may be
+applied to a TikZ path.
 
 By default, no space is reserved for the rule that will be drawn with TikZ. It
 is possible to specify a reservation (horizontal for a vertical rule and

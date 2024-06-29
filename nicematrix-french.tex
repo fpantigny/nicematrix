@@ -1092,19 +1092,22 @@ L'extension \pkg{nicematrix} offre la possibilité d'utiliser directement |\\| e
 quelques restrictions.
 
 \begin{itemize}
-\item On ne doit pas utiliser |&| et |\\| dans le même bloc.
+\item On ne doit pas utiliser à la fois |&| et |\\| dans le même bloc.
 
 \item Pour |\\|, il n'y a pas d'autres restrictions. On peut utiliser
 |\\| dans un bloc pour composer du texte sur plusieurs lignes.  
 
 \item Pour pouvoir utiliser |&|, la clé |ampersand-in-blocks| (alias:
-|&-in-blocks|) doit avoir été activée. Le bloc est alors divisé en sous-blocs
-comme illustré ci-dessous. Attention toutefois : quand |ampersand-in-blocks| est
-utilisée, l'argument (principal) de la commande |\Block| est découpé
-syntaxiquement au niveau des esperluettes |&|, celles entre accolades sont
-masquées mais pas celles dans un environnement.\footnote{On ne peut donc écrire
-  : |\Block[ampersand-in-blocks]{}{\begin{array}{cc}1&2\end{array}}|. Bien sûr,
-  on peut le faire sans la clé |ampersand-in-blocks|.}
+|&-in-blocks|) doit avoir été activée\footnote{Si ce n'est pas le cas,
+  l'utilisation de |&| dans la commande |\Block| provequera une erreur : 
+|! Extra alignment tab has been changed to \cr.| de TeX.}. Le bloc est alors
+divisé en sous-blocs comme illustré ci-dessous. Attention toutefois : quand
+|ampersand-in-blocks| est utilisée, l'argument (principal) de la commande
+|\Block| est découpé syntaxiquement au niveau des esperluettes |&|, celles entre
+accolades sont masquées mais pas celles dans un environnement.\footnote{On ne
+  peut donc pas écrire :
+  |\Block[ampersand-in-blocks]{}{\begin{array}{cc}1&2\end{array}}|. Bien sûr, on
+  peut le faire sans la clé |ampersand-in-blocks|.}
 \end{itemize}
 
 \bigskip
@@ -4591,6 +4594,7 @@ En fait, cette commande n'est disponible que si l'extension \pkg{enumitem} a ét
 chargée (avant ou après \pkg{nicematrix}). Les notes sont en effet composées en
 fin de tableau selon un type de liste défini par l'extension \pkg{enumitem}.
 
+\medskip
 \begin{Code}
 \begin{NiceTabular}{@{}llr@{}}
 \toprule \RowStyle{\bfseries}
