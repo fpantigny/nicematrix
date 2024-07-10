@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{6.28a}
-\def\myfiledate{2024/06/24}
+\def\myfileversion{6.28b}
+\def\myfiledate{2024/06/29}
 %
 %
 %<*batchfile>  
@@ -4592,7 +4592,7 @@ version 2005/12/01 or later.
     \skip_horizontal:N \l_@@_right_margin_dim 
     \skip_horizontal:N \l_@@_extra_right_margin_dim 
  
-    % % awful workaround
+    % awful workaround
     \int_compare:nNnT \g_@@_col_total_int = \c_one_int
       {
         \dim_compare:nNnT \l_@@_columns_width_dim > \c_zero_dim 
@@ -13182,11 +13182,11 @@ version 2005/12/01 or later.
         \l_@@_X_bool                { \exp_args:Nee \@@_Block_v:nnnnn }
         { \tl_if_empty_p:n { #5 } } { \exp_args:Nee \@@_Block_v:nnnnn }
         { \int_compare_p:nNn \l_tmpa_int = \c_one_int } 
-            { \exp_args:Nee \@@_Block_iv:nnnnn } 
+                                    { \exp_args:Nee \@@_Block_iv:nnnnn } 
         { \int_compare_p:nNn \l_tmpb_int = \c_one_int }
-            { \exp_args:Nee \@@_Block_iv:nnnnn } 
-       }       
-       { \exp_args:Nee \@@_Block_v:nnnnn }
+                                    { \exp_args:Nee \@@_Block_iv:nnnnn } 
+      }       
+      { \exp_args:Nee \@@_Block_v:nnnnn }
     { \l_tmpa_int } { \l_tmpb_int } { #3 } { #4 } { #5 } 
   }
 %    \end{macrocode}
@@ -13425,7 +13425,6 @@ version 2005/12/01 or later.
                 { m }
                 { \int_compare:nNnT \c@iRow = \l_@@_last_row_int T }
             }
-
         }
         { 
           \box_use_drop:c 

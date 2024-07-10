@@ -170,10 +170,9 @@ If you use LaTeX via Internet with, for example, Overleaf, you
 can upload the file |nicematrix.sty| in the repertory of your 
 project in order to take full advantage of the latest version de
 \pkg{nicematrix}.\footnote{The latest version of the file
-|nicematrix.sty| may be downloaded from the \textsc{svn} server of
-TeXLive:\newline
+|nicematrix.sty| may be downloaded on the Github depot of \pkg{nicematrix}:\newline
 \small
-\url{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}}
+\url{https://github.com/fpantigny/nicematrix/releases}}
 
 \medskip
 This package can be used with |xelatex|, |lualatex|, |pdflatex| but also by
@@ -195,8 +194,9 @@ and the positions of the rules of the tabular created by \pkg{array} and to
 use these nodes to develop new features. As usual with \textsc{pgf}, the
 coordinates of these nodes are written in the |aux| to be used on the next
 compilation and that's why \pkg{nicematrix} may need \textbf{several
-compilations}.\footnote{If you use Overleaf, Overleaf will do automatically
-a sufficient number of compilations.}
+compilations}\footnote{If you use Overleaf, Overleaf will do automatically
+a sufficient number of compilations.}. One must not use the command |\nofiles|
+(which prevents the creation of the |aux| file).
 
 \medskip
 Most features of \pkg{nicematrix} may be used without explicit use of
@@ -3363,8 +3363,8 @@ The option |nullify-dots| smashes the instructions |\Ldots| (and the variants)
 horizontally but also vertically.
 
 \medskip
-Caution : the key |nullify-dots| has a name that may be confusing; that key does
-not imply that the dotted rules won't be drawn!
+\textbf{Caution}: the key |nullify-dots| has a name that may be confusing; that
+key does not imply that the dotted rules won't be drawn!
 
 
 
@@ -4330,7 +4330,7 @@ $\begin{pNiceMatrix}
   CodeAfter}
 
 
-\index{SubMatrix@\texttt{\textbackslash TikzEveryCell} (command of 
+\index{tikzeverycell@\texttt{\textbackslash TikzEveryCell} (command of 
 \texttt{\textbackslash CodeAfter}\newline and 
 \texttt{\textbackslash CodeBefore})|textbf}
 \label{TikzEveryCell}
@@ -4381,12 +4381,41 @@ which are the other keys in the argument of |\TikzEveryCell|.
 \endgroup
 
 \bigskip
-The command |\TikzEveryCell| has two keys:
+The command |\TikzEveryCell| has two optional keys, available between square brackets.
 \begin{itemize}
 \item with the key \Definition{empty}, the command only acts on the empty cells;
 
 \item with key \Definition{non-empty}, the command only acts on the non-empty cells.
 \end{itemize}
+
+\medskip
+\begin{Code}[width=9cm]
+\renewcommand{\arraystretch}{1.4}
+\begin{NiceTabular}{cccccc}[hvlines]
+  P & O & U & R & V & U \\
+  O &   &   & E & I &   \\
+  M & O & R & F & A & L \\
+  E & T & A & L &   & E \\
+  L & A & S & E & R & S \\
+  O &   & E & X & I & T
+\CodeAfter
+  \emph{\TikzEveryCell[empty]{fill=gray,draw}}
+\end{NiceTabular}
+\end{Code}
+\begin{scope}
+\renewcommand{\arraystretch}{1.4}
+\begin{NiceTabular}{cccccc}[hvlines]
+  P & O & U & R & V & U \\
+  O &   &   & E & I &   \\
+  M & O & R & F & A & L \\
+  E & T & A & L &   & E \\
+  L & A & S & E & R & S \\
+  O &   & E & X & I & T
+\CodeAfter
+  \TikzEveryCell[empty]{fill=gray,draw}
+\end{NiceTabular}
+\end{scope}
+
 
 \medskip
 The commmand |\TikzEveryCell| is, in fact, also available in the |\CodeBefore|.

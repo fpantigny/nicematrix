@@ -176,8 +176,8 @@ avec une distribution TeX comme MiKTeX, TeX~Live ou MacTeX.
 Overleaf) vous pouvez télécharger le fichier |nicematrix.sty| dans le dossier de
 votre projet pour bénéficier de la dernière version de
 \pkg{nicematrix}.\footnote{La dernière version de |nicematrix.sty| peut
-  être téléchargée sur le serveur \textsc{svn} de TeXLive : \newline \small
-  \url{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}}
+  être téléchargée sur le dépôt Github de \pkg{nicematrix} : \newline \small
+  \url{https://github.com/fpantigny/nicematrix/releases}}
 
 \medskip
 Cette extension peut être utilisée avec |xelatex|, |lualatex| et |pdflatex| mais
@@ -200,8 +200,9 @@ utiliser pour développer de nouvelles fonctionnalités. Comme toujours avec
 \textsc{pgf}, les coordonnées de ces nœuds sont écrites dans le fichier |aux|
 pour être utilisées à la compilation suivante. C'est pourquoi l'utilisation de
 \pkg{nicematrix} nécessite \textbf{plusieurs compilations
-  successives}.\footnote{Si vous utilisez Overleaf, Overleaf effectue
-  automatiquement un nombre de compilations suffisant.}
+  successives}\footnote{Si vous utilisez Overleaf, Overleaf effectue
+  automatiquement un nombre de compilations suffisant.}. L'utilisateur ne doit
+pas utiliser la commande |\nofiles| (qui bloque l'écriture du fichier |aux|). 
 
 \medskip
 La plupart des fonctionnalités de \pkg{nicematrix} sont accessibles sans avoir à
@@ -1099,13 +1100,13 @@ quelques restrictions.
 
 \item Pour pouvoir utiliser |&|, la clé |ampersand-in-blocks| (alias:
 |&-in-blocks|) doit avoir été activée\footnote{Si ce n'est pas le cas,
-  l'utilisation de |&| dans la commande |\Block| provequera une erreur : 
-|! Extra alignment tab has been changed to \cr.| de TeX.}. Le bloc est alors
-divisé en sous-blocs comme illustré ci-dessous. Attention toutefois : quand
-|ampersand-in-blocks| est utilisée, l'argument (principal) de la commande
-|\Block| est découpé syntaxiquement au niveau des esperluettes |&|, celles entre
-accolades sont masquées mais pas celles dans un environnement.\footnote{On ne
-  peut donc pas écrire :
+  l'utilisation de |&| dans l'argument principal de la commande |\Block|
+  provoquera une erreur : |! Extra alignment tab has been changed to \cr| de
+  TeX.}. Le bloc est alors divisé en sous-blocs comme illustré ci-dessous.
+Attention toutefois : quand |ampersand-in-blocks| est utilisée, l'argument
+(principal) de la commande |\Block| est découpé syntaxiquement au niveau des
+esperluettes |&|, celles entre accolades sont masquées mais pas celles dans un
+environnement.\footnote{On ne peut donc pas écrire :
   |\Block[ampersand-in-blocks]{}{\begin{array}{cc}1&2\end{array}}|. Bien sûr, on
   peut le faire sans la clé |ampersand-in-blocks|.}
 \end{itemize}
@@ -3450,8 +3451,8 @@ L'option |nullify-dots| «smashe» les instructions |\Ldots| (et ses variantes)
 horizontalement mais aussi verticalement.
 
 \medskip
-Attention : la clé |nullify-dots| a un nom qui peut prêter à confusion ; elle
-n'implique pas que la ligne en pointillés ne sera pas tracée !
+\textbf{Attention} : la clé |nullify-dots| a un nom qui peut prêter à confusion ; 
+elle n'implique pas que la ligne en pointillés ne sera pas tracée ! 
 
 
 \subsection{Les commandes \textbackslash Hdotsfor et \textbackslash Vdotsfor}
@@ -4426,7 +4427,7 @@ $\begin{pNiceMatrix}
 
 \subsection{La commande \textbackslash TikzEveryCell dans le \textbackslash CodeAfter}
 
-\index{SubMatrix@\texttt{\textbackslash TikzEveryCell} (commande du 
+\index{tikzeverycell@\texttt{\textbackslash TikzEveryCell} (commande du 
 \texttt{\textbackslash CodeAfter}\newline et du
 \texttt{\textbackslash CodeBefore})|textbf}
 \label{TikzEveryCell}
@@ -4481,13 +4482,43 @@ l'argument de |\TikzEveryCell|.
 
 
 \bigskip
-La commande |\TikzEveryCell| possède deux clés :
+La commande |\TikzEveryCell| possède deux clés, utilisables en argument
+optionnel, entre crochets.
 \begin{itemize}
 \item avec la clé \Definition{empty}, la commande ne s'applique qu'aux cases
 vides ;
 \item avec la clé \Definition{non-empty}, la commande ne s'applique qu'aux
 cases non vides.
 \end{itemize}
+
+\medskip
+\begin{Code}[width=9cm]
+\renewcommand{\arraystretch}{1.4}
+\begin{NiceTabular}{cccccc}[hvlines]
+  P & O & U & R & V & U \\
+  O &   &   & E & I &   \\
+  M & O & R & F & A & L \\
+  E & T & A & L &   & E \\
+  L & A & S & E & R & S \\
+  O &   & E & X & I & T
+\CodeAfter
+  \emph{\TikzEveryCell[empty]{fill=gray,draw}}
+\end{NiceTabular}
+\end{Code}
+\begin{scope}
+\renewcommand{\arraystretch}{1.4}
+\begin{NiceTabular}{cccccc}[hvlines]
+  P & O & U & R & V & U \\
+  O &   &   & E & I &   \\
+  M & O & R & F & A & L \\
+  E & T & A & L &   & E \\
+  L & A & S & E & R & S \\
+  O &   & E & X & I & T
+\CodeAfter
+  \TikzEveryCell[empty]{fill=gray,draw}
+\end{NiceTabular}
+\end{scope}
+
 
 
 \medskip
