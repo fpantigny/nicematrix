@@ -2013,7 +2013,7 @@
     \skip_horizontal:N \l__nicematrix_right_margin_dim
     \skip_horizontal:N \l__nicematrix_extra_right_margin_dim
 
-    % % awful workaround
+    % awful workaround
     \int_compare:nNnT \g__nicematrix_col_total_int = \c_one_int
       {
         \dim_compare:nNnT \l__nicematrix_columns_width_dim > \c_zero_dim
@@ -4658,11 +4658,14 @@
               { \l__nicematrix_y_final_dim - \l__nicematrix_y_initial_dim }
           }
           {
-            \dim_set:Nn \l__nicematrix_y_final_dim
+            \dim_compare:nNnF \g__nicematrix_delta_x_one_dim = \c_zero_dim
               {
-                \l__nicematrix_y_initial_dim +
-                ( \l__nicematrix_x_final_dim - \l__nicematrix_x_initial_dim ) *
-                \dim_ratio:nn \g__nicematrix_delta_y_one_dim \g__nicematrix_delta_x_one_dim
+                \dim_set:Nn \l__nicematrix_y_final_dim
+                  {
+                    \l__nicematrix_y_initial_dim +
+                    ( \l__nicematrix_x_final_dim - \l__nicematrix_x_initial_dim ) *
+                    \dim_ratio:nn \g__nicematrix_delta_y_one_dim \g__nicematrix_delta_x_one_dim
+                  }
               }
           }
       }
@@ -4707,11 +4710,14 @@
               { \l__nicematrix_y_final_dim - \l__nicematrix_y_initial_dim }
           }
           {
-            \dim_set:Nn \l__nicematrix_y_final_dim
+            \dim_compare:nNnF \g__nicematrix_delta_x_two_dim = \c_zero_dim
               {
-                \l__nicematrix_y_initial_dim +
-                ( \l__nicematrix_x_final_dim - \l__nicematrix_x_initial_dim ) *
-                \dim_ratio:nn \g__nicematrix_delta_y_two_dim \g__nicematrix_delta_x_two_dim
+                \dim_set:Nn \l__nicematrix_y_final_dim
+                  {
+                    \l__nicematrix_y_initial_dim +
+                    ( \l__nicematrix_x_final_dim - \l__nicematrix_x_initial_dim ) *
+                    \dim_ratio:nn \g__nicematrix_delta_y_two_dim \g__nicematrix_delta_x_two_dim
+                  }
               }
           }
       }
@@ -7180,11 +7186,11 @@
         \l__nicematrix_X_bool                { \exp_args:Nee \__nicematrix_Block_v:nnnnn }
         { \tl_if_empty_p:n { #5 } } { \exp_args:Nee \__nicematrix_Block_v:nnnnn }
         { \int_compare_p:nNn \l_tmpa_int = \c_one_int }
-            { \exp_args:Nee \__nicematrix_Block_iv:nnnnn }
+                                    { \exp_args:Nee \__nicematrix_Block_iv:nnnnn }
         { \int_compare_p:nNn \l_tmpb_int = \c_one_int }
-            { \exp_args:Nee \__nicematrix_Block_iv:nnnnn }
-       }
-       { \exp_args:Nee \__nicematrix_Block_v:nnnnn }
+                                    { \exp_args:Nee \__nicematrix_Block_iv:nnnnn }
+      }
+      { \exp_args:Nee \__nicematrix_Block_v:nnnnn }
     { \l_tmpa_int } { \l_tmpb_int } { #3 } { #4 } { #5 }
   }
 \cs_new_protected:Npn \__nicematrix_Block_iv:nnnnn #1 #2 #3 #4 #5
