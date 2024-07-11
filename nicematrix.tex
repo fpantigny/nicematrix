@@ -2538,9 +2538,12 @@ current environment.\footnote{Up to now, this key is \emph{not} available in |\N
 There are several commands available (the first three ones are inspired by
 \pkg{colortbl} but are \emph{independent} of \pkg{colortbl}):
 \begin{itemize}
-\item \DefinitionCommand{cellcolor} which colorizes a cell;\footnote{However,
-  this command cellcolor will delete the following spaces, which does not the
-  command cellcolor of \pkg{colortbl}.}
+\item \DefinitionCommand{cellcolor} which colorizes a cell;\footnote{That
+  command cellcolor will delete the following spaces, which does not the
+  command cellcolor of \pkg{colortbl}. Moreover, if one wishes to define a
+  command above that command |rowcolor|, it must be protected in the TeX sens
+  (whereas, if it were the command |\rowcolor| of \pkg{colortbl}, one should
+  write a \emph{fully expandable} command).}
 \item \DefinitionCommand{rowcolor} which must be used in a cell and which
 colorizes the end of the row;\footnote{If you want a commande to color the
   following $n$~rows, consider the command |\RowStyle| and its key |rowcolor|,

@@ -2614,14 +2614,17 @@ celle proposée par \pkg{colortbl} (même si \pkg{colortbl} n'est pas chargé). 
 doit pour cela utiliser la clé |color-inside|\footnote{Il existe un alias pour
   cette clé : \texttt{colortbl-like}.} dans l'environnement
 concerné.\footnote{Pour le moment, cette clé n'est \emph{pas} disponible dans
-  |\NiceMatrixOptions|.}
+  |\NiceMatrixOptions|.}o
 
 On a alors accès aux commandes suivantes (les trois premières sont inspirées par
 \pkg{colortbl} mais sont indépendantes de \pkg{colortbl}) :
 \begin{itemize}
-\item \DefinitionCommande{cellcolor} qui colorie la case courante\footnote{Néanmoins, cette
+\item \DefinitionCommande{cellcolor} qui colorie la case courante\footnote{Cette
   commande |\cellcolor| supprimera les espaces qui la suivent, ce que ne fait
-  pas la commande |\cellcolor| de \pkg{colortbl}.} ;
+  pas la commande |\cellcolor| de \pkg{colortbl}. De plus, si on définit une
+  fonction au-dessus de |\cellcolor|, il faudra une fonction protégée au sens de
+TeX (alors que si c'était la commande |\cellcolor| de \pkg{colortbl}, il
+faudrait une fonction \emph{fully expandable}).} ;
 \item \DefinitionCommande{rowcolor} à utiliser dans une case et qui colorie le
 reste de la rangée;\footnote{Si vous souhaitez une commande pour colorier les
   $n$~rangées suivantes, considérez la commande |\RowStyle| et sa clé
