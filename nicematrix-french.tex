@@ -2046,9 +2046,9 @@ peut placer le contenu de ce |code-before| entre les mots-clés |\CodeBefore| et
 
 \smallskip
 L'argument optionnel entre crochets est une liste de couples \textsl{clé=valeur}
-qui seront présentées au fur et à mesure. \footnote{Les clés disponibles sont
+qui seront présentées au fur et à mesure (les clés disponibles sont
   \texttt{create-cell-nodes}, \texttt{sub-matrix} (et ses sous-clés) et
-  \texttt{delimiters/color}.}
+  \texttt{delimiters/color}).
 
 \smallskip
 De nouvelles commandes sont disponibles dans ce |\CodeBefore|: |\cellcolor|,
@@ -2057,6 +2057,9 @@ De nouvelles commandes sont disponibles dans ce |\CodeBefore|: |\cellcolor|,
   |\CodeBefore|, des nœuds PGF-TikZ de la forme \verb+(i-|j)+ correspondant à la
   position des filets éventuels sont également accessibles : cf.
   p.~\pageref{nodes-i}.}
+
+Les noms de certaines de ces commandes sont inspirés des noms des commandes de \pkg{colortbl}.
+
 \label{code-before}
 \index{cellcolor@\texttt{\textbackslash cellcolor}!commande du
   \texttt{\textbackslash CodeBefore}} 
@@ -2073,7 +2076,7 @@ De nouvelles commandes sont disponibles dans ce |\CodeBefore|: |\cellcolor|,
 \index{arraycolor@\texttt{\textbackslash arraycolor} (commande du \texttt{\textbackslash
   CodeBefore)}}
 
-Les noms de certaines de ces commandes sont inspirés des noms des commandes de \pkg{colortbl}.
+
 
 \medskip
 Ces commandes ne colorient pas les cases qui se trouvent dans les «coins» si la

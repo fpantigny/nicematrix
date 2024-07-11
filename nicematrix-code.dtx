@@ -2449,7 +2449,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / xdots }
+\keys_define:nn { nicematrix / xdots }
   {
     shorten-start .code:n = 
       \hook_gput_code:nnn { begindocument } { . } 
@@ -2509,7 +2509,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / rules }
+\keys_define:nn { nicematrix / rules }
   {
     color .tl_set:N = \l_@@_rules_color_tl ,
     color .value_required:n = true ,
@@ -2521,11 +2521,11 @@ version 2005/12/01 or later.
 %
 %
 % \bigskip 
-% First, we define a set of keys ``|NiceMatrix / Global|'' which will be used
+% First, we define a set of keys ``|nicematrix / Global|'' which will be used
 % (with the mechanism of |.inherit:n|) by other sets of keys.
 %
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / Global }
+\keys_define:nn { nicematrix / Global }
   {
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
     ampersand-in-blocks .default:n = true , 
@@ -2537,7 +2537,7 @@ version 2005/12/01 or later.
     rounded-corners .dim_set:N = \l_@@_tab_rounded_corners_dim ,
     rounded-corners .default:n = 4 pt ,
     custom-line .code:n = \@@_custom_line:n { #1 } ,
-    rules .code:n = \keys_set:nn { NiceMatrix / rules } { #1 } ,
+    rules .code:n = \keys_set:nn { nicematrix / rules } { #1 } ,
     rules .value_required:n = true ,
     standard-cline .bool_set:N = \l_@@_standard_cline_bool ,
     standard-cline .default:n = true ,
@@ -2551,7 +2551,7 @@ version 2005/12/01 or later.
         cell-space-bottom-limit = #1 ,
       } ,
     cell-space-limits .value_required:n = true ,
-    xdots .code:n = \keys_set:nn { NiceMatrix / xdots } { #1 } , 
+    xdots .code:n = \keys_set:nn { nicematrix / xdots } { #1 } , 
     light-syntax .code:n = 
       \bool_set_true:N \l_@@_light_syntax_bool 
       \bool_set_false:N \l_@@_light_syntax_expanded_bool ,
@@ -2644,7 +2644,7 @@ version 2005/12/01 or later.
 % We define a set of keys used by the environments of \pkg{nicematrix} (but not
 % by the command |\NiceMatrixOptions|). 
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / Env } 
+\keys_define:nn { nicematrix / environments } 
   { 
     corners .clist_set:N = \l_@@_corners_clist ,
     corners .default:n = { NW , SW , NE , SE } ,
@@ -2698,7 +2698,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / notes }
+\keys_define:nn { nicematrix / notes }
   {
     para .bool_set:N = \l_@@_notes_para_bool ,
     para .default:n = true ,
@@ -2741,7 +2741,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}  
 %
 %    \begin{macrocode} 
-\keys_define:nn { NiceMatrix / delimiters }
+\keys_define:nn { nicematrix / delimiters }
   {
     max-width .bool_set:N = \l_@@_delimiters_max_width_bool ,
     max-width .default:n = true ,
@@ -2754,63 +2754,63 @@ version 2005/12/01 or later.
 % We begin the construction of the major sets of keys (used by the different
 % user commands and environments). 
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix }
+\keys_define:nn { nicematrix }
   { 
     NiceMatrixOptions .inherit:n = 
-      { NiceMatrix / Global } ,
-    NiceMatrixOptions / xdots .inherit:n = NiceMatrix / xdots ,
-    NiceMatrixOptions / rules .inherit:n = NiceMatrix / rules ,
-    NiceMatrixOptions / notes .inherit:n = NiceMatrix / notes ,
-    NiceMatrixOptions / sub-matrix .inherit:n = NiceMatrix / sub-matrix ,  
-    SubMatrix / rules .inherit:n = NiceMatrix / rules ,  
-    CodeAfter / xdots .inherit:n = NiceMatrix / xdots ,
-    CodeBefore / sub-matrix .inherit:n = NiceMatrix / sub-matrix ,
-    CodeAfter / sub-matrix .inherit:n = NiceMatrix / sub-matrix ,
+      { nicematrix / Global } ,
+    NiceMatrixOptions / xdots .inherit:n = nicematrix / xdots ,
+    NiceMatrixOptions / rules .inherit:n = nicematrix / rules ,
+    NiceMatrixOptions / notes .inherit:n = nicematrix / notes ,
+    NiceMatrixOptions / sub-matrix .inherit:n = nicematrix / sub-matrix ,  
+    SubMatrix / rules .inherit:n = nicematrix / rules ,  
+    CodeAfter / xdots .inherit:n = nicematrix / xdots ,
+    CodeBefore / sub-matrix .inherit:n = nicematrix / sub-matrix ,
+    CodeAfter / sub-matrix .inherit:n = nicematrix / sub-matrix ,
     NiceMatrix .inherit:n = 
       { 
-        NiceMatrix / Global ,
-        NiceMatrix / Env ,
+        nicematrix / Global ,
+        nicematrix / environments ,
       } ,
-    NiceMatrix / xdots .inherit:n = NiceMatrix / xdots ,
-    NiceMatrix / rules .inherit:n = NiceMatrix / rules ,
+    NiceMatrix / xdots .inherit:n = nicematrix / xdots ,
+    NiceMatrix / rules .inherit:n = nicematrix / rules ,
     NiceTabular .inherit:n = 
       {
-        NiceMatrix / Global ,
-        NiceMatrix / Env
+        nicematrix / Global ,
+        nicematrix / environments
       } ,
-    NiceTabular / xdots .inherit:n = NiceMatrix / xdots ,
-    NiceTabular / rules .inherit:n = NiceMatrix / rules ,
-    NiceTabular / notes .inherit:n = NiceMatrix / notes ,
+    NiceTabular / xdots .inherit:n = nicematrix / xdots ,
+    NiceTabular / rules .inherit:n = nicematrix / rules ,
+    NiceTabular / notes .inherit:n = nicematrix / notes ,
     NiceArray .inherit:n = 
       { 
-        NiceMatrix / Global ,
-        NiceMatrix / Env ,
+        nicematrix / Global ,
+        nicematrix / environments ,
       } ,
-    NiceArray / xdots .inherit:n = NiceMatrix / xdots ,
-    NiceArray / rules .inherit:n = NiceMatrix / rules ,
+    NiceArray / xdots .inherit:n = nicematrix / xdots ,
+    NiceArray / rules .inherit:n = nicematrix / rules ,
     pNiceArray .inherit:n = 
       { 
-        NiceMatrix / Global ,
-        NiceMatrix / Env ,
+        nicematrix / Global ,
+        nicematrix / environments ,
       } ,
-    pNiceArray / xdots .inherit:n = NiceMatrix / xdots ,
-    pNiceArray / rules .inherit:n = NiceMatrix / rules ,
+    pNiceArray / xdots .inherit:n = nicematrix / xdots ,
+    pNiceArray / rules .inherit:n = nicematrix / rules ,
   }
 %    \end{macrocode}
 % 
 %
 % \bigskip
 % We finalise the definition of the set of keys 
-% ``|NiceMatrix / NiceMatrixOptions|'' with the options specific to
+% ``|nicematrix / NiceMatrixOptions|'' with the options specific to
 % |\NiceMatrixOptions|.    
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / NiceMatrixOptions }
+\keys_define:nn { nicematrix / NiceMatrixOptions }
   { 
     delimiters / color .tl_set:N = \l_@@_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l_@@_delimiters_max_width_bool ,
     delimiters / max-width .default:n = true ,
-    delimiters .code:n = \keys_set:nn { NiceMatrix / delimiters } { #1 } , 
+    delimiters .code:n = \keys_set:nn { nicematrix / delimiters } { #1 } , 
     delimiters .value_required:n = true , 
     width .dim_set:N = \l_@@_width_dim ,
     width .value_required:n = true ,
@@ -2858,9 +2858,9 @@ version 2005/12/01 or later.
     allow-duplicate-names .code:n = 
       \@@_msg_redirect_name:nn { Duplicate~name } { none } ,
     allow-duplicate-names .value_forbidden:n = true ,
-    notes .code:n = \keys_set:nn { NiceMatrix / notes } { #1 } ,
+    notes .code:n = \keys_set:nn { nicematrix / notes } { #1 } ,
     notes .value_required:n = true ,
-    sub-matrix .code:n = \keys_set:nn { NiceMatrix / sub-matrix } { #1 } , 
+    sub-matrix .code:n = \keys_set:nn { nicematrix / sub-matrix } { #1 } , 
     sub-matrix .value_required:n = true ,
     matrix / columns-type .tl_set:N = \l_@@_columns_type_tl ,
     matrix / columns-type .value_required:n = true ,
@@ -2878,17 +2878,17 @@ version 2005/12/01 or later.
 % current TeX group. 
 %    \begin{macrocode}
 \NewDocumentCommand \NiceMatrixOptions { m }
-  { \keys_set:nn { NiceMatrix / NiceMatrixOptions } { #1 } }
+  { \keys_set:nn { nicematrix / NiceMatrixOptions } { #1 } }
 %    \end{macrocode}
 %
 %
 % \bigskip
-% We finalise the definition of the set of keys ``|NiceMatrix / NiceMatrix|''. 
+% We finalise the definition of the set of keys ``|nicematrix / NiceMatrix|''. 
 % That set of keys will be used by |{NiceMatrix}|, |{pNiceMatrix}|,
 % |{bNiceMatrix}|, etc.
 %
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / NiceMatrix }
+\keys_define:nn { nicematrix / NiceMatrix }
   { 
     last-col .code:n = \tl_if_empty:nTF { #1 }
                          {  
@@ -2904,7 +2904,7 @@ version 2005/12/01 or later.
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l_@@_delimiters_max_width_bool ,
     delimiters / max-width .default:n = true ,
-    delimiters .code:n = \keys_set:nn { NiceMatrix / delimiters } { #1 } , 
+    delimiters .code:n = \keys_set:nn { nicematrix / delimiters } { #1 } , 
     delimiters .value_required:n = true , 
     small .bool_set:N = \l_@@_small_bool ,
     small .value_forbidden:n = true ,
@@ -2915,11 +2915,11 @@ version 2005/12/01 or later.
 %
 % 
 % \bigskip
-% We finalise the definition of the set of keys ``|NiceMatrix / NiceArray|''
+% We finalise the definition of the set of keys ``|nicematrix / NiceArray|''
 % with the options specific to |{NiceArray}|. 
 %
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / NiceArray }
+\keys_define:nn { nicematrix / NiceArray }
   {
 %    \end{macrocode}
 % 
@@ -2941,7 +2941,7 @@ version 2005/12/01 or later.
 %
 %    
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / pNiceArray }
+\keys_define:nn { nicematrix / pNiceArray }
   { 
     first-col .code:n = \int_zero:N \l_@@_first_col_int , 
     last-col .code:n = \tl_if_empty:nF {#1}
@@ -2952,7 +2952,7 @@ version 2005/12/01 or later.
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l_@@_delimiters_max_width_bool ,
     delimiters / max-width .default:n = true ,
-    delimiters .code:n = \keys_set:nn { NiceMatrix / delimiters } { #1 } , 
+    delimiters .code:n = \keys_set:nn { nicematrix / delimiters } { #1 } , 
     delimiters .value_required:n = true , 
     small .bool_set:N = \l_@@_small_bool ,
     small .value_forbidden:n = true ,
@@ -2963,11 +2963,11 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% We finalise the definition of the set of keys ``|NiceMatrix / NiceTabular|''
+% We finalise the definition of the set of keys ``|nicematrix / NiceTabular|''
 % with the options specific to |{NiceTabular}|. 
 %
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / NiceTabular }
+\keys_define:nn { nicematrix / NiceTabular }
   {
 %    \end{macrocode}
 %  The dimension |width| will be used if at least a column of type |X| is used.
@@ -2976,7 +2976,7 @@ version 2005/12/01 or later.
     width .code:n = \dim_set:Nn \l_@@_width_dim { #1 } 
                     \bool_set_true:N \l_@@_width_used_bool ,
     width .value_required:n = true ,
-    notes .code:n = \keys_set:nn { NiceMatrix / notes } { #1 } , 
+    notes .code:n = \keys_set:nn { nicematrix / notes } { #1 } , 
     tabularnote .tl_gset:N = \g_@@_tabularnote_tl ,
     tabularnote .value_required:n = true ,
     caption .tl_set:N = \l_@@_caption_tl , 
@@ -3003,18 +3003,18 @@ version 2005/12/01 or later.
 % We \emph{must} put the following instructions \emph{after} the :
 %
 % \begin{verbatim}
-% CodeAfter / sub-matrix .inherit:n = NiceMatrix / sub-matrix
+% CodeAfter / sub-matrix .inherit:n = nicematrix / sub-matrix
 % \end{verbatim}
 % 
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / CodeAfter }
+\keys_define:nn { nicematrix / CodeAfter }
   {
     delimiters / color .tl_set:N = \l_@@_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
-    rules .code:n = \keys_set:nn { NiceMatrix / rules } { #1 } ,
+    rules .code:n = \keys_set:nn { nicematrix / rules } { #1 } ,
     rules .value_required:n = true ,
-    xdots .code:n = \keys_set:nn { NiceMatrix / xdots } { #1 } , 
-    sub-matrix .code:n = \keys_set:nn { NiceMatrix / sub-matrix } { #1 } , 
+    xdots .code:n = \keys_set:nn { nicematrix / xdots } { #1 } , 
+    sub-matrix .code:n = \keys_set:nn { nicematrix / sub-matrix } { #1 } , 
     sub-matrix .value_required:n = true ,
     unknown .code:n = \@@_error:n { Unknown~key~for~CodeAfter }
   }
@@ -4282,11 +4282,11 @@ version 2005/12/01 or later.
 %
 % \bigskip 
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / CodeBefore }
+\keys_define:nn { nicematrix / CodeBefore }
   {
     create-cell-nodes .bool_gset:N = \g_@@_recreate_cell_nodes_bool ,
     create-cell-nodes .default:n = true ,
-    sub-matrix .code:n = \keys_set:nn { NiceMatrix / sub-matrix } { #1 } , 
+    sub-matrix .code:n = \keys_set:nn { nicematrix / sub-matrix } { #1 } , 
     sub-matrix .value_required:n = true ,
     delimiters / color .tl_set:N = \l_@@_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
@@ -4298,7 +4298,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \NewDocumentCommand \@@_CodeBefore_keys: { O { } }
   { 
-    \keys_set:nn { NiceMatrix / CodeBefore } { #1 } 
+    \keys_set:nn { nicematrix / CodeBefore } { #1 } 
     \@@_CodeBefore:w 
   }
 %    \end{macrocode}
@@ -4559,8 +4559,8 @@ version 2005/12/01 or later.
 % |{NiceArray}|, we have the options |t|, |c|, |b| and |baseline|.
 %    \begin{macrocode}
     \bool_if:NTF \g_@@_delims_bool 
-      { \keys_set:nn { NiceMatrix / pNiceArray } }
-      { \keys_set:nn { NiceMatrix / NiceArray } }
+      { \keys_set:nn { nicematrix / pNiceArray } }
+      { \keys_set:nn { nicematrix / NiceArray } }
     { #3 , #5 } 
 %    \end{macrocode}
 %
@@ -7487,7 +7487,7 @@ version 2005/12/01 or later.
             \bool_set_true:N \l_@@_last_col_without_value_bool
             \int_set:Nn \l_@@_last_col_int { -1 }
           }                
-        \keys_set:nn { NiceMatrix / NiceMatrix } { ##1 }
+        \keys_set:nn { nicematrix / NiceMatrix } { ##1 }
         \@@_begin_of_NiceMatrix:nV { #1 } \l_@@_columns_type_tl 
       }
       { \use:c { end #1 NiceArray } }
@@ -7505,7 +7505,7 @@ version 2005/12/01 or later.
         \bool_set_true:N \l_@@_last_col_without_value_bool
         \int_set:Nn \l_@@_last_col_int { -1 }
       }                
-    \keys_set:nn { NiceMatrix / NiceMatrix } { #1 }
+    \keys_set:nn { nicematrix / NiceMatrix } { #1 }
     \bool_lazy_or:nnT
       { \clist_if_empty_p:N \l_@@_vlines_clist }
       { \l_@@_except_borders_bool }
@@ -7536,7 +7536,7 @@ version 2005/12/01 or later.
     \dim_compare:nNnT \l_@@_width_dim = \c_zero_dim 
       { \dim_set_eq:NN \l_@@_width_dim \linewidth }
     \str_gset:Nn \g_@@_name_env_str { NiceTabular }
-    \keys_set:nn { NiceMatrix / NiceTabular } { #1 , #3 }
+    \keys_set:nn { nicematrix / NiceTabular } { #1 , #3 }
     \tl_if_empty:NF \l_@@_short_caption_tl
       {
         \tl_if_empty:NT \l_@@_caption_tl
@@ -7588,7 +7588,7 @@ version 2005/12/01 or later.
     \str_gset:Nn \g_@@_name_env_str { NiceTabularX }
     \dim_zero_new:N \l_@@_width_dim 
     \dim_set:Nn \l_@@_width_dim { #1 }
-    \keys_set:nn { NiceMatrix / NiceTabular } { #2 , #4 }
+    \keys_set:nn { nicematrix / NiceTabular } { #2 , #4 }
     \@@_settings_for_tabular:
     \NiceArray { #3 }
   }
@@ -7605,7 +7605,7 @@ version 2005/12/01 or later.
   { 
     \str_gset:Nn \g_@@_name_env_str { NiceTabular* }
     \dim_set:Nn \l_@@_tabular_width_dim { #1 }
-    \keys_set:nn { NiceMatrix / NiceTabular } { #2 , #4 }
+    \keys_set:nn { nicematrix / NiceTabular } { #2 , #4 }
     \@@_settings_for_tabular:
     \NiceArray { #3 }
   }
@@ -7969,7 +7969,7 @@ version 2005/12/01 or later.
 % the |\CodeBefore.|
 %    \begin{macrocode}
 \NewDocumentCommand \@@_CodeAfter_keys: { O { } }
-  { \keys_set:nn { NiceMatrix / CodeAfter } { #1 } }
+  { \keys_set:nn { nicematrix / CodeAfter } { #1 } }
 %    \end{macrocode}
 %
 %
@@ -8578,7 +8578,7 @@ version 2005/12/01 or later.
               \int_compare:nNnT { #1 } = \l_@@_last_row_int
                 { \color { nicematrix-last-row } }
             }
-          \keys_set:nn { NiceMatrix / xdots } { #3 }
+          \keys_set:nn { nicematrix / xdots } { #3 }
           \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
           \@@_actually_draw_Ldots:
         \group_end:
@@ -8673,7 +8673,7 @@ version 2005/12/01 or later.
               \int_compare:nNnT { #1 } = \l_@@_last_row_int
                 { \color { nicematrix-last-row } }
             }
-          \keys_set:nn { NiceMatrix / xdots } { #3 }
+          \keys_set:nn { nicematrix / xdots } { #3 }
           \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
           \@@_actually_draw_Cdots: 
         \group_end:
@@ -8801,7 +8801,7 @@ version 2005/12/01 or later.
               \int_compare:nNnT { #2 } = \l_@@_last_col_int
                 { \color { nicematrix-last-col } }
             }
-          \keys_set:nn { NiceMatrix / xdots } { #3 }
+          \keys_set:nn { nicematrix / xdots } { #3 }
           \tl_if_empty:oF \l_@@_xdots_color_tl 
             { \color { \l_@@_xdots_color_tl } }
           \@@_actually_draw_Vdots:
@@ -8950,7 +8950,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \group_begin:
           \@@_open_shorten:
-          \keys_set:nn { NiceMatrix / xdots } { #3 }
+          \keys_set:nn { nicematrix / xdots } { #3 }
           \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
           \@@_actually_draw_Ddots:
         \group_end:
@@ -9048,7 +9048,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \group_begin:
           \@@_open_shorten:
-          \keys_set:nn { NiceMatrix / xdots } { #3 }
+          \keys_set:nn { nicematrix / xdots } { #3 }
           \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
           \@@_actually_draw_Iddots:
         \group_end:
@@ -9609,7 +9609,7 @@ version 2005/12/01 or later.
                 \l_@@_last_col_int { \@@_error:nn { in~last~col } \Ddots }  
               }
               {
-                \keys_set_known:nn { NiceMatrix / Ddots } { #1 } 
+                \keys_set_known:nn { nicematrix / Ddots } { #1 } 
                 \@@_instruction_of_type:nnn \l_@@_draw_first_bool { Ddots } 
                   { #1 , down = #2 , up = #3 , middle = #4 } 
               } 
@@ -9639,7 +9639,7 @@ version 2005/12/01 or later.
                 \l_@@_last_col_int { \@@_error:nn { in~last~col } \Iddots }  
               }
               {
-                \keys_set_known:nn { NiceMatrix / Ddots } { #1 } 
+                \keys_set_known:nn { nicematrix / Ddots } { #1 } 
                 \@@_instruction_of_type:nnn \l_@@_draw_first_bool { Iddots } 
                   { #1 , down = #2 , up = #3 , middle = #4 } 
               } 
@@ -9657,7 +9657,7 @@ version 2005/12/01 or later.
 % Despite its name, the following set of keys will be used for |\Ddots| but also
 % for |\Iddots|.
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / Ddots }
+\keys_define:nn { nicematrix / Ddots }
   { 
     draw-first .bool_set:N = \l_@@_draw_first_bool ,
     draw-first .default:n = true ,
@@ -9816,7 +9816,7 @@ version 2005/12/01 or later.
           { \color { nicematrix-last-row } }
       }
 
-    \keys_set:nn { NiceMatrix / xdots } { #4 }
+    \keys_set:nn { nicematrix / xdots } { #4 }
     \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
     \@@_actually_draw_Ldots:
     \group_end:
@@ -9922,7 +9922,7 @@ version 2005/12/01 or later.
         \int_compare:nNnT { #2 } = \g_@@_col_total_int
           { \color { nicematrix-last-col } }
       }
-    \keys_set:nn { NiceMatrix / xdots } { #4 }
+    \keys_set:nn { nicematrix / xdots } { #4 }
     \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
     \@@_actually_draw_Vdots:
     \group_end:
@@ -9949,14 +9949,14 @@ version 2005/12/01 or later.
     \peek_remove_spaces:n
       {
         \bool_gset_true:N \g_@@_rotate_bool 
-        \keys_set:nn { NiceMatrix / rotate } { #1 }
+        \keys_set:nn { nicematrix / rotate } { #1 }
       }
   }
 %    \end{macrocode}
 %
 % \bigskip
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / rotate }
+\keys_define:nn { nicematrix / rotate }
   {
     c .code:n = \bool_gset_true:N \g_@@_rotate_c_bool ,
     c .value_forbidden:n = true ,
@@ -10010,7 +10010,7 @@ version 2005/12/01 or later.
     \exp_args:NNo \NewDocumentCommand \@@_line \l_@@_argspec_tl
       {
         \group_begin:
-        \keys_set:nn { NiceMatrix / xdots } { #1 , #4 , down = #5 , up = #6 }
+        \keys_set:nn { nicematrix / xdots } { #1 , #4 , down = #5 , up = #6 }
         \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } } 
           \use:e
             {
@@ -10131,7 +10131,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % \medskip
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / RowStyle }
+\keys_define:nn { nicematrix / RowStyle }
   {
     cell-space-top-limit .dim_set:N = \l_tmpa_dim ,
     cell-space-top-limit .value_required:n = true ,
@@ -10168,7 +10168,7 @@ version 2005/12/01 or later.
     \int_set_eq:NN \l_@@_key_nb_rows_int \c_one_int
     \dim_zero:N \l_tmpa_dim
     \dim_zero:N \l_tmpb_dim 
-    \keys_set:nn { NiceMatrix / RowStyle } { #1 }
+    \keys_set:nn { nicematrix / RowStyle } { #1 }
 %    \end{macrocode}
 % If the key |rowcolor| has been used.
 %    \begin{macrocode}
@@ -10614,7 +10614,7 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / rowcolors }
+\keys_define:nn { nicematrix / rowcolors }
   {
     respect-blocks .bool_set:N = \l_@@_respect_blocks_bool ,
     respect-blocks .default:n = true ,
@@ -10651,7 +10651,7 @@ version 2005/12/01 or later.
     \seq_set_split:Nnn \l_@@_colors_seq { , } { #3 }
     \tl_clear_new:N \l_@@_cols_tl
     \cs_set_nopar:Npn \l_@@_cols_tl { - }
-    \keys_set:nn { NiceMatrix / rowcolors } { #4 }
+    \keys_set:nn { nicematrix / rowcolors } { #4 }
 %    \end{macrocode}
 % The counter |\l_@@_color_int| will be the rank of the current color in the list of
 % colors (modulo the length of the list).
@@ -11310,7 +11310,7 @@ version 2005/12/01 or later.
 % However, unknown keys will be analyzed further with another set of keys.
 % 
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / Rules }
+\keys_define:nn { nicematrix / Rules }
   {
     position .int_set:N = \l_@@_position_int , 
     position .value_required:n = true ,
@@ -11333,7 +11333,7 @@ version 2005/12/01 or later.
 % following set of keys.
 %
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / RulesBis }
+\keys_define:nn { nicematrix / RulesBis }
   {
     multiplicity .int_set:N = \l_@@_multiplicity_int , 
     multiplicity .initial:n = 1 , 
@@ -11384,7 +11384,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \group_begin:
     \int_set_eq:NN \l_@@_end_int \c@iRow
-    \keys_set_known:nnN { NiceMatrix / Rules } { #1 } \l_@@_other_keys_tl
+    \keys_set_known:nnN { nicematrix / Rules } { #1 } \l_@@_other_keys_tl
 %    \end{macrocode}
 % The following test is for the case where the user does not use all the columns
 % specified in the preamble of the environment (for instance, a preamble of
@@ -11483,7 +11483,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_vline_ii:
   {
     \tl_clear:N \l_@@_tikz_rule_tl 
-    \keys_set:nV { NiceMatrix / RulesBis } \l_@@_other_keys_tl 
+    \keys_set:nV { nicematrix / RulesBis } \l_@@_other_keys_tl 
     \bool_if:NTF \l_@@_dotted_bool
       \@@_vline_iv: 
       {
@@ -11639,7 +11639,7 @@ version 2005/12/01 or later.
 % \bigskip
 % The following command will be executed in the internal |\CodeAfter|. The
 % argument |#1| is a list of \textsl{key=value} pairs of the form
-% |{NiceMatrix/Rules}|.
+% |{nicematrix/Rules}|.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_hline:n #1 
   {
@@ -11649,7 +11649,7 @@ version 2005/12/01 or later.
     \group_begin:
     \int_zero_new:N \l_@@_end_int 
     \int_set_eq:NN \l_@@_end_int \c@jCol
-    \keys_set_known:nnN { NiceMatrix / Rules } { #1 } \l_@@_other_keys_tl
+    \keys_set_known:nnN { nicematrix / Rules } { #1 } \l_@@_other_keys_tl
     \@@_hline_i:
     \group_end:
   }
@@ -11744,7 +11744,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_hline_ii:
   {
     \tl_clear:N \l_@@_tikz_rule_tl 
-    \keys_set:nV { NiceMatrix / RulesBis } \l_@@_other_keys_tl 
+    \keys_set:nV { nicematrix / RulesBis } \l_@@_other_keys_tl 
     \bool_if:NTF \l_@@_dotted_bool
       \@@_hline_iv: 
       {
@@ -12024,7 +12024,7 @@ version 2005/12/01 or later.
     \str_clear_new:N \l_@@_ccommand_str
     \str_clear_new:N \l_@@_letter_str
     \tl_clear_new:N \l_@@_other_keys_tl
-    \keys_set_known:nnN { NiceMatrix / custom-line } { #1 } \l_@@_other_keys_tl
+    \keys_set_known:nnN { nicematrix / custom-line } { #1 } \l_@@_other_keys_tl
 %    \end{macrocode}
 % If the final user only wants to draw horizontal rules, he does not need to
 % specify a letter (for the vertical rules in the preamble of the array). On the
@@ -12046,7 +12046,7 @@ version 2005/12/01 or later.
 % 
 % 
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / custom-line }
+\keys_define:nn { nicematrix / custom-line }
   {
     letter .str_set:N = \l_@@_letter_str , 
     letter .value_required:n = true ,
@@ -12070,7 +12070,7 @@ version 2005/12/01 or later.
     \bool_set_false:N \l_@@_color_bool
 %    \end{macrocode}
 %    \begin{macrocode}
-    \keys_set:nn { NiceMatrix / custom-line-bis } { #1 } 
+    \keys_set:nn { nicematrix / custom-line-bis } { #1 } 
     \bool_if:NT \l_@@_tikz_rule_bool
       {
         \IfPackageLoadedTF { tikz }
@@ -12118,10 +12118,10 @@ version 2005/12/01 or later.
 % The previous command |\@@_custom_line_i:n| uses the following set of keys.
 % However, the whole definition of the customized lines (as provided by the
 % final user as argument of |custom-line|) will also be used further with
-% other sets of keys (for instance |{NiceMatrix/Rules}|). That's why the
+% other sets of keys (for instance |{nicematrix/Rules}|). That's why the
 % following set of keys has some keys which are no-op.
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / custom-line-bis }
+\keys_define:nn { nicematrix / custom-line-bis }
   {
     multiplicity .int_set:N = \l_@@_multiplicity_int , 
     multiplicity .initial:n = 1 , 
@@ -12156,7 +12156,7 @@ version 2005/12/01 or later.
 % deprecated and has been replaced by the key |total-width|.
 % 
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / custom-line-width }
+\keys_define:nn { nicematrix / custom-line-width }
   {
     multiplicity .int_set:N = \l_@@_multiplicity_int , 
     multiplicity .initial:n = 1 , 
@@ -12246,7 +12246,7 @@ version 2005/12/01 or later.
     \bool_set_false:N \l_@@_tikz_rule_bool
     \bool_set_false:N \l_@@_total_width_bool
     \bool_set_false:N \l_@@_dotted_rule_bool
-    \keys_set_known:nn { NiceMatrix / custom-line-width } { #1 }
+    \keys_set_known:nn { nicematrix / custom-line-width } { #1 }
     \bool_if:NF \l_@@_total_width_bool
       { 
         \bool_if:NTF \l_@@_dotted_rule_bool
@@ -12572,7 +12572,7 @@ version 2005/12/01 or later.
 % Up to now, there is only one option available for the environment
 % |{NiceMatrixBlock}|. 
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / NiceMatrixBlock } 
+\keys_define:nn { nicematrix / NiceMatrixBlock } 
   {
     auto-columns-width .code:n = 
       { 
@@ -12589,7 +12589,7 @@ version 2005/12/01 or later.
   {
     \int_gincr:N \g_@@_NiceMatrixBlock_int
     \dim_zero:N \l_@@_columns_width_dim
-    \keys_set:nn { NiceMatrix / NiceMatrixBlock } { #1 }
+    \keys_set:nn { nicematrix / NiceMatrixBlock } { #1 }
     \bool_if:NT \l_@@_block_auto_columns_width_bool
       {
         \cs_if_exist:cT 
@@ -13004,7 +13004,7 @@ version 2005/12/01 or later.
 % array (and once again when the block will be put in the array).
 % Here is the set of keys for the first pass (in the cell of the array).
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / Block / FirstPass }
+\keys_define:nn { nicematrix / Block / FirstPass }
   {
     j .code:n = \str_set:Nn \l_@@_hpos_block_str j 
                 \bool_set_true:N \l_@@_p_block_bool , 
@@ -13145,7 +13145,7 @@ version 2005/12/01 or later.
 %
 % \medskip
 %    \begin{macrocode}
-    \keys_set_known:nn { NiceMatrix / Block / FirstPass } { #3 } 
+    \keys_set_known:nn { nicematrix / Block / FirstPass } { #3 } 
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -13620,7 +13620,7 @@ version 2005/12/01 or later.
 % 
 % \medskip
 %   \begin{macrocode}
-\keys_define:nn { NiceMatrix / Block / SecondPass }
+\keys_define:nn { nicematrix / Block / SecondPass }
   {
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
     ampersand-in-blocks .default:n = true , 
@@ -13791,7 +13791,7 @@ version 2005/12/01 or later.
     \group_begin:
     \int_compare:nNnT { #1 } = { #3 }
       { \str_set:Nn \l_@@_vpos_block_str { t } }
-    \keys_set:nn { NiceMatrix / Block / SecondPass } { #5 }
+    \keys_set:nn { nicematrix / Block / SecondPass } { #5 }
 %    \end{macrocode}
 % 
 %
@@ -14408,7 +14408,7 @@ version 2005/12/01 or later.
     \group_begin:
     \tl_clear:N \l_@@_draw_tl
     \dim_set_eq:NN \l_@@_line_width_dim \arrayrulewidth
-    \keys_set_known:nn { NiceMatrix / BlockStroke } { #1 }
+    \keys_set_known:nn { nicematrix / BlockStroke } { #1 }
     \pgfpicture
     \pgfrememberpicturepositiononpagetrue
     \pgf@relevantforpicturesizefalse
@@ -14462,7 +14462,7 @@ version 2005/12/01 or later.
 %
 % Here is the set of keys for the command |\@@_stroke_block:nnn|.
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / BlockStroke }
+\keys_define:nn { nicematrix / BlockStroke }
   {
     color .tl_set:N = \l_@@_draw_tl ,
     draw .code:n = 
@@ -14484,7 +14484,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_vlines_block:nnn #1 #2 #3
   {
     \dim_set_eq:NN \l_@@_line_width_dim \arrayrulewidth
-    \keys_set_known:nn { NiceMatrix / BlockBorders } { #1 }
+    \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
     \@@_cut_on_hyphen:w #2 \q_stop
     \tl_set_eq:NN \l_@@_tmpc_tl \l_tmpa_tl
     \tl_set_eq:NN \l_@@_tmpd_tl \l_tmpb_tl
@@ -14508,7 +14508,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_hlines_block:nnn #1 #2 #3
   {
     \dim_set_eq:NN \l_@@_line_width_dim \arrayrulewidth
-    \keys_set_known:nn { NiceMatrix / BlockBorders } { #1 }
+    \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
     \@@_cut_on_hyphen:w #2 \q_stop
     \tl_set_eq:NN \l_@@_tmpc_tl \l_tmpa_tl
     \tl_set_eq:NN \l_@@_tmpd_tl \l_tmpb_tl
@@ -14540,13 +14540,13 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_stroke_borders_block:nnn #1 #2 #3
   {
     \dim_set_eq:NN \l_@@_line_width_dim \arrayrulewidth
-    \keys_set_known:nn { NiceMatrix / BlockBorders } { #1 }
+    \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
     \dim_compare:nNnTF \l_@@_rounded_corners_dim > \c_zero_dim 
       { \@@_error:n { borders~forbidden } }
       {
         \tl_clear_new:N \l_@@_borders_tikz_tl
         \keys_set:nV
-          { NiceMatrix / OnlyForTikzInBorders } 
+          { nicematrix / OnlyForTikzInBorders } 
           \l_@@_borders_clist 
         \@@_cut_on_hyphen:w #2 \q_stop
         \tl_set_eq:NN \l_@@_tmpc_tl \l_tmpa_tl
@@ -14590,7 +14590,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / OnlyForTikzInBorders }
+\keys_define:nn { nicematrix / OnlyForTikzInBorders }
   { 
     tikz .code:n = 
       \cs_if_exist:NTF \tikzpicture
@@ -14659,7 +14659,7 @@ version 2005/12/01 or later.
 % \bigskip
 % Here is the set of keys for the command |\@@_stroke_borders_block:nnn|. 
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / BlockBorders }
+\keys_define:nn { nicematrix / BlockBorders }
   { 
     borders .clist_set:N = \l_@@_borders_clist ,
     rounded-corners .dim_set:N = \l_@@_rounded_corners_dim ,
@@ -14683,7 +14683,7 @@ version 2005/12/01 or later.
     \@@_clip_with_rounded_corners:
     \clist_map_inline:nn { #5 }
       {
-        \keys_set_known:nnN { NiceMatrix / SpecialOffset } { ##1 } \l_tmpa_tl
+        \keys_set_known:nnN { nicematrix / SpecialOffset } { ##1 } \l_tmpa_tl
         \use:e { \exp_not:N \path [ \l_tmpa_tl ] }
               ( 
                 [ 
@@ -14708,7 +14708,7 @@ version 2005/12/01 or later.
 %
 % \medskip
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / SpecialOffset }
+\keys_define:nn { nicematrix / SpecialOffset }
   { offset .dim_set:N = \l_@@_offset_dim }
 %    \end{macrocode}
 % 
@@ -14744,7 +14744,7 @@ version 2005/12/01 or later.
 % We will extract some keys and pass the other keys to the environment
 % |{NiceArrayWithDelims}|.
 %    \begin{macrocode} 
-\keys_define:nn { NiceMatrix / Auto }
+\keys_define:nn { nicematrix / Auto }
   {
     columns-type .tl_set:N = \l_@@_columns_type_tl ,
     columns-type .value_required:n = true ,
@@ -14755,7 +14755,7 @@ version 2005/12/01 or later.
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l_@@_delimiters_max_width_bool ,
     delimiters / max-width .default:n = true ,
-    delimiters .code:n = \keys_set:nn { NiceMatrix / delimiters } { #1 } , 
+    delimiters .code:n = \keys_set:nn { nicematrix / delimiters } { #1 } , 
     delimiters .value_required:n = true , 
     rounded-corners .dim_set:N = \l_@@_tab_rounded_corners_dim ,
     rounded-corners .default:n = 4 pt 
@@ -14776,7 +14776,7 @@ version 2005/12/01 or later.
 % The group is for the protection of the keys.
 %    \begin{macrocode}
     \group_begin:
-    \keys_set_known:nnN { NiceMatrix / Auto } { #6 } \l_tmpa_tl
+    \keys_set_known:nnN { nicematrix / Auto } { #6 } \l_tmpa_tl
     \use:e 
       {
         \exp_not:N \begin { NiceArrayWithDelims } { #1 } { #2 } 
@@ -15145,7 +15145,7 @@ version 2005/12/01 or later.
 %
 % 
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / sub-matrix }
+\keys_define:nn { nicematrix / sub-matrix }
   {
     extra-height .dim_set:N = \l_@@_submatrix_extra_height_dim ,
     extra-height .value_required:n = true ,
@@ -15166,12 +15166,12 @@ version 2005/12/01 or later.
     hvlines .meta:n = { hlines, vlines } ,
     hvlines .value_forbidden:n = true 
   }
-\keys_define:nn { NiceMatrix }
+\keys_define:nn { nicematrix }
   { 
-    SubMatrix .inherit:n = NiceMatrix / sub-matrix ,
-    NiceArray / sub-matrix .inherit:n = NiceMatrix / sub-matrix ,
-    pNiceArray / sub-matrix .inherit:n = NiceMatrix / sub-matrix ,
-    NiceMatrixOptions / sub-matrix .inherit:n = NiceMatrix / sub-matrix , 
+    SubMatrix .inherit:n = nicematrix / sub-matrix ,
+    NiceArray / sub-matrix .inherit:n = nicematrix / sub-matrix ,
+    pNiceArray / sub-matrix .inherit:n = nicematrix / sub-matrix ,
+    NiceMatrixOptions / sub-matrix .inherit:n = nicematrix / sub-matrix , 
   }
 %    \end{macrocode}
 %
@@ -15179,7 +15179,7 @@ version 2005/12/01 or later.
 % The following keys set is for the command |\SubMatrix| itself (not the tuning
 % of |\SubMatrix| that can be done elsewhere).
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / SubMatrix }
+\keys_define:nn { nicematrix / SubMatrix }
   {
     delimiters / color .tl_set:N = \l_@@_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
@@ -15205,7 +15205,7 @@ version 2005/12/01 or later.
             { \@@_error:n { Invalid~name } }
         } ,
     name .value_required:n = true ,
-    rules .code:n = \keys_set:nn { NiceMatrix / rules } { #1 } ,
+    rules .code:n = \keys_set:nn { nicematrix / rules } { #1 } ,
     rules .value_required:n = true ,
     code .tl_set:N = \l_@@_code_tl ,
     code .value_required:n = true ,
@@ -15337,7 +15337,7 @@ version 2005/12/01 or later.
       { \@@_error:nn { Construct~too~large } { \SubMatrix } }
       {
         \str_clear_new:N \l_@@_submatrix_name_str
-        \keys_set:nn { NiceMatrix / SubMatrix } { #5 }
+        \keys_set:nn { nicematrix / SubMatrix } { #5 }
         \pgfpicture 
         \pgfrememberpicturepositiononpagetrue
         \pgf@relevantforpicturesizefalse
@@ -15778,7 +15778,7 @@ version 2005/12/01 or later.
 %
 % \medskip
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / Brace } 
+\keys_define:nn { nicematrix / Brace } 
   {
     left-shorten .bool_set:N = \l_@@_brace_left_shorten_bool ,
     left-shorten .default:n = true ,
@@ -15822,7 +15822,7 @@ version 2005/12/01 or later.
       }
       {
         \tl_clear:N \l_tmpa_tl 
-        \keys_set:nn { NiceMatrix / Brace } { #4 }
+        \keys_set:nn { nicematrix / Brace } { #4 }
         \tl_if_empty:NF \l_tmpa_tl { \color { \l_tmpa_tl } } 
         \pgfpicture 
         \pgfrememberpicturepositiononpagetrue
@@ -15973,7 +15973,7 @@ version 2005/12/01 or later.
 \bool_new:N \l_@@_not_empty_bool 
 \bool_new:N \l_@@_empty_bool 
 
-\keys_define:nn { NiceMatrix / TikzEveryCell }
+\keys_define:nn { nicematrix / TikzEveryCell }
   { 
     not-empty .code:n = 
       \bool_lazy_or:nnTF 
@@ -15998,7 +15998,7 @@ version 2005/12/01 or later.
     \IfPackageLoadedTF { tikz } 
       {
         \group_begin:
-        \keys_set:nn { NiceMatrix / TikzEveryCell } { #1 }
+        \keys_set:nn { nicematrix / TikzEveryCell } { #1 }
 %    \end{macrocode}
 % The inner pair of braces in the following line is mandatory because, the last
 % argument of |\@@_tikz:nnnnn| is \emph{a list of lists} of TikZ keys.
@@ -16288,7 +16288,7 @@ version 2005/12/01 or later.
 %
 %
 %    \begin{macrocode}
-\keys_define:nn { NiceMatrix / Package }
+\keys_define:nn { nicematrix / Package }
   {
     renew-dots .bool_set:N = \l_@@_renew_dots_bool ,
     renew-dots .value_forbidden:n = true ,
@@ -16301,7 +16301,7 @@ version 2005/12/01 or later.
     no-test-for-array .default:n = true , 
     unknown .code:n = \@@_error:n { Unknown~key~for~package } 
   }
-\ProcessKeysOptions { NiceMatrix / Package }
+\ProcessKeysOptions { nicematrix / Package }
 %    \end{macrocode}
 %
 % \bigskip
@@ -17540,8 +17540,8 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \medskip
-% This error message is used for the set of keys |NiceMatrix/NiceMatrix| and
-% |NiceMatrix/pNiceArray| (but not by |NiceMatrix/NiceArray| because, for this
+% This error message is used for the set of keys |nicematrix/NiceMatrix| and
+% |nicematrix/pNiceArray| (but not by |nicematrix/NiceArray| because, for this
 % set of keys, there is no |l| and |r|).
 %    \begin{macrocode}
 \@@_msg_new:nnn { Unknown~key~for~NiceMatrix }
