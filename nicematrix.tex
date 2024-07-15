@@ -1350,7 +1350,7 @@ those keys, see |custom-line| on p.~\pageref{custom-line}.\footnote{Technical
   shall be ensured that this new command is expandable in the TeX sens (by
   using, for instance, |\NewExpandableDocumentCommand| of LaTeX3, |\newcommand|
   of LaTeX or |\def| of TeX). Example:
-  |\newcommand{\RedLine}{\Hline[color=red]}|}
+  |\NewDocumentCommand{\RedLine}{}{\Hline[color=red]}|}
 
 
 \bigskip

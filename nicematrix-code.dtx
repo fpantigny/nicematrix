@@ -6153,6 +6153,24 @@ version 2005/12/01 or later.
       }
 %    \end{macrocode}
 %
+% \bigskip
+% We want |\cellcolor| to be available in |\multicolumn| because |\cellcolor| of
+% \pkg{colortbl} is available in |\multicolumn|.
+%    \begin{macrocode}
+    \RenewDocumentCommand \cellcolor { O { } m }
+      {
+        \@@_test_color_inside:
+        \tl_gput_right:Nx \g_@@_pre_code_before_tl
+          { 
+            \@@_rectanglecolor [ ##1 ] 
+              { \exp_not:n { ##2 } } 
+              { \int_use:N \c@iRow - \int_use:N \c@jCol } 
+              { \int_use:N \c@iRow - \int_eval:n { \c@jCol + #1 } }
+          }   
+         \ignorespaces
+      }   
+%    \end{macrocode}
+% 
 % \medskip
 % The following lines were in the original definition of |\multicolumn|.
 %    \begin{macrocode}
@@ -14196,6 +14214,9 @@ version 2005/12/01 or later.
         }
       \endpgfpicture
     }
+%    \end{macrocode}
+% Now the case where there is no ampersand |&| in the content of the block.
+%    \begin{macrocode}
     {
       \bool_if:NTF \l_@@_p_block_bool
         { 
@@ -14397,6 +14418,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % 
+%
 % \bigskip
 % The first argument of |\@@_stroke_block:nnn| is a list of options for the
 % rectangle that you will stroke. The second argument is the upper-left cell of

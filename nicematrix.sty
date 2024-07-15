@@ -2910,6 +2910,18 @@
             { } % for the name of the block
           }
       }
+    \RenewDocumentCommand \cellcolor { O { } m }
+      {
+        \__nicematrix_test_color_inside:
+        \tl_gput_right:Nx \g__nicematrix_pre_code_before_tl
+          {
+            \__nicematrix_rectanglecolor [ ##1 ]
+              { \exp_not:n { ##2 } }
+              { \int_use:N \c@iRow - \int_use:N \c@jCol }
+              { \int_use:N \c@iRow - \int_eval:n { \c@jCol + #1 } }
+          }
+         \ignorespaces
+      }
     \cs_set_nopar:Npn \@sharp { #3 }
     \@arstrut
     \@preamble

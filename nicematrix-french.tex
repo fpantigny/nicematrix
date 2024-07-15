@@ -1408,7 +1408,7 @@ p.~\pageref{custom-line}.\footnote{Remarque technique. Si l'utilisateur définit
   une commande par-dessus la commande |\Hline|, il doit veiller à ce qu'elle
   soit \emph{développable} au sens de TeX (en utilisant
   |\NewExpandableDocumentCommand| de LaTeX3, |\newcommand| de LaTeX ou même
-  |\def| de TeX). Exemple : |\newcommand{\RedLine}{\Hline[color=red]}|}
+  |\def| de TeX). Exemple : |\NewDocumentCommand{\RedLine}{}{\Hline[color=red]}|}
 
 De même que la commande |\Hline|, le specificateur «\verb+|+» admet entre crochets
 des options qui caractérisent le filet à tracer. 
