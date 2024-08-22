@@ -143,9 +143,11 @@ L_2    & a_{21}  & a_{22}  & \Cdots & a_{2n} \\
 \Vdots & \Vdots & \Vdots & \Ddots & \Vdots\\
 L_n    & a_{n1}  & a_{n2}  & \Cdots & a_{nn} 
 \end{bNiceArray}$\hspace{2cm}
-\begin{NiceTabular}{lSSSS}[code-before = \rowcolor{red!15}{1-2} \rowcolors{3}{blue!15}{}]
+\begin{NiceTabular}{lSSSS}%
+  [code-before = \rowcolor{red!15}{1-2} \rowcolors{3}{blue!15}{}]
 \toprule
-\Block{2-1}{Product} & \multicolumn{3}{c}{dimensions (cm)} & \Block{2-1}{\rotate Price} \\
+\Block{2-1}{Product} & \multicolumn{3}{c}{dimensions (cm)} 
+       & \Block{2-1}{\rotate Price} \\
 \cmidrule(rl){2-4} 
  & L & l & h \\
 \midrule
@@ -660,9 +662,10 @@ In the following example, we have had to enlarge by hand the columns 2 and 3
 \bigskip
 \begin{Code}
 \begin{NiceTabular}{cw{c}{2cm}w{c}{3cm}c}
-rose      & tulip & daisy & dahlia \\
-violet  & \emph{\Block[draw=red,fill=[RGB]{204,204,255},rounded-corners]{2-2}
-                {\LARGE Some beautiful flowers}} & & marigold \\
+rose & tulip & daisy & dahlia \\
+violet 
+  & \emph{\Block[draw=red,fill=[RGB]{204,204,255},rounded-corners]{2-2}
+          {\LARGE Some beautiful flowers}} & & marigold \\
    & & marigold \\
 iris & & & lis \\
 arum & periwinkle & forget-me-not &  hyacinth

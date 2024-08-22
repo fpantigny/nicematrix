@@ -129,8 +129,9 @@
 
 
 \begin{abstract}
-L'extension LaTeX \pkg{nicematrix} fournit de nouveaux environnements similaires aux environnements classiques
-|{tabular}|, |{array}| et |{matrix}| de \pkg{array} et \pkg{amsmath} mais avec des fonctionnalités plus étendues.
+L'extension LaTeX \pkg{nicematrix} fournit de nouveaux environnements similaires
+aux environnements classiques |{tabular}|, |{array}| et |{matrix}| de
+\pkg{array} et \pkg{amsmath} mais avec des fonctionnalités plus étendues.
 \end{abstract}
 
 
@@ -167,8 +168,9 @@ spécial  & 12  & 12   & 0.5 & 70    \\
 
 \vspace{1cm}
 
-L'extension \pkg{nicematrix} est entièrement contenue dans le fichier |nicematrix.sty|. Ce fichier peut être placé
-dans le répertoire courant ou dans une arborescence |texmf|. Le mieux reste néanmoins d'installer \pkg{nicematrix}
+L'extension \pkg{nicematrix} est entièrement contenue dans le fichier
+|nicematrix.sty|. Ce fichier peut être placé dans le répertoire courant ou dans
+une arborescence |texmf|. Le mieux reste néanmoins d'installer \pkg{nicematrix}
 avec une distribution TeX comme MiKTeX, TeX~Live ou MacTeX.
 
 \medskip
@@ -3138,8 +3140,9 @@ première colonne et une colonne |l| pour la dernière.\footnote{Si on souhaite
   considérer la commande |\SubMatrix| disponible dans le |\CodeAfter| et le
   |\CodeBefore| (cf. p.~\pageref{sub-matrix}).}
 
-\item On peut se demander comment \pkg{nicematrix} détermine le nombre de rangées et de colonnes nécessaires à la
-composition de la «dernière rangée» et de la «dernière colonne».
+\item On peut se demander comment \pkg{nicematrix} détermine le nombre de
+rangées et de colonnes nécessaires à la composition de la «dernière rangée» et
+de la «dernière colonne».
 
 \begin{itemize}
 \item Dans le cas d'un environnement avec préambule, comme |{NiceTabular}| ou
@@ -3597,8 +3600,8 @@ Avec cette option, l'environnement |{matrix}| est redéfini et se comporte comme
 \end{itemize}
 
 \medskip
-Par conséquent, avec les options |renew-dots| et |renew-matrix|, un code classique donne directement
-le résultat fourni par \pkg{nicematrix}.\par\nobreak
+Par conséquent, avec les options |renew-dots| et |renew-matrix|, un code
+classique donne directement le résultat fourni par \pkg{nicematrix}.\par\nobreak
 
 \medskip
 \begin{scope}
@@ -4399,11 +4402,11 @@ Les commandes |\OverBrace| et |\UnderBrace| acceptent en fait un premier
 argument optionnel (entre crochets) pour une liste de couples
 \textsl{clé=valeur}. Les clés disponibles sont les suivantes :
 \begin{itemize}
-\item \Definition{left-shorten} et \Definition{right-shorten} qui ne prennent pas de valeur ; quand
-|left-shorten| est utilisée, l'abscisse de l'extrémité de gauche de l'accolade
-est calculée à partir du contenu du sous-tableau concerné alors que, sinon,
-c'est la position du filet vertical éventuel qui est utilisée (de même pour
-|right-shorten|) ;
+\item \Definition{left-shorten} et \Definition{right-shorten} qui ne prennent
+pas de valeur ; quand |left-shorten| est utilisée, l'abscisse de l'extrémité de
+gauche de l'accolade est calculée à partir du contenu du sous-tableau concerné
+alors que, sinon, c'est la position du filet vertical éventuel qui est utilisée
+(de même pour |right-shorten|) ;
 
 \item \Definition{shorten}, qui est la conjonction des clés |left-shorten| et |right-shorten| ;
 
@@ -5067,8 +5070,9 @@ semi-transparent pour estomper le tableau (attention : certains lecteurs de
 \index{S (les colonnes S de \pkg{siunitx})}
 \index{siunitx@\pkg{siunitx} (extension)}
 
-Si l'extension \pkg{siunitx} est chargée (avant ou après \pkg{nicematrix}), il est possible d'utiliser les colonnes
-de type |S| de \pkg{siunitx} dans les environnements de \pkg{nicematrix}. L'implémentation n'utilise explicitement
+Si l'extension \pkg{siunitx} est chargée (avant ou après \pkg{nicematrix}), il
+est possible d'utiliser les colonnes de type |S| de \pkg{siunitx} dans les
+environnements de \pkg{nicematrix}. L'implémentation n'utilise explicitement
 aucune macro privée de \pkg{siunitx}.
 
 \medskip
@@ -5130,8 +5134,9 @@ de la préfixer par |matrix|, ce qui fait que son nom devient |matrix/columns-ty
 \label{rotate}
 \index{rotate@\texttt{\textbackslash rotate}}
 
-Utilisée au début d'une case, la commande |\rotate| (fournie par \pkg{nicematrix}) compose le contenu après une
-rotation de 90° dans le sens direct.
+Utilisée au début d'une case, la commande |\rotate| (fournie par
+\pkg{nicematrix}) compose le contenu après une rotation de 90° dans le sens
+direct.
 
 Dans l'exemple suivant, on l'utilise dans le |code-for-first-row|.\footnote{On
   peut aussi l'utiliser dans |\RowStyle| (cf. p.~\pageref{RowStyle}).}
@@ -5233,7 +5238,8 @@ $\begin{bNiceArray}{cccc|c}[\emph{small},
 \end{bNiceArray}$
 \end{Code}
 %
-\[\begin{bNiceArray}{cccc|c}[small, last-col, code-for-last-col = \scriptscriptstyle, columns-width=3mm]
+\[\begin{bNiceArray}{cccc|c}%
+ [small, last-col, code-for-last-col = \scriptscriptstyle, columns-width=3mm]
 1 & -2 & 3 & 4 & 5 \\
 0 & 3  & 2 & 1 & 2 & L_2 \gets 2 L_1 - L_2 \\
 0 & 1  & 1 & 2 & 3 & L_3 \gets L_1 + L_3

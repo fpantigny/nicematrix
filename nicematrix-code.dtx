@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{6.28b}
-\def\myfiledate{2024/06/29}
+\def\myfileversion{6.28c}
+\def\myfiledate{2024/08/22}
 %
 %
 %<*batchfile>  
@@ -13066,6 +13066,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % 
+% 
 % The following command |\@@_Block:| will be linked to |\Block| in the
 % environments of \pkg{nicematrix}. We define it with
 % |\NewExpandableDocumentCommand| because it has an optional argument between~
@@ -13278,10 +13279,42 @@ version 2005/12/01 or later.
         \int_compare:nNnT { #1 } = \c_one_int
           {
             \int_if_zero:nTF \c@iRow 
-              \l_@@_code_for_first_row_tl
+              { 
+%    \end{macrocode}
+%
+% \bigskip
+% In the following code, the value of |code-for-first-row| contains a |\Block|
+% (in order to have the ``first row'' centered). But, that block will be
+% executed, since it is entirely contained in the first row, the value of
+% |code-for-first-row| will be inserted once again... with the same command
+% |\Block|. That's why we have to nullify the command |\Block.|
+% \begin{Verbatim}
+% $\begin{bNiceMatrix}%
+%   [
+%     r,
+%     first-row,
+%     last-col,
+%     code-for-first-row = \Block{}{\scriptstyle\color{blue} \arabic{jCol}},
+%     code-for-last-col = \scriptstyle \color{blue} \arabic{iRow}
+%   ]
+%      &   &    &   & \\
+%   -2 & 3 & -4 & 5 & \\
+%   3 & -4 & 5 & -6 & \\
+%   -4 & 5 & -6 & 7 & \\
+%   5 & -6 & 7 & -8 & \\
+% \end{bNiceMatrix}$
+% \end{Verbatim}
+% 
+%    \begin{macrocode}
+                \cs_set_eq:NN \Block \@@_NullBlock:
+                \l_@@_code_for_first_row_tl
+              }
               {
                 \int_compare:nNnT \c@iRow = \l_@@_last_row_int 
-                  \l_@@_code_for_last_row_tl
+                  {
+                    \cs_set_eq:NN \Block \@@_NullBlock:
+                    \l_@@_code_for_last_row_tl
+                  }
               }
             \g_@@_row_style_tl
           }
@@ -14732,6 +14765,18 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / SpecialOffset }
   { offset .dim_set:N = \l_@@_offset_dim }
+%    \end{macrocode}
+%
+% \bigskip
+% In some circonstancies, we want to nullify the command |\Block|. In order to
+% reach that goal, we will link the command |\Block| to the following command
+% |\@@_NullBlock:| which has the same syntax as the standard command |\Block|
+% but which is no-op.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_NullBlock: 
+  { \@@_collect_options:n { \@@_NullBlock_i: } } 
+\NewExpandableDocumentCommand \@@_NullBlock_i: { m m D < > { } +m }
+  { }
 %    \end{macrocode}
 % 
 % 

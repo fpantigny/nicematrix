@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{6.28b}
-\def\myfiledate{2024/06/29}
+\def\myfileversion{6.28c}
+\def\myfiledate{2024/08/22}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \RequirePackage{l3keys2e}
@@ -7232,10 +7232,16 @@
         \int_compare:nNnT { #1 } = \c_one_int
           {
             \int_if_zero:nTF \c@iRow
-              \l__nicematrix_code_for_first_row_tl
+              {
+                \cs_set_eq:NN \Block \__nicematrix_NullBlock:
+                \l__nicematrix_code_for_first_row_tl
+              }
               {
                 \int_compare:nNnT \c@iRow = \l__nicematrix_last_row_int
-                  \l__nicematrix_code_for_last_row_tl
+                  {
+                    \cs_set_eq:NN \Block \__nicematrix_NullBlock:
+                    \l__nicematrix_code_for_last_row_tl
+                  }
               }
             \g__nicematrix_row_style_tl
           }
@@ -8253,6 +8259,10 @@
 \cs_generate_variant:Nn \__nicematrix_block_tikz:nnnnn { n n n n V }
 \keys_define:nn { nicematrix / SpecialOffset }
   { offset .dim_set:N = \l__nicematrix_offset_dim }
+\cs_new_protected:Npn \__nicematrix_NullBlock:
+  { \__nicematrix_collect_options:n { \__nicematrix_NullBlock_i: } }
+\NewExpandableDocumentCommand \__nicematrix_NullBlock_i: { m m D < > { } +m }
+  { }
 \cs_set_protected:Npn \__nicematrix_renew_matrix:
   {
     \RenewDocumentEnvironment { pmatrix } { }
