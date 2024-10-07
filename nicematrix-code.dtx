@@ -1,4 +1,4 @@
-% \iffalse meta-comment 
+% \iffalse meta-comment  
 %
 % This file should be compiled with $lualatex$.
 %
@@ -1967,7 +1967,7 @@ version 2005/12/01 or later.
         \seq_gput_right:Nn \g_@@_notes_seq { { #1 } { #2 } } 
         \tl_if_novalue:nT { #1 } { \int_gincr:N \c@tabularnote }
       }
-    \seq_put_right:Nx \l_@@_notes_labels_seq
+    \seq_put_right:Ne \l_@@_notes_labels_seq
       {
         \tl_if_novalue:nTF { #1 }
           {
@@ -2083,7 +2083,7 @@ version 2005/12/01 or later.
 % are not in the first composition, we have to compose that label!
 %    \begin{macrocode}
     \tl_if_novalue:nT { #1 } { \int_gincr:N \c@tabularnote }
-    \seq_put_right:Nx \l_@@_notes_labels_seq
+    \seq_put_right:Ne \l_@@_notes_labels_seq
       { 
         \tl_if_novalue:nTF { #1 }
           { \@@_notes_format:n { \int_use:N \c@tabularnote } }
@@ -2680,7 +2680,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
       \legacy_if:nF { measuring@ }
         {
-          \str_set:Nx \l_tmpa_str { #1 }
+          \str_set:Ne \l_tmpa_str { #1 }
           \seq_if_in:NVTF \g_@@_names_seq \l_tmpa_str
             { \@@_error:nn { Duplicate~name } { #1 } }
             { \seq_gput_left:NV \g_@@_names_seq \l_tmpa_str }
@@ -4626,7 +4626,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \int_compare:nNnT \g_@@_total_X_weight_int > \c_zero_int
       { 
-        \tl_gput_right:Nx \g_@@_aux_tl
+        \tl_gput_right:Ne \g_@@_aux_tl
           {
             \bool_set_true:N \l_@@_X_columns_aux_bool
             \dim_set:Nn \l_@@_X_columns_dim 
@@ -4823,7 +4823,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \iow_now:Nn \@mainaux { \ExplSyntaxOn }
     \iow_now:Nn \@mainaux { \char_set_catcode_space:n { 32 }  }
-    \iow_now:Nx \@mainaux 
+    \iow_now:Ne \@mainaux 
       {
         \tl_gset:cn { c_@@_ \int_use:N \g_@@_env_int _ tl } 
           { \exp_not:o \g_@@_aux_tl } 
@@ -5145,14 +5145,14 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_make_preamble_i_iii:nn #1 #2
   {
     \@@_compute_rule_width:n { multiplicity = \l_tmpa_int , #2 }
-    \tl_gput_right:Nx \g_@@_array_preamble_tl
+    \tl_gput_right:Ne \g_@@_array_preamble_tl
       { 
 %    \end{macrocode}
 % Here, the command |\dim_eval:n| is mandatory.
 %    \begin{macrocode}
         \exp_not:N ! { \skip_horizontal:n { \dim_eval:n { \l_@@_rule_width_dim } } }  
       }
-    \tl_gput_right:Nx \g_@@_pre_code_after_tl
+    \tl_gput_right:Ne \g_@@_pre_code_after_tl
       { 
         \@@_vline:n
           { 
@@ -5444,13 +5444,13 @@ version 2005/12/01 or later.
 % \bigskip
 %    \begin{macrocode}
 \str_new:N \c_@@_ignorespaces_str
-\str_set:Nx \c_@@_ignorespaces_str { \ignorespaces }
+\str_set:Ne \c_@@_ignorespaces_str { \ignorespaces }
 \str_remove_all:Nn \c_@@_ignorespaces_str { ~ }
 \cs_new_protected:Npn \@@_test_if_empty: 
   { \peek_after:Nw \@@_test_if_empty_i: }
 \cs_new_protected:Npn \@@_test_if_empty_i:
   {
-    \str_set:Nx \l_tmpa_str { \token_to_meaning:N \l_peek_token }
+    \str_set:Ne \l_tmpa_str { \token_to_meaning:N \l_peek_token }
     \str_if_eq:NNT \l_tmpa_str \c_@@_ignorespaces_str
       { \@@_test_if_empty:w }
   }
@@ -5751,7 +5751,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_iv:nn #1 #2
   {
-    \tl_gput_right:Nx \g_@@_pre_code_after_tl
+    \tl_gput_right:Ne \g_@@_pre_code_after_tl
       { \@@_delimiter:nnn #1 { \int_eval:n { \c@jCol + 1 } } \c_true_bool }  
     \tl_if_in:nnTF { ( [ \{ ) ] \} \left \right } { #2 }
       {
@@ -5787,7 +5787,7 @@ version 2005/12/01 or later.
               { \tl_gset:Nn \g_@@_right_delim_tl { #1 } }
               {
                 \tl_gput_right:Nn \g_@@_array_preamble_tl { ! { \enskip } } 
-                \tl_gput_right:Nx \g_@@_pre_code_after_tl
+                \tl_gput_right:Ne \g_@@_pre_code_after_tl
                   { \@@_delimiter:nnn #1 { \int_use:N \c@jCol } \c_false_bool }
                 \@@_rec_preamble:n #2
               }
@@ -5795,7 +5795,7 @@ version 2005/12/01 or later.
           {
             \tl_if_in:nnT { ( [ \{ \left } { #2 }
               { \tl_gput_right:Nn \g_@@_array_preamble_tl { ! { \enskip } } }
-            \tl_gput_right:Nx \g_@@_pre_code_after_tl
+            \tl_gput_right:Ne \g_@@_pre_code_after_tl
               { \@@_delimiter:nnn #1 { \int_use:N \c@jCol } \c_false_bool }
             \@@_rec_preamble:n #2
           }
@@ -5813,19 +5813,19 @@ version 2005/12/01 or later.
         \tl_if_eq:NNTF \g_@@_right_delim_tl \c_@@_dot_tl
           {
             \tl_gput_right:Nn \g_@@_array_preamble_tl { ! { \enskip } } 
-            \tl_gput_right:Nx \g_@@_pre_code_after_tl
+            \tl_gput_right:Ne \g_@@_pre_code_after_tl
               { \@@_delimiter:nnn #1 { \int_use:N \c@jCol } \c_false_bool }
             \tl_gset:Nn \g_@@_right_delim_tl { #2 }
           }
           {
             \tl_gput_right:Nn \g_@@_array_preamble_tl { ! { \enskip } } 
-            \tl_gput_right:Nx \g_@@_pre_code_after_tl
+            \tl_gput_right:Ne \g_@@_pre_code_after_tl
               { \@@_delimiter:nnn #1 { \int_use:N \c@jCol } \c_false_bool }
             \@@_error:nn { double~closing~delimiter } { #2 } 
           }
       }
       {
-        \tl_gput_right:Nx \g_@@_pre_code_after_tl
+        \tl_gput_right:Ne \g_@@_pre_code_after_tl
           { \@@_delimiter:nnn #1 { \int_use:N \c@jCol } \c_false_bool }
         \@@_error:nn { double~closing~delimiter } { #2 } 
         \@@_rec_preamble:n #3 
@@ -5836,7 +5836,7 @@ version 2005/12/01 or later.
 % \medskip
 %    \begin{macrocode}
 \cs_new:cpn { @@ _ \token_to_str:N \right } #1 
-    { \use:c { @@ _ \token_to_str:N ) } } 
+  { \use:c { @@ _ \token_to_str:N ) } } 
 %    \end{macrocode}
 %
 % 
@@ -6056,9 +6056,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_vlism:n #1 
   {
-    \seq_gput_right:Nx \g_@@_cols_vlism_seq 
+    \seq_gput_right:Ne \g_@@_cols_vlism_seq 
       { \int_eval:n { \c@jCol + 1 } }
-    \tl_gput_right:Nx \g_@@_array_preamble_tl
+    \tl_gput_right:Ne \g_@@_array_preamble_tl
       { \exp_not:N ! { \skip_horizontal:N \arrayrulewidth } }
     \@@_rec_preamble:n
   }
@@ -6131,10 +6131,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \int_compare:nNnT { #1 } > \c_one_int
       {
-        \seq_gput_left:Nx \g_@@_multicolumn_cells_seq
+        \seq_gput_left:Ne \g_@@_multicolumn_cells_seq
           { \int_use:N \c@iRow - \int_eval:n { \c@jCol + 1 } }
         \seq_gput_left:Nn \g_@@_multicolumn_sizes_seq { #1 } 
-        \seq_gput_right:Nx \g_@@_pos_of_blocks_seq
+        \seq_gput_right:Ne \g_@@_pos_of_blocks_seq
           { 
             { 
               \int_if_zero:nTF \c@jCol
@@ -6160,7 +6160,7 @@ version 2005/12/01 or later.
     \RenewDocumentCommand \cellcolor { O { } m }
       {
         \@@_test_color_inside:
-        \tl_gput_right:Nx \g_@@_pre_code_before_tl
+        \tl_gput_right:Ne \g_@@_pre_code_before_tl
           { 
             \@@_rectanglecolor [ ##1 ] 
               { \exp_not:n { ##2 } } 
@@ -6470,7 +6470,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
             \int_compare:nNnT \g_@@_notes_caption_int > \c_zero_int
               {
-                \tl_gput_right:Nx \g_@@_aux_tl
+                \tl_gput_right:Ne \g_@@_aux_tl
                   {
                     \tl_set:Nn \exp_not:N \l_@@_note_in_caption_tl 
                       { \int_use:N \g_@@_notes_caption_int }
@@ -7710,7 +7710,7 @@ version 2005/12/01 or later.
 % 
 % \medskip
 %    \begin{macrocode}
-    \tl_gput_right:Nx \g_@@_aux_tl
+    \tl_gput_right:Ne \g_@@_aux_tl
       { 
         \seq_gset_from_clist:Nn \exp_not:N \g_@@_size_seq 
           { 
@@ -7729,7 +7729,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \seq_if_empty:NF \g_@@_pos_of_blocks_seq
       {
-        \tl_gput_right:Nx \g_@@_aux_tl
+        \tl_gput_right:Ne \g_@@_aux_tl
           { 
             \seq_gset_from_clist:Nn \exp_not:N \g_@@_pos_of_blocks_seq
               { \seq_use:Nnnn \g_@@_pos_of_blocks_seq , , , }
@@ -7737,7 +7737,7 @@ version 2005/12/01 or later.
       } 
     \seq_if_empty:NF \g_@@_multicolumn_cells_seq
       {
-        \tl_gput_right:Nx \g_@@_aux_tl
+        \tl_gput_right:Ne \g_@@_aux_tl
           { 
             \seq_gset_from_clist:Nn \exp_not:N \g_@@_multicolumn_cells_seq
               { \seq_use:Nnnn \g_@@_multicolumn_cells_seq , , , }
@@ -7946,7 +7946,7 @@ version 2005/12/01 or later.
     \seq_if_empty:NF \g_@@_rowlistcolors_seq { \@@_clear_rowlistcolors_seq: }
     \tl_if_empty:NF \g_@@_pre_code_before_tl
       {
-        \tl_gput_right:Nx \g_@@_aux_tl
+        \tl_gput_right:Ne \g_@@_aux_tl
           {
             \tl_gset:Nn \exp_not:N \g_@@_pre_code_before_tl 
               { \exp_not:o \g_@@_pre_code_before_tl }
@@ -7955,7 +7955,7 @@ version 2005/12/01 or later.
       }
     \tl_if_empty:NF \g_nicematrix_code_before_tl
       {
-        \tl_gput_right:Nx \g_@@_aux_tl
+        \tl_gput_right:Ne \g_@@_aux_tl
           {
             \tl_gset:Nn \exp_not:N \g_@@_code_before_tl 
               { \exp_not:o \g_nicematrix_code_before_tl }
@@ -8385,7 +8385,7 @@ version 2005/12/01 or later.
 % the corresponding virtual ``block'' when drawing the horizontal and vertical
 % rules.
 %    \begin{macrocode}
-    \seq_gput_right:Nx \g_@@_pos_of_xdots_seq
+    \seq_gput_right:Ne \g_@@_pos_of_xdots_seq
       { 
         { \int_use:N \l_@@_initial_i_int }
 %    \end{macrocode}
@@ -9749,7 +9749,7 @@ version 2005/12/01 or later.
       { \@@_collect_options:n { \@@_Hdotsfor_ii } }
     \exp_args:NNo \NewDocumentCommand \@@_Hdotsfor_ii \l_@@_argspec_tl
       {
-        \tl_gput_right:Nx \g_@@_HVdotsfor_lines_tl
+        \tl_gput_right:Ne \g_@@_HVdotsfor_lines_tl
           {
             \@@_Hdotsfor:nnnn 
               { \int_use:N \c@iRow } 
@@ -9862,7 +9862,7 @@ version 2005/12/01 or later.
     \exp_args:NNo \NewDocumentCommand \@@_Vdotsfor_i \l_@@_argspec_tl
       {
         \bool_gset_true:N \g_@@_empty_cell_bool 
-        \tl_gput_right:Nx \g_@@_HVdotsfor_lines_tl
+        \tl_gput_right:Ne \g_@@_HVdotsfor_lines_tl
           {
             \@@_Vdotsfor:nnnn 
               { \int_use:N \c@iRow } 
@@ -10129,7 +10129,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_put_in_row_style:n #1
   {
-    \tl_gput_right:Nx \g_@@_row_style_tl 
+    \tl_gput_right:Ne \g_@@_row_style_tl 
       { 
 %    \end{macrocode}
 % Be careful, |\exp_not:N \@@_if_row_less_than:nn| can't be replaced by a
@@ -10196,7 +10196,7 @@ version 2005/12/01 or later.
 % First, the end of the current row (we remind that |\RowStyle| applies to the
 % \emph{end} of the current row). 
 %    \begin{macrocode}
-        \tl_gput_right:Nx \g_@@_pre_code_before_tl
+        \tl_gput_right:Ne \g_@@_pre_code_before_tl
           { 
 %    \end{macrocode}
 % The command |\@@_exp_color_arg:No| is \emph{fully expandable}.
@@ -10210,7 +10210,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \int_compare:nNnT \l_@@_key_nb_rows_int > \c_one_int
           {
-            \tl_gput_right:Nx \g_@@_pre_code_before_tl
+            \tl_gput_right:Ne \g_@@_pre_code_before_tl
               { 
                 \@@_exp_color_arg:No \@@_rowcolor \l_tmpa_tl 
                   { 
@@ -10226,7 +10226,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \dim_compare:nNnT \l_tmpa_dim > \c_zero_dim
       {
-        \exp_args:Nx \@@_put_in_row_style:n 
+        \exp_args:Ne \@@_put_in_row_style:n 
           {
             \tl_gput_right:Nn \exp_not:N \g_@@_cell_after_hook_tl 
               { 
@@ -10244,7 +10244,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \dim_compare:nNnT \l_tmpb_dim > \c_zero_dim
       {
-        \exp_args:Nx \@@_put_in_row_style:n 
+        \exp_args:Ne \@@_put_in_row_style:n 
           {
             \tl_gput_right:Nn \exp_not:N \g_@@_cell_after_hook_tl 
               { 
@@ -10579,8 +10579,8 @@ version 2005/12/01 or later.
     \tl_set_eq:NN \l_@@_tmpc_tl \l_tmpa_tl
     \tl_set_eq:NN \l_@@_tmpd_tl \l_tmpb_tl
     \@@_cut_on_hyphen:w #2 \q_stop
-    \tl_set:Nx \l_@@_rows_tl { \l_@@_tmpc_tl - \l_tmpa_tl } 
-    \tl_set:Nx \l_@@_cols_tl { \l_@@_tmpd_tl - \l_tmpb_tl }
+    \tl_set:Ne \l_@@_rows_tl { \l_@@_tmpc_tl - \l_tmpa_tl } 
+    \tl_set:Ne \l_@@_cols_tl { \l_@@_tmpd_tl - \l_tmpb_tl }
 %    \end{macrocode}
 % The command |\@@_cartesian_path:n| takes in two implicit arguments:
 % |\l_@@_cols_tl| and |\l_@@_rows_tl|.
@@ -10733,7 +10733,7 @@ version 2005/12/01 or later.
 % |\l_@@_tmpc_tl| will be the color that we will use.
 %    \begin{macrocode}
             \tl_clear_new:N \l_@@_color_tl
-            \tl_set:Nx \l_@@_color_tl
+            \tl_set:Ne \l_@@_color_tl
               { 
                 \@@_color_index:n 
                   { 
@@ -11050,7 +11050,7 @@ version 2005/12/01 or later.
 \NewDocumentCommand \@@_cellcolor_tabular { O { } m }
   {
     \@@_test_color_inside:
-    \tl_gput_right:Nx \g_@@_pre_code_before_tl
+    \tl_gput_right:Ne \g_@@_pre_code_before_tl
       { 
 %    \end{macrocode}
 % We must not expand the color (|#2|) because the color may contain the token
@@ -11071,7 +11071,7 @@ version 2005/12/01 or later.
 \NewDocumentCommand \@@_rowcolor_tabular { O { } m }
   {
     \@@_test_color_inside:
-    \tl_gput_right:Nx \g_@@_pre_code_before_tl
+    \tl_gput_right:Ne \g_@@_pre_code_before_tl
       { 
         \@@_rectanglecolor [ #1 ] { \exp_not:n { #2 } } 
           { \int_use:N \c@iRow - \int_use:N \c@jCol } 
@@ -11127,7 +11127,7 @@ version 2005/12/01 or later.
 % the commands |\rowlistcolors| which are in force) the current instruction
 % |\rowlistcolors|. 
 %    \begin{macrocode}
-    \seq_gput_right:Nx \g_@@_rowlistcolors_seq 
+    \seq_gput_right:Ne \g_@@_rowlistcolors_seq 
       {
         { \int_use:N \c@iRow }
         { \exp_not:n { #1 } }
@@ -11164,7 +11164,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
       { \seq_gput_right:Nn \g_tmpa_seq { { #1 } { #2 } { #3 } { #4 } } }
       {
-        \tl_gput_right:Nx \g_@@_pre_code_before_tl 
+        \tl_gput_right:Ne \g_@@_pre_code_before_tl 
           { 
             \@@_rowlistcolors 
                [ \exp_not:n { #2 } ] 
@@ -11220,7 +11220,7 @@ version 2005/12/01 or later.
 % instructions in the |\CodeBefore| in order to fill color by color (to avoid
 % the thin white lines).
 %    \begin{macrocode}
-        \tl_gput_left:Nx \g_@@_pre_code_before_tl
+        \tl_gput_left:Ne \g_@@_pre_code_before_tl
           { 
             \exp_not:N \columncolor [ #1 ] 
               { \exp_not:n { #2 } } { \int_use:N \c@jCol } 
@@ -11473,20 +11473,20 @@ version 2005/12/01 or later.
    {
      \int_compare:nNnTF \l_tmpb_tl = { \int_eval:n { \c@jCol + 1 } } 
        {
-         \seq_if_in:NxT
+         \seq_if_in:NeT
            \l_@@_corners_cells_seq 
            { \l_tmpa_tl - \int_eval:n { \l_tmpb_tl - 1 } }
            { \bool_set_false:N \g_tmpa_bool }
        }
        {
-         \seq_if_in:NxT
+         \seq_if_in:NeT
            \l_@@_corners_cells_seq 
            { \l_tmpa_tl - \l_tmpb_tl }
            { 
              \int_compare:nNnTF \l_tmpb_tl = \c_one_int
                { \bool_set_false:N \g_tmpa_bool }
                {
-                 \seq_if_in:NxT
+                 \seq_if_in:NeT
                    \l_@@_corners_cells_seq 
                    { \l_tmpa_tl - \int_eval:n { \l_tmpb_tl - 1 } }
                    { \bool_set_false:N \g_tmpa_bool }
@@ -11610,7 +11610,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \CT@arc@
     \tl_if_empty:NF \l_@@_rule_color_tl
-      { \tl_put_right:Nx \l_@@_tikz_rule_tl { , color = \l_@@_rule_color_tl } }  
+      { \tl_put_right:Ne \l_@@_tikz_rule_tl { , color = \l_@@_rule_color_tl } }  
     \pgfrememberpicturepositiononpagetrue
     \pgf@relevantforpicturesizefalse
     \@@_qpoint:n { row - \int_use:N \l_@@_local_start_int }
@@ -11734,20 +11734,20 @@ version 2005/12/01 or later.
    {
      \int_compare:nNnTF \l_tmpa_tl = { \int_eval:n { \c@iRow + 1 } }
        {
-         \seq_if_in:NxT
+         \seq_if_in:NeT
            \l_@@_corners_cells_seq 
            { \int_eval:n { \l_tmpa_tl - 1 } - \l_tmpb_tl }
            { \bool_set_false:N \g_tmpa_bool }
        }
        {
-         \seq_if_in:NxT
+         \seq_if_in:NeT
            \l_@@_corners_cells_seq 
            { \l_tmpa_tl - \l_tmpb_tl }
            { 
              \int_compare:nNnTF \l_tmpa_tl = \c_one_int
                { \bool_set_false:N \g_tmpa_bool }
                {
-                 \seq_if_in:NxT
+                 \seq_if_in:NeT
                    \l_@@_corners_cells_seq 
                    { \int_eval:n { \l_tmpa_tl - 1 } - \l_tmpb_tl }
                    { \bool_set_false:N \g_tmpa_bool }
@@ -11932,7 +11932,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \CT@arc@
     \tl_if_empty:NF \l_@@_rule_color_tl
-      { \tl_put_right:Nx \l_@@_tikz_rule_tl { , color = \l_@@_rule_color_tl } }  
+      { \tl_put_right:Ne \l_@@_tikz_rule_tl { , color = \l_@@_rule_color_tl } }  
     \pgfrememberpicturepositiononpagetrue
     \pgf@relevantforpicturesizefalse
     \@@_qpoint:n { col - \int_use:N \l_@@_local_start_int }
@@ -12010,7 +12010,7 @@ version 2005/12/01 or later.
   {
     \@@_compute_rule_width:n { multiplicity = #1 , #2 }
     \skip_vertical:N \l_@@_rule_width_dim 
-    \tl_gput_right:Nx \g_@@_pre_code_after_tl
+    \tl_gput_right:Ne \g_@@_pre_code_after_tl
       { 
         \@@_hline:n 
           { 
@@ -12244,7 +12244,7 @@ version 2005/12/01 or later.
     \str_if_in:nnTF { #2 } { - } 
       { \@@_cut_on_hyphen:w #2 \q_stop }  
       { \@@_cut_on_hyphen:w #2 - #2 \q_stop }  
-    \tl_gput_right:Nx \g_@@_pre_code_after_tl
+    \tl_gput_right:Ne \g_@@_pre_code_after_tl
       { 
         \@@_hline:n 
           { 
@@ -12291,9 +12291,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % In the following line, the |\dim_use:N| is mandatory since we do an expansion.
 %    \begin{macrocode}
-    \tl_gput_right:Nx \g_@@_array_preamble_tl
+    \tl_gput_right:Ne \g_@@_array_preamble_tl
       { \exp_not:N ! { \skip_horizontal:n { \dim_use:N \l_@@_rule_width_dim } } }
-    \tl_gput_right:Nx \g_@@_pre_code_after_tl
+    \tl_gput_right:Ne \g_@@_pre_code_after_tl
       { 
         \@@_vline:n 
           { 
@@ -12431,7 +12431,7 @@ version 2005/12/01 or later.
 % commands which color the |rows|, |columns| and |cells| must not color the
 % cells in the corners.
 %    \begin{macrocode}
-        \tl_gput_right:Nx \g_@@_aux_tl
+        \tl_gput_right:Ne \g_@@_aux_tl
           {
             \seq_set_from_clist:Nn \exp_not:N \l_@@_corners_cells_seq 
               { \seq_use:Nnnn \l_@@_corners_cells_seq , , , }
@@ -12642,7 +12642,7 @@ version 2005/12/01 or later.
         \bool_if:NT \l_@@_block_auto_columns_width_bool
           {
             \iow_shipout:Nn \@mainaux \ExplSyntaxOn
-            \iow_shipout:Nx \@mainaux         
+            \iow_shipout:Ne \@mainaux         
               { 
                 \cs_gset:cpn 
                   { @@ _ max _ cell _ width _ \int_use:N \g_@@_NiceMatrixBlock_int } 
@@ -12761,7 +12761,7 @@ version 2005/12/01 or later.
                 \pgfpointanchor { \@@_env: - \@@_i: - \@@_j: } { south~west }
                 \dim_set:cn { l_@@_row_\@@_i: _min_dim}
                   { \dim_min:vn { l_@@_row _ \@@_i: _min_dim } \pgf@y }  
-                \seq_if_in:NxF \g_@@_multicolumn_cells_seq { \@@_i: - \@@_j: }
+                \seq_if_in:NeF \g_@@_multicolumn_cells_seq { \@@_i: - \@@_j: }
                   { 
                     \dim_set:cn { l_@@_column _ \@@_j: _min_dim}
                       { \dim_min:vn { l_@@_column _ \@@_j: _min_dim } \pgf@x }
@@ -12773,7 +12773,7 @@ version 2005/12/01 or later.
                 \pgfpointanchor { \@@_env: - \@@_i: - \@@_j: } { north~east }
                 \dim_set:cn { l_@@_row _ \@@_i: _ max_dim }
                   { \dim_max:vn { l_@@_row _ \@@_i: _ max_dim } \pgf@y }
-                \seq_if_in:NxF \g_@@_multicolumn_cells_seq { \@@_i: - \@@_j: }
+                \seq_if_in:NeF \g_@@_multicolumn_cells_seq { \@@_i: - \@@_j: }
                   { 
                     \dim_set:cn { l_@@_column _ \@@_j: _ max_dim }
                       { \dim_max:vn { l_@@_column _ \@@_j: _max_dim } \pgf@x }
@@ -13168,7 +13168,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \tl_set:Nx \l_tmpa_tl
+    \tl_set:Ne \l_tmpa_tl
       {
         { \int_use:N \c@iRow }
         { \int_use:N \c@jCol }
@@ -13237,7 +13237,7 @@ version 2005/12/01 or later.
     \int_gincr:N \g_@@_block_box_int
     \cs_set_protected_nopar:Npn \diagbox ##1 ##2
       {
-        \tl_gput_right:Nx \g_@@_pre_code_after_tl    
+        \tl_gput_right:Ne \g_@@_pre_code_after_tl    
           { 
             \@@_actually_diagbox:nnnnnn 
               { \int_use:N \c@iRow }
@@ -13460,7 +13460,7 @@ version 2005/12/01 or later.
                }
            } 
        }
-    \seq_gput_right:Nx \g_@@_blocks_seq
+    \seq_gput_right:Ne \g_@@_blocks_seq
       {   
         \l_tmpa_tl
 %    \end{macrocode}
@@ -13500,7 +13500,7 @@ version 2005/12/01 or later.
   {
     \bool_if:NT \g_@@_rotate_bool
       {
-        \str_set:Nx \l_@@_hpos_block_str  
+        \str_set:Ne \l_@@_hpos_block_str  
           {
             \bool_if:NTF \g_@@_rotate_c_bool 
               { c }
@@ -13564,7 +13564,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_Block_v:nnnnn #1 #2 #3 #4 #5
   {
-    \seq_gput_right:Nx \g_@@_blocks_seq
+    \seq_gput_right:Ne \g_@@_blocks_seq
       {   
         \l_tmpa_tl
         { \exp_not:n { #3 } }
@@ -13635,7 +13635,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_Block_vi:nnnnn #1 #2 #3 #4 #5 
   {
-    \seq_gput_right:Nx \g_@@_blocks_seq
+    \seq_gput_right:Ne \g_@@_blocks_seq
       {   
         \l_tmpa_tl
         { \exp_not:n { #3 } }
@@ -13654,7 +13654,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_Block_vii:nnnnn #1 #2 #3 #4 #5 
   {
-    \seq_gput_right:Nx \g_@@_blocks_seq
+    \seq_gput_right:Ne \g_@@_blocks_seq
       {   
         \l_tmpa_tl
         { \exp_not:n { #3 } }
@@ -13857,7 +13857,7 @@ version 2005/12/01 or later.
       \l_@@_vlines_block_bool 
       { ! \l_@@_ampersand_bool }
       {
-        \tl_gput_right:Nx \g_nicematrix_code_after_tl
+        \tl_gput_right:Ne \g_nicematrix_code_after_tl
           { 
             \@@_vlines_block:nnn
               { \exp_not:n { #5 } } 
@@ -13867,7 +13867,7 @@ version 2005/12/01 or later.
       }
     \bool_if:NT \l_@@_hlines_block_bool
       {
-        \tl_gput_right:Nx \g_nicematrix_code_after_tl
+        \tl_gput_right:Ne \g_nicematrix_code_after_tl
           { 
             \@@_hlines_block:nnn
               { \exp_not:n { #5 } } 
@@ -13884,7 +13884,7 @@ version 2005/12/01 or later.
 % |hvlines|) will be used when drawing the rules (in fact, there is also the
 % |\multicolumn| and the |\diagbox| in that sequence).
 %    \begin{macrocode}
-            \seq_gput_left:Nx \g_@@_pos_of_blocks_seq 
+            \seq_gput_left:Ne \g_@@_pos_of_blocks_seq 
               { { #1 } { #2 } { #3 } { #4 } { \l_@@_block_name_str } }  
           }
       }
@@ -13896,7 +13896,7 @@ version 2005/12/01 or later.
       {
         \bool_lazy_or:nnT \l_@@_hlines_block_bool \l_@@_vlines_block_bool 
           { \@@_error:n { hlines~with~color } }
-        \tl_gput_right:Nx \g_nicematrix_code_after_tl
+        \tl_gput_right:Ne \g_nicematrix_code_after_tl
           { 
             \@@_stroke_block:nnn
 %    \end{macrocode}
@@ -13914,7 +13914,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \clist_if_empty:NF \l_@@_borders_clist
       {
-        \tl_gput_right:Nx \g_nicematrix_code_after_tl
+        \tl_gput_right:Ne \g_nicematrix_code_after_tl
           { 
             \@@_stroke_borders_block:nnn
               { \exp_not:n { #5 } } 
@@ -13931,18 +13931,18 @@ version 2005/12/01 or later.
           {
             \tl_if_head_eq_meaning:nNTF \l_@@_fill_tl [
               { 
-                \tl_set:Nx \l_@@_fill_tl
+                \tl_set:Ne \l_@@_fill_tl
                   {
                     [ opacity = \l_@@_opacity_tl ,
                     \tl_tail:o \l_@@_fill_tl
                   }
               }
               { 
-                \tl_set:Nx \l_@@_fill_tl
+                \tl_set:Ne \l_@@_fill_tl
                   { [ opacity = \l_@@_opacity_tl ] { \l_@@_fill_tl } }
               }
           }
-        \tl_gput_right:Nx \g_@@_pre_code_before_tl
+        \tl_gput_right:Ne \g_@@_pre_code_before_tl
           { 
             \exp_not:N \roundedrectanglecolor 
               \exp_args:No \tl_if_head_eq_meaning:nNTF \l_@@_fill_tl [
@@ -13958,7 +13958,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \seq_if_empty:NF \l_@@_tikz_seq
       {
-        \tl_gput_right:Nx \g_nicematrix_code_before_tl
+        \tl_gput_right:Ne \g_nicematrix_code_before_tl
           {
             \@@_block_tikz:nnnnn
               { #1 }
@@ -13974,7 +13974,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \cs_set_protected_nopar:Npn \diagbox ##1 ##2
       {
-        \tl_gput_right:Nx \g_@@_pre_code_after_tl    
+        \tl_gput_right:Ne \g_@@_pre_code_after_tl    
           { 
             \@@_actually_diagbox:nnnnnn 
               { #1 } 
@@ -14319,7 +14319,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % |\l_tmpa_tl| will contain the anchor of the \textsc{pgf} node which will be used.
 %    \begin{macrocode}
-            \tl_set:Nx \l_tmpa_tl 
+            \tl_set:Ne \l_tmpa_tl 
               {
                 \str_case:on \l_@@_vpos_block_str
                   {
@@ -14544,8 +14544,8 @@ version 2005/12/01 or later.
     \tl_set_eq:NN \l_@@_tmpc_tl \l_tmpa_tl
     \tl_set_eq:NN \l_@@_tmpd_tl \l_tmpb_tl
     \@@_cut_on_hyphen:w #3 \q_stop
-    \tl_set:Nx \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
-    \tl_set:Nx \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
+    \tl_set:Ne \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
+    \tl_set:Ne \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
     \int_step_inline:nnn \l_@@_tmpd_tl \l_tmpb_tl
       { 
         \use:e 
@@ -14568,8 +14568,8 @@ version 2005/12/01 or later.
     \tl_set_eq:NN \l_@@_tmpc_tl \l_tmpa_tl
     \tl_set_eq:NN \l_@@_tmpd_tl \l_tmpb_tl
     \@@_cut_on_hyphen:w #3 \q_stop
-    \tl_set:Nx \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
-    \tl_set:Nx \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
+    \tl_set:Ne \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
+    \tl_set:Ne \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
     \int_step_inline:nnn \l_@@_tmpc_tl \l_tmpa_tl
       { 
         \use:e 
@@ -14607,8 +14607,8 @@ version 2005/12/01 or later.
         \tl_set_eq:NN \l_@@_tmpc_tl \l_tmpa_tl
         \tl_set_eq:NN \l_@@_tmpd_tl \l_tmpb_tl
         \@@_cut_on_hyphen:w #3 \q_stop
-        \tl_set:Nx \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
-        \tl_set:Nx \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
+        \tl_set:Ne \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
+        \tl_set:Ne \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
         \@@_stroke_borders_block_i:
       }
   }
@@ -14885,7 +14885,7 @@ version 2005/12/01 or later.
     \cs_set_protected:cpn { #1 AutoNiceMatrix }
       {
         \bool_gset_true:N \g_@@_delims_bool 
-        \str_gset:Nx \g_@@_name_env_str { #1 AutoNiceMatrix } 
+        \str_gset:Ne \g_@@_name_env_str { #1 AutoNiceMatrix } 
         \AutoNiceMatrixWithDelims { #2 } { #3 }
       }  
   }
@@ -14946,7 +14946,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_diagbox:nn #1 #2
   {
-    \tl_gput_right:Nx \g_@@_pre_code_after_tl    
+    \tl_gput_right:Ne \g_@@_pre_code_after_tl    
       { 
         \@@_actually_diagbox:nnnnnn
           { \int_use:N \c@iRow } 
@@ -14970,7 +14970,7 @@ version 2005/12/01 or later.
 % because a cell with |\diagbox| must be considered as non empty by the key 
 % |corners|.
 %    \begin{macrocode}
-    \seq_gput_right:Nx \g_@@_pos_of_blocks_seq
+    \seq_gput_right:Ne \g_@@_pos_of_blocks_seq
       {
         { \int_use:N \c@iRow } 
         { \int_use:N \c@jCol } 
@@ -15288,7 +15288,7 @@ version 2005/12/01 or later.
   {
     \peek_remove_spaces:n
       { 
-        \tl_gput_right:Nx \g_@@_pre_code_after_tl
+        \tl_gput_right:Ne \g_@@_pre_code_after_tl
           { 
             \SubMatrix { #1 } { #2 } { #3 } { #4 } 
               [ 
@@ -15316,7 +15316,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_SubMatrix_in_code_before_i:nnnn #1 #2 #3 #4
   { 
-    \seq_gput_right:Nx \g_@@_submatrix_seq 
+    \seq_gput_right:Ne \g_@@_submatrix_seq 
       { 
 %    \end{macrocode}
 % We use |\str_if_eq:nnTF| because it is fully expandable.
@@ -15647,7 +15647,7 @@ version 2005/12/01 or later.
 %
 %    \begin{macrocode}
     \cs_set_eq:NN \pgfpointanchor \@@_pgfpointanchor:n
-    \flag_clear_new:n { nicematrix }
+    \flag_clear_new:N \l_@@_code_flag
     \l_@@_code_tl
   }
 %    \end{macrocode}
@@ -15719,8 +15719,8 @@ version 2005/12/01 or later.
       { 
         \str_case:nVTF { #1 } \c_@@_integers_alist_tl
           {
-            \flag_raise:n { nicematrix }
-            \int_if_even:nTF { \flag_height:n { nicematrix } } 
+            \flag_raise:N \l_@@_code_flag
+            \int_if_even:nTF { \flag_height:N \l_@@_code_flag } 
               { \int_eval:n { #1 + \l_@@_first_i_tl - 1 } }
               { \int_eval:n { #1 + \l_@@_first_j_tl - 1 } }
          }

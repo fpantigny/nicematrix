@@ -316,12 +316,12 @@ $\begin{pmatrix}
 
 \medskip
 En s'inspirant de l'extension \pkg{cellspace} qui traite de ce problème,
-l'extension \pkg{nicematrix} propose deux clés |cell-space-top-limit| et
-|cell-space-bottom-limit| qui sont similaires aux deux paramètres
+l'extension \pkg{nicematrix} propose deux clés \Definition{cell-space-top-limit}
+et \Definition{cell-space-bottom-limit} qui sont similaires aux deux paramètres
 |\cellspacetoplimit| et |\cellspacebottomlimit| proposés par \pkg{cellspace}.\index{cellspace@\pkg{cellspace} (extension)}
 
-Il existe aussi une clé |cell-space-limits| pour régler simultanément les deux
-paramètres.
+Il existe aussi une clé \Definition{cell-space-limits} pour régler simultanément
+les deux paramètres.
 
 La valeur initiale de ces paramètres est $0$~pt pour que les environnements de
 \pkg{nicematrix} aient par défaut le même comportement que ceux de \pkg{array}
@@ -362,10 +362,10 @@ seulement grâce à la commande |\RowStyle| (cf.~p.~\pageref{RowStyle}).
 
 \index{baseline (clé pour un environnement)}
 
-L'extension \pkg{nicematrix} propose une option |baseline| pour la position
-verticale des tableaux. Cette option |baseline| prend comme valeur un entier qui
-indique le numéro de rangée dont la ligne de base servira de ligne de base pour
-le tableau.
+L'extension \pkg{nicematrix} propose une option \Definition{baseline} pour la
+position verticale des tableaux. Cette option |baseline| prend comme valeur un
+entier qui indique le numéro de rangée dont la ligne de base servira de ligne de
+base pour le tableau.
 
 \medskip
 \begin{Code}[width=9cm]
@@ -505,7 +505,7 @@ $A=\begin{pNiceArray}{cc|cc}\emph{[baseline=line-3]}
 
 
 Dans les environnements de \pkg{nicematrix}, on peut utiliser la commande
-|\Block| pour placer un élément au centre d'un rectangle de cases
+\DefinitionCommande{Block} pour placer un élément au centre d'un rectangle de cases
 fusionnées.\footnote{Les espaces situés après une commande |\Block| sont supprimés.}
 
 La commande |\Block| doit être utilisée dans la case supérieure gauche du bloc
@@ -946,12 +946,12 @@ Rang & \Block[C]{1-3}{Premier groupe} & & & \Block{1-3}{Deuxième groupe} \\
 \colorbox{yellow!50}{\bfseries Nouveau 6.28}\par\nobreak
 
 \smallskip
-La commande |\Block| accepte aussi la clé |p|. Avec cette clé, le contenu du
-bloc est composé comme un paragraphe (de manière similaire à une colonne
-standard de type |p|). Cette clé peut s'utiliser en conjonction avec les clés
-|l|, |c| ou |r| et, alors, le paragraphe est composé avec |\raggedright|,
-|\centering| ou |\raggedleft|. Avec la clé |j|, le paragraphe est composé de
-manière justifiée.
+La commande |\Block| accepte aussi la clé \Definition{p}. Avec cette clé, le
+contenu du bloc est composé comme un paragraphe (de manière similaire à une
+colonne standard de type |p|). Cette clé peut s'utiliser en conjonction avec les
+clés |l|, |c| ou |r| et, alors, le paragraphe est composé avec |\raggedright|,
+|\centering| ou |\raggedleft|. Avec la clé \Definition{j}, le paragraphe est
+composé de manière justifiée.
 
 
 \subsection{Positionnement vertical du contenu des blocs}
@@ -965,7 +965,8 @@ Concernant le positionnement vertical, la commande |\Block| admet les clés
 
 \begin{itemize}
 \item \index{v-center (clé de \texttt{\textbackslash Block)})}
-Avec la clé \Definition{m}\footnote{Cette clé a un alias : |v-center|.}, le contenu du bloc est centré verticalement.
+Avec la clé \Definition{m}\footnote{Cette clé a un alias : |v-center|.}, le
+contenu du bloc est centré verticalement. 
 
 \item Avec la clé \Definition{t}, la ligne de base du contenu du bloc est alignée avec la
 ligne de base de la première rangée concernée par le bloc.
@@ -1100,7 +1101,7 @@ quelques restrictions.
 \item Pour |\\|, il n'y a pas d'autres restrictions. On peut utiliser
 |\\| dans un bloc pour composer du texte sur plusieurs lignes.  
 
-\item Pour pouvoir utiliser |&|, la clé |ampersand-in-blocks| (alias:
+\item Pour pouvoir utiliser |&|, la clé \Definition{ampersand-in-blocks} (alias:
 |&-in-blocks|) doit avoir été activée\footnote{Si ce n'est pas le cas,
   l'utilisation de |&| dans l'argument principal de la commande |\Block|
   provoquera une erreur : |! Extra alignment tab has been changed to \cr| de
@@ -1121,9 +1122,9 @@ L'esperluette |&| permet de diviser horizontalement un bloc en sous-blocs \emph{
 \begin{NiceTabular}{ll}%
    [hvlines,ampersand-in-blocks]
   & les cinq premiers entiers naturels \\
-3 & \Block{un&deux&trois} \\
-4 & \Block{un&deux&trois& quatre} \\
-5 & \Block{un&deux&trois&quatre&cinq} \\
+3 & \Block{}{un&deux&trois} \\
+4 & \Block{}{un&deux&trois& quatre} \\
+5 & \Block{}{un&deux&trois&quatre&cinq} \\
 \end{NiceTabular}
 \end{Code}
 %
@@ -1286,7 +1287,7 @@ A&B&C&D \\
 \index{standard-cline}
 Dans les environnements de \pkg{nicematrix}, cette situation est corrigée (il
 est néanmoins possible de revenir au comportement par défaut de |\cline| avec la
-clé |standard-cline|).
+clé \Definition{standard-cline}).
 
 \medskip
 \begin{Code}[width=10cm]
@@ -1320,10 +1321,10 @@ Dans les environnements de \pkg{nicematrix}, une instruction
 \index{width!sous-clé de «rules»} 
 \index{rules (clé pour un environnement)}
 
-Les environnements de \pkg{nicematrix} proposent une clé |rules/width| pour
-fixer la largeur (on devrait plutôt dire l'épaisseur) des filets dans
-l'environnement. En fait,  cette clé ne fait que fixer la valeur du paramètre
-dimensionnel de LaTeX |\arrayrulewidth|.
+Les environnements de \pkg{nicematrix} proposent une clé
+\Definition{rules/width} pour fixer la largeur (on devrait plutôt dire
+l'épaisseur) des filets dans l'environnement. En fait, cette clé ne fait que
+fixer la valeur du paramètre dimensionnel de LaTeX |\arrayrulewidth|.
 
 \smallskip
 On sait que \pkg{colortbl} propose la commande |\arrayrulecolor| pour spécifier
@@ -1334,7 +1335,7 @@ la couleur de ces filets.
 Avec \pkg{nicematrix}, il est possible de spécifier une couleur même si
 \pkg{colortbl} n'est pas chargé. Par souci de compatibilité, la commande est
 nommée également |\arrayrulecolor|. Néanmoins, \pkg{nicematrix} propose aussi
-une clé |rules/color|, disponible dans |\NiceMatrixOptions| ou dans un
+une clé \Definition{rules/color}, disponible dans |\NiceMatrixOptions| ou dans un
 environnement individuel, pour fixer la couleur des filets. Cette clé fixe
 localement la couleur des filets (alors que la commande |\arrayrulecolor| agit
 globalement !). Elle est à privilégier.
@@ -1444,10 +1445,11 @@ c & d \\
 \index{vlines!clé pour un environnement}
 
 \medskip
-Les clés |hlines| et |vlines| (qui, bien sûr, tracent des filets horizontaux et
-verticaux) prennent comme valeur une liste de numéros qui sont les numéros des
-filets\footnote{Il est également possible de mettre dans la liste des
-  intervalles de numéros de la forme $i$|-|$j$.} à tracer. Si aucune valeur n'est donnée, tous les filets sont tracés.
+Les clés \Definition{hlines} et \Definition{vlines} (qui, bien sûr, tracent des
+filets horizontaux et verticaux) prennent comme valeur une liste de numéros qui
+sont les numéros des filets\footnote{Il est également possible de mettre dans la
+  liste des intervalles de numéros de la forme $i$|-|$j$.} à tracer. Si aucune
+valeur n'est donnée, tous les filets sont tracés.
 
 En fait, pour les environnements avec délimiteurs (comme |{pNiceMatrix}| ou
 |{bNiceArray}|), la clé |vlines| ne trace pas les filets extérieurs (ce qui est
@@ -1497,8 +1499,8 @@ z & 0 & 0 & 0 & 0 & 0 \\
 \index{hvlines!clé pour un environnement}
 \index{hvlines-except-borders}
 
-La clé |hvlines|, qui ne prend pas de valeur, est la conjonction des clés
-|hlines| et |vlines|. 
+La clé \Definition{hvlines}, qui ne prend pas de valeur, est la conjonction des
+clés |hlines| et |vlines|.
 
 \smallskip
 \begin{Code}
@@ -1527,10 +1529,10 @@ p.~\pageref{tabular-rounded-corners}.
 
 
 \medskip
-La clé |hvlines-except-borders| est similaire à la clé |hvlines| mais ne trace
-pas les filets sur les bords horizontaux et verticaux du tableau. Pour un
-exemple d'utilisation de cette clé, voir la partie «Exemple d'utilisation avec
-\pkg{tcolorbox}» p.~\pageref{tcolorbox}.
+La clé \Definition{hvlines-except-borders} est similaire à la clé |hvlines| mais
+ne trace pas les filets sur les bords horizontaux et verticaux du tableau. Pour
+un exemple d'utilisation de cette clé, voir la partie «Exemple d'utilisation
+avec \pkg{tcolorbox}» p.~\pageref{tcolorbox}.
 
 
 \medskip
@@ -1540,8 +1542,8 @@ exemple d'utilisation de cette clé, voir la partie «Exemple d'utilisation avec
 \index{Coins (les --- vides)}
 \index{corners (clé d'un environnement)}
 
-Les quatre coins d'un tableau seront notés |NW|, |SW|, |NE| et |SE| (\emph{north west}, \emph{south west}, \emph{north
-  east} et \emph{south east} en anglais).
+Les quatre coins d'un tableau seront notés |NW|, |SW|, |NE| et |SE| (\emph{north
+  west}, \emph{south west}, \emph{north east} et \emph{south east} en anglais).
 
 \smallskip
 Pour chacun de ces coins, on appellera \emph{coin vide} (ou tout simplement
@@ -1582,12 +1584,12 @@ A & A & A & A & A & A \\
 \end{NiceTabular}
 
 \medskip
-Quand la clé |corners|\footnote{La clé \texttt{corners} dont on parle là
-  n'a pas de rapport direct avec la clé \texttt{rounded-corners},
-  décrite dans la partie \ref{tabular-rounded-corners},
+Quand la clé \Definition{corners}\footnote{La clé \texttt{corners} dont on parle
+  là n'a pas de rapport direct avec la clé \texttt{rounded-corners}, décrite
+  dans la partie \ref{tabular-rounded-corners},
   p.~\pageref{tabular-rounded-corners}.} est utilisée, \pkg{nicematrix} calcule
 les coins vides et ces coins sont alors pris en compte par les outils de tracés
-de filets (les filets ne seront pas tracés dans ces coins vides). 
+de filets (les filets ne seront pas tracés dans ces coins vides).
 
 \medskip
 \begin{Code}[width=11cm]
@@ -1656,9 +1658,9 @@ p.~\pageref{TikzEveryCell}) tient également compte des coins.
 
 \indexcommand{diagbox}
 
-La commande |\diagbox| (inspirée par l'extension \pkg{diagbox}) permet, quand
-elle est utilisée dans une case, de couper cette case selon une diagonale
-descendante.
+La commande \DefinitionCommande{diagbox} (inspirée par l'extension
+\pkg{diagbox}) permet, quand elle est utilisée dans une case, de couper cette
+case selon une diagonale descendante.
 
 \medskip
 \begin{Code}[width=10cm]
@@ -1691,11 +1693,11 @@ Cette commande |\diagbox| peut aussi être utilisée dans un |\Block|.
 \index{custom-line|(}
 
 
-Il est possible de définir des commandes et des lettres pour des filets
-personnalisés avec la clé |custom-line|, utilisable dans |\NiceMatrixOptions| ou
-bien dans un environnement. Cette clé prend en argument une liste de paires de
-la forme \textsl{clé=valeur}. Il y a d'abord trois clés pour spécifier les outils
-qui permettront d'utiliser ce nouveau type de filet.
+Il est en fait possible de définir des commandes et des lettres pour des filets
+personnalisés avec la clé \Definition{custom-line}, utilisable dans
+|\NiceMatrixOptions| ou bien dans un environnement. Cette clé prend en argument
+une liste de paires de la forme \textsl{clé=valeur}. Il y a d'abord trois clés
+pour spécifier les outils qui permettront d'utiliser ce nouveau type de filet.
 
 \begin{itemize}
 \item la clé \Definition{command} indique le nom (sans la contre-oblique) d'une commande
@@ -1841,9 +1843,10 @@ TikZ.
 
 Par défaut, aucune réservation de place n'est faite pour le filet qui sera tracé
 avec TikZ. On peut demander une réservation (horizontale pour un filet vertical
-et verticale pour un filet horizontal) avec la clé |total-width| qui est donc en
-quelque sorte la largeur du filet qui sera tracé (cette largeur n'est \emph{pas}
-calculée à partir des caractéristiques fournies par la clé |tikz|).
+et verticale pour un filet horizontal) avec la clé \Definition{total-width} qui
+est donc en quelque sorte la largeur du filet qui sera tracé (cette largeur
+n'est \emph{pas} calculée à partir des caractéristiques fournies par la clé
+|tikz|).
 
 \bigskip
 Voici ce que l'on obtient avec la clé |dotted| de TikZ.
@@ -1901,8 +1904,8 @@ composantes de la matrice par |\Cdots|, |\Vdots|, etc. (voir
 p.~\pageref{Cdots}).
 
 \medskip
-L'extension \pkg{nicematrix} prédéfinit en fait les commandes \Definition{hdottedline} et
-\Definition{cdottedline} et la lettre «|:|» pour ces filets en pointillés.\footnote{Néanmoins, l'utilisateur peut écraser ces définitions de
+L'extension \pkg{nicematrix} prédéfinit en fait les commandes \DefinitionCommande{hdottedline} et
+\DefinitionCommande{cdottedline} et la lettre «|:|» pour ces filets en pointillés.\footnote{Néanmoins, l'utilisateur peut écraser ces définitions de
   |\hdottedline|, |\cdottedline| et de «|:|» avec |custom-line| s'il le souhaite
   (par exemple pour les remplacer par des lignes en tiretés).}
 
@@ -2613,10 +2616,10 @@ On a utilisé le type de colonne |S| de \pkg{siunitx} (qu'il faut avoir chargé)
 
 On peut accéder aux outils de coloriage précédents avec une syntaxe proche de
 celle proposée par \pkg{colortbl} (même si \pkg{colortbl} n'est pas chargé). On
-doit pour cela utiliser la clé |color-inside|\footnote{Il existe un alias pour
-  cette clé : \texttt{colortbl-like}.} dans l'environnement
+doit pour cela utiliser la clé \Definition{color-inside}\footnote{Il existe un
+  alias pour cette clé : \texttt{colortbl-like}.} dans l'environnement
 concerné.\footnote{Pour le moment, cette clé n'est \emph{pas} disponible dans
-  |\NiceMatrixOptions|.}o
+  |\NiceMatrixOptions|.}
 
 On a alors accès aux commandes suivantes (les trois premières sont inspirées par
 \pkg{colortbl} mais sont indépendantes de \pkg{colortbl}) :
@@ -2739,8 +2742,9 @@ l'action d'une commande de coloriage générale.
 \index{cell-space-limits}
 
 
-La commande |\RowStyle| prend en argument des instructions de mise en forme qui
-seront appliquées à chacune des cases restantes sur la rangée en cours.
+La commande \DefinitionCommande{RowStyle} prend en argument des instructions de
+mise en forme qui seront appliquées à chacune des cases restantes sur la rangée
+en cours.
 
 \medskip
 Elle prend aussi en premier argument optionnel, entre crochets, une liste de
@@ -2823,7 +2827,7 @@ Rio    & Tokyo    & Oslo
 Dans les environnements de \pkg{nicematrix}, il est aussi possible de fixer la
 largeur \emph{minimale} de toutes les colonnes (à l'exception des éventuelles
 colonnes extérieures: cf. p.~\pageref{exterior}) directement avec l'option
-|columns-width|.
+\Definition{columns-width}.
 
 \medskip
 \begin{Code}[width=10cm]
@@ -2946,8 +2950,8 @@ L'environnement |{NiceTabular}| propose aussi des colonnes |X| similaires à
 celles proposées par l'environnement |{tabularx}| de l'extension éponyme.
 
 La valeur requise par la largeur du tableau peut être passée en argument de la
-clé |width| (dans |{NiceTabular}| ou dans |\NiceMatrixOptions|). La valeur
-initiale de ce paramètre est |\linewidth| (et non |\textwidth|).
+clé \Definition{width} (dans |{NiceTabular}| ou dans |\NiceMatrixOptions|). La
+valeur initiale de ce paramètre est |\linewidth| (et non |\textwidth|).
 
 Pour se rapprocher davantage de l'environnement |{tabularx}|, \pkg{nicematrix}
 propose aussi un environnement |{NiceTabularX}| avec une syntaxe similaire à
@@ -3096,8 +3100,9 @@ commence par une instruction |\color|.
 \index{last-col}
 
 Les environnements de \pkg{nicematrix} permettent de composer des rangées et des
-colonnes «extérieures» grâce aux options |first-row|, |last-row|, |first-col| et
-|last-col|. C'est particulièrement intéressant pour les matrices (mathématiques).
+colonnes «extérieures» grâce aux options \Definition{first-row},
+\Definition{last-row}, \Definition{first-col} et \Definition{last-col}. C'est
+particulièrement intéressant pour les matrices (mathématiques).
 \label{exterior}
 
 Si elle est présente, la «première rangée» (extérieure) est numérotée par $0$
@@ -3172,10 +3177,12 @@ C'est ce que nous ferons dans la suite.
 \index{code-for-first-col}
 \index{code-for-last-row}
 \index{code-for-last-col}
+
 On peut contrôler l'apparence de ces rangées et colonnes avec les options
-|code-for-first-row|, |code-for-last-row|, |code-for-first-col| et
-|code-for-last-col|. Ces options sont des listes de tokens qui seront insérées
-au début de chaque case de la rangée ou de la colonne considérée.
+\Definition{code-for-first-row}, \Definition{code-for-last-row},
+\Definition{code-for-first-col} et \Definition{code-for-last-col}. Ces options
+sont des listes de tokens qui seront insérées au début de chaque case de la
+rangée ou de la colonne considérée.
 
 \begin{Code}
 \NiceMatrixOptions{\emph{code-for-first-row} = \color{red},
@@ -3251,7 +3258,9 @@ p.~\pageref{sub-matrix}).
 \index{xdots (et ses sous-clés)}
 
 À l'intérieur des environnements de l'extension \pkg{nicematrix}, de nouvelles
-commandes sont définies : |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots| et |\Iddots|.
+commandes sont définies : \DefinitionCommande{Ldots},
+\DefinitionCommande{Cdots}, \DefinitionCommande{Vdots},
+\DefinitionCommande{Ddots} et \DefinitionCommande{Iddots}. 
 Ces commandes sont conçues pour être utilisées à la place de |\dots|, |\cdots|,
 |\vdots|, |\ddots| et |\iddots|.\footnote{La commande |\iddots|, définie par
   \pkg{nicematrix}, est une variante de |\ddots| avec les points allant vers le
@@ -3440,8 +3449,8 @@ x & \Ldots & \Ldots  & \Ldots & \Ldots & x
 \medskip
 On pourrait toutefois préférer la géométrie de la première matrice $A$ et
 vouloir avoir la même géométrie avec une ligne en pointillés continue dans la
-seconde rangée. C'est possible en utilisant l'option |nullify-dots| (et une
-seule instruction |\Ldots| suffit).\par\nobreak
+seconde rangée. C'est possible en utilisant l'option \Definition{nullify-dots}
+(et une seule instruction |\Ldots| suffit).\par\nobreak
 
 \medskip
 \begin{Code}[width=10cm]
@@ -3472,8 +3481,8 @@ elle n'implique pas que la ligne en pointillés ne sera pas tracée !
 Certaines personnes utilisent habituellement la commande |\hdotsfor| de
 l'extension \pkg{amsmath} pour tracer des lignes en pointillés horizontales dans
 une matrice. Dans les environnements de \pkg{nicematrix}, il convient d'utiliser
-|\Hdotsfor| à la place pour avoir les lignes en pointillés similaires à toutes
-celles tracées par l'extension \pkg{nicematrix}.
+\DefinitionCommande{Hdotsfor} à la place pour avoir les lignes en pointillés
+similaires à toutes celles tracées par l'extension \pkg{nicematrix}.
 
 Comme avec les autres commandes de \pkg{nicematrix} (comme |\Cdots|, |\Ldots|,
 |\Vdots|, etc.), la ligne en pointillés tracée par |\Hdotsfor| s'étend jusqu'au
@@ -3526,8 +3535,9 @@ est chargée (mais vous risquez d'avoir des problèmes si vous utilisez
 les outils de nicematrix pour le coloriage des tableaux.
 
 \medskip
-L'extension \pkg{nicematrix} propose aussi une commande |\Vdotsfor| similaire à
-|\Hdotsfor| mais traçant des lignes verticales.
+L'extension \pkg{nicematrix} propose aussi une commande
+\DefinitionCommande{Vdotsfor} similaire à |\Hdotsfor| mais traçant des lignes
+verticales.
 
 \medskip
 L'exemple suivant utilise à la fois |\Hdotsfor| et |\Vdotsfor|:
@@ -3584,7 +3594,7 @@ points de suspension, on peut souhaiter utiliser les lignes pointillées de
 \smallskip
 
 \begin{itemize}
-\item L'option |renew-dots|\par\nobreak
+\item L'option \Definition{renew-dots}\par\nobreak
 
 Avec cette option, les commandes |\ldots|, |\cdots|, |\vdots|, |\ddots|,
 |\iddots|\footnotemark[\thefniddots] et |\hdotsfor| sont redéfinies dans les
@@ -3593,7 +3603,7 @@ environnements de \pkg{nicematrix} et agissent alors comme |\Ldots|, |\Cdots|,
 suspension «automatiques» de |amsmath|) est aussi redéfinie et se comporte comme
 |\Ldots|.
 
-\item L'option |renew-matrix|\par\nobreak
+\item L'option \Definition{renew-matrix}\par\nobreak
 
 Avec cette option, l'environnement |{matrix}| est redéfini et se comporte comme
 |{NiceMatrix}| et il en est de même pour les cinq variantes.
@@ -3656,7 +3666,8 @@ $\begin{bNiceMatrix}
 
 
 \bigskip
-Avec la clé |xdots/horizontal-labels|, les labels restent horizontaux.\par\nobreak
+Avec la clé \Definition{xdots/horizontal-labels}, les labels restent
+horizontaux.\par\nobreak 
 
 \smallskip
 \begin{Code}[width=10cm]
@@ -3949,19 +3960,20 @@ p.~\pageref{sub-matrix}.
 
 \label{code-after}
 On a présenté p.~\pageref{code-before} la clé |code-before|. Il existe en fait
-une clé similaire |code-after| qui peut être utilisée pour indiquer du code qui
-sera exécuté \emph{après} la construction du tableau.
+une clé similaire \Definition{code-after} qui peut être utilisée pour indiquer
+du code qui sera exécuté \emph{après} la construction du tableau.
 
 \medskip
 \index{sub-matrix (clé de \texttt{\textbackslash CodeAfter}, avec sous-clés)}
 Pour améliorer la lisibilité du code, une syntaxe alternative est proposée : on
 peut spécifier les instructions du |code-after| à la fin de l'environnement,
-après le mot-clé |\CodeAfter|. Bien que ce soit un mot-clé, |\CodeAfter| accepte
-quand même un argument optionnel (entre crochets).\footnote{Les clés autorisées
-  dans cet argument optionnel sont les suivantes : |delimiters/color|, |rules|
-  et ses sous-clés, |sub-matrix| (en lien avec la commande
-  |\SubMatrix|) et ses sous-clés et |xdots| (pour la commande |\line|) et ses
-  sous-clés.} 
+après le mot-clé \DefinitionCommande{CodeAfter} (la clé |code-after| reste bien
+sûr obligatoire dans |\AutoNiceMatrix| et les commandes similaires). Bien que ce
+soit un mot-clé, |\CodeAfter| accepte quand même un argument optionnel (entre
+crochets).\footnote{Les clés autorisées dans cet argument optionnel sont les
+  suivantes : |delimiters/color|, |rules| et ses sous-clés, |sub-matrix| (en
+  lien avec la commande |\SubMatrix|) et ses sous-clés et |xdots| (pour la
+  commande |\line|) et ses sous-clés.} 
 
 
 \medskip
@@ -3979,9 +3991,9 @@ Par ailleurs, plusieurs commandes spéciales sont disponibles dans le
 
 \label{line-in-code-after}
 \index{line@\texttt{\textbackslash line} (commande du \texttt{\textbackslash CodeAfter})}
-La commande |\line| permet de tracer directement des lignes en pointillés entre
-les cases. Elle prend deux arguments correspondant aux cases ou blocs à relier.
-Chacun de ces deux arguments peut être :
+La commande \DefinitionCommande{line} permet de tracer directement des lignes en
+pointillés entre les cases. Elle prend deux arguments correspondant aux cases ou
+blocs à relier. Chacun de ces deux arguments peut être :
 \begin{itemize}
 \item une spécification de case de la forme $i$-$j$ où $i$ est le numéro de
 ligne et $j$ est le numéro de colonne ; 
@@ -4050,9 +4062,9 @@ autres lignes diagonales (par défaut, les lignes tracées par |\Ddots| sont
 \texttt{\textbackslash CodeAfter}\newline et du 
 \texttt{\textbackslash CodeBefore})|textbf}
 
-La commande |\SubMatrix| permet de positionner des délimiteurs sur une partie du
-tableau, partie qui est considérée comme une sous-matrice. La commande
-|\SubMatrix| prend cinq arguments :
+La commande \DefinitionCommande{SubMatrix} permet de positionner des délimiteurs
+sur une partie du tableau, partie qui est considérée comme une sous-matrice. La
+commande |\SubMatrix| prend cinq arguments :
 \begin{itemize}
 \item le premier argument est le délimiteur gauche qui peut être n'importe
 quel délimiteur extensible de LaTeX : |(|, |[|, |\{|, |\langle|, |\lgroup|,
@@ -4297,10 +4309,10 @@ Part A              & the first part \\
 \emph{Attention} : La fonctionnalité suivante est fragile et ne fonctionne pas
 avec |latex|--|dvips|--|ps2pdf|.\par\nobreak
 
-La clé |code| de la commande |\SubMatrix| permet d'insérer du code après la
-création de la matrice. Elle a surtout pour vocation d'être utilisée pour
-insérer des instructions TikZ, sachant que, dans les instructions TikZ insérées
-dans cette clé, les nœuds de la forme \verb+i-|j+ sont interprétés avec
+La clé \Definition{code} de la commande |\SubMatrix| permet d'insérer du code
+après la création de la matrice. Elle a surtout pour vocation d'être utilisée
+pour insérer des instructions TikZ, sachant que, dans les instructions TikZ
+insérées dans cette clé, les nœuds de la forme \verb+i-|j+ sont interprétés avec
 |i| et |j| étant des numéros de ligne et colonne \emph{relatifs à la
   sous-matrice}.\footnote{Attention : la syntaxe \texttt{j\string|-i} n'est
   \emph{pas} autorisée.}
@@ -4353,8 +4365,9 @@ Comme on le voit, le tracé effectué par la commande |\MyDraw| est \emph{relati
 \texttt{\textbackslash CodeBefore})}
 
 
-Les commandes |\OverBrace| and |\UnderBrace| permettent de placer des accolades
-horizontales sur une partie du tableau. Ces commandes prennent trois arguments :
+Les commandes \DefinitionCommande{OverBrace} and \DefinitionCommande{UnderBrace}
+permettent de placer des accolades horizontales sur une partie du tableau. Ces
+commandes prennent trois arguments :
 \begin{itemize}
 \item le premier argument est le coin supérieur gauche du rectangle de cases
 impliquées dans l'accolade avec la syntaxe habituelle $i$|-|$j$ où $i$ est le
@@ -4443,9 +4456,9 @@ $\begin{pNiceMatrix}
 \index{empty (clé de \texttt{\textbackslash TikzEveryCell})}
 \index{non empty (clé de \texttt{\textbackslash TikzEveryCell})}
 
-La commande |\TikzEveryCell| exécute avec TikZ le chemin rectangulaire qui
-correspond à chaque case du tableau, avec comme paramètres TikZ l'argument de
-|\TikzEveryCell|. Cet argument doit être une liste de couples
+La commande \DefinitionCommande{TikzEveryCell} exécute avec TikZ le chemin
+rectangulaire qui correspond à chaque case du tableau, avec comme paramètres
+TikZ l'argument de |\TikzEveryCell|. Cet argument doit être une liste de couples
 \textsl{clé=valeur} applicables à un chemin TikZ. En fait, cette commande
 s'applique à chaque case du tableau, exceptées celles situées dans les rangées
 et colonnes extérieures (cf.~p.~\pageref{exterior}) et celles situées dans les
@@ -4456,11 +4469,11 @@ blocs.
 
 \medskip
 En fait, dans la liste des clés passée en argument on peut mettre une clé
-|offset|. Cette clé n'est pas fournie par TikZ mais par \pkg{nicematrix}. Elle
-réduit le rectangle correspondant au bloc par une marge (horizontalement et
-verticalement) égale à la valeur (passée à |offset|). C'est ce rectangle réduit
-qui sera le chemin exécuté par TikZ avec comme options les autres clés de
-l'argument de |\TikzEveryCell|.
+\Definition{offset}. Cette clé n'est pas fournie par TikZ mais par
+\pkg{nicematrix}. Elle réduit le rectangle correspondant au bloc par une marge
+(horizontalement et verticalement) égale à la valeur (passée à |offset|). C'est
+ce rectangle réduit qui sera le chemin exécuté par TikZ avec comme options les
+autres clés de l'argument de |\TikzEveryCell|.
 
 
 \medskip
@@ -4554,9 +4567,10 @@ La commande |\TikzEveryCell| est en fait aussi disponible dans le |\CodeBefore|.
 \index{Legende@\textbf{Légende des tableaux}}
 
 
-L'environnement |{NiceTabular}| propose des clés |caption|, |short-caption| et
-|label| à utiliser lorsque le tableau est inséré dans un environnment flottant
-(typiquement un environnement |{table}|).
+L'environnement |{NiceTabular}| propose des clés \Definition{caption},
+\Definition{short-caption} et \Definition{label} à utiliser lorsque le tableau
+est inséré dans un environnment flottant (typiquement un environnement
+|{table}|).
 
 \smallskip
 L'intérêt d'utiliser cette clé |caption| plutôt que la commande classique
@@ -4568,7 +4582,7 @@ d'avoir recours à l'extension \pkg{threeparttable} ou l'extension
 
 \smallskip
 Par défaut, la légende est placée au-dessous du tableau. Pour avoir la légende
-placée au-dessus, il convient d'utiliser la clé |caption-above| dans
+placée au-dessus, il convient d'utiliser la clé \Definition{caption-above} dans
 |\NiceMatrixOptions|. 
 
 \smallskip
@@ -4621,12 +4635,13 @@ l'extension \pkg{xcolor} et elle n'est pas parfaitement compatible avec
 \label{tabularnote}
 \index{tabularnote@\texttt{\textbackslash tabularnote}}
 
-L'extension \pkg{nicematrix} propose aussi une commande |\tabularnote| qui
-permet de spécifier des notes qui seront composées à la fin du tableau avec une
-longueur de ligne égale à la largeur du tableau (hors éventuelles colonnes
-extérieures spécifiées par |first-col| et |last-col|: cf.~\ref{exterior},
-p.~\pageref{exterior}). Sans surprise, cette commande n'est disponible que dans
-|{NiceTabular}|, |{NiceTabular*}| et |{NiceTabularX}|.
+L'extension \pkg{nicematrix} propose aussi une commande
+\DefinitionCommande{tabularnote} qui permet de spécifier des notes qui seront
+composées à la fin du tableau avec une longueur de ligne égale à la largeur du
+tableau (hors éventuelles colonnes extérieures spécifiées par |first-col| et
+|last-col|: cf.~\ref{exterior}, p.~\pageref{exterior}). Sans surprise, cette
+commande n'est disponible que dans |{NiceTabular}|, |{NiceTabular*}| et
+|{NiceTabularX}|.
 
 
 \index{enumitem@\pkg{enumitem} (extension requise pour utiliser\newline \texttt{\textbackslash tabularnote})}
@@ -4686,12 +4701,12 @@ case (sans aucun espace après) et que le mode d'alignement de la colonne est |c
 ou~|r|, l'appel de note est composé en débordement vers la droite (cela peut
 permettre de mieux conserver l'alignement des contenus d'une colonne).
 
-\item Si la clé |notes/para| est utilisée, les notes sont composées à la fin du
-tableau en un seul paragraphe.
+\item Si la clé \Definition{notes/para} est utilisée, les notes sont composées à
+la fin du tableau en un seul paragraphe.
 
 \item \index{tabularnote (clé de \texttt{\{NiceTabular\}})}
-Il existe une clé |tabularnote| qui permet d'insérer du texte dans la zone
-des notes avant les notes numérotées.
+Il existe une clé \Definition{tabularnote} qui permet d'insérer du texte dans la
+zone des notes avant les notes numérotées.
 
 \index{tabularnote-env@\texttt{\{TabularNote\}}}
 \index{notes (clé pour paramétrer les notes de\newline tableau)}
@@ -4701,15 +4716,15 @@ l'environnement |{TabularNote}| à la fin de l'environnement |{NiceTabular}|
 (mais \emph{avant} l'éventuel |\CodeAfter|).
 
 \item Si l'extension \pkg{booktabs} a été chargée (avant ou après
-\pkg{nicematrix}), la clé |notes/bottomrule| permet de faire tracer un
-|\bottomrule| de \pkg{booktabs} \emph{après} les notes.
+\pkg{nicematrix}), la clé \Definition{notes/bottomrule} permet de faire tracer
+un |\bottomrule| de \pkg{booktabs} \emph{après} les notes.
 
 \item Lorsque plusieurs commandes |\tabularnote| sont utilisées avec le même
 argument, une seule note est insérée en fin de tableau (mais tous les labels
 sont marqués). Il est possible de désactiver cette fonctionnalité avec la clé
 |notes/detect-duplicates|.\footnote{Pour des raisons techniques, il n'est pas
   autorisé de mettre plusieurs |\tabularnote| avec exactement le même argument
-  dans la légende.}
+  dans la légende. Ce n'est pas vraiment contraignant.}
 
 \item Il est possible de référencer une note de tableau (avec la commande
 |\label| placée après le |\tabularnote|).
@@ -4840,14 +4855,14 @@ paires \textsl{clé=valeur} où le nom des clés n'a plus à être préfixé par
 On détaille maintenant ces clés.
 
 \begin{itemize}[itemsep=\medskipamount]
-\item La clé |notes/para| demande la composition des notes en fin de tableau en un seul
-paragraphe.
+\item La clé \Definition{notes/para} demande la composition des notes en fin de
+tableau en un seul paragraphe.
 
 Valeur initiale : |false|
 
 Cette clé est également accessible dans un environnement individuel.
 
-\item La clé |notes/bottomrule| permet de faire tracer un |\bottomrule| de \pkg{booktabs}
+\item La clé \Definition{notes/bottomrule} permet de faire tracer un |\bottomrule| de \pkg{booktabs}
 \emph{après} les notes. Ce trait n'est tracé que s'il y a effectivement des
 notes dans le tableau. L'extension \pkg{booktabs} doit avoir été chargée (avant
 ou après l'extension \pkg{nicematrix}). Dans le cas contraire, une erreur est générée.
@@ -4856,22 +4871,22 @@ Valeur initiale : |false|
 
 Cette clé est également accessible dans un environnement individuel.
 
-\item La clé |notes/style| est une commande dont l'argument est spécifié par
-|#1| et qui indique le style de numérotation des notes. C'est ce style qui est
-utilisé par |\ref| pour faire référence à une note de tableau pour laquelle on a
-utilisé un |\label|. Ce sont les labels mis en forme avec ce style qui sont
-séparés par des virgules quand on utilise plusieurs commandes |\tabularnote|
-successivement. Le marqueur |#1| est censé correspondre à un nom de compteur
-LaTeX.
+\item La clé \Definition{notes/style} est une commande dont l'argument est
+spécifié par |#1| et qui indique le style de numérotation des notes. C'est ce
+style qui est utilisé par |\ref| pour faire référence à une note de tableau pour
+laquelle on a utilisé un |\label|. Ce sont les labels mis en forme avec ce style
+qui sont séparés par des virgules quand on utilise plusieurs commandes
+|\tabularnote| successivement. Le marqueur |#1| est censé correspondre à un nom
+de compteur LaTeX.
 
 Valeur initiale : |\textit{\alph{#1}}|
 
 Une autre valeur possible pourrait être tout simplement |\arabic{#1}|
 
-\item La clé |notes/label-in-tabular| est une commande dont l'argument est
-spécifié par |#1| et qui sert au formatage de l'appel de note dans le tableau.
-En interne, le numéro de note a déjà été formaté par |notes/style| avant d'être
-passé en argument à cette commande.
+\item La clé \Definition{notes/label-in-tabular} est une commande dont
+l'argument est spécifié par |#1| et qui sert au formatage de l'appel de note
+dans le tableau. En interne, le numéro de note a déjà été formaté par
+|notes/style| avant d'être passé en argument à cette commande.
 
 Valeur initiale : |\textsuperscript{#1}|
 
@@ -4883,7 +4898,7 @@ avant l'appel de note. On peut faire ce réglage de la manière suivante :
 \end{Code}
 
 
-\item La clé |notes/label-in-list| est une commande dont l'argument est
+\item La clé \Definition{notes/label-in-list} est une commande dont l'argument est
 spécifié par |#1| et qui sert au formatage du numéro de note dans la liste des
 notes en fin de tableau. En interne, le numéro de note a déjà été formaté par
 |notes/style| avant d'être passé en argument à cette commande.
@@ -4914,13 +4929,13 @@ d'avoir les notes calées à gauche, ce qui est plaisant si on compose des
 tableaux dans l'esprit de \pkg{booktabs} (voir par exemple la table~\ref{t:tabularnote}, p.~\pageref{t:tabularnote}).
 
 \medskip
-La clé |notes/enumitem-keys| fournie par \pkg{nicematrix} permet de modifier ce
-type de liste de \pkg{enumitem} (en utilisant en interne la commande |\setlist*|
-de \pkg{enumitem}).
+La clé \Definition{notes/enumitem-keys} fournie par \pkg{nicematrix} permet de
+modifier ce type de liste de \pkg{enumitem} (en utilisant en interne la commande
+|\setlist*| de \pkg{enumitem}).
 
 
-\item La clé |notes/enumitem-keys-para| est similaire à la précédente mais elle
-est utilisée pour le type de liste qui sera utilisé quand l'option |para| est
+\item La clé \Definition{notes/enumitem-keys-para} est similaire à la précédente
+mais elle est utilisée pour le type de liste qui sera utilisé quand l'option |para| est
 choisie. Bien entendu, quand cette option |para| est active, c'est une liste de
 type |inline| (suivant le vocabulaire de \pkg{enumitem}) qui est utilisée et les
 paires \textsl{clé=valeur} doivent donc correspondre à une telle liste de type
@@ -4931,8 +4946,8 @@ Initialement, le style de liste utilisé est défini par :\quad
 |afterlabel = \nobreak, itemjoin = \quad|
 
 
-\item La clé |notes/code-before| est une liste de tokens qui seront insérés
-avant la composition de la liste de notes.
+\item La clé \Definition{notes/code-before} est une liste de tokens qui seront
+insérés avant la composition de la liste de notes.
 
 Valeur initiale : \textsl{vide}
 
@@ -4944,7 +4959,7 @@ Si on souhaite, par exemple, que les notes soient composées en gris et en
 On peut aussi mettre dans cette clé |\raggedright| ou |\RaggedRight| (cette
 dernière est une commande de \pkg{ragged2e}).
 
-\item La clé |notes/detect-duplicates| active la détection des
+\item La clé \Definition{notes/detect-duplicates} active la détection des
 commandes |\tabularnote| avec le même argument.
 
 Valeur initiale : |true|
@@ -4991,7 +5006,7 @@ la clé |corners| (qui sert à spécifier les «coins vides») décrite à la
 partie~\ref{corners}, p.~\pageref{corners}.
 
 \smallskip
-La clé |rounded-corners| spécifie que le tableau ou la matrice devra avoir des
+La clé \Definition{rounded-corners} spécifie que le tableau ou la matrice devra avoir des
 coins arrondis avec un rayon égal à la valeur de cette clé (la valeur par défaut est
 4~pt\footnote{Cette valeur est la valeur par défaut des «\texttt{rounded
     corners}» de PGF/Tikz.}). Plus précisément, cette clé a deux effets que l'on
@@ -5040,8 +5055,8 @@ Cette clé est disponible dans tous les environnements et commandes de
 \texttt{\textbackslash CodeAfter}\newline et du 
 \texttt{\textbackslash CodeBefore})}
 
-La commande |\ShowCellNames|, utilisable dans le |\CodeBefore| et le
-|\CodeAfter| affiche le nom (sous la forme $i$-$j$) de chaque case. Quand elle
+La commande \DefinitionCommande{ShowCellNames}, utilisable dans le |\CodeBefore|
+et le |\CodeAfter| affiche le nom (sous la forme $i$-$j$) de chaque case. Quand elle
 est utilisée dans le |\CodeAfter|, cette commande applique un rectangle blanc
 semi-transparent pour estomper le tableau (attention : certains lecteurs de
 \textsc{pdf} ne prennent pas en charge la transparence).
@@ -5106,10 +5121,11 @@ charge par \pkg{nicematrix}.
 
 Les environnements sans préambule (|{NiceMatrix}|, |{pNiceMatrix}|, etc.) ainsi
 que la commande |\pAutoNiceMatrix| et ses variantes, acceptent la clé
-|columns-type| qui indique le type de colonne qui sera utilisé.
+\Definition{columns-type} qui indique le type de colonne qui sera utilisé.
 
 \medskip
-Les clés |l| et |r| sont des raccourcis pour |columns-type=l| et |columns-type=r|.
+Les clés \Definition{l} et \Definition{l} sont des raccourcis pour
+|columns-type=l| et |columns-type=r|. 
 
 \medskip
 \begin{Code}[width=10cm]
@@ -5134,8 +5150,8 @@ de la préfixer par |matrix|, ce qui fait que son nom devient |matrix/columns-ty
 \label{rotate}
 \index{rotate@\texttt{\textbackslash rotate}}
 
-Utilisée au début d'une case, la commande |\rotate| (fournie par
-\pkg{nicematrix}) compose le contenu après une rotation de 90° dans le sens
+Utilisée au début d'une case, la commande \DefinitionCommande{rotate} (fournie
+par \pkg{nicematrix}) compose le contenu après une rotation de 90° dans le sens
 direct.
 
 Dans l'exemple suivant, on l'utilise dans le |code-for-first-row|.\footnote{On
@@ -5221,10 +5237,10 @@ seront peut-être pas ceux attendus.
 \index{smallmatrix@\texttt{\{smallmatrix\}} (environnement de \pkg{amsmath})}
 
 
-Avec l'option |small|, les environnements de l'extension \pkg{nicematrix} sont
-composés d'une manière proche de ce que propose l'environnement |{smallmatrix}|
-de l'\pkg{amsmath} (et les environnements |{psmallmatrix}|, |{bsmallmatrix}|,
-etc. de \pkg{mathtools}).
+Avec l'option \Definition{small}, les environnements de l'extension
+\pkg{nicematrix} sont composés d'une manière proche de ce que propose
+l'environnement |{smallmatrix}| de l'\pkg{amsmath} (et les environnements
+|{psmallmatrix}|, |{bsmallmatrix}|, etc. de \pkg{mathtools}).
 
 \medskip
 \begin{Code}
@@ -5349,13 +5365,13 @@ $C = \emph{\pAutoNiceMatrix}{3-3}{C_{\arabic{iRow},\arabic{jCol}}}$
 \label{light-syntax}
 \index{light-syntax}
 
-L'option |light-syntax| (inspirée de l'extension \pkg{spalign}) permet d'alléger
-la saisie des matrices, ainsi que leur lisibilité dans le source TeX. Lorsque
-cette option est activée, on doit utiliser le point-virgule comme marqueur de
-fin de rangée et séparer les colonnes par des espaces ou des tabulations. On
-remarquera toutefois que, comme souvent dans le monde TeX, les espaces après les
-séquences de contrôle ne sont pas comptées et que les éléments entre accolades
-sont considérés comme un tout.
+L'option \Definition{light-syntax} (inspirée de l'extension \pkg{spalign})
+permet d'alléger la saisie des matrices, ainsi que leur lisibilité dans le
+source TeX. Lorsque cette option est activée, on doit utiliser le point-virgule
+comme marqueur de fin de rangée et séparer les colonnes par des espaces ou des
+tabulations. On remarquera toutefois que, comme souvent dans le monde TeX, les
+espaces après les séquences de contrôle ne sont pas comptées et que les éléments
+entre accolades sont considérés comme un tout.
 
 
 \medskip
@@ -5408,7 +5424,7 @@ l'éventuel |\CodeAfter|).
 
 Pour les environnements avec délimiteurs (|{pNiceArray}|, |{pNiceMatrix}|,
 etc.), il est possible de changer la couleur des délimiteurs avec la clé
-|delimiters/color|.
+\Definition{delimiters/color}.
 
 \medskip
 \begin{Code}[width=12cm]
@@ -5462,10 +5478,10 @@ $\begin{NiceArrayWithDelims}
 
 \indexcommand{OnlyMainNiceMatrix}
 
-La commande |\OnlyMainNiceMatrix| n'exécute son argument que si on se trouve
-dans le tableau principal, c'est-à-dire que l'on est ni dans les rangées
-extérieures, ni dans les colonnes extérieures. Si elle est utilisée hors d'un
-environnement de \pkg{nicematrix}, elle est sans effet. 
+La commande \DefinitionCommande{OnlyMainNiceMatrix} n'exécute son argument que
+si on se trouve dans le tableau principal, c'est-à-dire que l'on est ni dans les
+rangées extérieures, ni dans les colonnes extérieures. Si elle est utilisée hors
+d'un environnement de \pkg{nicematrix}, elle est sans effet.
 
 Pour un exemple d'utilisation, voir \url{tex.stackexchange.com/questions/488566} 
 
@@ -5501,8 +5517,8 @@ lignes pointillées (cf.~p.~\pageref{Cdots}) et la détermination des «coins»
 
 \medskip
 Comme la création de ces nœuds requiert du temps et de la mémoire, il est
-possible de la désactiver ponctuellement avec la clé |no-cell-nodes| pour
-accélerer les compilations. 
+possible de la désactiver ponctuellement avec la clé \Definition{no-cell-nodes}
+pour accélerer les compilations. 
 
 \medskip
 Tous les nœuds du document doivent avoir des noms deux à deux distincts et le
@@ -5516,13 +5532,13 @@ de la colonne~$j$ a pour nom |nm-|$n$|-|$i$|-|$j$.
 
 \smallskip
 \indexcommand{NiceMatrixLastEnv}
-La commande |\NiceMatrixLastEnv| donne le numéro du dernier de ces
-environnements (pour LaTeX, il s'agit d'une commande — complètement développable
-— et non d'un compteur).
+La commande \DefinitionCommande{NiceMatrixLastEnv} donne le numéro du dernier de
+ces environnements (pour LaTeX, il s'agit d'une commande — complètement
+développable — et non d'un compteur).
 
 \smallskip
 \index{name!clé pour un environnement}
-Il est néanmoins recommandé de passer plutôt par la clé |name|\footnote{La
+Il est néanmoins recommandé de passer plutôt par la clé \Definition{name}\footnote{La
   valeur passée à la clé |name| est \emph{développée}, au sens de TeX.}.
 Celle-ci permet de donner un nom à l'environnement. Une fois l'environnement
 nommé, les nœuds sont accessibles à travers les noms «\textsl{nom}-$i$-$j$» où
@@ -5632,13 +5648,13 @@ p.~\pageref{triangular}.
 
 \subsubsection{La clé pgf-node-code}
 
-\index{pgf-node-code}
+\index{pgf-node-code} 
 \textbf{Pour les utilisateurs expérimentés}, \pkg{nicematrix} fournit la clé
-|pgf-node-code| qui correspond à du code PGF qui sera exécuté à la création, par
-PGF, des nœuds correspondants aux cases du tableau. Plus précisément, la valeur
-fournie à la clé |pgf-node-code| sera passée en cinquième argument de la
-commande |\pgfnode|. Cette valeur doit contenir au moins une instruction comme
-|\pgfusepath|, |\pgfusepathqstroke|, |\pgfusepathqfill|, etc.
+\Definition{pgf-node-code} qui correspond à du code PGF qui sera exécuté à la
+création, par PGF, des nœuds correspondants aux cases du tableau. Plus
+précisément, la valeur fournie à la clé |pgf-node-code| sera passée en cinquième
+argument de la commande |\pgfnode|. Cette valeur doit contenir au moins une
+instruction comme |\pgfusepath|, |\pgfusepathqstroke|, |\pgfusepathqfill|, etc.
 
 \subsubsection{Les colonnes V de varwidth}
 
@@ -5689,9 +5705,9 @@ peu plus loin, p.~\pageref{nodes-i}.
 En fait, l'extension \pkg{nicematrix} peut créer deux séries de nœuds
 supplémentaires (\emph{extra nodes} en anglais) : les «nœuds moyens»
 (\emph{medium nodes} en anglais) et les «nœuds larges» (\emph{large nodes} en
-anglais). Les premiers sont créés avec l'option |create-medium-nodes| et les
-seconds avec l'option |create-large-nodes|.\footnote{Il existe aussi l'option
-  |create-extra-nodes| qui est un alias pour la conjonction de
+anglais). Les premiers sont créés avec l'option \Definition{create-medium-nodes}
+et les seconds avec l'option \Definition{create-large-nodes}.\footnote{Il existe
+  aussi l'option |create-extra-nodes| qui est un alias pour la conjonction de
   |create-medium-nodes| et |create-large-nodes|.}
 
 \medskip
@@ -5759,14 +5775,15 @@ a & a     & a
 \index{right-margin}
 Les «nœuds larges» de la première colonne et de la dernière colonne peuvent
 apparaître trop petits pour certains usages. C'est pourquoi il est possible
-d'utiliser les options |left-margin| et |right-margin| pour ajouter de l'espace
-des deux côtés du tableau et aussi de l'espace dans les «nœuds larges» de la
-première colonne et de la dernière colonne. Dans l'exemple suivant, nous avons
-utilisé les options |left-margin| et |right-margin|.\footnote{Les options
-  |left-margin| et |right-margin| prennent des dimensions comme valeurs mais, si
-  aucune valeur n'est donnée, c'est la valeur par défaut qui est utilisée et
-  elle est égale à |\arraycolsep| (valeur initiale : 5~pt). Il existe aussi une
-  option |margin| pour fixer à la fois |left-margin| et |right-margin|.}
+d'utiliser les options \Definition{left-margin} et \Definition{right-margin}
+pour ajouter de l'espace des deux côtés du tableau et aussi de l'espace dans les
+«nœuds larges» de la première colonne et de la dernière colonne. Dans l'exemple
+suivant, nous avons utilisé les options |left-margin| et
+|right-margin|.\footnote{Les options |left-margin| et |right-margin| prennent
+  des dimensions comme valeurs mais, si aucune valeur n'est donnée, c'est la
+  valeur par défaut qui est utilisée et elle est égale à |\arraycolsep| (valeur
+  initiale : 5~pt). Il existe aussi une option |margin| pour fixer à la fois
+  |left-margin| et |right-margin|.} 
 \[\begin{pNiceMatrix}[create-large-nodes,left-margin,right-margin]
 \CodeBefore [create-cell-nodes]
     \begin{tikzpicture}
@@ -5792,9 +5809,9 @@ a & a     & a
 \index{extra-left-margin}
 \index{extra-right-margin}
 Il est aussi possible d'ajouter de l'espace sur les côtés du tableau avec les
-options |extra-left-margin| et |extra-right-margin|. Ces marges ne sont pas
-incorporées dans les «nœuds larges». Dans l'exemple suivant, nous avons utilisé
-|extra-left-margin| et |extra-right-margin| avec la valeur $3$~pt.
+clés \Definition{extra-left-margin} et \Definition{extra-right-margin}. Ces
+marges ne sont pas incorporées dans les «nœuds larges». Dans l'exemple suivant,
+nous avons utilisé |extra-left-margin| et |extra-right-margin| avec la valeur $3$~pt.
 \[\begin{pNiceMatrix}%
    [create-large-nodes,left-margin,right-margin,extra-right-margin=3pt,extra-left-margin=3pt]
 \CodeBefore [create-cell-nodes]
@@ -5900,9 +5917,9 @@ Les nœuds que l'on vient de décrire ne sont pas accessibles par défaut dans l
 
 \index{create-cell-nodes (clé de \texttt{\textbackslash CodeBefore})}
 On peut rendre ces nœuds accessibles dans le |\CodeBefore| en utilisant la clé
-|create-cell-nodes| du mot-clé |\CodeBefore| (dans ce cas-là, les nœuds sont
-créés une première fois avant la construction du tableau en utilisant des
-informations écrites dans le fichier |aux| puis recréés lors de la composition
+\Definition{create-cell-nodes} du mot-clé |\CodeBefore| (dans ce cas-là, les
+nœuds sont créés une première fois avant la construction du tableau en utilisant
+des informations écrites dans le fichier |aux| puis recréés lors de la composition
 du tableau proprement dit).
 
 \bigskip
@@ -6277,7 +6294,7 @@ a+b    & \Cdots & a+b    & 1
 
 \medskip
 Il est possible de désactiver la parallélisation avec l'option
-|parallelize-diags| mise à |false|: \par\nobreak
+\Definition{parallelize-diags} mise à |false|: \par\nobreak
 
 \medskip
 \NiceMatrixOptions{parallelize-diags=false}%
@@ -6298,7 +6315,7 @@ a+b    & \Cdots  & a+b & 1
   \texttt{\textbackslash Iddots})}
 On peut choisir l'instruction |\Ddots| qui sera tracée en premier (et qui
 servira pour tracer les suivantes quand la parallélisation est activée) avec la
-clé |draw-first| : |\Ddots[draw-first]|\rlap{.}
+clé \Definition{draw-first} : |\Ddots[draw-first]|\rlap{.}
 
 \subsection{Les cases «vides»}
 
@@ -6354,23 +6371,24 @@ L'environnement |{array}| insère un espace horizontal égal à |\arraycolsep|
 avant et après chaque colonne. En particulier, il y a un espace égal à
 |\arraycolsep| avant et après le tableau. Cette caractéristique de
 l'environnement |{array}| n'était probablement pas une bonne idée\footnote{Dans
-  la documentation de l'\pkg{amsmath}, on peut lire : {\itshape The extra space of
-    |\arraycolsep| that \pkg{array} adds on each side is a waste so we remove it
-    [in |{matrix}|] (perhaps we should instead remove it from array in general,
-    but that's a harder task).}}. L'environnement |{matrix}| et ses variantes
-(|{pmatrix}|, |{vmatrix}|, etc.) de \pkg{amsmath} préfèrent supprimer ces
-espaces avec des instructions explicites |\hskip -\arraycolsep|\footnote{Et non
-  en insérant |@{}| de part et d'autre du préambule, ce qui fait que la longueur
-  des |\hline| n'est pas modifiée et elle peut paraître trop longue, surtout
-  avec des crochets.}. L'extension \pkg{nicematrix} fait de même dans
+  la documentation de l'\pkg{amsmath}, on peut lire : {\itshape The extra space
+    of |\arraycolsep| that \pkg{array} adds on each side is a waste so we remove
+    it [in |{matrix}|] (perhaps we should instead remove it from array in
+    general, but that's a harder task).}}. L'environnement |{matrix}| et ses
+variantes (|{pmatrix}|, |{vmatrix}|, etc.) de \pkg{amsmath} préfèrent supprimer
+ces espaces avec des instructions explicites |\hskip -\arraycolsep|\footnote{Et
+  non en insérant |@{}| de part et d'autre du préambule, ce qui fait que la
+  longueur des |\hline| n'est pas modifiée et elle peut paraître trop longue,
+  surtout avec des crochets.}. L'extension \pkg{nicematrix} fait de même dans
 \emph{tous} ses environnements y compris l'environnement |{NiceArray}|.
 Néanmoins, si l'utilisateur souhaite que l'environnement |{NiceArray}| se
 comporte par défaut comme l'environnement |{array}| de \pkg{array} (par exemple
 pour faciliter l'adaptation d'un document existant), il peut contrôler ce
-comportement avec l'option |exterior-arraycolsep| accessible via la commande
-|\NiceMatrixOptions|. Avec cette option, des espaces extérieurs de longueur
-|\arraycolsep| seront insérés dans les environnements |{NiceArray}| (les autres
-environnements de l'extension \pkg{nicematrix} ne sont pas affectés).
+comportement avec l'option \Definition{exterior-arraycolsep} accessible via la
+commande |\NiceMatrixOptions|. Avec cette option, des espaces extérieurs de
+longueur |\arraycolsep| seront insérés dans les environnements |{NiceArray}|
+(les autres environnements de l'extension \pkg{nicematrix} ne sont pas
+affectés).
 
 
 
@@ -7063,7 +7081,8 @@ largeur suivant leur taille.
 \index{max-width (sous-clé de «delimiters»)}
 \index{delimiters!---/max-width}
 Pour résoudre ce problème, on peut demander que les délimiteurs soient composés
-avec leur largeur maximale grâce à la clé booléenne |delimiters/max-width|.
+avec leur largeur maximale grâce à la clé booléenne
+\Definition{delimiters/max-width}. 
 
 \medskip
 
@@ -7204,9 +7223,9 @@ colonnes.
 
 \medskip
 \index{vlines-in-sub-matrix}
-En fait, on peut avec la clé |vlines-in-sub-matrix| choisir un spécificateur
-dans le préambule du tableau pour indiquer des filets verticaux qui seront
-tracés dans les |\SubMatrix| uniquement (en espaçant les colonnes).
+En fait, on peut avec la clé \Definition{vlines-in-sub-matrix} choisir un
+spécificateur dans le préambule du tableau pour indiquer des filets verticaux
+qui seront tracés dans les |\SubMatrix| uniquement (en espaçant les colonnes).
 
 \medskip
 \begin{Code}

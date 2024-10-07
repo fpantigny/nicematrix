@@ -632,7 +632,7 @@
         \seq_gput_right:Nn \g__nicematrix_notes_seq { { #1 } { #2 } }
         \tl_if_novalue:nT { #1 } { \int_gincr:N \c@tabularnote }
       }
-    \seq_put_right:Nx \l__nicematrix_notes_labels_seq
+    \seq_put_right:Ne \l__nicematrix_notes_labels_seq
       {
         \tl_if_novalue:nTF { #1 }
           {
@@ -694,7 +694,7 @@
           { \seq_gput_right:Nn \g__nicematrix_notes_in_caption_seq { { #1 } { #2 } } }
       }
     \tl_if_novalue:nT { #1 } { \int_gincr:N \c@tabularnote }
-    \seq_put_right:Nx \l__nicematrix_notes_labels_seq
+    \seq_put_right:Ne \l__nicematrix_notes_labels_seq
       {
         \tl_if_novalue:nTF { #1 }
           { \__nicematrix_notes_format:n { \int_use:N \c@tabularnote } }
@@ -991,7 +991,7 @@
     name .code:n =
       \legacy_if:nF { measuring@ }
         {
-          \str_set:Nx \l_tmpa_str { #1 }
+          \str_set:Ne \l_tmpa_str { #1 }
           \seq_if_in:NVTF \g__nicematrix_names_seq \l_tmpa_str
             { \__nicematrix_error:nn { Duplicate~name } { #1 } }
             { \seq_gput_left:NV \g__nicematrix_names_seq \l_tmpa_str }
@@ -2032,7 +2032,7 @@
       }
     \int_compare:nNnT \g__nicematrix_total_X_weight_int > \c_zero_int
       {
-        \tl_gput_right:Nx \g__nicematrix_aux_tl
+        \tl_gput_right:Ne \g__nicematrix_aux_tl
           {
             \bool_set_true:N \l__nicematrix_X_columns_aux_bool
             \dim_set:Nn \l__nicematrix_X_columns_dim
@@ -2144,7 +2144,7 @@
     \egroup
     \iow_now:Nn \@mainaux { \ExplSyntaxOn }
     \iow_now:Nn \@mainaux { \char_set_catcode_space:n { 32 }  }
-    \iow_now:Nx \@mainaux
+    \iow_now:Ne \@mainaux
       {
         \tl_gset:cn { c__nicematrix_ \int_use:N \g__nicematrix_env_int _ tl }
           { \exp_not:o \g__nicematrix_aux_tl }
@@ -2324,11 +2324,11 @@
 \cs_new_protected:Npn \__nicematrix_make_preamble_i_iii:nn #1 #2
   {
     \__nicematrix_compute_rule_width:n { multiplicity = \l_tmpa_int , #2 }
-    \tl_gput_right:Nx \g__nicematrix_array_preamble_tl
+    \tl_gput_right:Ne \g__nicematrix_array_preamble_tl
       {
         \exp_not:N ! { \skip_horizontal:n { \dim_eval:n { \l__nicematrix_rule_width_dim } } }
       }
-    \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+    \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
       {
         \__nicematrix_vline:n
           {
@@ -2492,13 +2492,13 @@
       }
   }
 \str_new:N \c__nicematrix_ignorespaces_str
-\str_set:Nx \c__nicematrix_ignorespaces_str { \ignorespaces }
+\str_set:Ne \c__nicematrix_ignorespaces_str { \ignorespaces }
 \str_remove_all:Nn \c__nicematrix_ignorespaces_str { ~ }
 \cs_new_protected:Npn \__nicematrix_test_if_empty:
   { \peek_after:Nw \__nicematrix_test_if_empty_i: }
 \cs_new_protected:Npn \__nicematrix_test_if_empty_i:
   {
-    \str_set:Nx \l_tmpa_str { \token_to_meaning:N \l_peek_token }
+    \str_set:Ne \l_tmpa_str { \token_to_meaning:N \l_peek_token }
     \str_if_eq:NNT \l_tmpa_str \c__nicematrix_ignorespaces_str
       { \__nicematrix_test_if_empty:w }
   }
@@ -2680,7 +2680,7 @@
 \cs_set_eq:cc { __nicematrix _ \token_to_str:N \{ } { __nicematrix _ \token_to_str:N ( }
 \cs_new_protected:Npn \__nicematrix_make_preamble_iv:nn #1 #2
   {
-    \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+    \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
       { \__nicematrix_delimiter:nnn #1 { \int_eval:n { \c@jCol + 1 } } \c_true_bool }
     \tl_if_in:nnTF { ( [ \{ ) ] \} \left \right } { #2 }
       {
@@ -2702,7 +2702,7 @@
               { \tl_gset:Nn \g__nicematrix_right_delim_tl { #1 } }
               {
                 \tl_gput_right:Nn \g__nicematrix_array_preamble_tl { ! { \enskip } }
-                \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+                \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
                   { \__nicematrix_delimiter:nnn #1 { \int_use:N \c@jCol } \c_false_bool }
                 \__nicematrix_rec_preamble:n #2
               }
@@ -2710,7 +2710,7 @@
           {
             \tl_if_in:nnT { ( [ \{ \left } { #2 }
               { \tl_gput_right:Nn \g__nicematrix_array_preamble_tl { ! { \enskip } } }
-            \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+            \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
               { \__nicematrix_delimiter:nnn #1 { \int_use:N \c@jCol } \c_false_bool }
             \__nicematrix_rec_preamble:n #2
           }
@@ -2725,26 +2725,26 @@
         \tl_if_eq:NNTF \g__nicematrix_right_delim_tl \c__nicematrix_dot_tl
           {
             \tl_gput_right:Nn \g__nicematrix_array_preamble_tl { ! { \enskip } }
-            \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+            \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
               { \__nicematrix_delimiter:nnn #1 { \int_use:N \c@jCol } \c_false_bool }
             \tl_gset:Nn \g__nicematrix_right_delim_tl { #2 }
           }
           {
             \tl_gput_right:Nn \g__nicematrix_array_preamble_tl { ! { \enskip } }
-            \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+            \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
               { \__nicematrix_delimiter:nnn #1 { \int_use:N \c@jCol } \c_false_bool }
             \__nicematrix_error:nn { double~closing~delimiter } { #2 }
           }
       }
       {
-        \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+        \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
           { \__nicematrix_delimiter:nnn #1 { \int_use:N \c@jCol } \c_false_bool }
         \__nicematrix_error:nn { double~closing~delimiter } { #2 }
         \__nicematrix_rec_preamble:n #3
       }
   }
 \cs_new:cpn { __nicematrix _ \token_to_str:N \right } #1
-    { \use:c { __nicematrix _ \token_to_str:N ) } }
+  { \use:c { __nicematrix _ \token_to_str:N ) } }
 \cs_new_protected:Npn \__nicematrix_rec_preamble_after_col:n #1
   {
     \str_if_eq:nnTF { #1 } { < }
@@ -2860,9 +2860,9 @@
   }
 \cs_new_protected:Npn \__nicematrix_make_preamble_vlism:n #1
   {
-    \seq_gput_right:Nx \g__nicematrix_cols_vlism_seq
+    \seq_gput_right:Ne \g__nicematrix_cols_vlism_seq
       { \int_eval:n { \c@jCol + 1 } }
-    \tl_gput_right:Nx \g__nicematrix_array_preamble_tl
+    \tl_gput_right:Ne \g__nicematrix_array_preamble_tl
       { \exp_not:N ! { \skip_horizontal:N \arrayrulewidth } }
     \__nicematrix_rec_preamble:n
   }
@@ -2890,10 +2890,10 @@
       { \UseTaggingSocket { tbl / colspan } { #1 } }
     \int_compare:nNnT { #1 } > \c_one_int
       {
-        \seq_gput_left:Nx \g__nicematrix_multicolumn_cells_seq
+        \seq_gput_left:Ne \g__nicematrix_multicolumn_cells_seq
           { \int_use:N \c@iRow - \int_eval:n { \c@jCol + 1 } }
         \seq_gput_left:Nn \g__nicematrix_multicolumn_sizes_seq { #1 }
-        \seq_gput_right:Nx \g__nicematrix_pos_of_blocks_seq
+        \seq_gput_right:Ne \g__nicematrix_pos_of_blocks_seq
           {
             {
               \int_if_zero:nTF \c@jCol
@@ -2913,7 +2913,7 @@
     \RenewDocumentCommand \cellcolor { O { } m }
       {
         \__nicematrix_test_color_inside:
-        \tl_gput_right:Nx \g__nicematrix_pre_code_before_tl
+        \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
           {
             \__nicematrix_rectanglecolor [ ##1 ]
               { \exp_not:n { ##2 } }
@@ -3105,7 +3105,7 @@
             \__nicematrix_insert_caption:
             \int_compare:nNnT \g__nicematrix_notes_caption_int > \c_zero_int
               {
-                \tl_gput_right:Nx \g__nicematrix_aux_tl
+                \tl_gput_right:Ne \g__nicematrix_aux_tl
                   {
                     \tl_set:Nn \exp_not:N \l__nicematrix_note_in_caption_tl
                       { \int_use:N \g__nicematrix_notes_caption_int }
@@ -3872,7 +3872,7 @@
       { \int_set_eq:NN \l__nicematrix_last_col_int \g__nicematrix_col_total_int }
     \bool_if:NT \l__nicematrix_last_row_without_value_bool
       { \int_set_eq:NN \l__nicematrix_last_row_int \g__nicematrix_row_total_int }
-    \tl_gput_right:Nx \g__nicematrix_aux_tl
+    \tl_gput_right:Ne \g__nicematrix_aux_tl
       {
         \seq_gset_from_clist:Nn \exp_not:N \g__nicematrix_size_seq
           {
@@ -3886,7 +3886,7 @@
       }
     \seq_if_empty:NF \g__nicematrix_pos_of_blocks_seq
       {
-        \tl_gput_right:Nx \g__nicematrix_aux_tl
+        \tl_gput_right:Ne \g__nicematrix_aux_tl
           {
             \seq_gset_from_clist:Nn \exp_not:N \g__nicematrix_pos_of_blocks_seq
               { \seq_use:Nnnn \g__nicematrix_pos_of_blocks_seq , , , }
@@ -3894,7 +3894,7 @@
       }
     \seq_if_empty:NF \g__nicematrix_multicolumn_cells_seq
       {
-        \tl_gput_right:Nx \g__nicematrix_aux_tl
+        \tl_gput_right:Ne \g__nicematrix_aux_tl
           {
             \seq_gset_from_clist:Nn \exp_not:N \g__nicematrix_multicolumn_cells_seq
               { \seq_use:Nnnn \g__nicematrix_multicolumn_cells_seq , , , }
@@ -3997,7 +3997,7 @@
     \seq_if_empty:NF \g__nicematrix_rowlistcolors_seq { \__nicematrix_clear_rowlistcolors_seq: }
     \tl_if_empty:NF \g__nicematrix_pre_code_before_tl
       {
-        \tl_gput_right:Nx \g__nicematrix_aux_tl
+        \tl_gput_right:Ne \g__nicematrix_aux_tl
           {
             \tl_gset:Nn \exp_not:N \g__nicematrix_pre_code_before_tl
               { \exp_not:o \g__nicematrix_pre_code_before_tl }
@@ -4006,7 +4006,7 @@
       }
     \tl_if_empty:NF \g_nicematrix_code_before_tl
       {
-        \tl_gput_right:Nx \g__nicematrix_aux_tl
+        \tl_gput_right:Ne \g__nicematrix_aux_tl
           {
             \tl_gset:Nn \exp_not:N \g__nicematrix_code_before_tl
               { \exp_not:o \g_nicematrix_code_before_tl }
@@ -4267,7 +4267,7 @@
               }
           }
       }
-    \seq_gput_right:Nx \g__nicematrix_pos_of_xdots_seq
+    \seq_gput_right:Ne \g__nicematrix_pos_of_xdots_seq
       {
         { \int_use:N \l__nicematrix_initial_i_int }
         { \int_min:nn \l__nicematrix_initial_j_int \l__nicematrix_final_j_int }
@@ -5156,7 +5156,7 @@
       { \__nicematrix_collect_options:n { \__nicematrix_Hdotsfor_ii } }
     \exp_args:NNo \NewDocumentCommand \__nicematrix_Hdotsfor_ii \l__nicematrix_argspec_tl
       {
-        \tl_gput_right:Nx \g__nicematrix_HVdotsfor_lines_tl
+        \tl_gput_right:Ne \g__nicematrix_HVdotsfor_lines_tl
           {
             \__nicematrix_Hdotsfor:nnnn
               { \int_use:N \c@iRow }
@@ -5244,7 +5244,7 @@
     \exp_args:NNo \NewDocumentCommand \__nicematrix_Vdotsfor_i \l__nicematrix_argspec_tl
       {
         \bool_gset_true:N \g__nicematrix_empty_cell_bool
-        \tl_gput_right:Nx \g__nicematrix_HVdotsfor_lines_tl
+        \tl_gput_right:Ne \g__nicematrix_HVdotsfor_lines_tl
           {
             \__nicematrix_Vdotsfor:nnnn
               { \int_use:N \c@iRow }
@@ -5391,7 +5391,7 @@
   { \int_compare:nNnT { \c@iRow } < { #1 } { #2 } }
 \cs_set_protected:Npn \__nicematrix_put_in_row_style:n #1
   {
-    \tl_gput_right:Nx \g__nicematrix_row_style_tl
+    \tl_gput_right:Ne \g__nicematrix_row_style_tl
       {
         \exp_not:N
         \__nicematrix_if_row_less_than:nn
@@ -5435,7 +5435,7 @@
     \keys_set:nn { nicematrix / RowStyle } { #1 }
     \tl_if_empty:NF \l_tmpa_tl
       {
-        \tl_gput_right:Nx \g__nicematrix_pre_code_before_tl
+        \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
           {
             \__nicematrix_exp_color_arg:No \__nicematrix_rectanglecolor \l_tmpa_tl
               { \int_use:N \c@iRow - \int_use:N \c@jCol }
@@ -5443,7 +5443,7 @@
           }
         \int_compare:nNnT \l__nicematrix_key_nb_rows_int > \c_one_int
           {
-            \tl_gput_right:Nx \g__nicematrix_pre_code_before_tl
+            \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
               {
                 \__nicematrix_exp_color_arg:No \__nicematrix_rowcolor \l_tmpa_tl
                   {
@@ -5456,7 +5456,7 @@
     \__nicematrix_put_in_row_style:n { \exp_not:n { #2 } }
     \dim_compare:nNnT \l_tmpa_dim > \c_zero_dim
       {
-        \exp_args:Nx \__nicematrix_put_in_row_style:n
+        \exp_args:Ne \__nicematrix_put_in_row_style:n
           {
             \tl_gput_right:Nn \exp_not:N \g__nicematrix_cell_after_hook_tl
               {
@@ -5467,7 +5467,7 @@
       }
     \dim_compare:nNnT \l_tmpb_dim > \c_zero_dim
       {
-        \exp_args:Nx \__nicematrix_put_in_row_style:n
+        \exp_args:Ne \__nicematrix_put_in_row_style:n
           {
             \tl_gput_right:Nn \exp_not:N \g__nicematrix_cell_after_hook_tl
               {
@@ -5659,8 +5659,8 @@
     \tl_set_eq:NN \l__nicematrix_tmpc_tl \l_tmpa_tl
     \tl_set_eq:NN \l__nicematrix_tmpd_tl \l_tmpb_tl
     \__nicematrix_cut_on_hyphen:w #2 \q_stop
-    \tl_set:Nx \l__nicematrix_rows_tl { \l__nicematrix_tmpc_tl - \l_tmpa_tl }
-    \tl_set:Nx \l__nicematrix_cols_tl { \l__nicematrix_tmpd_tl - \l_tmpb_tl }
+    \tl_set:Ne \l__nicematrix_rows_tl { \l__nicematrix_tmpc_tl - \l_tmpa_tl }
+    \tl_set:Ne \l__nicematrix_cols_tl { \l__nicematrix_tmpd_tl - \l_tmpb_tl }
     \__nicematrix_cartesian_path:n { #3 }
   }
 \NewDocumentCommand \__nicematrix_cellcolor { O { } m m }
@@ -5737,7 +5737,7 @@
             \tl_set:No \l__nicematrix_rows_tl
               { \int_use:N \l_tmpa_int - \int_use:N \l_tmpb_int }
             \tl_clear_new:N \l__nicematrix_color_tl
-            \tl_set:Nx \l__nicematrix_color_tl
+            \tl_set:Ne \l__nicematrix_color_tl
               {
                 \__nicematrix_color_index:n
                   {
@@ -5942,7 +5942,7 @@
 \NewDocumentCommand \__nicematrix_cellcolor_tabular { O { } m }
   {
     \__nicematrix_test_color_inside:
-    \tl_gput_right:Nx \g__nicematrix_pre_code_before_tl
+    \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
       {
         \__nicematrix_cellcolor [ #1 ] { \exp_not:n { #2 } }
           { \int_use:N \c@iRow - \int_use:N \c@jCol }
@@ -5952,7 +5952,7 @@
 \NewDocumentCommand \__nicematrix_rowcolor_tabular { O { } m }
   {
     \__nicematrix_test_color_inside:
-    \tl_gput_right:Nx \g__nicematrix_pre_code_before_tl
+    \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
       {
         \__nicematrix_rectanglecolor [ #1 ] { \exp_not:n { #2 } }
           { \int_use:N \c@iRow - \int_use:N \c@jCol }
@@ -5974,7 +5974,7 @@
     \seq_map_inline:Nn \g__nicematrix_rowlistcolors_seq
       { \__nicematrix_rowlistcolors_tabular_i:nnnn ##1 }
     \seq_gset_eq:NN \g__nicematrix_rowlistcolors_seq \g_tmpa_seq
-    \seq_gput_right:Nx \g__nicematrix_rowlistcolors_seq
+    \seq_gput_right:Ne \g__nicematrix_rowlistcolors_seq
       {
         { \int_use:N \c@iRow }
         { \exp_not:n { #1 } }
@@ -5987,7 +5987,7 @@
     \int_compare:nNnTF { #1 } = \c@iRow
       { \seq_gput_right:Nn \g_tmpa_seq { { #1 } { #2 } { #3 } { #4 } } }
       {
-        \tl_gput_right:Nx \g__nicematrix_pre_code_before_tl
+        \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
           {
             \__nicematrix_rowlistcolors
                [ \exp_not:n { #2 } ]
@@ -6012,7 +6012,7 @@
   {
     \int_compare:nNnT \c@jCol > \g__nicematrix_col_total_int
       {
-        \tl_gput_left:Nx \g__nicematrix_pre_code_before_tl
+        \tl_gput_left:Ne \g__nicematrix_pre_code_before_tl
           {
             \exp_not:N \columncolor [ #1 ]
               { \exp_not:n { #2 } } { \int_use:N \c@jCol }
@@ -6143,20 +6143,20 @@
    {
      \int_compare:nNnTF \l_tmpb_tl = { \int_eval:n { \c@jCol + 1 } }
        {
-         \seq_if_in:NxT
+         \seq_if_in:NeT
            \l__nicematrix_corners_cells_seq
            { \l_tmpa_tl - \int_eval:n { \l_tmpb_tl - 1 } }
            { \bool_set_false:N \g_tmpa_bool }
        }
        {
-         \seq_if_in:NxT
+         \seq_if_in:NeT
            \l__nicematrix_corners_cells_seq
            { \l_tmpa_tl - \l_tmpb_tl }
            {
              \int_compare:nNnTF \l_tmpb_tl = \c_one_int
                { \bool_set_false:N \g_tmpa_bool }
                {
-                 \seq_if_in:NxT
+                 \seq_if_in:NeT
                    \l__nicematrix_corners_cells_seq
                    { \l_tmpa_tl - \int_eval:n { \l_tmpb_tl - 1 } }
                    { \bool_set_false:N \g_tmpa_bool }
@@ -6252,7 +6252,7 @@
     \begin {tikzpicture }
     \CT@arc@
     \tl_if_empty:NF \l__nicematrix_rule_color_tl
-      { \tl_put_right:Nx \l__nicematrix_tikz_rule_tl { , color = \l__nicematrix_rule_color_tl } }
+      { \tl_put_right:Ne \l__nicematrix_tikz_rule_tl { , color = \l__nicematrix_rule_color_tl } }
     \pgfrememberpicturepositiononpagetrue
     \pgf@relevantforpicturesizefalse
     \__nicematrix_qpoint:n { row - \int_use:N \l__nicematrix_local_start_int }
@@ -6331,20 +6331,20 @@
    {
      \int_compare:nNnTF \l_tmpa_tl = { \int_eval:n { \c@iRow + 1 } }
        {
-         \seq_if_in:NxT
+         \seq_if_in:NeT
            \l__nicematrix_corners_cells_seq
            { \int_eval:n { \l_tmpa_tl - 1 } - \l_tmpb_tl }
            { \bool_set_false:N \g_tmpa_bool }
        }
        {
-         \seq_if_in:NxT
+         \seq_if_in:NeT
            \l__nicematrix_corners_cells_seq
            { \l_tmpa_tl - \l_tmpb_tl }
            {
              \int_compare:nNnTF \l_tmpa_tl = \c_one_int
                { \bool_set_false:N \g_tmpa_bool }
                {
-                 \seq_if_in:NxT
+                 \seq_if_in:NeT
                    \l__nicematrix_corners_cells_seq
                    { \int_eval:n { \l_tmpa_tl - 1 } - \l_tmpb_tl }
                    { \bool_set_false:N \g_tmpa_bool }
@@ -6454,7 +6454,7 @@
     \begin { tikzpicture }
     \CT@arc@
     \tl_if_empty:NF \l__nicematrix_rule_color_tl
-      { \tl_put_right:Nx \l__nicematrix_tikz_rule_tl { , color = \l__nicematrix_rule_color_tl } }
+      { \tl_put_right:Ne \l__nicematrix_tikz_rule_tl { , color = \l__nicematrix_rule_color_tl } }
     \pgfrememberpicturepositiononpagetrue
     \pgf@relevantforpicturesizefalse
     \__nicematrix_qpoint:n { col - \int_use:N \l__nicematrix_local_start_int }
@@ -6501,7 +6501,7 @@
   {
     \__nicematrix_compute_rule_width:n { multiplicity = #1 , #2 }
     \skip_vertical:N \l__nicematrix_rule_width_dim
-    \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+    \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
       {
         \__nicematrix_hline:n
           {
@@ -6637,7 +6637,7 @@
     \str_if_in:nnTF { #2 } { - }
       { \__nicematrix_cut_on_hyphen:w #2 \q_stop }
       { \__nicematrix_cut_on_hyphen:w #2 - #2 \q_stop }
-    \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+    \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
       {
         \__nicematrix_hline:n
           {
@@ -6674,9 +6674,9 @@
 \cs_new_protected:Npn \__nicematrix_v_custom_line:n #1
   {
     \__nicematrix_compute_rule_width:n { #1 }
-    \tl_gput_right:Nx \g__nicematrix_array_preamble_tl
+    \tl_gput_right:Ne \g__nicematrix_array_preamble_tl
       { \exp_not:N ! { \skip_horizontal:n { \dim_use:N \l__nicematrix_rule_width_dim } } }
-    \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+    \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
       {
         \__nicematrix_vline:n
           {
@@ -6767,7 +6767,7 @@
       }
     \seq_if_empty:NF \l__nicematrix_corners_cells_seq
       {
-        \tl_gput_right:Nx \g__nicematrix_aux_tl
+        \tl_gput_right:Ne \g__nicematrix_aux_tl
           {
             \seq_set_from_clist:Nn \exp_not:N \l__nicematrix_corners_cells_seq
               { \seq_use:Nnnn \l__nicematrix_corners_cells_seq , , , }
@@ -6895,7 +6895,7 @@
         \bool_if:NT \l__nicematrix_block_auto_columns_width_bool
           {
             \iow_shipout:Nn \@mainaux \ExplSyntaxOn
-            \iow_shipout:Nx \@mainaux
+            \iow_shipout:Ne \@mainaux
               {
                 \cs_gset:cpn
                   { __nicematrix _ max _ cell _ width _ \int_use:N \g__nicematrix_NiceMatrixBlock_int }
@@ -6945,7 +6945,7 @@
                 \pgfpointanchor { \__nicematrix_env: - \__nicematrix_i: - \__nicematrix_j: } { south~west }
                 \dim_set:cn { l__nicematrix_row_\__nicematrix_i: _min_dim}
                   { \dim_min:vn { l__nicematrix_row _ \__nicematrix_i: _min_dim } \pgf@y }
-                \seq_if_in:NxF \g__nicematrix_multicolumn_cells_seq { \__nicematrix_i: - \__nicematrix_j: }
+                \seq_if_in:NeF \g__nicematrix_multicolumn_cells_seq { \__nicematrix_i: - \__nicematrix_j: }
                   {
                     \dim_set:cn { l__nicematrix_column _ \__nicematrix_j: _min_dim}
                       { \dim_min:vn { l__nicematrix_column _ \__nicematrix_j: _min_dim } \pgf@x }
@@ -6953,7 +6953,7 @@
                 \pgfpointanchor { \__nicematrix_env: - \__nicematrix_i: - \__nicematrix_j: } { north~east }
                 \dim_set:cn { l__nicematrix_row _ \__nicematrix_i: _ max_dim }
                   { \dim_max:vn { l__nicematrix_row _ \__nicematrix_i: _ max_dim } \pgf@y }
-                \seq_if_in:NxF \g__nicematrix_multicolumn_cells_seq { \__nicematrix_i: - \__nicematrix_j: }
+                \seq_if_in:NeF \g__nicematrix_multicolumn_cells_seq { \__nicematrix_i: - \__nicematrix_j: }
                   {
                     \dim_set:cn { l__nicematrix_column _ \__nicematrix_j: _ max_dim }
                       { \dim_max:vn { l__nicematrix_column _ \__nicematrix_j: _max_dim } \pgf@x }
@@ -7181,7 +7181,7 @@
       }
       { \str_set_eq:NN \l__nicematrix_hpos_block_str \c__nicematrix_c_str }
     \keys_set_known:nn { nicematrix / Block / FirstPass } { #3 }
-    \tl_set:Nx \l_tmpa_tl
+    \tl_set:Ne \l_tmpa_tl
       {
         { \int_use:N \c@iRow }
         { \int_use:N \c@jCol }
@@ -7210,7 +7210,7 @@
     \int_gincr:N \g__nicematrix_block_box_int
     \cs_set_protected_nopar:Npn \diagbox ##1 ##2
       {
-        \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+        \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
           {
             \__nicematrix_actually_diagbox:nnnnnn
               { \int_use:N \c@iRow }
@@ -7329,7 +7329,7 @@
                }
            }
        }
-    \seq_gput_right:Nx \g__nicematrix_blocks_seq
+    \seq_gput_right:Ne \g__nicematrix_blocks_seq
       {
         \l_tmpa_tl
         {
@@ -7353,7 +7353,7 @@
   {
     \bool_if:NT \g__nicematrix_rotate_bool
       {
-        \str_set:Nx \l__nicematrix_hpos_block_str
+        \str_set:Ne \l__nicematrix_hpos_block_str
           {
             \bool_if:NTF \g__nicematrix_rotate_c_bool
               { c }
@@ -7397,7 +7397,7 @@
   }
 \cs_new_protected:Npn \__nicematrix_Block_v:nnnnn #1 #2 #3 #4 #5
   {
-    \seq_gput_right:Nx \g__nicematrix_blocks_seq
+    \seq_gput_right:Ne \g__nicematrix_blocks_seq
       {
         \l_tmpa_tl
         { \exp_not:n { #3 } }
@@ -7446,7 +7446,7 @@
   }
 \cs_new_protected:Npn \__nicematrix_Block_vi:nnnnn #1 #2 #3 #4 #5
   {
-    \seq_gput_right:Nx \g__nicematrix_blocks_seq
+    \seq_gput_right:Ne \g__nicematrix_blocks_seq
       {
         \l_tmpa_tl
         { \exp_not:n { #3 } }
@@ -7459,7 +7459,7 @@
   }
 \cs_new_protected:Npn \__nicematrix_Block_vii:nnnnn #1 #2 #3 #4 #5
   {
-    \seq_gput_right:Nx \g__nicematrix_blocks_seq
+    \seq_gput_right:Ne \g__nicematrix_blocks_seq
       {
         \l_tmpa_tl
         { \exp_not:n { #3 } }
@@ -7596,7 +7596,7 @@
       \l__nicematrix_vlines_block_bool
       { ! \l__nicematrix_ampersand_bool }
       {
-        \tl_gput_right:Nx \g_nicematrix_code_after_tl
+        \tl_gput_right:Ne \g_nicematrix_code_after_tl
           {
             \__nicematrix_vlines_block:nnn
               { \exp_not:n { #5 } }
@@ -7606,7 +7606,7 @@
       }
     \bool_if:NT \l__nicematrix_hlines_block_bool
       {
-        \tl_gput_right:Nx \g_nicematrix_code_after_tl
+        \tl_gput_right:Ne \g_nicematrix_code_after_tl
           {
             \__nicematrix_hlines_block:nnn
               { \exp_not:n { #5 } }
@@ -7618,7 +7618,7 @@
       {
         \bool_lazy_and:nnF \l__nicematrix_vlines_block_bool \l__nicematrix_hlines_block_bool
           {
-            \seq_gput_left:Nx \g__nicematrix_pos_of_blocks_seq
+            \seq_gput_left:Ne \g__nicematrix_pos_of_blocks_seq
               { { #1 } { #2 } { #3 } { #4 } { \l__nicematrix_block_name_str } }
           }
       }
@@ -7626,7 +7626,7 @@
       {
         \bool_lazy_or:nnT \l__nicematrix_hlines_block_bool \l__nicematrix_vlines_block_bool
           { \__nicematrix_error:n { hlines~with~color } }
-        \tl_gput_right:Nx \g_nicematrix_code_after_tl
+        \tl_gput_right:Ne \g_nicematrix_code_after_tl
           {
             \__nicematrix_stroke_block:nnn
               { \exp_not:n { #5 } }
@@ -7638,7 +7638,7 @@
       }
     \clist_if_empty:NF \l__nicematrix_borders_clist
       {
-        \tl_gput_right:Nx \g_nicematrix_code_after_tl
+        \tl_gput_right:Ne \g_nicematrix_code_after_tl
           {
             \__nicematrix_stroke_borders_block:nnn
               { \exp_not:n { #5 } }
@@ -7652,18 +7652,18 @@
           {
             \tl_if_head_eq_meaning:nNTF \l__nicematrix_fill_tl [
               {
-                \tl_set:Nx \l__nicematrix_fill_tl
+                \tl_set:Ne \l__nicematrix_fill_tl
                   {
                     [ opacity = \l__nicematrix_opacity_tl ,
                     \tl_tail:o \l__nicematrix_fill_tl
                   }
               }
               {
-                \tl_set:Nx \l__nicematrix_fill_tl
+                \tl_set:Ne \l__nicematrix_fill_tl
                   { [ opacity = \l__nicematrix_opacity_tl ] { \l__nicematrix_fill_tl } }
               }
           }
-        \tl_gput_right:Nx \g__nicematrix_pre_code_before_tl
+        \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
           {
             \exp_not:N \roundedrectanglecolor
               \exp_args:No \tl_if_head_eq_meaning:nNTF \l__nicematrix_fill_tl [
@@ -7676,7 +7676,7 @@
       }
     \seq_if_empty:NF \l__nicematrix_tikz_seq
       {
-        \tl_gput_right:Nx \g_nicematrix_code_before_tl
+        \tl_gput_right:Ne \g_nicematrix_code_before_tl
           {
             \__nicematrix_block_tikz:nnnnn
               { #1 }
@@ -7688,7 +7688,7 @@
       }
     \cs_set_protected_nopar:Npn \diagbox ##1 ##2
       {
-        \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+        \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
           {
             \__nicematrix_actually_diagbox:nnnnnn
               { #1 }
@@ -7912,7 +7912,7 @@
                 \int_compare:nNnT { #2 } = \g__nicematrix_col_total_int
                   { \str_set_eq:NN \l__nicematrix_hpos_block_str \c__nicematrix_l_str }
               }
-            \tl_set:Nx \l_tmpa_tl
+            \tl_set:Ne \l_tmpa_tl
               {
                 \str_case:on \l__nicematrix_vpos_block_str
                   {
@@ -8088,8 +8088,8 @@
     \tl_set_eq:NN \l__nicematrix_tmpc_tl \l_tmpa_tl
     \tl_set_eq:NN \l__nicematrix_tmpd_tl \l_tmpb_tl
     \__nicematrix_cut_on_hyphen:w #3 \q_stop
-    \tl_set:Nx \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
-    \tl_set:Nx \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
+    \tl_set:Ne \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
+    \tl_set:Ne \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
     \int_step_inline:nnn \l__nicematrix_tmpd_tl \l_tmpb_tl
       {
         \use:e
@@ -8112,8 +8112,8 @@
     \tl_set_eq:NN \l__nicematrix_tmpc_tl \l_tmpa_tl
     \tl_set_eq:NN \l__nicematrix_tmpd_tl \l_tmpb_tl
     \__nicematrix_cut_on_hyphen:w #3 \q_stop
-    \tl_set:Nx \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
-    \tl_set:Nx \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
+    \tl_set:Ne \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
+    \tl_set:Ne \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
     \int_step_inline:nnn \l__nicematrix_tmpc_tl \l_tmpa_tl
       {
         \use:e
@@ -8143,8 +8143,8 @@
         \tl_set_eq:NN \l__nicematrix_tmpc_tl \l_tmpa_tl
         \tl_set_eq:NN \l__nicematrix_tmpd_tl \l_tmpb_tl
         \__nicematrix_cut_on_hyphen:w #3 \q_stop
-        \tl_set:Nx \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
-        \tl_set:Nx \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
+        \tl_set:Ne \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
+        \tl_set:Ne \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
         \__nicematrix_stroke_borders_block_i:
       }
   }
@@ -8336,7 +8336,7 @@
     \cs_set_protected:cpn { #1 AutoNiceMatrix }
       {
         \bool_gset_true:N \g__nicematrix_delims_bool
-        \str_gset:Nx \g__nicematrix_name_env_str { #1 AutoNiceMatrix }
+        \str_gset:Ne \g__nicematrix_name_env_str { #1 AutoNiceMatrix }
         \AutoNiceMatrixWithDelims { #2 } { #3 }
       }
   }
@@ -8362,7 +8362,7 @@
   { \dim_compare:nNnT { \box_wd:N \l__nicematrix_cell_box } = \c_zero_dim \__nicematrix_old_dotfill }
 \cs_new_protected:Npn \__nicematrix_diagbox:nn #1 #2
   {
-    \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+    \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
       {
         \__nicematrix_actually_diagbox:nnnnnn
           { \int_use:N \c@iRow }
@@ -8372,7 +8372,7 @@
           { \g__nicematrix_row_style_tl \exp_not:n { #1 } }
           { \g__nicematrix_row_style_tl \exp_not:n { #2 } }
       }
-    \seq_gput_right:Nx \g__nicematrix_pos_of_blocks_seq
+    \seq_gput_right:Ne \g__nicematrix_pos_of_blocks_seq
       {
         { \int_use:N \c@iRow }
         { \int_use:N \c@jCol }
@@ -8560,7 +8560,7 @@
   {
     \peek_remove_spaces:n
       {
-        \tl_gput_right:Nx \g__nicematrix_pre_code_after_tl
+        \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
           {
             \SubMatrix { #1 } { #2 } { #3 } { #4 }
               [
@@ -8582,7 +8582,7 @@
   { \__nicematrix_SubMatrix_in_code_before_i:nnnn #1 #2 }
 \cs_new_protected:Npn \__nicematrix_SubMatrix_in_code_before_i:nnnn #1 #2 #3 #4
   {
-    \seq_gput_right:Nx \g__nicematrix_submatrix_seq
+    \seq_gput_right:Ne \g__nicematrix_submatrix_seq
       {
         { \str_if_eq:nnTF { #1 } { last } { \int_use:N \c@iRow } { #1 } }
         { \str_if_eq:nnTF { #2 } { last } { \int_use:N \c@jCol } { #2 } }
@@ -8808,7 +8808,7 @@
           { \__nicematrix_env: - \l__nicematrix_submatrix_name_str - right } { #3 } { #4 }
       }
     \cs_set_eq:NN \pgfpointanchor \__nicematrix_pgfpointanchor:n
-    \flag_clear_new:n { nicematrix }
+    \flag_clear_new:N \l__nicematrix_code_flag
     \l__nicematrix_code_tl
   }
 \cs_set_eq:NN \__nicematrix_old_pgfpointanchor \pgfpointanchor
@@ -8832,8 +8832,8 @@
       {
         \str_case:nVTF { #1 } \c__nicematrix_integers_alist_tl
           {
-            \flag_raise:n { nicematrix }
-            \int_if_even:nTF { \flag_height:n { nicematrix } }
+            \flag_raise:N \l__nicematrix_code_flag
+            \int_if_even:nTF { \flag_height:N \l__nicematrix_code_flag }
               { \int_eval:n { #1 + \l__nicematrix_first_i_tl - 1 } }
               { \int_eval:n { #1 + \l__nicematrix_first_j_tl - 1 } }
          }
