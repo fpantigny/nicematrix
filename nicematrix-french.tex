@@ -1,5 +1,5 @@
 % -*- coding: utf-8 ; -*-
-% Ce fichier doit être compilé avec lualatex uniquement.
+% Ce fichier doit être compilé avec LuaLaTeX uniquement.
 \documentclass[dvipsnames]{article}% dvipsnames is for xcolor (loaded by TikZ, loaded by nicematrix)
 \usepackage[french]{babel}
 \frenchsetup{og = « , fg = »}
@@ -65,7 +65,7 @@
 \def\emphase{\bgroup\color{RoyalPurple}\let\next=}
 
 \usepackage{piton}
-\PitonOptions{language = minimal, detected-commands = {emph,textsl}, splittable = 4}
+\PitonOptions{language = verbatim, detected-commands = {emph,textsl}, splittable = 4}
 \SetPitonStyle{ Number = , Comment = }
 
 \ExplSyntaxOn
@@ -91,7 +91,6 @@
   { \dim_compare:nNnT \l__pantigny_width_dim > \c_zero_dim 
       { \end{minipage} }
   }
-
 
 \ExplSyntaxOff  
   
@@ -4508,7 +4507,8 @@ La commande |\TikzEveryCell| possède deux clés, utilisables en argument
 optionnel, entre crochets.
 \begin{itemize}
 \item avec la clé \Definition{empty}, la commande ne s'applique qu'aux cases
-vides ;
+vides (les cases considérées comme vides sont décrites à la
+partie~\ref{empty-cells}, p.~\pageref{empty-cells}) ;
 \item avec la clé \Definition{non-empty}, la commande ne s'applique qu'aux
 cases non vides.
 \end{itemize}
@@ -6320,11 +6320,14 @@ clé \Definition{draw-first} : |\Ddots[draw-first]|\rlap{.}
 \subsection{Les cases «vides»}
 
 \label{empty-cells}
-Une instruction comme |\Ldots|, |\Cdots|, etc. essaye de déterminer la première
-case non vide de part et d'autre de la case considérée. Quand la clé |corners|
-(cf.~p.~\pageref{corners}) est utilisée, les coins qui sont déterminés sont
-composés de cases vides. Néanmoins, une case «vide» n'est pas nécessairement
-sans contenu dans le codage TeX. Les règles précises sont les suivantes :
+
+L'extension \pkg{nicematrix} utilise en plusieurs occassions le concept de «case
+vide». Par exemple, une instruction comme |\Ldots|, |\Cdots|, etc. essaye de
+déterminer la première case non vide de part et d'autre de la case considérée.
+De même, quand la clé |corners| (cf.~p.~\pageref{corners}) est utilisée, les
+coins qui sont déterminés sont composés de cases vides. 
+
+La définition précise de «case vide» est la suivante.
 
 \begin{itemize}
 \item Une case implicite est vide. Par exemple, dans la matrice suivante

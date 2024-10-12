@@ -1,4 +1,4 @@
-% -*- coding: utf-8 ; -*- This file should be compiled with XeLaTeX only
+% -*- coding: utf-8 ; -*- This file should be compiled with LuaLaTeX only
 \documentclass[dvipsnames]{article}% dvipsnames is for xcolor (loaded by TikZ,
                                    % loaded by nicematrix) 
 
@@ -62,7 +62,7 @@
 
 
 \usepackage{piton}
-\PitonOptions{language = minimal, detected-commands = {emph,textsl}, splittable = 4}
+\PitonOptions{language = verbatim, detected-commands = {emph,textsl}, splittable = 4}
 \SetPitonStyle{ Number = , Comment = }
 
 \ExplSyntaxOn
@@ -116,8 +116,9 @@
 \VerbatimFootnotes
 
 
-\title{The package \pkg{nicematrix}\thanks{This document corresponds to the version~\myfileversion\space of \pkg{nicematrix},
-at the date of~\myfiledate.}} \author{F. Pantigny \\ \texttt{fpantigny@wanadoo.fr}}
+\title{The package \pkg{nicematrix}\thanks{This document corresponds to the
+    version~\myfileversion\space of \pkg{nicematrix}, at the date of~\myfiledate.}} 
+\author{F. Pantigny \\ \texttt{fpantigny@wanadoo.fr}}
 
 
 \maketitle
@@ -180,7 +181,7 @@ project in order to take full advantage of the latest version de
 This package can be used with |xelatex|, |lualatex|, |pdflatex| but also by
 the classical workflow |latex|-|dvips|-|ps2pdf| (or Adobe Distiller).
 \textsl{However, the file nicematrix.dtx of the present documentation should
-be compiled with XeLaTeX.}
+be compiled with LuaLaTeX.}
 
 \medskip
 This package requires and \textbf{loads} the packages \pkg{l3keys2e},
@@ -4399,7 +4400,9 @@ which are the other keys in the argument of |\TikzEveryCell|.
 \bigskip
 The command |\TikzEveryCell| has two optional keys, available between square brackets.
 \begin{itemize}
-\item with the key \Definition{empty}, the command only acts on the empty cells;
+\item with the key \Definition{empty}, the command only acts on the empty cells
+(the exact definition of an ``empty cell'' is given in part~\ref{empty-cells},
+p.~\pageref{empty-cells}); 
 
 \item with key \Definition{non-empty}, the command only acts on the non-empty cells.
 \end{itemize}
@@ -4632,7 +4635,8 @@ with the following code (the package \pkg{caption} has been loaded in this docum
 \begin{NiceTabular}{@{}llc@{}
   [
     caption = A tabular whose caption has been specified by the key
-      \texttt{caption}\emph{\tabularnote[$\star$]{It's possible to put a tabular note in the caption.}} ,
+      \texttt{caption}\emph{\tabularnote[$\star$]{It's possible to put a tabular 
+      note in the caption.}} ,
     label = t:tabularnote ,
     tabularnote = Some text before the notes. ,
     notes/bottomrule
@@ -4659,7 +4663,8 @@ Wallis & John & 87 \\
 \NiceMatrixOptions{caption-above}
 \begin{NiceTabular}{@{}llc@{}}[
     caption = A tabular whose caption has been specified by the key
-    \texttt{caption}\tabularnote[$\star$]{It's possible to put a tabular note in the caption} ,
+    \texttt{caption}\tabularnote[$\star$]{It's possible to put a tabular 
+    note in the caption} ,
     label = t:tabularnote ,
     tabularnote = Some text before the notes. ,
     notes/bottomrule
@@ -6166,10 +6171,13 @@ parallelization is in force) with the key \Definition{draw-first}:
 \subsection[The empty cells]{The ``empty'' cells}
 
 \label{empty-cells}
-An instruction like |\Ldots|, |\Cdots|, etc. tries to determine the first
-non-empty cell on both sides. When the key |corners| is used
-(cf.~p.~\pageref{corners}), \pkg{nicematrix} computes corners consisting of
-empty cells. However, an ``empty cell'' is not necessarily a cell with no TeX
+The package \pkg{nicematrix} uses, in several circunstancies, the concept of
+``empty cell'. For example, an instruction like |\Ldots|, |\Cdots|, etc. (cf.
+p.~\pageref{Cdots}) tries to determine the first non-empty cell on both sides.
+In the same way, when the key |corners| is used (cf.~p.~\pageref{corners}),
+\pkg{nicematrix} computes corners consisting of empty cells. 
+
+However, an ``empty cell'' is not necessarily a cell with no TeX
 content (that is to say a cell with no token between the two ampersands~|&|).
 The precise rules are as follow.
 
