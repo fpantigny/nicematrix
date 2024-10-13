@@ -202,7 +202,7 @@ utiliser pour développer de nouvelles fonctionnalités. Comme toujours avec
 pour être utilisées à la compilation suivante. C'est pourquoi l'utilisation de
 \pkg{nicematrix} nécessite \textbf{plusieurs compilations
   successives}\footnote{Si vous utilisez Overleaf, Overleaf effectue
-  automatiquement un nombre de compilations suffisant.}. L'utilisateur ne doit
+  automatiquement un nombre de compilations suffisant (en utilisant |latexmk|).}. L'utilisateur ne doit
 pas utiliser la commande |\nofiles| (qui bloque l'écriture du fichier |aux|). 
 
 \medskip
@@ -945,12 +945,12 @@ Rang & \Block[C]{1-3}{Premier groupe} & & & \Block{1-3}{Deuxième groupe} \\
 \colorbox{yellow!50}{\bfseries Nouveau 6.28}\par\nobreak
 
 \smallskip
-La commande |\Block| accepte aussi la clé \Definition{p}. Avec cette clé, le
-contenu du bloc est composé comme un paragraphe (de manière similaire à une
-colonne standard de type |p|). Cette clé peut s'utiliser en conjonction avec les
-clés |l|, |c| ou |r| et, alors, le paragraphe est composé avec |\raggedright|,
-|\centering| ou |\raggedleft|. Avec la clé \Definition{j}, le paragraphe est
-composé de manière justifiée.
+La commande |\Block| accepte aussi les clés |p| et |j| . Avec la clé
+\Definition{p}, le contenu du bloc est composé comme un paragraphe (de manière
+similaire à une colonne standard de type |p|). Cette clé peut s'utiliser en
+conjonction avec les clés |l|, |c| ou |r| et, alors, le paragraphe est composé
+avec |\raggedright|, |\centering| ou |\raggedleft|. Avec la clé \Definition{j},
+le paragraphe est composé de manière justifiée.
 
 
 \subsection{Positionnement vertical du contenu des blocs}
@@ -1119,7 +1119,7 @@ L'esperluette |&| permet de diviser horizontalement un bloc en sous-blocs \emph{
 \medskip
 \begin{Code}[width=85mm]
 \begin{NiceTabular}{ll}%
-   [hvlines,ampersand-in-blocks]
+   [hvlines,\emph{ampersand-in-blocks}]
   & les cinq premiers entiers naturels \\
 3 & \Block{}{un&deux&trois} \\
 4 & \Block{}{un&deux&trois& quatre} \\
@@ -1143,7 +1143,7 @@ suivant :
 \medskip
 \begin{Code}[width=85mm]
 \begin{NiceTabular}{lccccc}%
-   [hvlines,ampersand-in-blocks]
+   [hvlines,\emph{ampersand-in-blocks}]
   & \Block{1-5}{les cinq premiers 
                  entiers naturels} \\ 
 3 & \Block{1-5}{un & deux & trois} \\
@@ -2030,7 +2030,7 @@ filets. Cette manière de faire est plus dans l'esprit du «modèle du peintre»
 formats PostScript et \textsc{pdf} et convient donc mieux aux lecteurs de
 \textsc{pdf}. L'inconvénient est qu'elle nécessite plusieurs compilations
 successives.\footnote{Si vous utilisez Overleaf, Overleaf effectue
-  automatiquement un nombre de compilations suffisant.}
+  automatiquement un nombre de compilations suffisant (en utilisant |latexmk|).}
 
 \medskip
 L'extension \pkg{nicematrix} fournit une clé |code-before| pour du code qui sera

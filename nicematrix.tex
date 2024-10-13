@@ -913,11 +913,12 @@ Rank & \Block[C]{1-3}{First group} & & & \Block{1-3}{Second group} \\
 \colorbox{yellow!50}{\bfseries New 6.28}\par\nobreak
 
 \smallskip
-The command |\Block| supports also a key \Definition{p}. With that key, the
-content of the block is formatted like a paragraph (as in a column of type |p|).
-That key may be used in conjunction with the key |l|, |c| or |r|, and, in that
-case, the paragraph is formatted with |\raggedright|, |\centering| or
-|\raggedleft|. With the key \Definition{j}, the paragraph is justified.
+The command |\Block| supports also the keys |p| and |j|. With the key
+\Definition{p}, the content of the block is formatted like a paragraph (as in a
+column of type |p|). That key may be used in conjunction with the key: |l|, |c|
+or |r|, and, in that case, the paragraph is formatted with |\raggedright|,
+|\centering| or |\raggedleft|. With the key \Definition{j}, the paragraph is
+justified.
 
 \subsection{Vertical position of the content of the block}
 
@@ -1080,7 +1081,7 @@ sub-blocks of \emph{the same size}.
 \medskip
 \begin{Code}[width=85mm]
 \begin{NiceTabular}{ll}%
-   [hvlines,ampersand-in-blocks]
+   [hvlines,\emph{ampersand-in-blocks}]
   & les cinq premiers entiers naturels \\
 3 & \Block{}{un&deux&trois} \\
 4 & \Block{}{un&deux&trois& quatre} \\
@@ -1105,7 +1106,7 @@ into sub-blocks of the same size. However, maybe the following code would be pre
 \medskip
 \begin{Code}[width=85mm]
 \begin{NiceTabular}{lccccc}%
-   [hvlines,ampersand-in-blocks]
+   [hvlines,\emph{ampersand-in-blocks}]
   & \Block{1-5}{the five first
                  natural numbers} \\ 
 3 & \Block{1-5}{one & two & three} \\
