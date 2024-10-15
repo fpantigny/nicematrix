@@ -1627,7 +1627,50 @@ c & c & b & a & e
 \medskip
 It's possible to use the command |\diagbox| in a |\Block|.
 
+\medskip
+\begin{Code}[width=10cm]
+$\begin{NiceArray}{*{5}{c}}[hvlines]
+\emph{\Block{2-2}{\diagbox{x}{y}}} &  & a & b & c \\
+  &   & a & b & c \\
+a & a & e & c & b \\
+b & b & c & e & a \\
+c & c & b & a & e
+\end{NiceArray}$
+\end{Code}
+$\begin{NiceArray}{*{5}{c}}[hvlines]
+\Block{2-2}{\diagbox{x}{y}} &  & a & b & c \\
+  &   & a & b & c \\
+a & a & e & c & b \\
+b & b & c & e & a \\
+c & c & b & a & e
+\end{NiceArray}$
 
+\medskip
+But it's also possible to use |\diagbox| for the diagonal rule only (and the
+labels are put but the usual way, that is to say in cells of the tabular).
+
+\medskip
+\begin{Code}[width=10cm]
+$\begin{NiceArray}{*{5}{c}}[hvlines]
+\emph{\Block{2-2}{\diagbox{}{}}} & y & a & b & c \\
+x &   & a & b & c \\
+a & a & e & c & b \\
+b & b & c & e & a \\
+c & c & b & a & e
+\end{NiceArray}$
+\end{Code}
+$\begin{NiceArray}{*{5}{c}}[hvlines]
+\Block{2-2}{\diagbox{}{}} & y & a & b & c \\
+x &   & a & b & c \\
+a & a & e & c & b \\
+b & b & c & e & a \\
+c & c & b & a & e
+\end{NiceArray}$
+
+\medskip
+Nevertheless, it's always possible to draw whatever rule we wish with TikZ in
+the |\CodeAfter| (or the |\CodeBefore|) by using the PGF/TikZ nodes created by
+\pkg{nicematrix}: cf. p.~\pageref{PGF-nodes}.
 
 
 \subsubsection{Commands for customized rules}

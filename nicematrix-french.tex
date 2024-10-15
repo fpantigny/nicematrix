@@ -1683,6 +1683,52 @@ c & c & b & a & e
 Cette commande |\diagbox| peut aussi être utilisée dans un |\Block|.
 
 
+\medskip
+\begin{Code}[width=10cm]
+$\begin{NiceArray}{*{5}{c}}[hvlines]
+\emph{\Block{2-2}{\diagbox{x}{y}}} &  & a & b & c \\
+  &   & a & b & c \\
+a & a & e & c & b \\
+b & b & c & e & a \\
+c & c & b & a & e
+\end{NiceArray}$
+\end{Code}
+$\begin{NiceArray}{*{5}{c}}[hvlines]
+\Block{2-2}{\diagbox{x}{y}} &  & a & b & c \\
+  &   & a & b & c \\
+a & a & e & c & b \\
+b & b & c & e & a \\
+c & c & b & a & e
+\end{NiceArray}$
+
+
+\medskip
+Mais on peut aussi utiliser |\diagbox| uniquement pour le trait diagonal et
+placer les labels comme habituellement.
+
+\medskip
+\begin{Code}[width=10cm]
+$\begin{NiceArray}{*{5}{c}}[hvlines]
+\emph{\Block{2-2}{\diagbox{}{}}} & y & a & b & c \\
+x &   & a & b & c \\
+a & a & e & c & b \\
+b & b & c & e & a \\
+c & c & b & a & e
+\end{NiceArray}$
+\end{Code}
+$\begin{NiceArray}{*{5}{c}}[hvlines]
+\Block{2-2}{\diagbox{}{}} & y & a & b & c \\
+x &   & a & b & c \\
+a & a & e & c & b \\
+b & b & c & e & a \\
+c & c & b & a & e
+\end{NiceArray}$
+
+
+\medskip
+Il est de toutes manières toujours possible de tracer tous les traits souhaités
+avec TikZ dans le |\CodeAfter| (ou le |\CodeBefore|) en utilisant les nœuds
+PGF/TikZ créés par \pkg{nicematrix} : cf. p.~\pageref{PGF-nodes}.
 
 \subsubsection{Commandes pour filets personnalisés}
 \label{custom-line}
