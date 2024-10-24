@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{6.28c}
-\def\myfiledate{2024/08/22}
+\def\myfileversion{6.29}
+\def\myfiledate{2024/10/24}
 %
 %
 %<*batchfile>  
@@ -247,34 +247,6 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% \section{Security test}
-%
-% Within the package \pkg{nicematrix}, we will have to test whether a cell of a
-% |{NiceTabular}| is empty. For the cells of the columns of type |p|, |b|, |m|,
-% |X| and |V|, we will test whether the cell is syntactically empty (that is to
-% say that there is only spaces between the ampersands |&|). That test will be
-% done with the command |\@@_test_if_empty:| by testing if the two first tokens
-% in the cells are (during the TeX process) are |\ignorespaces| and |\unskip|.
-%
-% However, if, one day, there is a changement in the implementation of
-% \pkg{array}, maybe that this test will be broken (and \pkg{nicematrix} also).
-%
-% That's why, by security, we will take a test in a small |{tabular}| composed
-% in the box |\l_tmpa_box| used as sandbox.
-% 
-%   \begin{macrocode}
-\@@_msg_new:nn { Internal~error }
-  { 
-    Potential~problem~when~using~nicematrix.\\
-    The~package~nicematrix~have~detected~a~modification~of~the~
-    standard~environment~{array}~(of~the~package~array).~Maybe~you~will~encounter~
-    some~slight~problems~when~using~nicematrix.~If~you~don't~want~to~see~
-    this~message~again,~load~nicematrix~with:~\token_to_str:N 
-    \usepackage[no-test-for-array]{nicematrix}.
-  }
-%    \end{macrocode}
-% 
-% \bigskip
 %    \begin{macrocode}
 \@@_msg_new:nn { mdwtab~loaded }
   { 
@@ -282,58 +254,11 @@ version 2005/12/01 or later.
     This~error~is~fatal.
   }
 %    \end{macrocode}
-% 
-% \bigskip
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_security_test:n #1 
-  {
-    \peek_meaning:NTF \ignorespaces
-      { \@@_security_test_i:w }
-      { \@@_error:n { Internal~error } }
-    #1 
-  }
-%    \end{macrocode}
 %
 % \bigskip
-%    \begin{macrocode}
-\bool_if:NTF \c_@@_tagging_array_bool
-  {
-    \cs_new_protected:Npn \@@_security_test_i:w \ignorespaces #1
-      {
-        \peek_meaning:NF \textonly@unskip { \@@_error:n { Internal~error } }
-        #1 
-      }  
-  }
-  {
-    \cs_new_protected:Npn \@@_security_test_i:w \ignorespaces #1
-      {
-        \peek_meaning:NF \unskip { \@@_error:n { Internal~error } }
-        #1 
-      }  
-  }
-%    \end{macrocode}
-%
-% \bigskip
-% Here, the box |\l_tmpa_box| will be used as sandbox to take our security test.
 %    \begin{macrocode}
 \hook_gput_code:nnn { begindocument / end } { . }
-  {
-    \IfPackageLoadedTF { mdwtab }
-      { \@@_fatal:n { mdwtab~loaded } }
-      {
-        \bool_if:NF \g_@@_no_test_for_array_bool
-          {
-            \group_begin:
-              \hbox_set:Nn \l_tmpa_box
-                {
-                  \begin { tabular } { c > { \@@_security_test:n } c c }
-                  text & & text
-                  \end { tabular }
-                }
-            \group_end:
-          }
-      } 
-  }
+  { \IfPackageLoadedT { mdwtab } { \@@_fatal:n { mdwtab~loaded } } }
 %    \end{macrocode}
 %
 % \bigskip
@@ -406,25 +331,8 @@ version 2005/12/01 or later.
 \str_const:Nn \c_@@_r_str { r }
 \str_const:Nn \c_@@_c_str { c }
 \str_const:Nn \c_@@_l_str { l }
-\str_const:Nn \c_@@_R_str { R }
-\str_const:Nn \c_@@_C_str { C }
-\str_const:Nn \c_@@_L_str { L } 
-\str_const:Nn \c_@@_j_str { j } 
-\str_const:Nn \c_@@_si_str { si }
 %    \end{macrocode}
 %
-% \bigskip
-% For efficiency, we define a small variant of |\clist_if_in:Nn(TF)| which is
-% faster when the items of the clists are safe.
-%   \begin{macrocode}
-\prg_new_conditional:Npnn \@@_clist_if_in:Nn #1 #2 { T , F , TF }
-  {
-    \exp_args:Ne \tl_if_in:nnTF { ,#1, } { ,#2, } 
-      \prg_return_true: 
-      \prg_return_false: 
-  }
-\prg_generate_conditional_variant:Nnn \@@_clist_if_in:Nn { N e } { T , F, TF }
-%    \end{macrocode}
 %
 % 
 % \bigskip
@@ -1719,11 +1627,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_expand_clist:N #1 
   {
-%    \end{macrocode}
-% |\@@_clist_if_in:NnF| is only a variant of |\clist_if_in:NnF| which is faster
-% when the items in the clists are safe.
-%    \begin{macrocode}
-    \@@_clist_if_in:NnF #1 { all }
+    \clist_if_in:NnF #1 { all }
       {
         \clist_clear:N \l_tmpa_clist 
         \clist_map_inline:Nn #1 
@@ -3691,7 +3595,7 @@ version 2005/12/01 or later.
           {
             \str_if_eq:eeF \l_@@_hlines_clist { all }
               { 
-                \@@_clist_if_in:NeT 
+                \clist_if_in:NeT 
                   \l_@@_hlines_clist 
                   { \int_eval:n { \c@iRow + 1 } }
               } 
@@ -3812,7 +3716,38 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% \bigskip
+% |#1468| on GitHub (latex2e) exhibits a bug when a command with a last argument
+% which is optional is used in |>{...}| of \pkg{array}.
 %
+% In order to solve that problem, a modification is done to the command
+% |\inser@column| in the version 2.6g (2024/10/12) of \pkg{array}. However, with
+% that modification, our command |\@@_test_if_empty:| leads to a bug when the
+% first column of an array is of type |p{...}| and when the first cell of that
+% first column is empty.
+%
+% As a workaround, we will use a slight different version of |\insert@column|.
+% 
+% 
+%    \begin{macrocode}
+\bool_if:NT \c_@@_tagging_array_bool
+  {
+    \cs_new:Npn \@@_insert@column 
+      {
+        \UseTaggingSocket{tbl/cell/begin}
+        \the@toks \the \@tempcnta \ignorespaces
+        \@sharp \textonly@unskip
+        \the@toks \the \count@ \relax 
+        \UseTaggingSocket{tbl/cell/end}
+      }  
+  }
+%    \end{macrocode}
+% In the version 2.6g of \pkg{array}, a command |\@protected@firstofone| is
+% added:
+% 
+% |\@protected@firstofone { \the@toks \the \@tempcnta \ignorespaces }|
+%
+% 
 % \bigskip
 % The following code |\@@_pre_array_ii:| is used in |{NiceArrayWithDelims}|. It
 % exists as a standalone macro only for legibility.
@@ -3821,7 +3756,11 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_pre_array_ii:
   { 
+    \bool_if:NT \c_@@_tagging_array_bool
+      {  \cs_set_eq:NN \insert@column \@@_insert@column }
 %    \end{macrocode}
+%
+% \bigskip
 % The number of letters |X| in the preamble of the array.
 %    \begin{macrocode}
     \int_gzero:N \g_@@_total_X_weight_int
@@ -4307,6 +4246,16 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_exec_code_before:
   { 
+%    \end{macrocode}
+% We mark the cells which are in the (empty) corners because those cells must
+% not be colored. We should try to find a way to detected whether we actually
+% have coloring instructions to execute...
+%    \begin{macrocode}
+    \clist_map_inline:Nn \l_@@_corners_cells_clist
+      { \cs_set_nopar:cpn { @@ _ corner _ ##1 } { } }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
     \seq_gclear_new:N \g_@@_colors_seq
 %    \end{macrocode}
 % The sequence |\g_@@_colors_seq| will always contain as first element the
@@ -4968,7 +4917,7 @@ version 2005/12/01 or later.
           { ! { \skip_horizontal:N \arrayrulewidth } }
       }
       {
-        \@@_clist_if_in:NnT \l_@@_vlines_clist 1 
+        \clist_if_in:NnT \l_@@_vlines_clist 1 
           { 
             \tl_gset:Nn \g_@@_array_preamble_tl 
               { ! { \skip_horizontal:N \arrayrulewidth } }
@@ -5118,9 +5067,9 @@ version 2005/12/01 or later.
           }
           { 
 %    \end{macrocode}
-% Remember that |#1| is a token. 
+%
 %    \begin{macrocode}
-            \token_if_eq_charcode:NNTF #1 S 
+            \str_if_eq:nnTF { #1 } { S }
               { \@@_fatal:n { unknown~column~type~S } }
               { \@@_fatal:nn { unknown~column~type } { #1 } }
           }
@@ -5215,7 +5164,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_i_ii:nn #1 #2
   {
-    \token_if_eq_charcode:NNTF #2 [
+    \str_if_eq:nnTF { #2 } { [ }
       { \@@_make_preamble_i_ii:nw { #1 } [ }
       { \@@_make_preamble_i_iii:nn { #2 } { #1 } }
   }
@@ -5281,31 +5230,7 @@ version 2005/12/01 or later.
     c .value_forbidden:n = true ,
     l .code:n = \str_set_eq:NN \l_@@_hpos_col_str \c_@@_l_str ,
     l .value_forbidden:n = true ,
-    R .code:n = 
-      \IfPackageLoadedTF { ragged2e }
-        { \str_set_eq:NN \l_@@_hpos_col_str \c_@@_R_str } 
-        { 
-          \@@_error_or_warning:n { ragged2e~not~loaded }
-          \str_set_eq:NN \l_@@_hpos_col_str \c_@@_r_str 
-        } ,
-    R .value_forbidden:n = true ,
-    L .code:n = 
-      \IfPackageLoadedTF { ragged2e }
-        { \str_set_eq:NN \l_@@_hpos_col_str \c_@@_L_stsr } 
-        { 
-          \@@_error_or_warning:n { ragged2e~not~loaded }
-          \str_set_eq:NN \l_@@_hpos_col_str \c_@@_l_str
-        } ,
-    L .value_forbidden:n = true ,
-    C .code:n = 
-      \IfPackageLoadedTF { ragged2e }
-        { \str_set_eq:NN \l_@@_hpos_col_str \c_@@_C_str } 
-        { 
-          \@@_error_or_warning:n { ragged2e~not~loaded }
-          \str_set_eq:NN \l_@@_hpos_col_str \c_@@_c_str 
-        } ,
-    C .value_forbidden:n = true ,
-    S .code:n = \str_set_eq:NN \l_@@_hpos_col_str \c_@@_si_str ,
+    S .code:n = \str_set:Nn \l_@@_hpos_col_str { si } ,
     S .value_forbidden:n = true ,
     p .code:n = \str_set:Nn \l_@@_vpos_col_str { p } ,
     p .value_forbidden:n = true ,
@@ -5313,7 +5238,7 @@ version 2005/12/01 or later.
     m .code:n = \str_set:Nn \l_@@_vpos_col_str { m } ,
     m .value_forbidden:n = true ,
     b .code:n = \str_set:Nn \l_@@_vpos_col_str { b } ,
-    b .value_forbidden:n = true ,
+    b .value_forbidden:n = true 
   }
 %    \end{macrocode}
 % 
@@ -5337,7 +5262,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_ii_i:n #1
   {
-    \token_if_eq_charcode:NNTF #1 [ 
+    \str_if_eq:nnTF { #1 } { [ }
       { \@@_make_preamble_ii_ii:w [ }
       { \@@_make_preamble_ii_ii:w [ ] { #1 } }
   }
@@ -5361,7 +5286,7 @@ version 2005/12/01 or later.
 % the initial value), |l|, |c|, |r|, |L|, |C| and |R| (when the user has used
 % the corresponding key in the optional argument of the specifier).
 %    \begin{macrocode}
-    \str_set_eq:NN \l_@@_hpos_col_str \c_@@_j_str
+    \str_set:Nn \l_@@_hpos_col_str { j }
     \@@_keys_p_column:n { #1 }
     \@@_make_preamble_ii_iv:nnn { #2 } { minipage } { }
   }
@@ -5382,7 +5307,7 @@ version 2005/12/01 or later.
     \use:e 
       { 
         \@@_make_preamble_ii_v:nnnnnnnn
-          { \str_if_eq:eeTF \l_@@_vpos_col_str { p } { t } { b } }
+          { \str_if_eq:nnTF \l_@@_vpos_col_str { p } { t } { b } }
           { \dim_eval:n { #1 } }
           {
 %    \end{macrocode}
@@ -5391,7 +5316,7 @@ version 2005/12/01 or later.
 % itself, you will have, in each cell, the parameter |\l_@@_hpos_cell_tl| which
 % will provide the horizontal alignment of the column to which belongs the cell.
 %    \begin{macrocode}
-            \str_if_eq:eeTF \l_@@_hpos_col_str { j }
+            \str_if_eq:nnTF \l_@@_hpos_col_str { j }
               { \tl_clear:N \exp_not:N \l_@@_hpos_cell_tl } 
               { 
 %    \end{macrocode}
@@ -5399,21 +5324,29 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
                 \cs_set_nopar:Npn \exp_not:N \l_@@_hpos_cell_tl 
                   { \str_lowercase:o \l_@@_hpos_col_str } 
-              } 
-            \str_case:on \l_@@_hpos_col_str 
+              }
+            \IfPackageLoadedTF { ragged2e } 
               {
-                c { \exp_not:N \centering }
-                l { \exp_not:N \raggedright }
-                r { \exp_not:N \raggedleft }
-                C { \exp_not:N \Centering }
-                L { \exp_not:N \RaggedRight }
-                R { \exp_not:N \RaggedLeft }
+                \str_case:on \l_@@_hpos_col_str 
+                  {
+                    c { \exp_not:N \Centering }
+                    l { \exp_not:N \RaggedRight }
+                    r { \exp_not:N \RaggedLeft }
+                  }
+              }
+              {
+                \str_case:on \l_@@_hpos_col_str 
+                  {
+                    c { \exp_not:N \centering }
+                    l { \exp_not:N \raggedright }
+                    r { \exp_not:N \raggedleft }
+                  }
               }
             #3
           }
-          { \str_if_eq:eeT \l_@@_vpos_col_str { m } \@@_center_cell_box: }
-          { \str_if_eq:eeT \l_@@_hpos_col_str { si } \siunitx_cell_begin:w }
-          { \str_if_eq:eeT \l_@@_hpos_col_str { si } \siunitx_cell_end: }
+          { \str_if_eq:nnT \l_@@_vpos_col_str { m } \@@_center_cell_box: }
+          { \str_if_eq:nnT \l_@@_hpos_col_str { si } \siunitx_cell_begin:w }
+          { \str_if_eq:nnT \l_@@_hpos_col_str { si } \siunitx_cell_end: }
           { #2 }
           {         
             \str_case:onF \l_@@_hpos_col_str 
@@ -5458,15 +5391,15 @@ version 2005/12/01 or later.
 %
 % |#7| is the type of environment: |minipage| or |varwidth|.
 %
-% |#8| is the letter |c| or |r| or |l| which is the basic specificier of column
+% |#8| is the letter |c| or |r| or |l| which is the basic specifier of column
 % which is used \emph{in fine}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_ii_v:nnnnnnnn #1 #2 #3 #4 #5 #6 #7 #8
   {
-    \tl_if_eq:NNTF \l_@@_hpos_col_str \c_@@_si_str
+    \str_if_eq:eeTF \l_@@_hpos_col_str { si }
       { 
         \tl_gput_right:Nn \g_@@_array_preamble_tl 
-          { > { \@@_test_if_empty_for_S: } } 
+          { > \@@_test_if_empty_for_S: } 
       }
       { 
         \tl_gput_right:Nn \g_@@_array_preamble_tl 
@@ -5534,19 +5467,35 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 %    \begin{macrocode}
-\str_new:N \c_@@_ignorespaces_str
-\str_set:Ne \c_@@_ignorespaces_str { \ignorespaces }
-\str_remove_all:Nn \c_@@_ignorespaces_str { ~ }
 \cs_new_protected:Npn \@@_test_if_empty: 
-  { \peek_after:Nw \@@_test_if_empty_i: }
+  { \peek_after:Nw \@@_test_if_empty_i: } 
+
 \cs_new_protected:Npn \@@_test_if_empty_i:
+  { \peek_meaning_remove:NT \ignorespaces { \@@_test_if_empty_ii: } }
+
+\cs_new_protected:Npn \@@_test_if_empty_ii: 
+  { \peek_after:Nw \@@_test_if_empty_iii: }
+%    \end{macrocode}
+% 
+%
+% \bigskip
+%    \begin{macrocode}
+\bool_if:NTF \c_@@_tagging_array_bool
   {
-    \str_set:Ne \l_tmpa_str { \token_to_meaning:N \l_peek_token }
-    \str_if_eq:NNT \l_tmpa_str \c_@@_ignorespaces_str
-      { \@@_test_if_empty:w }
+    \cs_new_protected:Npn \@@_test_if_empty_iii:
+      { \peek_meaning:NTF \textonly@unskip \@@_nullify_cell: \ignorespaces } 
   }
-\cs_new_protected:Npn \@@_test_if_empty:w \ignorespaces 
-  { \peek_after:Nw \@@_test_if_empty_ii: }
+%    \end{macrocode}
+% In the old version of \pkg{array}, we test whether it begins by
+% |\ignorespaces\unskip|. However, in some circunstancies, for example when
+% |\collectcell| of \pkg{collcell} is used, the cell does not begin with
+% |\ignorespaces|. In that case, we consider as not empty...
+% First, we test if the next token is |\ignorespaces| and it's not very easy... 
+%    \begin{macrocode}
+  {
+    \cs_new_protected:Npn \@@_test_if_empty_iii:
+      { \peek_meaning:NTF \unskip \@@_nullify_cell: \ignorespaces }  
+  }
 %    \end{macrocode}
 % 
 % \bigskip
@@ -5561,26 +5510,6 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-% \bigskip
-%    \begin{macrocode}
-\bool_if:NTF \c_@@_tagging_array_bool
-  {
-    \cs_new_protected:Npn \@@_test_if_empty_ii:
-      { \peek_meaning:NT \textonly@unskip \@@_nullify_cell: }
-  }
-%    \end{macrocode}
-% In the old version of \pkg{array}, we test whether it begins by
-% |\ignorespaces\unskip|. However, in some circunstancies, for example when
-% |\collectcell| of \pkg{collcell} is used, the cell does not begin with
-% |\ignorespaces|. In that case, we consider as not empty...
-% First, we test if the next token is |\ignorespaces| and it's not very easy... 
-%    \begin{macrocode}
-  {
-    \cs_new_protected:Npn \@@_test_if_empty_ii:
-      { \peek_meaning:NT \unskip \@@_nullify_cell: }  
-  }
-%    \end{macrocode}
-% 
 % 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_if_empty_for_S: 
@@ -5639,7 +5568,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new:Npn \@@_V #1 #2
   {
-    \token_if_eq_charcode:NNTF #1 [ 
+    \str_if_eq:nnTF { #1 } { [ } 
       { \@@_make_preamble_V_i:w [ }
       { \@@_make_preamble_V_i:w [ ] { #2 } }
   }
@@ -5648,7 +5577,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_make_preamble_V_ii:nn #1 #2
   {
     \str_set:Nn \l_@@_vpos_col_str { p }
-    \str_set_eq:NN \l_@@_hpos_col_str \c_@@_j_str
+    \str_set:Nn \l_@@_hpos_col_str { j }
     \@@_keys_p_column:n { #1 }
     \IfPackageLoadedTF { varwidth }
       { \@@_make_preamble_ii_iv:nnn { #2 } { varwidth } { } }
@@ -5677,7 +5606,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_w:nnnn #1 #2 #3 #4
   {  
-    \token_if_eq_charcode:NNTF #3 s 
+    \str_if_eq:nnTF { #3 } { s }
       { \@@_make_preamble_w_i:nnnn { #1 } { #4 } }
       { \@@_make_preamble_w_ii:nnnn { #1 } { #2 } { #3 } { #4 } }
   }
@@ -5767,7 +5696,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new:Npn \@@_S #1 #2
   {
-    \token_if_eq_charcode:NNTF #1 [ 
+    \str_if_eq:nnTF { #1 } { [ }
       { \@@_make_preamble_S:w [ }
       { \@@_make_preamble_S:w [ ] { #2 } }
   }
@@ -5935,30 +5864,26 @@ version 2005/12/01 or later.
 % also to test whether there is, after the |<{...}|, a |@{...}|.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_rec_preamble_after_col:n #1
-  {
-%    \end{macrocode}
-% We don't use |\token_if_eq_meaning:NN(TF)| because the character |<| may be
-% activated (for instance by \pkg{babel} with the language spanish.
-%    \begin{macrocode}
-    \token_if_eq_charcode:NNTF #1 < 
+  { 
+    \str_if_eq:nnTF { #1 } { < }
       \@@_rec_preamble_after_col_i:n
       { 
-        \token_if_eq_charcode:NNTF #1 @ 
+        \str_if_eq:nnTF { #1 } { @ }
           \@@_rec_preamble_after_col_ii:n
           {
-            \str_if_eq:eeTF \l_@@_vlines_clist { all }
+            \str_if_eq:nnTF \l_@@_vlines_clist { all }
               { 
                 \tl_gput_right:Nn \g_@@_array_preamble_tl 
                   { ! { \skip_horizontal:N \arrayrulewidth } }
               } 
               { 
-                \@@_clist_if_in:NeT \l_@@_vlines_clist 
+                \clist_if_in:NeT \l_@@_vlines_clist 
                   { \int_eval:n { \c@jCol + 1 } }  
                   { 
                     \tl_gput_right:Nn \g_@@_array_preamble_tl 
                       { ! { \skip_horizontal:N \arrayrulewidth } }
                   } 
-              }
+              }   
             \@@_rec_preamble:n { #1 }
           }
       }
@@ -5985,7 +5910,7 @@ version 2005/12/01 or later.
           { @ { #1 \skip_horizontal:N \arrayrulewidth } }
       } 
       { 
-        \@@_clist_if_in:NeTF \l_@@_vlines_clist { \int_eval:n { \c@jCol + 1 } }  
+        \clist_if_in:NeTF \l_@@_vlines_clist { \int_eval:n { \c@jCol + 1 } }  
           { 
             \tl_gput_right:Nn \g_@@_array_preamble_tl 
               { @ { #1 \skip_horizontal:N \arrayrulewidth } }
@@ -6020,7 +5945,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new:Npn \@@_X #1 #2
   {
-    \token_if_eq_charcode:NNTF #2 [ 
+    \str_if_eq:nnTF { #2 } { [ }
       { \@@_make_preamble_X:w [ }
       { \@@_make_preamble_X:w [ ] #2 }
   }
@@ -6311,9 +6236,9 @@ version 2005/12/01 or later.
           }
           { 
 %    \end{macrocode}
-% Remember that |#1| is a token.
+%
 %    \begin{macrocode}
-            \token_if_eq_charcode:NNTF #1 S 
+            \str_if_eq:nnTF { #1 } { S } 
               { \@@_fatal:n { unknown~column~type~S } }
               { \@@_fatal:nn { unknown~column~type } { #1 } }
           }
@@ -6425,7 +6350,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_m_preamble_x:n #1
   {
-    \token_if_eq_charcode:NNTF #1 < 
+    \str_if_eq:nnTF { #1 } { < } 
       \@@_make_m_preamble_ix:n 
       { \@@_make_m_preamble:n { #1 } }
   }
@@ -7939,6 +7864,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \@@_draw_dotted_lines:
 %    \end{macrocode}
+%
 % 
 % \bigskip
 % The following computes the ``corners'' (made up of empty cells) but if there
@@ -7946,7 +7872,7 @@ version 2005/12/01 or later.
 % in |\l_@@_corners_cells_clist| which will contain all the cells which are empty
 % (and not in a block) considered in the corners of the array.
 %    \begin{macrocode}
-    \@@_compute_corners:
+    \clist_if_empty:NF \l_@@_corners_clist \@@_compute_corners:
 %    \end{macrocode}
 %
 % \bigskip
@@ -8174,14 +8100,16 @@ version 2005/12/01 or later.
       }
     \anchor { 5 } { \five }
     \anchor { center } { \pgfpointorigin }
-    \anchor { 1 } { \five \pgf@x = 0.2 \pgf@x \pgf@y = 0.2 \pgf@y }
-    \anchor { 2 } { \five \pgf@x = 0.4 \pgf@x \pgf@y = 0.4 \pgf@y }
-    \anchor { 3 } { \five \pgf@x = 0.6 \pgf@x \pgf@y = 0.6 \pgf@y }
-    \anchor { 4 } { \five \pgf@x = 0.8 \pgf@x \pgf@y = 0.8 \pgf@y }
-    \anchor { 6 } { \five \pgf@x = 1.2 \pgf@x \pgf@y = 1.2 \pgf@y }
-    \anchor { 7 } { \five \pgf@x = 1.4 \pgf@x \pgf@y = 1.4 \pgf@y }
-    \anchor { 8 } { \five \pgf@x = 1.6 \pgf@x \pgf@y = 1.6 \pgf@y }
-    \anchor { 9 } { \five \pgf@x = 1.8 \pgf@x \pgf@y = 1.8 \pgf@y }
+    \anchor { 1 }  { \five \pgf@x = 0.2 \pgf@x \pgf@y = 0.2 \pgf@y }
+    \anchor { 2 }  { \five \pgf@x = 0.4 \pgf@x \pgf@y = 0.4 \pgf@y }
+    \anchor { 25 } { \five \pgf@x = 0.5 \pgf@x \pgf@y = 0.5 \pgf@y }
+    \anchor { 3 }  { \five \pgf@x = 0.6 \pgf@x \pgf@y = 0.6 \pgf@y }
+    \anchor { 4 }  { \five \pgf@x = 0.8 \pgf@x \pgf@y = 0.8 \pgf@y }
+    \anchor { 6 }  { \five \pgf@x = 1.2 \pgf@x \pgf@y = 1.2 \pgf@y }
+    \anchor { 7 }  { \five \pgf@x = 1.4 \pgf@x \pgf@y = 1.4 \pgf@y }
+    \anchor { 75 } { \five \pgf@x = 1.5 \pgf@x \pgf@y = 1.5 \pgf@y }
+    \anchor { 8 }  { \five \pgf@x = 1.6 \pgf@x \pgf@y = 1.6 \pgf@y }
+    \anchor { 9 }  { \five \pgf@x = 1.8 \pgf@x \pgf@y = 1.8 \pgf@y }
   }
 %    \end{macrocode}
 % 
@@ -8287,7 +8215,7 @@ version 2005/12/01 or later.
 % First, we declare the current cell as ``dotted'' because we forbide
 % intersections of dotted lines.
 %    \begin{macrocode}         
-    \cs_set:cpn { @@ _ dotted _ #1 - #2 } { }
+    \cs_set_nopar:cpn { @@ _ dotted _ #1 - #2 } { }
 %    \end{macrocode}
 % Initialization of variables.
 %    \begin{macrocode}
@@ -8385,7 +8313,7 @@ version 2005/12/01 or later.
 % drawn in a TeX group that we will open for the options of the line.
 %    \begin{macrocode} 
                   { 
-                    \cs_set:cpn 
+                    \cs_set_nopar:cpn 
                       { 
                         @@ _ dotted _
                         \int_use:N \l_@@_final_i_int - 
@@ -8474,7 +8402,7 @@ version 2005/12/01 or later.
                   }
                   { \bool_set_true:N \l_@@_stop_loop_bool }
                   {
-                    \cs_set:cpn 
+                    \cs_set_nopar:cpn 
                       { 
                         @@ _ dotted _ 
                         \int_use:N \l_@@_initial_i_int - 
@@ -8724,7 +8652,7 @@ version 2005/12/01 or later.
                 { \color { nicematrix-last-row } }
             }
           \keys_set:nn { nicematrix / xdots } { #3 }
-          \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
+          \@@_color:o \l_@@_xdots_color_tl
           \@@_actually_draw_Ldots:
         \group_end:
       }
@@ -8819,7 +8747,7 @@ version 2005/12/01 or later.
                 { \color { nicematrix-last-row } }
             }
           \keys_set:nn { nicematrix / xdots } { #3 }
-          \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
+          \@@_color:o \l_@@_xdots_color_tl
           \@@_actually_draw_Cdots: 
         \group_end:
       }
@@ -8947,7 +8875,7 @@ version 2005/12/01 or later.
                 { \color { nicematrix-last-col } }
             }
           \keys_set:nn { nicematrix / xdots } { #3 }
-          \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
+          \@@_color:o \l_@@_xdots_color_tl
           \@@_actually_draw_Vdots:
         \group_end:
       }
@@ -9095,7 +9023,7 @@ version 2005/12/01 or later.
         \group_begin:
           \@@_open_shorten:
           \keys_set:nn { nicematrix / xdots } { #3 }
-          \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
+          \@@_color:o \l_@@_xdots_color_tl
           \@@_actually_draw_Ddots:
         \group_end:
       }
@@ -9193,7 +9121,7 @@ version 2005/12/01 or later.
         \group_begin:
           \@@_open_shorten:
           \keys_set:nn { nicematrix / xdots } { #3 }
-          \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
+          \@@_color:o \l_@@_xdots_color_tl
           \@@_actually_draw_Iddots:
         \group_end:
       }
@@ -9958,7 +9886,7 @@ version 2005/12/01 or later.
       }
 
     \keys_set:nn { nicematrix / xdots } { #4 }
-    \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
+    \@@_color:o \l_@@_xdots_color_tl
     \@@_actually_draw_Ldots:
     \group_end:
 %    \end{macrocode}
@@ -9970,7 +9898,7 @@ version 2005/12/01 or later.
 % special control sequence (to nil).
 %    \begin{macrocode}
     \int_step_inline:nnn { #2 } { #2 + #3 - 1 }
-      { \cs_set:cpn { @@ _ dotted _ #1 - ##1 } { } }
+      { \cs_set_nopar:cpn { @@ _ dotted _ #1 - ##1 } { } }
   }
 %    \end{macrocode}
 %
@@ -10064,7 +9992,7 @@ version 2005/12/01 or later.
           { \color { nicematrix-last-col } }
       }
     \keys_set:nn { nicematrix / xdots } { #4 }
-    \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } }
+    \@@_color:o \l_@@_xdots_color_tl
     \@@_actually_draw_Vdots:
     \group_end:
 %    \end{macrocode}
@@ -10076,7 +10004,7 @@ version 2005/12/01 or later.
 % special control sequence (to nil).
 %    \begin{macrocode}
     \int_step_inline:nnn { #1 } { #1 + #3 - 1 }
-      { \cs_set:cpn { @@ _ dotted _ ##1 - #2 } { } }
+      { \cs_set_nopar:cpn { @@ _ dotted _ ##1 - #2 } { } }
   }
 %    \end{macrocode}
 %
@@ -10152,13 +10080,13 @@ version 2005/12/01 or later.
       {
         \group_begin:
         \keys_set:nn { nicematrix / xdots } { #1 , #4 , down = #5 , up = #6 }
-        \tl_if_empty:oF \l_@@_xdots_color_tl { \color { \l_@@_xdots_color_tl } } 
-          \use:e
-            {
-              \@@_line_i:nn 
-                { \@@_double_int_eval:n #2 - \q_stop }
-                { \@@_double_int_eval:n #3 - \q_stop }
-            }
+        \@@_color:o \l_@@_xdots_color_tl 
+        \use:e
+          {
+            \@@_line_i:nn 
+              { \@@_double_int_eval:n #2 - \q_stop }
+              { \@@_double_int_eval:n #3 - \q_stop }
+          }
         \group_end:
       } 
   }
@@ -11046,7 +10974,7 @@ version 2005/12/01 or later.
 % Now, the numbers of both rows are in |\l_tmpa_tl| and |\l_tmpb_tl|.
 %    \begin{macrocode}
             \cs_if_exist:cF 
-              { @@ _ \l_tmpa_tl _ \l_@@_tmpc_tl _ nocolor }
+              { @@ _ nocolor _ \l_tmpa_tl - \l_@@_tmpc_tl }
               {
                 \@@_qpoint:n { row - \int_eval:n { \l_tmpb_tl + 1 } }
                 \dim_set:Nn \l_tmpb_dim { \pgf@y + 0.5 \arrayrulewidth }
@@ -11085,14 +11013,13 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \clist_map_inline:Nn \l_@@_rows_tl
           { 
-            \@@_clist_if_in:NnF \l_@@_corners_cells_clist
-              { ####1 - ##1 }
+            \@@_if_in_corner:nF { ####1 - ##1 } 
               {
                 \@@_qpoint:n { row - \int_eval:n { ####1 + 1 } }
                 \dim_set:Nn \l_tmpb_dim { \pgf@y + 0.5 \arrayrulewidth }
                 \@@_qpoint:n { row - ####1 }
                 \dim_set:Nn \l_@@_tmpd_dim { \pgf@y + 0.5 \arrayrulewidth }
-                \cs_if_exist:cF { @@ _ ####1 _ ##1 _ nocolor }
+                \cs_if_exist:cF { @@ _ nocolor _ ####1 - ##1 }
                   {
                     \pgfpathrectanglecorners
                       { \pgfpoint \l_@@_tmpc_dim \l_@@_tmpd_dim }
@@ -11133,7 +11060,7 @@ version 2005/12/01 or later.
     \clist_map_inline:Nn \l_@@_rows_tl
       {
         \clist_map_inline:Nn \l_@@_cols_tl 
-          { \cs_set:cpn { @@ _ ##1 _ ####1 _ nocolor } { } }
+          { \cs_set_nopar:cpn { @@ _ nocolor _ ##1 - ####1 } { } }
       }
   }
 %    \end{macrocode}
@@ -11562,6 +11489,9 @@ version 2005/12/01 or later.
 % be drawn.
 %    \begin{macrocode}
         \bool_gset_true:N \g_tmpa_bool
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
         \seq_map_inline:Nn \g_@@_pos_of_blocks_seq
           { \@@_test_vline_in_block:nnnnn ##1 }
         \seq_map_inline:Nn \g_@@_pos_of_xdots_seq
@@ -11599,23 +11529,18 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_in_corner_v:
    {
-     \int_compare:nNnTF \l_tmpb_tl = { \int_eval:n { \c@jCol + 1 } } 
+     \int_compare:nNnTF \l_tmpb_tl = { \c@jCol + 1 } 
        {
-         \@@_clist_if_in:NeT
-           \l_@@_corners_cells_clist 
-           { \l_tmpa_tl - \int_eval:n { \l_tmpb_tl - 1 } }
+         \@@_if_in_corner:nT { \l_tmpa_tl - \int_eval:n { \l_tmpb_tl - 1 } }
            { \bool_set_false:N \g_tmpa_bool }
        }
        {
-         \@@_clist_if_in:NeT
-           \l_@@_corners_cells_clist 
-           { \l_tmpa_tl - \l_tmpb_tl }
+         \@@_if_in_corner:nT { \l_tmpa_tl - \l_tmpb_tl }
            { 
              \int_compare:nNnTF \l_tmpb_tl = \c_one_int
                { \bool_set_false:N \g_tmpa_bool }
                {
-                 \@@_clist_if_in:NeT
-                   \l_@@_corners_cells_clist 
+                 \@@_if_in_corner:nT 
                    { \l_tmpa_tl - \int_eval:n { \l_tmpb_tl - 1 } }
                    { \bool_set_false:N \g_tmpa_bool }
                }
@@ -11772,7 +11697,7 @@ version 2005/12/01 or later.
       }
       { 
         \tl_if_eq:NNF \l_@@_vlines_clist \c_@@_all_tl 
-          { \@@_clist_if_in:NnT \l_@@_vlines_clist { ##1 } }
+          { \clist_if_in:NnT \l_@@_vlines_clist { ##1 } }
           { \@@_vline:n { position = ##1 , total-width = \arrayrulewidth } }
       }
   }
@@ -11823,8 +11748,15 @@ version 2005/12/01 or later.
 % be drawn.
 %    \begin{macrocode}
          \bool_gset_true:N \g_tmpa_bool
-         \seq_map_inline:Nn \g_@@_pos_of_blocks_seq
-           { \@@_test_hline_in_block:nnnnn ##1 }
+%    \end{macrocode}
+% 
+% We test whether we are in a block.
+%    \begin{macrocode}
+        \seq_map_inline:Nn \g_@@_pos_of_blocks_seq
+          { \@@_test_hline_in_block:nnnnn ##1 }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
          \seq_map_inline:Nn \g_@@_pos_of_xdots_seq
            { \@@_test_hline_in_block:nnnnn ##1 }
          \seq_map_inline:Nn \g_@@_pos_of_stroken_blocks_seq
@@ -11860,23 +11792,18 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_in_corner_h:
    {
-     \int_compare:nNnTF \l_tmpa_tl = { \int_eval:n { \c@iRow + 1 } }
+     \int_compare:nNnTF \l_tmpa_tl = { \c@iRow + 1 }
        {
-         \@@_clist_if_in:NeT
-           \l_@@_corners_cells_clist 
-           { \int_eval:n { \l_tmpa_tl - 1 } - \l_tmpb_tl }
+         \@@_if_in_corner:nT { \int_eval:n { \l_tmpa_tl - 1 } - \l_tmpb_tl }
            { \bool_set_false:N \g_tmpa_bool }
        }
        {
-         \@@_clist_if_in:NeT
-           \l_@@_corners_cells_clist 
-           { \l_tmpa_tl - \l_tmpb_tl }
+         \@@_if_in_corner:nT { \l_tmpa_tl - \l_tmpb_tl }
            { 
              \int_compare:nNnTF \l_tmpa_tl = \c_one_int
                { \bool_set_false:N \g_tmpa_bool }
                {
-                 \@@_clist_if_in:NeT
-                   \l_@@_corners_cells_clist 
+                 \@@_if_in_corner:nT 
                    { \int_eval:n { \l_tmpa_tl - 1 } - \l_tmpb_tl }
                    { \bool_set_false:N \g_tmpa_bool }
                }
@@ -11885,6 +11812,7 @@ version 2005/12/01 or later.
    }
 %    \end{macrocode}
 %
+% 
 % \bigskip 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_hline_ii:
@@ -12094,7 +12022,7 @@ version 2005/12/01 or later.
       }
       { 
         \tl_if_eq:NNF \l_@@_hlines_clist \c_@@_all_tl 
-          { \@@_clist_if_in:NnT \l_@@_hlines_clist { ##1 } }
+          { \clist_if_in:NnT \l_@@_hlines_clist { ##1 } }
           { \@@_hline:n { position = ##1 , total-width = \arrayrulewidth } }
       }
   }
@@ -12245,7 +12173,7 @@ version 2005/12/01 or later.
 % for the letter corresponding at the custom line, will directly use the
 % following command that you define in the main hash table of TeX.
 %    \begin{macrocode}
-                \cs_set:cpn { @@ _ \l_@@_letter_str } ##1 
+                \cs_set_nopar:cpn { @@ _ \l_@@_letter_str } ##1 
                   { \@@_v_custom_line:n { #1 } }
               } 
           }
@@ -12330,7 +12258,7 @@ version 2005/12/01 or later.
 % Moreover, the command must \emph{not} be protected since it begins with
 % |\noalign| (which is in |\Hline|). 
 %    \begin{macrocode}
-    \cs_set:cpn { nicematrix - \l_@@_command_str } { \Hline [ #1 ] }
+    \cs_set_nopar:cpn { nicematrix - \l_@@_command_str } { \Hline [ #1 ] }
     \seq_put_left:No \l_@@_custom_line_commands_seq \l_@@_command_str
   }
 %    \end{macrocode}
@@ -12528,6 +12456,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_compute_corners:
   {
+    \seq_map_inline:Nn \g_@@_pos_of_blocks_seq
+      { \@@_mark_cells_of_block:nnnnn ##1 }
 %    \end{macrocode}
 % The list |\l_@@_corners_cells_clist| will be the list of all the
 % empty cells (and not in a block) considered in the corners of the array. We
@@ -12571,7 +12501,29 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_mark_cells_of_block:nnnnn #1 #2 #3 #4 #5 
+  {
+    \int_step_inline:nnn { #1 } { #3 }
+      {
+        \int_step_inline:nnn { #2 } { #4 }
+          { \cs_set_nopar:cpn { @@ _ block _ ##1 - ####1 } { } }
+      }
+  }
+%    \end{macrocode}
 %
+% \bigskip
+%    \begin{macrocode}
+\prg_new_conditional:Npnn \@@_if_in_block:nn #1 #2 { p }
+  {
+    \cs_if_exist:cTF 
+      { @@ _ block _ \int_eval:n { #1 } - \int_eval:n { #2 } }
+      \prg_return_true: 
+      \prg_return_false: 
+  }
+%    \end{macrocode}
+% 
 % \bigskip
 % ``Computing a corner'' is determining all the empty cells (which are not in a
 % block) that belong to that corner. These cells will be added to the sequence 
@@ -12605,17 +12557,16 @@ version 2005/12/01 or later.
     \int_set:Nn \l_@@_last_empty_row_int { #1 }
     \int_step_inline:nnnn { #1 } { #3 } { #5 }
       {
-        \cs_if_exist:cTF
-          { pgf @ sh @ ns @ \@@_env: - ##1 - \int_eval:n { #2 } }
-          { \bool_set_true:N \l_tmpa_bool }
+        \bool_lazy_or:nnTF
           {
-            \@@_test_if_in_a_block:nn { ##1 } { \int_eval:n { #2 } }
-            \bool_if:NTF \l_tmpb_bool
-              { \bool_set_true:N \l_tmpa_bool }
-              { 
-                \bool_if:NF \l_tmpa_bool
-                  { \int_set:Nn \l_@@_last_empty_row_int { ##1 } }
-              }
+            \cs_if_exist_p:c
+              { pgf @ sh @ ns @ \@@_env: - ##1 - \int_eval:n { #2 } }
+          }
+          { \@@_if_in_block_p:nn { ##1 } { #2 } }
+          { \bool_set_true:N \l_tmpa_bool }
+          { 
+            \bool_if:NF \l_tmpa_bool
+              { \int_set:Nn \l_@@_last_empty_row_int { ##1 } }
           }
       }
 %    \end{macrocode}
@@ -12626,18 +12577,17 @@ version 2005/12/01 or later.
     \int_set:Nn \l_@@_last_empty_column_int { #2 }
     \int_step_inline:nnnn { #2 } { #4 } { #6 }
       {
-        \cs_if_exist:cTF
-          { pgf @ sh @ ns @ \@@_env: - \int_eval:n { #1 } - ##1 }
-          { \bool_set_true:N \l_tmpa_bool }
+        \bool_lazy_or:nnTF 
           {
-            \@@_test_if_in_a_block:nn { \int_eval:n { #1 } } { ##1 } 
-            \bool_if:NTF \l_tmpb_bool
-              { \bool_set_true:N \l_tmpa_bool }
-              { 
-                \bool_if:NF \l_tmpa_bool
-                  { \int_set:Nn \l_@@_last_empty_column_int { ##1 } }
-              }  
+            \cs_if_exist_p:c
+              { pgf @ sh @ ns @ \@@_env: - \int_eval:n { #1 } - ##1 }
           }
+          { \@@_if_in_block_p:nn { #1 } { ##1 } }
+          { \bool_set_true:N \l_tmpa_bool }
+          { 
+            \bool_if:NF \l_tmpa_bool
+              { \int_set:Nn \l_@@_last_empty_column_int { ##1 } }
+          }  
       }
 %    \end{macrocode}
 % Now, we loop over the rows.
@@ -12650,20 +12600,18 @@ version 2005/12/01 or later.
         \bool_set_false:N \l_tmpa_bool
         \int_step_inline:nnnn { #2 } { #4 } \l_@@_last_empty_column_int
           {
-            \cs_if_exist:cTF { pgf @ sh @ ns @ \@@_env: - ##1 - ####1 }
+            \bool_lazy_or:nnTF
+              { \cs_if_exist_p:c { pgf @ sh @ ns @ \@@_env: - ##1 - ####1 } }
+              { \@@_if_in_block_p:nn  { ##1 } { ####1 } }
               { \bool_set_true:N \l_tmpa_bool }
-              {
-                \@@_test_if_in_a_block:nn { ##1 } { ####1 } 
-                \bool_if:NTF \l_tmpb_bool
-                  { \bool_set_true:N \l_tmpa_bool }
+              { 
+                \bool_if:NF \l_tmpa_bool
                   { 
-                    \bool_if:NF \l_tmpa_bool
-                      { 
-                        \int_set:Nn \l_@@_last_empty_column_int { ####1 } 
-                        \clist_put_right:Nn 
-                          \l_@@_corners_cells_clist
-                          { ##1 - ####1 }
-                      }
+                    \int_set:Nn \l_@@_last_empty_column_int { ####1 } 
+                    \clist_put_right:Nn 
+                      \l_@@_corners_cells_clist 
+                      { ##1 - ####1 }
+                    \cs_set_nopar:cpn { @@ _ corner _ ##1 - ####1 } { }
                   }
               }
           }
@@ -12671,42 +12619,19 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-% \bigskip 
-% The following macro tests whether a cell is in (at least) one of
-% the blocks of the array (or in a cell with a |\diagbox|).
 % 
-% The flag |\l_tmpb_bool| will be raised if the cell |#1|-|#2| is in a block (or
-% in a cell with a |\diagbox|).
+% \bigskip
+% Of course, instead of the following lines, we could have use
+% |\prg_new_conditional:Npnn|. 
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_test_if_in_a_block:nn #1 #2
-  {
-    \bool_set_false:N \l_tmpb_bool
-    \seq_map_inline:Nn \g_@@_pos_of_blocks_seq 
-      { \@@_test_if_in_block:nnnnnnn { #1 } { #2 } ##1 }
-  }
-%    \end{macrocode}
-% 
-% 
-%    \begin{macrocode}
-\cs_set_protected:Npn \@@_test_if_in_block:nnnnnnn #1 #2 #3 #4 #5 #6 #7
-  {
-    \if_int_compare:w #3 > #1  
-    \else: 
-      \if_int_compare:w #1 > #5 
-      \else:
-        \if_int_compare:w #4 > #2 
-        \else:
-          \if_int_compare:w #2 > #6  
-          \else:
-            \bool_set_true:N \l_tmpb_bool 
-          \fi:
-        \fi:
-      \fi:
-    \fi:
-    \bool_if:NT \l_tmpb_bool { \seq_map_break: }
-  }
+\cs_new:Npn \@@_if_in_corner:nT #1 { \cs_if_exist:cT { @@ _ corner _ #1 } }
+\cs_new:Npn \@@_if_in_corner:nF #1 { \cs_if_exist:cF { @@ _ corner _ #1 } }
 %    \end{macrocode}
 %
+% Instead of the previous lines, we could have used |\l_@@_corners_cells_clist|
+% but it's less efficient:
+% 
+% \verb|\clist_if_in:NeT \l_@@_corners_cells_clist { #1 } ...|
 %
 % \bigskip 
 % \section{The environment \{NiceMatrixBlock\}}
@@ -14772,13 +14697,13 @@ version 2005/12/01 or later.
     \pgf@relevantforpicturesizefalse
     \CT@arc@
     \pgfsetlinewidth { 1.1 \l_@@_line_width_dim }
-    \@@_clist_if_in:NnT \l_@@_borders_clist { right }  
+    \clist_if_in:NnT \l_@@_borders_clist { right }  
       { \@@_stroke_vertical:n \l_tmpb_tl }
-    \@@_clist_if_in:NnT \l_@@_borders_clist { left }  
+    \clist_if_in:NnT \l_@@_borders_clist { left }  
       { \@@_stroke_vertical:n \l_@@_tmpd_tl }
-    \@@_clist_if_in:NnT \l_@@_borders_clist { bottom }  
+    \clist_if_in:NnT \l_@@_borders_clist { bottom }  
       { \@@_stroke_horizontal:n \l_tmpa_tl }
-    \@@_clist_if_in:NnT \l_@@_borders_clist { top }  
+    \clist_if_in:NnT \l_@@_borders_clist { top }  
       { \@@_stroke_horizontal:n \l_@@_tmpc_tl }
   }
 %    \end{macrocode}
@@ -14831,7 +14756,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_stroke_horizontal:n #1
   {
     \@@_qpoint:n \l_@@_tmpd_tl 
-    \@@_clist_if_in:NnTF \l_@@_borders_clist { left }
+    \clist_if_in:NnTF \l_@@_borders_clist { left }
       { \dim_set:Nn \l_tmpa_dim { \pgf@x - 0.5 \l_@@_line_width_dim } }
       { \dim_set:Nn \l_tmpa_dim { \pgf@x + 0.5 \l_@@_line_width_dim } }
     \@@_qpoint:n \l_tmpb_tl 
@@ -16249,7 +16174,7 @@ version 2005/12/01 or later.
           { 
             \cs_if_exist:cF { cell - \@@_i_tl - \@@_j_tl } 
               {
-                \@@_clist_if_in:NeF \l_@@_corners_cells_clist 
+                \clist_if_in:NeF \l_@@_corners_cells_clist 
                   { \@@_i_tl - \@@_j_tl }
                   {
                     \bool_set_false:N \l_tmpa_bool
@@ -16289,7 +16214,7 @@ version 2005/12/01 or later.
     \int_step_inline:nnn { #1 } { #3 }
       {
         \int_step_inline:nnn { #2 } { #4 }
-          { \cs_set:cpn { cell - ##1 - ####1 } { } }
+          { \cs_set_nopar:cpn { cell - ##1 - ####1 } { } }
       }
   }
 %    \end{macrocode}
@@ -16506,7 +16431,6 @@ version 2005/12/01 or later.
     footnote,~
     footnotehyper,~
     messages-for-Overleaf,~
-    no-test-for-array,~
     renew-dots,~and~
     renew-matrix.
   }
@@ -16523,8 +16447,11 @@ version 2005/12/01 or later.
     messages-for-Overleaf .bool_set:N = \g_@@_messages_for_Overleaf_bool , 
     footnote .bool_set:N = \g_@@_footnote_bool ,
     footnotehyper .bool_set:N = \g_@@_footnotehyper_bool ,
-    no-test-for-array .bool_set:N = \g_@@_no_test_for_array_bool , 
-    no-test-for-array .default:n = true , 
+%    \end{macrocode}
+% The test for a potential modification of \pkg{array} has been deleted. You
+% keep the following key only for compatibility but maybe we will delete it.
+%    \begin{macrocode}
+    no-test-for-array .code:n =  \prg_do_nothing: ,
     unknown .code:n = \@@_error:n { Unknown~key~for~package } 
   }
 \ProcessKeysOptions { nicematrix / Package }
@@ -17043,15 +16970,6 @@ version 2005/12/01 or later.
     siunitx~not~loaded\\
     You~can't~use~the~columns~'S'~because~'siunitx'~is~not~loaded.\\
     That~error~is~fatal.
-  }
-%    \end{macrocode}
-% 
-%    \begin{macrocode}
-\@@_msg_new:nn { ragged2e~not~loaded }
-  {
-    You~have~to~load~'ragged2e'~in~order~to~use~the~key~'\l_keys_key_str'~in~
-    your~column~'\l_@@_vpos_col_str'~(or~'X').~The~key~'\str_lowercase:o
-    \l_keys_key_str'~will~be~used~instead. 
   }
 %    \end{macrocode}
 % 

@@ -917,7 +917,8 @@ The command |\Block| supports also the keys |p| and |j|. With the key
 \Definition{p}, the content of the block is formatted like a paragraph (as in a
 column of type |p|). That key may be used in conjunction with the key: |l|, |c|
 or |r|, and, in that case, the paragraph is formatted with |\raggedright|,
-|\centering| or |\raggedleft|. With the key \Definition{j}, the paragraph is
+|\centering| or |\raggedleft| (or |\RaggedRight|, |\Centering| and |\RaggedLeft|
+when \pkg{ragged2e}) est chargée. With the key \Definition{j}, the paragraph is
 justified.
 
 \subsection{Vertical position of the content of the block}
@@ -2590,10 +2591,10 @@ There are several commands available (the first three ones are inspired by
 \pkg{colortbl} but are \emph{independent} of \pkg{colortbl}):
 \begin{itemize}
 \item \DefinitionCommand{cellcolor} which colorizes a cell;\footnote{That
-  command cellcolor will delete the following spaces, which does not the
-  command cellcolor of \pkg{colortbl}. Moreover, if one wishes to define a
-  command above that command |rowcolor|, it must be protected in the TeX sens
-  (whereas, if it were the command |\rowcolor| of \pkg{colortbl}, one should
+  command |\cellcolor| will delete the following spaces, which does not the
+  command |\cellcolor| of \pkg{colortbl}. Moreover, if one wishes to define a
+  command above that command |\cellcolor|, it must be protected in the TeX sens
+  (whereas, if it were the command |\cellcolor| of \pkg{colortbl}, one should
   write a \emph{fully expandable} command).}
 \item \DefinitionCommand{rowcolor} which must be used in a cell and which
 colorizes the end of the row;\footnote{If you want a commande to color the
@@ -2926,7 +2927,10 @@ by \pkg{tabu} (which is now obsolete), are \emph{not} supported by \pkg{nicematr
 If such a value is used, an error will be raised.}
 \item It's possible to specify an horizontal alignment with one of the
 letters |l|, |c| and |r| (which insert respectively |\raggedright|,
-|\centering| and |\raggedleft| followed by |\arraybackslash|).
+|\centering| and |\raggedleft| followed by |\arraybackslash|).\footnote{In fact,
+when \pkg{ragged2e} is loaded, \pkg{nicematrix} uses the commands
+|\RaggedRight|, |\Centering| and |\RaggedLeft| of \pkg{ragged2e} instead of the
+commands |\raggedright|, |\centering| and |\raggedleft|. That ensures a better output.}
 \item It's possible to specify a vertical alignment with one of the keys
 |t| (alias |p|), |m| and |b| (which construct respectively columns of type
 |p|, |m| and |b|). The default value is |t|.
@@ -3673,9 +3677,11 @@ With the key \Definition{xdots/horizontal-labels}, the labels (introduced by~|_|
 |^| and~|:|) stay horizontal.
 
 \bigskip
-The option \Definition{xdots/color} fixes the color or the dotted line. However,
-one should remark that the dotted lines drawn in the exterior rows and columns
-have a special treatment: cf. p.~\pageref{exterior}.
+The option \Definition{xdots/color} fixes the color or the dotted line. It's
+possible to use a color definied ``on the fly'' 
+(e.g.: |xdots/color = { [RGB]{204,204,255} }|). One should remark that
+the dotted lines drawn in the exterior rows and columns have a special
+treatment: cf. p.~\pageref{exterior}. 
 
 \bigskip
 The option \Definition{radius} fixes the radius of the dots. The initial value
@@ -3926,6 +3932,11 @@ beginning on p.~\pageref{PGF-nodes}.
 Moreover, several special commands are available in the |\CodeAfter|: |line|, 
 |\SubMatrix|, |\OverBrace|, |\UnderBrace| and |\TikzEveryCell|. We will now
 present these commands. 
+
+\medskip
+One should avoid spurious spaces in that |\CodeAfter|.\footnote{See:
+  \url{https://tex.stackexchange.com/questions/689336}} 
+
 
 \subsection{The command \textbackslash line in the \textbackslash CodeAfter}
 
@@ -4315,6 +4326,9 @@ syntax $i$|-|$j$ where $i$ the number of row and $j$ the number of column;
 \item the third argument is the label of the brace that will be put by
 \pkg{nicematrix} (with \textsc{pgf}) above the brace (for the command
 |\OverBrace|) or under the brace (for |\UnderBrace|).
+
+\colorbox{yellow!50}{\bfseries{New 6.29}}\enskip It's possible to use the
+command |\\| in this third argument in order to format the label on several lignes.
 \end{itemize}
 
 \bigskip
@@ -4336,7 +4350,7 @@ $\begin{pNiceMatrix}
 \end{pNiceMatrix}$
 
 \bigskip
-Caution : There is no vertical space reserved for those braces and their labels.\footnote{See:
+Caution: There is no vertical space reserved for those braces and their labels.\footnote{See:
   \url{https://tex.stackexchange.com/questions/685755}} 
 
 
@@ -5261,8 +5275,9 @@ in the environments of \pkg{nicematrix}.
 \indexcommand{BAutoNiceMatrix}
 The package \pkg{nicematrix} also provides commands in order to compose
 automatically matrices from a general pattern. These commands are
-|\AutoNiceMatrix|, |\pAutoNiceMatrix|, |\bAutoNiceMatrix|, |\vAutoNiceMatrix|,
-|\VAutoNiceMatrix| and |\BAutoNiceMatrix|.
+\DefinitionCommand{AutoNiceMatrix}, \DefinitionCommand{pAutoNiceMatrix},
+\DefinitionCommand{bAutoNiceMatrix}, \DefinitionCommand{vAutoNiceMatrix},
+\DefinitionCommand{VAutoNiceMatrix} et \DefinitionCommand{BAutoNiceMatrix}. 
 
 These commands take in two mandatory arguments. The first is the format of the
 matrix, with the syntax $n$-$p$ where $n$ is the number of rows and $p$ the
@@ -5276,6 +5291,9 @@ $C = \emph{\pAutoNiceMatrix}{3-3}{C_{\arabic{iRow},\arabic{jCol}}}$
 
 
 \[C = \pAutoNiceMatrix{3-3}{C_{\arabic{iRow},\arabic{jCol}}}\]
+
+There exists also \DefinitionCommand{AutoNiceArrayWithDelims} similar to
+|{NiceArrayWithDelims}|. 
 
 
 \subsection{The key light-syntax}
@@ -5886,8 +5904,8 @@ also an alias called |last|.
 
 \smallskip
 \colorbox{yellow!50}{\bfseries Modification 6.28}\enskip There are also nodes
-called $i$|.1|, $i$|.2|, … , $i$|.9| between the node~$i$ and the node~$i+1$
-(before the version 6.28, there was only the node $i$|.5|).
+called $i$|.1|, $i$|.2|, $i$|.25|, $i$|.3|, $i$|.4|, $i$|.5|, $i$|.6|, $i$|.7|,
+$i$|.75|, $i$|.8| and $i$|.9| between the node~$i$ and the node~$i+1$.
 
 \smallskip
 These nodes are available in the |\CodeBefore| and the |\CodeAfter|.
@@ -6298,7 +6316,7 @@ environments of \pkg{nicematrix} are not affected).
 The package \pkg{nicematrix} is not compatible with the class \cls{ieeeaccess}
 because that class is not compatible with PGF/TikZ. However, there is a simple
 workaround by writing:\footnote{See
- \url{https://tex.stackexchange.com/questions/528975/error-loading-tikz-in-ieeeaccess-class}}\par\nobreak 
+ \url{https://tex.stackexchange.com/questions/528975}}\par\nobreak 
 
 \begin{Code}
 \let\TeXyear\year
@@ -7533,6 +7551,11 @@ The successive versions of the file |nicematrix.sty| provided by TeXLive are ava
 \small
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
+
+\subsection*{Changes between version 6.28 and 6.29}
+
+Modification in order to be compatible with the next version of \pkg{array}
+(v. 2.6g).
 
 \subsection*{Changes between version 6.27 and 6.28}
 
