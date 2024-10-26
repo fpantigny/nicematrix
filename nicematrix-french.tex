@@ -1222,14 +1222,14 @@ filets tracés par \pkg{nicematrix} sont compatibles avec \pkg{booktabs}.
 
 \medskip
 \begin{Code}[width=10.5cm]
-$\begin{NiceArray}{\emph{|cccc|}} \toprule
+$\begin{NiceArray}{\emph{c|ccc}} \toprule
 a & b & c & d \\ \midrule
 1 & 2 & 3 & 4 \\
 1 & 2 & 3 & 4 \\ \bottomrule
 \end{NiceArray}$
 \end{Code}
 %
-$\begin{NiceArray}{|cccc|}
+$\begin{NiceArray}{c|ccc}
 \toprule
 a & b & c & d \\
 \midrule
@@ -2998,9 +2998,9 @@ clé \Definition{width} (dans |{NiceTabular}| ou dans |\NiceMatrixOptions|). La
 valeur initiale de ce paramètre est |\linewidth| (et non |\textwidth|).
 
 Pour se rapprocher davantage de l'environnement |{tabularx}|, \pkg{nicematrix}
-propose aussi un environnement |{NiceTabularX}| avec une syntaxe similaire à
-celle de |{tabularx}|, c'est-à-dire que la largeur voulue pour le tableau est
-spécifiée en premier argument (obligatoire).
+propose aussi un environnement \Definition{\{NiceTabularX\}} avec une syntaxe
+similaire à celle de |{tabularx}|, c'est-à-dire que la largeur voulue pour le
+tableau est spécifiée en premier argument (obligatoire).
 
 
 Comme avec les extensions \pkg{tabu}\footnote{L'extension \pkg{tabu} est
@@ -5178,7 +5178,7 @@ que la commande |\pAutoNiceMatrix| et ses variantes, acceptent la clé
 \Definition{columns-type} qui indique le type de colonne qui sera utilisé.
 
 \medskip
-Les clés \Definition{l} et \Definition{l} sont des raccourcis pour
+Les clés \Definition{l} et \Definition{r} sont des raccourcis pour
 |columns-type=l| et |columns-type=r|. 
 
 \medskip
@@ -5467,12 +5467,12 @@ dans les cases du tableau.\footnote{La raison en est que lorsque l'option |light
 
 
 \medskip
-\index{light-syntax-expanded}
-La clé |light-syntax-expanded| a le même comportement que la clé |light-syntax|
-mais avec cette différence que le corps de l'environnement est complètement
-développé (au sens de TeX\footnote{Plus précisément, il s'agit d'une expansion
-  de type |e| de L3.}) avant découpe en lignes (mais après l'extraction de
-l'éventuel |\CodeAfter|).
+\index{light-syntax-expanded} 
+La clé \Definition{light-syntax-expanded} a le même comportement que la clé
+|light-syntax| mais avec cette différence que le corps de l'environnement est
+complètement développé (au sens de TeX\footnote{Plus précisément, il s'agit
+  d'une expansion de type |e| de L3.}) avant découpe en lignes (mais après
+l'extraction de l'éventuel |\CodeAfter|).
 
 
 \subsection{Couleur des délimiteurs}
@@ -5509,11 +5509,11 @@ préambule des environnements à préambule (cf.~p.~\pageref{delimiters-in-pream
 \index{NiceArrayWithDelims@\texttt{\{NiceArrayWithDelims\}}}
 
 En fait, l'environnement |{pNiceArray}| et ses variantes sont fondés sur un
-environnement plus général, appelé |{NiceArrayWithDelims}|. Les deux premiers
-arguments obligatoires de cet environnement sont les délimiteurs gauche et droit
-qui seront utilisés dans la construction de la matrice. Il est possible
-d'utiliser |{NiceArrayWithDelims}| si on a besoin de délimiteurs atypiques ou
-asymétriques.
+environnement plus général, appelé \Definition{\{NiceArrayWithDelims\}}. Les
+deux premiers arguments obligatoires de cet environnement sont les délimiteurs
+gauche et droit qui seront utilisés dans la construction de la matrice. Il est
+possible d'utiliser |{NiceArrayWithDelims}| si on a besoin de délimiteurs
+atypiques ou asymétriques.
 
 \medskip
 \begin{Code}[width=11cm]
@@ -6104,8 +6104,8 @@ horizontal~$i$ et du filet vertical~$j$ avec la syntaxe |(|$i$\verb+-|+$j$|)|.
 \end{NiceMatrix}\]
 
 \medskip
-Les nœuds de la forme $i$|.5| peuvent être utilisés par exemple pour barrer une
-ligne (si on a chargé TikZ).
+Les nœuds «décimaux» (comme $i$|.4|) peuvent être utilisés par exemple pour
+barrer une ligne (si on a chargé TikZ).
 
 \smallskip
 \begin{Code}[width=11cm]
@@ -6114,7 +6114,7 @@ $\begin{pNiceArray}{ccc|c}
 3 & 3 & 1 & 0 \\
 3 & 3 & 1 & 0
 \CodeAfter
-  \tikz \draw [red] (\emph{3.5}-|1) -- (\emph{3.5}-|last) ;
+  \tikz \draw [red] (\emph{3.4}-|1) -- (\emph{3.4}-|last) ;
 \end{pNiceArray}$
 \end{Code}
 $\begin{pNiceArray}{ccc|c}
@@ -6122,7 +6122,7 @@ $\begin{pNiceArray}{ccc|c}
 3 & 3 & 1 & 0 \\
 3 & 3 & 1 & 0
 \CodeAfter
-  \tikz \draw [red] (3.5-|1) -- (3.5-|last) ;
+  \tikz \draw [red] (3.4-|1) -- (3.4-|last) ;
 \end{pNiceArray}$
 
 

@@ -2978,13 +2978,13 @@ version 2005/12/01 or later.
 % \bigskip
 % \section{Important code used by \{NiceArrayWithDelims\} }
 %
-% The pseudo-environment |\@@_cell_begin:w|--|\@@_cell_end:| will be used to format the
+% The pseudo-environment |\@@_cell_begin:|--|\@@_cell_end:| will be used to format the
 % cells of the array. In the code, the affectations are global because this
 % pseudo-environment will be used in the cells of a |\halign| (via an
 % environment |{array}|). 
 %
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_cell_begin:w
+\cs_new_protected:Npn \@@_cell_begin:
   { 
 %    \end{macrocode}
 % |\g_@@_cell_after_hook_tl| will be set during the composition of the box
@@ -3262,7 +3262,7 @@ version 2005/12/01 or later.
 % \item we test the existence of these nodes in order to determine whether a
 % cell is empty when we search the extremities of a dotted line.
 % \end{itemize}
-% However, it's very difficult to determine whether a cell is empty. Up to now
+% However, it's difficult to determine whether a cell is empty. Up to now
 % we use the following technic:
 % \begin{itemize}
 % \item for the columns of type |p|, |m|, |b|, |V| (of \pkg{varwidth}) or |X|,
@@ -3716,48 +3716,13 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-% \bigskip
-% |#1468| on GitHub (latex2e) exhibits a bug when a command with a last argument
-% which is optional is used in |>{...}| of \pkg{array}.
-%
-% In order to solve that problem, a modification is done to the command
-% |\inser@column| in the version 2.6g (2024/10/12) of \pkg{array}. However, with
-% that modification, our command |\@@_test_if_empty:| leads to a bug when the
-% first column of an array is of type |p{...}| and when the first cell of that
-% first column is empty.
-%
-% As a workaround, we will use a slight different version of |\insert@column|.
+% \vspace{1cm}
 % 
-% 
-%    \begin{macrocode}
-\bool_if:NT \c_@@_tagging_array_bool
-  {
-    \cs_new:Npn \@@_insert@column 
-      {
-        \UseTaggingSocket{tbl/cell/begin}
-        \the@toks \the \@tempcnta \ignorespaces
-        \@sharp \textonly@unskip
-        \the@toks \the \count@ \relax 
-        \UseTaggingSocket{tbl/cell/end}
-      }  
-  }
-%    \end{macrocode}
-% In the version 2.6g of \pkg{array}, a command |\@protected@firstofone| is
-% added:
-% 
-% |\@protected@firstofone { \the@toks \the \@tempcnta \ignorespaces }|
-%
-% 
-% \bigskip
-% The following code |\@@_pre_array_ii:| is used in |{NiceArrayWithDelims}|. It
-% exists as a standalone macro only for legibility.
 % \label{prearray}
 %
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_pre_array_ii:
   { 
-    \bool_if:NT \c_@@_tagging_array_bool
-      {  \cs_set_eq:NN \insert@column \@@_insert@column }
 %    \end{macrocode}
 %
 % \bigskip
@@ -3944,7 +3909,7 @@ version 2005/12/01 or later.
 % The counter |\c@jCol| will be used to count the columns of the array.
 % Since we want to know the total number of columns of the matrix, we also
 % create a counter |\g_@@_col_total_int|. These counters are updated in the
-% command |\@@_cell_begin:w| executed at the beginning of each cell.  
+% command |\@@_cell_begin:| executed at the beginning of each cell.  
 %    \begin{macrocode}
     \int_gzero_new:N \g_@@_col_total_int
 %    \end{macrocode}
@@ -4014,7 +3979,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% If there is an exterior row, we patch a command used in |\@@_cell_begin:w| in order to
+% If there is an exterior row, we patch a command used in |\@@_cell_begin:| in order to
 % keep track of some dimensions needed to the construction of that ``last row''.
 %    \begin{macrocode}
     \int_compare:nNnT \l_@@_last_row_int > { -2 }
@@ -5087,7 +5052,7 @@ version 2005/12/01 or later.
     \tl_gput_right:No \g_@@_array_preamble_tl \g_@@_pre_cell_tl 
     \tl_gclear:N \g_@@_pre_cell_tl
     \tl_gput_right:Nn \g_@@_array_preamble_tl 
-      { > \@@_cell_begin:w c < \@@_cell_end: }  
+      { > \@@_cell_begin: c < \@@_cell_end: }  
 %    \end{macrocode}
 %
 % We increment the counter of columns and then we test for the presence of a |<|.
@@ -5103,7 +5068,7 @@ version 2005/12/01 or later.
     \tl_gclear:N \g_@@_pre_cell_tl
     \tl_gput_right:Nn \g_@@_array_preamble_tl 
       { 
-        > { \@@_cell_begin:w \tl_set_eq:NN \l_@@_hpos_cell_tl \c_@@_l_tl } 
+        > { \@@_cell_begin: \tl_set_eq:NN \l_@@_hpos_cell_tl \c_@@_l_tl } 
         l
         < \@@_cell_end:
       }  
@@ -5118,7 +5083,7 @@ version 2005/12/01 or later.
     \tl_gclear:N \g_@@_pre_cell_tl
     \tl_gput_right:Nn \g_@@_array_preamble_tl 
       { 
-        > { \@@_cell_begin:w \tl_set_eq:NN \l_@@_hpos_cell_tl \c_@@_r_tl }  
+        > { \@@_cell_begin: \tl_set_eq:NN \l_@@_hpos_cell_tl \c_@@_r_tl }  
         r 
         < \@@_cell_end:
       }  
@@ -5179,9 +5144,9 @@ version 2005/12/01 or later.
     \tl_gput_right:Ne \g_@@_array_preamble_tl
       { 
 %    \end{macrocode}
-% Here, the command |\dim_eval:n| is mandatory.
+% Here, the command |\dim_use:N| is mandatory.
 %    \begin{macrocode}
-        \exp_not:N ! { \skip_horizontal:n { \dim_eval:n { \l_@@_rule_width_dim } } }  
+        \exp_not:N ! { \skip_horizontal:N \dim_use:N \l_@@_rule_width_dim }   
       }
     \tl_gput_right:Ne \g_@@_pre_code_after_tl
       { 
@@ -5403,7 +5368,7 @@ version 2005/12/01 or later.
       }
       { 
         \tl_gput_right:Nn \g_@@_array_preamble_tl 
-          { > { \@@_test_if_empty: } } 
+          { > \@@_test_if_empty: } 
       }
     \tl_gput_right:No \g_@@_array_preamble_tl \g_@@_pre_cell_tl 
     \tl_gclear:N \g_@@_pre_cell_tl
@@ -5418,7 +5383,7 @@ version 2005/12/01 or later.
             \dim_set:Nn \l_@@_col_width_dim { #2 }
             \bool_if:NT \c_@@_testphase_table_bool
               { \tag_struct_begin:n { tag = Div } }
-            \@@_cell_begin:w 
+            \@@_cell_begin: 
 %    \end{macrocode}
 % We use the form |\minipage|--|\endminipage| (|\varwidth|--|\endvarwidth|) for
 % compatibility with \pkg{collcell} (2023-10-31).
@@ -5466,47 +5431,27 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
+% The cell always begin with |\ignorespaces| with \pkg{array} and that's why we
+% retrieve that token.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_test_if_empty: 
-  { \peek_after:Nw \@@_test_if_empty_i: } 
-
-\cs_new_protected:Npn \@@_test_if_empty_i:
-  { \peek_meaning_remove:NT \ignorespaces { \@@_test_if_empty_ii: } }
-
-\cs_new_protected:Npn \@@_test_if_empty_ii: 
-  { \peek_after:Nw \@@_test_if_empty_iii: }
+\cs_new_protected:Npn \@@_test_if_empty: \ignorespaces 
+  { 
 %    \end{macrocode}
-% 
-%
-% \bigskip
+% We open a special group with |\group_align_safe_begin:|. Thus, when
+% |\peek_meaning:NTF| will read the |&| (when the cell is empty), that lecture
+% won't trigger the end of the cell (since we are in a lower group...). If the
+% end of cell was trigerred, we would have other tokens in the TeX flow (and not
+% |&|). 
 %    \begin{macrocode}
-\bool_if:NTF \c_@@_tagging_array_bool
-  {
-    \cs_new_protected:Npn \@@_test_if_empty_iii:
-      { \peek_meaning:NTF \textonly@unskip \@@_nullify_cell: \ignorespaces } 
-  }
-%    \end{macrocode}
-% In the old version of \pkg{array}, we test whether it begins by
-% |\ignorespaces\unskip|. However, in some circunstancies, for example when
-% |\collectcell| of \pkg{collcell} is used, the cell does not begin with
-% |\ignorespaces|. In that case, we consider as not empty...
-% First, we test if the next token is |\ignorespaces| and it's not very easy... 
-%    \begin{macrocode}
-  {
-    \cs_new_protected:Npn \@@_test_if_empty_iii:
-      { \peek_meaning:NTF \unskip \@@_nullify_cell: \ignorespaces }  
-  }
-%    \end{macrocode}
-% 
-% \bigskip
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_nullify_cell:
-  {
-    \tl_gput_right:Nn \g_@@_cell_after_hook_tl 
+    \group_align_safe_begin:
+    \peek_meaning:NTF & 
       { 
-        \box_set_wd:Nn \l_@@_cell_box \c_zero_dim 
-        \skip_horizontal:N \l_@@_col_width_dim 
+        \group_align_safe_end: 
+        \bool_gset_true:N \g_@@_empty_cell_bool
+        \tl_gput_right:Nn \g_@@_cell_after_hook_tl 
+          { \skip_horizontal:N \l_@@_col_width_dim }
       }
+      { \group_align_safe_end: } 
   }
 %    \end{macrocode}
 %
@@ -5515,10 +5460,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_test_if_empty_for_S: 
   {
     \peek_meaning:NT \__siunitx_table_skip:n
-      {
-        \tl_gput_right:Nn \g_@@_cell_after_hook_tl 
-          { \box_set_wd:Nn \l_@@_cell_box \c_zero_dim }
-      }
+      { \bool_gset_true:N \g_@@_empty_cell_bool }
   }
 %    \end{macrocode}
 % 
@@ -5628,7 +5570,7 @@ version 2005/12/01 or later.
       {
         > {
             \dim_set:Nn \l_@@_col_width_dim { #2 }
-            \@@_cell_begin:w
+            \@@_cell_begin:
             \tl_set_eq:NN \l_@@_hpos_cell_tl \c_@@_c_tl
           }
         c
@@ -5662,7 +5604,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
             \dim_set:Nn \l_@@_col_width_dim { #4 }
             \hbox_set:Nw \l_@@_cell_box
-            \@@_cell_begin:w
+            \@@_cell_begin:
             \cs_set_nopar:Npn \l_@@_hpos_cell_tl { #3 }
           }
         c
@@ -5716,7 +5658,7 @@ version 2005/12/01 or later.
     \tl_gput_right:Nn \g_@@_array_preamble_tl 
       {
         > { 
-            \@@_cell_begin:w 
+            \@@_cell_begin: 
             \keys_set:nn { siunitx } { #1 } 
             \siunitx_cell_begin:w 
           }
@@ -6024,7 +5966,7 @@ version 2005/12/01 or later.
         \tl_gput_right:Nn \g_@@_array_preamble_tl 
           { 
             > { 
-                \@@_cell_begin:w 
+                \@@_cell_begin: 
                 \bool_set_true:N \l_@@_X_bool 
 %    \end{macrocode}
 % You encounter a problem on 2023-03-04: for an environment with |X| columns,
@@ -6253,7 +6195,7 @@ version 2005/12/01 or later.
   { 
     \tl_gput_right:Nn \g_@@_preamble_tl 
       { 
-        > { \@@_cell_begin:w \cs_set_nopar:Npn \l_@@_hpos_cell_tl { #1 } } 
+        > { \@@_cell_begin: \cs_set_nopar:Npn \l_@@_hpos_cell_tl { #1 } } 
         #1 
         < \@@_cell_end:
       }  
@@ -6294,7 +6236,7 @@ version 2005/12/01 or later.
     \tl_gput_right:Nn \g_@@_preamble_tl
       {
         > { 
-            \@@_cell_begin:w 
+            \@@_cell_begin: 
             \begin { minipage } [ #1 ] { \dim_eval:n { #3 } }
             \mode_leave_vertical: 
             \arraybackslash
@@ -6324,7 +6266,7 @@ version 2005/12/01 or later.
         > {
             \dim_set:Nn \l_@@_col_width_dim { #4 }
             \hbox_set:Nw \l_@@_cell_box
-            \@@_cell_begin:w
+            \@@_cell_begin:
             \cs_set_nopar:Npn \l_@@_hpos_cell_tl { #3 }
           }
         c

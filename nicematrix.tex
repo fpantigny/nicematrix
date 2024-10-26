@@ -1177,19 +1177,19 @@ keys |first-row| and |last-row|: cf.~p.~\pageref{exterior}).
 \bigskip
 \index{booktabs@\pkg{booktabs} (package)}
 If you use \pkg{booktabs} (which provides |\toprule|, |\midrule|,
-|\bottomrule|, etc.) and if you really want to add vertical rules (which is
+|\bottomrule|, etc.) and if you actually want to add vertical rules (which is
 not in the spirit of \pkg{booktabs}), you should notice that the vertical rules
 drawn by \pkg{nicematrix} are compatible with \pkg{booktabs}.
 
 \medskip
 \begin{Code}[width=10.5cm]
-$\begin{NiceArray}{\emph{|cccc|}} \toprule
+$\begin{NiceArray}{\emph{c|ccc}} \toprule
 a & b & c & d \\ \midrule
 1 & 2 & 3 & 4 \\
 1 & 2 & 3 & 4 \\ \bottomrule
 \end{NiceArray}$
 \end{Code}
-$\begin{NiceArray}{|cccc|}
+$\begin{NiceArray}{c|ccc}
 \toprule
 a & b & c & d \\
 \midrule
@@ -2910,10 +2910,10 @@ The required width of the tabular may be specified with the key
 \Definition{width} (in |{NiceTabular}| or in |\NiceMatrixOptions|). The initial
 value of this parameter is |\linewidth| (and not |\textwidth|).
 
-For sake of similarity with the environment |{tabularx}|, \pkg{nicematrix}
-also provides an environment |{NiceTabularX}| with a syntax similar to the
-syntax of |{tabularx}|, that is to say with a first mandatory argument
-which is the width of the tabular.
+For sake of similarity with the environment |{tabularx}|, \pkg{nicematrix} also
+provides an environment \Definition{\{NiceTabularX\}} with a syntax similar to
+the syntax of |{tabularx}|, that is to say with a first mandatory argument which
+is the width of the tabular.
 
 As with the packages \pkg{tabu}\footnote{The extension \pkg{tabu} is now
 considered as deprecated.} and \pkg{tabularray}, the specifier |X| takes
@@ -5341,10 +5341,10 @@ environment of LaTeX which only put TeX commands before and after the content.}
 \medskip
 \index{light-syntax-expanded}
 
-The key |light-syntax-expanded| has the same behaviour as the key |light-syntax|
-but the body of the environment is expanded (in the TeX sens\footnote{More precisely, it's a
-expansion of type |e| of L3.}) before being splitted in lines (but
-after the extraction of a potential |\CodeAfter|).
+The key \Definition{light-syntax-expanded} has the same behaviour as the key
+|light-syntax| but the body of the environment is expanded (in the TeX
+sens\footnote{More precisely, it's a expansion of type |e| of L3.}) before being
+splitted in lines (but after the extraction of a potential |\CodeAfter|).
 
 
 \subsection{Color of the delimiters}
@@ -5382,9 +5382,9 @@ preamble of the environments with preamble
 \index{NiceArrayWithDelims@\texttt{\{NiceArrayWithDelims\}}}
 
 In fact, the environment |{pNiceArray}| and its variants are based upon a
-more general environment, called |{NiceArrayWithDelims}|. The first two
-mandatory arguments of this environment are the left and right delimiters used
-in the construction of the matrix. 
+more general environment, called \Definition{\{NiceArrayWithDelims\}}. The first
+two mandatory arguments of this environment are the left and right delimiters
+used in the construction of the matrix. 
 
 It's possible to use |{NiceArrayWithDelims}| if we want to use atypical or
 asymetrical delimiters.
@@ -5969,8 +5969,8 @@ syntax |(|$i$\verb+-|+$j$|)|.
 
 
 \bigskip
-The nodes of the form $i$|.5| may be used, for example to cross a row of a
-matrix (if TikZ is loaded).
+The ``decimal'' nodes (like $i$|.4|) may be used, for example to cross a row of
+a matrix (if TikZ is loaded).
 
 \smallskip
 \begin{Code}[width=11cm]
@@ -5979,7 +5979,7 @@ $\begin{pNiceArray}{ccc|c}
 3 & 3 & 1 & 0 \\
 3 & 3 & 1 & 0 
 \CodeAfter 
-  \tikz \draw [red] (\emph{3.5}-|1) -- (\emph{3.5}-|last) ;
+  \tikz \draw [red] (\emph{3.4}-|1) -- (\emph{3.4}-|last) ;
 \end{pNiceArray}$
 \end{Code}
 $\begin{pNiceArray}{ccc|c}
@@ -5987,7 +5987,7 @@ $\begin{pNiceArray}{ccc|c}
 3 & 3 & 1 & 0 \\
 3 & 3 & 1 & 0 
 \CodeAfter 
-  \tikz \draw [red] (3.5-|1) -- (3.5-|last) ;
+  \tikz \draw [red] (3.4-|1) -- (3.4-|last) ;
 \end{pNiceArray}$
 
 \subsection{The nodes corresponding to the command  \textbackslash SubMatrix}
