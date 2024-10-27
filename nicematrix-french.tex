@@ -6460,6 +6460,14 @@ affectés).
 
 \index{Incompatibilités}
 
+
+L'extension \pkg{nicematrix} est incompatible avec certaines classes qui
+redéfinissent les environnements |{tabular}| et |{array}|. C'est en particulier
+le cas de la classe |socg-lipics-v2021|. Néanmoins, dans ce cas-là, il est
+possible de charger la classe avec l'option |notab| qui requiert justement que
+|{tabular}| ne soit pas redéfini.
+
+
 \medskip
 L'extension \pkg{nicematrix} n'est pas compatible avec la classe \cls{ieeeaccess}
 car cette classe n'est pas compatible avec PGF-TikZ. Il existe néanmoins une

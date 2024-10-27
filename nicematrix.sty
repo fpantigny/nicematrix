@@ -8913,8 +8913,10 @@
             \halign
               {
                 \hfil ## \hfil \crcr
-                \__nicematrix_math_toggle: #1 \__nicematrix_math_toggle: \cr
-                \noalign { \skip_vertical:n { 3 pt } \nointerlineskip }
+                \bool_if:NTF \l__nicematrix_tabular_bool
+                  { \begin { tabular } { c } #1 \end { tabular } }
+                  { $ \begin { array } { c } #1 \end { array } $ }
+                \cr
                 \c_math_toggle_token
                 \overbrace
                   {
@@ -8960,8 +8962,10 @@
                   }
                 \c_math_toggle_token
                 \cr
-                \noalign { \skip_vertical:n { 3 pt } \nointerlineskip }
-                \__nicematrix_math_toggle: #1 \__nicematrix_math_toggle: \cr
+                \bool_if:NTF \l__nicematrix_tabular_bool
+                  { \begin { tabular } { c } #1 \end { tabular } }
+                  { $ \begin { array } { c } #1 \end { array } $ }
+                \cr
               }
           }
         \group_end:

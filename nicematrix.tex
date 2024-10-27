@@ -6313,6 +6313,14 @@ environments of \pkg{nicematrix} are not affected).
 
 \index{Incompatibilities}
 
+The extension \pkg{nicematrix} is usually not compatible with the classes and
+packages that redefine the environments |{tabular}| and |{array}|. In
+particular, it's the case of the class |socg-lipics-v2021|. However, in that
+case, it's possible to load the class with the key |notab| which requires that
+the environment |{tabular}| is not redefined.
+
+\medskip
+
 The package \pkg{nicematrix} is not compatible with the class \cls{ieeeaccess}
 because that class is not compatible with PGF/TikZ. However, there is a simple
 workaround by writing:\footnote{See
@@ -6326,7 +6334,7 @@ workaround by writing:\footnote{See
 
 
 
-\bigskip
+\medskip
 % the following requirement is still in force on April 23, 2024
 In order to use \pkg{nicematrix} with the class \cls{aastex631}
 (of the \emph{American Astronomical Society}), you have to
@@ -6338,7 +6346,7 @@ add the following lines in the preamble of your document :
 \BeforeBegin{NiceMatrix}{\let\begin\BeginEnvironment}
 \end{Verbatim}
 
-\bigskip
+\medskip
 In order to use \pkg{nicematrix} with the class \cls{sn-jnl} (of
 \emph{Springer Nature}), \pkg{pgf} must
 be loaded before the |\documentclass| with |\RequirePackage|:
@@ -6351,12 +6359,12 @@ be loaded before the |\documentclass| with |\RequirePackage|:
 However, it seems that this is no longer mandatory with the recent versions of
 \cls{sn-jnl}. 
 
-\bigskip
+\medskip
 The package \pkg{nicematrix} is not fully compatible with the packages and classes
 of LuaTeX-ja: the detection of the empty corners (cf. p.~\pageref{corners})
 may be wrong in some circonstances.
 
-\bigskip
+\medskip
 The package \pkg{nicematrix} is not fully compatible with the package
 \pkg{arydshln} (because this package redefines many internals of \pkg{array})
 and does not support the columns~|V| of \pkg{boldline} (because the letter |V| is

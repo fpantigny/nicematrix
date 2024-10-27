@@ -15994,8 +15994,10 @@ version 2005/12/01 or later.
             \halign
               { 
                 \hfil ## \hfil \crcr 
-                \@@_math_toggle: #1 \@@_math_toggle: \cr 
-                \noalign { \skip_vertical:n { 3 pt } \nointerlineskip } 
+                \bool_if:NTF \l_@@_tabular_bool 
+                  { \begin { tabular } { c } #1 \end { tabular } }
+                  { $ \begin { array } { c } #1 \end { array } $ }
+                \cr 
                 \c_math_toggle_token
                 \overbrace 
                   { 
@@ -16047,8 +16049,10 @@ version 2005/12/01 or later.
                   } 
                 \c_math_toggle_token
                 \cr
-                \noalign { \skip_vertical:n { 3 pt } \nointerlineskip } 
-                \@@_math_toggle: #1 \@@_math_toggle: \cr 
+                \bool_if:NTF \l_@@_tabular_bool 
+                  { \begin { tabular } { c } #1 \end { tabular } }
+                  { $ \begin { array } { c } #1 \end { array } $ }
+                \cr 
               }
           }
         \group_end:
