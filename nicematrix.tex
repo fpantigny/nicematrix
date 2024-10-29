@@ -1080,32 +1080,30 @@ With the ampserand |&|, it's possible to divide horizontally a block in
 sub-blocks of \emph{the same size}.
 
 \medskip
-\begin{Code}[width=85mm]
+\begin{Code}[width=90mm]
 \begin{NiceTabular}{ll}%
    [hvlines,\emph{ampersand-in-blocks}]
-  & les cinq premiers entiers naturels \\
-3 & \Block{}{un&deux&trois} \\
-4 & \Block{}{un&deux&trois& quatre} \\
-5 & \Block{}{un&deux&trois&quatre&cinq} \\
+  & the five first naturels numbers \\ 
+3 & \Block{}{one & two & three} \\
+4 & \Block{}{one& two & three & four} \\
+5 & \Block{}{one & two & three & four & five} \\
 \end{NiceTabular}
 \end{Code}
 %
 \begin{NiceTabular}{ll}%
    [hvlines,ampersand-in-blocks]
-  & les cinq premiers entiers naturels \\ 
-3 & \Block{}{un & deux & trois} \\
-4 & \Block{}{un& deux & trois & quatre} \\
-5 & \Block{}{un & deux & trois & quatre & cinq} \\
+  & the five first naturels numbers \\ 
+3 & \Block{}{one & two & three} \\
+4 & \Block{}{one& two & three & four} \\
+5 & \Block{}{one & two & three & four & five} \\
 \end{NiceTabular}
-
-
 
 
 As we can see, the blocks (which was are in fact mono-cell blocks) are divided
 into sub-blocks of the same size. However, maybe the following code would be prefered.
 
 \medskip
-\begin{Code}[width=85mm]
+\begin{Code}[width=90mm]
 \begin{NiceTabular}{lccccc}%
    [hvlines,\emph{ampersand-in-blocks}]
   & \Block{1-5}{the five first
@@ -1179,7 +1177,8 @@ keys |first-row| and |last-row|: cf.~p.~\pageref{exterior}).
 If you use \pkg{booktabs} (which provides |\toprule|, |\midrule|,
 |\bottomrule|, etc.) and if you actually want to add vertical rules (which is
 not in the spirit of \pkg{booktabs}), you should notice that the vertical rules
-drawn by \pkg{nicematrix} are compatible with \pkg{booktabs}.
+drawn by \pkg{nicematrix} are compatible with \pkg{booktabs}. Remark that
+\pkg{nicematrix} does \emph{not} load \pkg{booktabs}.
 
 \medskip
 \begin{Code}[width=10.5cm]

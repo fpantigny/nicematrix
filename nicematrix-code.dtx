@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{6.29}
-\def\myfiledate{2024/10/24}
+\def\myfileversion{6.29a}
+\def\myfiledate{2024/10/29}
 %
 %
 %<*batchfile>  
@@ -1180,17 +1180,8 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% |\l_@@_code_before_tl| may contain two types of informations:
-% \begin{itemize}
-% \item A |code-before| written in the |aux| file by a previous run. When the
-% |aux| file is read, this |code-before| is stored in
-% |\g_@@_code_before_|\textsl{i}|_tl| (where \textsl{i} is the number of the
-% environment) and, at the beginning of the environment, it will be put in
-% |\l_@@_code_before_tl|. 
-% \item The final user can explicitly add material in |\l_@@_code_before_tl| by
-% using the key |code-before| or the keyword |\CodeBefore| (with the keyword
-% |\Body|). 
-% \end{itemize}
+% The use of |\l_@@_code_before_tl| is not clear. Maybe that with the evolutions
+% of \pkg{nicematrix}, it has become obsolete. We should have a look at that.
 %    \begin{macrocode}
 \tl_new:N \l_@@_code_before_tl
 \bool_new:N \l_@@_code_before_bool
@@ -1215,10 +1206,12 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % The L3 programming layer provides scratch dimensions |\l_tmpa_dim| and
-% |\l_tmpb_dim|. We creates two more in the same spirit.
+% |\l_tmpb_dim|. We creates several more in the same spirit.
 %    \begin{macrocode}
 \dim_new:N \l_@@_tmpc_dim 
 \dim_new:N \l_@@_tmpd_dim
+\dim_new:N \l_@@_tmpe_dim
+\dim_new:N \l_@@_tmpf_dim
 %    \end{macrocode}
 %
 % \bigskip
@@ -3394,7 +3387,7 @@ version 2005/12/01 or later.
                   { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol - NW } 
 %    \end{macrocode}
 % I don't know why the following adjustement is needed when the compilation is
-% done with XeLaTeX or with the classical way |latex|, |divps|, |ps2pdf| (or
+% done with XeLaTeX or with the classical way |latex|, |dvips|, |ps2pdf| (or
 % Adobe Distiller). However, it seems to work.
 %    \begin{macrocode}
                 #1 
@@ -5272,7 +5265,7 @@ version 2005/12/01 or later.
     \use:e 
       { 
         \@@_make_preamble_ii_v:nnnnnnnn
-          { \str_if_eq:nnTF \l_@@_vpos_col_str { p } { t } { b } }
+          { \str_if_eq:eeTF \l_@@_vpos_col_str { p } { t } { b } }
           { \dim_eval:n { #1 } }
           {
 %    \end{macrocode}
@@ -5431,7 +5424,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% The cell always begin with |\ignorespaces| with \pkg{array} and that's why we
+% The cell always begins with |\ignorespaces| with \pkg{array} and that's why we
 % retrieve that token.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_if_empty: \ignorespaces 
@@ -5447,9 +5440,16 @@ version 2005/12/01 or later.
     \peek_meaning:NTF & 
       { 
         \group_align_safe_end: 
-        \bool_gset_true:N \g_@@_empty_cell_bool
         \tl_gput_right:Nn \g_@@_cell_after_hook_tl 
-          { \skip_horizontal:N \l_@@_col_width_dim }
+          { 
+%    \end{macrocode}
+% Be careful: here, we can't merely use 
+% |\bool_gset_true: \g_@@_empty_cell_bool|, 
+% in particular because of the columns of type~|X|. 
+%    \begin{macrocode}
+            \box_set_wd:Nn \l_@@_cell_box \c_zero_dim 
+            \skip_horizontal:N \l_@@_col_width_dim 
+          }
       }
       { \group_align_safe_end: } 
   }
@@ -6357,7 +6357,7 @@ version 2005/12/01 or later.
           \@@_qpoint:n { row - \int_use:N \l_tmpa_int }
         }
         {
-          \str_if_eq:onTF \l_@@_baseline_tl { t }
+          \str_if_eq:eeTF \l_@@_baseline_tl { t }
             { \int_set_eq:NN \l_tmpa_int \c_one_int }
             {  
               \str_if_eq:onTF \l_@@_baseline_tl { b }
@@ -6656,7 +6656,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % We convert a value of |t| to a value of |1|.
 %    \begin{macrocode}
-    \tl_if_eq:NnT \l_@@_baseline_tl { t } 
+    \str_if_eq:eeT \l_@@_baseline_tl { t } 
       { \cs_set_nopar:Npn \l_@@_baseline_tl { 1 } } 
 %    \end{macrocode}
 % Now, we convert the value of |\l_@@_baseline_tl| (which should represent an
@@ -13183,7 +13183,7 @@ version 2005/12/01 or later.
     \bool_set_false:N \l_tmpa_bool
     \bool_if:NT \l_@@_amp_in_blocks_bool
 %    \end{macrocode}
-% |\tl_if_in:nnT| is faster than |\str_if_in:nnT|.
+% |\tl_if_in:nnT| is slightly faster than |\str_if_in:nnT|.
 %    \begin{macrocode}
       { \tl_if_in:nnT { #5 } { & } { \bool_set_true:N \l_tmpa_bool } }
     \bool_case:nF
@@ -14180,6 +14180,7 @@ version 2005/12/01 or later.
       \pgfpicture 
       \pgfrememberpicturepositiononpagetrue
       \pgf@relevantforpicturesizefalse 
+
       \@@_qpoint:n { row - #1 }
       \dim_set_eq:NN \l_@@_tmpc_dim \pgf@y
       \@@_qpoint:n { row - \int_eval:n { #3 + 1 } }
@@ -14224,20 +14225,17 @@ version 2005/12/01 or later.
             {
               \pgfpoint
                 {
+                  \l_tmpa_dim + ##1 \l_tmpb_dim -
                   \str_case:on \l_@@_hpos_block_str
                     {
-                      l { \l_tmpa_dim + ##1 \l_tmpb_dim - \l_tmpb_dim + \col@sep}
-                      c { \l_tmpa_dim + ##1 \l_tmpb_dim - 0.5 \l_tmpb_dim }
-                      r { \l_tmpa_dim + ##1 \l_tmpb_dim - \col@sep }
+                      l { \l_tmpb_dim + \col@sep}
+                      c { 0.5 \l_tmpb_dim }
+                      r { \col@sep }
                     }
                 }
                 { \l_@@_tmpc_dim }
             }      
-          \pgfset 
-            { 
-              inner~xsep = \c_zero_dim ,
-              inner~ysep = \c_zero_dim 
-            } 
+          \pgfset { inner~sep = \c_zero_dim } 
           \pgfnode 
             { rectangle }
             {
@@ -14385,11 +14383,7 @@ version 2005/12/01 or later.
                   }
                   { \l_tmpa_tl }
               }
-            \pgfset 
-              { 
-                inner~xsep = \c_zero_dim ,
-                inner~ysep = \c_zero_dim 
-              } 
+            \pgfset { inner~sep = \c_zero_dim } 
             \pgfnode 
               { rectangle } 
               { \l_tmpa_tl }
@@ -14456,6 +14450,24 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% 
+% \bigskip
+% For the command |\cellcolor| used within a sub-cell of a |\Block| (when the
+% character |&| is used inside the cell).
+%    \begin{macrocode}
+\cs_set_protected:Npn \@@_fill:nnnnn #1 #2 #3 #4 #5
+  {
+    \pgfpicture
+    \pgfrememberpicturepositiononpagetrue
+    \pgf@relevantforpicturesizefalse
+    \pgfpathrectanglecorners 
+      { \pgfpoint { #2 } { #3 } } 
+      { \pgfpoint { #4 } { #5 } } 
+    \pgfsetfillcolor { #1 }
+    \pgfusepath { fill }
+    \endpgfpicture
+  }
+%    \end{macrocode}
 % 
 %
 % \bigskip
@@ -16168,76 +16180,6 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % \section{The command \textbackslash ShowCellNames}
-%
-%    \begin{macrocode}
-\NewDocumentCommand \@@_ShowCellNames_CodeBefore { }
- {
-   \dim_gzero_new:N \g_@@_tmpc_dim
-   \dim_gzero_new:N \g_@@_tmpd_dim
-   \dim_gzero_new:N \g_@@_tmpe_dim
-   \int_step_inline:nn \c@iRow
-     {
-       \begin { pgfpicture }
-       \@@_qpoint:n { row - ##1 } 
-       \dim_set_eq:NN \l_tmpa_dim \pgf@y
-       \@@_qpoint:n { row - \int_eval:n { ##1 + 1 } } 
-       \dim_gset:Nn \g_tmpa_dim { ( \l_tmpa_dim + \pgf@y ) / 2 }
-       \dim_gset:Nn \g_tmpb_dim { \l_tmpa_dim - \pgf@y }
-       \bool_if:NTF \l_@@_in_code_after_bool
-       \end { pgfpicture }
-       \int_step_inline:nn \c@jCol
-         {
-           \hbox_set:Nn \l_tmpa_box 
-             { \normalfont \Large \color { red ! 50 } ##1 - ####1 } 
-           \begin { pgfpicture }
-           \@@_qpoint:n { col - ####1 } 
-           \dim_gset_eq:NN \g_@@_tmpc_dim \pgf@x
-           \@@_qpoint:n { col - \int_eval:n { ####1 + 1 } } 
-           \dim_gset:Nn \g_@@_tmpd_dim { \pgf@x - \g_@@_tmpc_dim }
-           \dim_gset_eq:NN \g_@@_tmpe_dim \pgf@x
-           \endpgfpicture
-           \end { pgfpicture } 
-           \fp_set:Nn \l_tmpa_fp 
-             { 
-               \fp_min:nn
-                 {
-                   \fp_min:nn 
-                     { 
-                       \dim_ratio:nn 
-                         { \g_@@_tmpd_dim } 
-                         { \box_wd:N \l_tmpa_box } 
-                     } 
-                     { 
-                       \dim_ratio:nn 
-                         { \g_tmpb_dim } 
-                         { \box_ht_plus_dp:N \l_tmpa_box } 
-                     } 
-                 }
-                 { 1.0 }
-             }
-           \box_scale:Nnn \l_tmpa_box 
-             { \fp_use:N \l_tmpa_fp } 
-             { \fp_use:N \l_tmpa_fp }
-           \pgfpicture
-           \pgfrememberpicturepositiononpagetrue
-           \pgf@relevantforpicturesizefalse
-           \pgftransformshift 
-             { 
-               \pgfpoint 
-                 { 0.5 * ( \g_@@_tmpc_dim + \g_@@_tmpe_dim ) } 
-                 { \dim_use:N \g_tmpa_dim } 
-             } 
-           \pgfnode
-             { rectangle }
-             { center }
-             { \box_use:N \l_tmpa_box }
-             { }
-             { }
-           \endpgfpicture
-         }
-     }
- }
-%    \end{macrocode}
 %
 %    \begin{macrocode}
 \NewDocumentCommand \@@_ShowCellNames { }
