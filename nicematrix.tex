@@ -1,4 +1,5 @@
 % -*- coding: utf-8 ; -*- This file should be compiled with LuaLaTeX only
+
 \documentclass[dvipsnames]{article}% dvipsnames is for xcolor (loaded by TikZ,
                                    % loaded by nicematrix) 
 
@@ -699,9 +700,13 @@ formatted as a paragraph of that width.
 
 \item The specification of the horizontal position provided by the type of
 column (|c|, |r| or |l|) is taken into account for the blocks. For a block in a
-column ot type |p{...}| (without option for |p|) , the alignment |c| will be
-used for the block. Of course, the |\Block| may have its own specification of
-alignment: cf.~\ref{horizontal-block} p.~\pageref{horizontal-block}.
+column ot type |p{...}|, |b{...}|, |m{...}|, |V{...}| ou |X|, the alignment |c|
+will be used by default. However, those types of columns may have an optional
+argument for the horizontal alignment (eg: |p[l]{...}|) and, in that case, that
+type of alignement is passed to the block.
+
+Of course, the |\Block| may also have its own specification of alignment:
+cf.~\ref{horizontal-block} p.~\pageref{horizontal-block}.
 
 \item The specifications of font specified for the column by a construction
 |>{...}| in the preamble of the array are taken into account for the

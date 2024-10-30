@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{6.29a}
-\def\myfiledate{2024/10/29}
+\def\myfileversion{6.29ax2}
+\def\myfiledate{2024/10/30}
 %
 %
 %<*batchfile>  
@@ -325,9 +325,6 @@ version 2005/12/01 or later.
 \tl_const:Nn \c_@@_r_tl { r }
 \tl_const:Nn \c_@@_all_tl { all }
 \tl_const:Nn \c_@@_dot_tl { . }
-\tl_const:Nn \c_@@_default_tl { default }
-\tl_const:Nn \c_@@_star_tl { * }
-\str_const:Nn \c_@@_star_str { * }
 \str_const:Nn \c_@@_r_str { r }
 \str_const:Nn \c_@@_c_str { c }
 \str_const:Nn \c_@@_l_str { l }
@@ -4825,7 +4822,7 @@ version 2005/12/01 or later.
 % This is the end of the environment |{NiceArrayWithDelims}|.
 %
 % \vspace{1cm}
-% \section{We construct the preamble of the array}
+% \section{Construction of the preamble of the array}
 %
 % \bigskip 
 % The final user provides a preamble, but we must convert that preamble into a
@@ -4869,7 +4866,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \int_zero:N \l_tmpa_int
     \tl_gclear:N \g_@@_array_preamble_tl 
-    \tl_if_eq:NNTF \l_@@_vlines_clist \c_@@_all_tl 
+    \str_if_eq:eeTF \l_@@_vlines_clist { all }
       { 
         \tl_gset:Nn \g_@@_array_preamble_tl 
           { ! { \skip_horizontal:N \arrayrulewidth } }
@@ -5040,7 +5037,7 @@ version 2005/12/01 or later.
 % \bigskip
 % For |c|, |l| and |r|
 %    \begin{macrocode}
-\cs_new:Npn \@@_c #1
+\cs_new_protected:Npn \@@_c #1
   { 
     \tl_gput_right:No \g_@@_array_preamble_tl \g_@@_pre_cell_tl 
     \tl_gclear:N \g_@@_pre_cell_tl
@@ -5055,7 +5052,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %    \begin{macrocode}
-\cs_new:Npn \@@_l #1
+\cs_new_protected:Npn \@@_l #1
   { 
     \tl_gput_right:No \g_@@_array_preamble_tl \g_@@_pre_cell_tl 
     \tl_gclear:N \g_@@_pre_cell_tl
@@ -5070,7 +5067,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %    \begin{macrocode}
-\cs_new:Npn \@@_r #1
+\cs_new_protected:Npn \@@_r #1
   { 
     \tl_gput_right:No \g_@@_array_preamble_tl \g_@@_pre_cell_tl 
     \tl_gclear:N \g_@@_pre_cell_tl
@@ -5088,7 +5085,7 @@ version 2005/12/01 or later.
 % \medskip
 % For |!| and |@|
 %    \begin{macrocode}
-\cs_new:cpn { @@ _ \token_to_str:N ! } #1 #2
+\cs_new_protected:cpn { @@ _ \token_to_str:N ! } #1 #2
   {  
     \tl_gput_right:Nn \g_@@_array_preamble_tl { #1 { #2 } }
     \@@_rec_preamble:n
@@ -5100,7 +5097,7 @@ version 2005/12/01 or later.
 % \medskip
 % For \verb+|+
 %    \begin{macrocode}
-\cs_new:cpn { @@ _ | } #1
+\cs_new_protected:cpn { @@ _ | } #1
   { 
 %    \end{macrocode}
 % |\l_tmpa_int| is the number of successive occurrences of \verb+|+
@@ -5164,7 +5161,7 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 %    \begin{macrocode}
-\cs_new:cpn { @@ _  > } #1 #2
+\cs_new_protected:cpn { @@ _  > } #1 #2
   { 
     \tl_gput_right:Nn \g_@@_pre_cell_tl { > { #2 } } 
     \@@_rec_preamble:n 
@@ -5204,7 +5201,7 @@ version 2005/12/01 or later.
 % \medskip
 % For |p| but also |b| and |m|. 
 %    \begin{macrocode}
-\cs_new:Npn \@@_p #1
+\cs_new_protected:Npn \@@_p #1
   { 
     \str_set:Nn \l_@@_vpos_col_str { #1 }
 %    \end{macrocode}
@@ -5274,7 +5271,7 @@ version 2005/12/01 or later.
 % itself, you will have, in each cell, the parameter |\l_@@_hpos_cell_tl| which
 % will provide the horizontal alignment of the column to which belongs the cell.
 %    \begin{macrocode}
-            \str_if_eq:nnTF \l_@@_hpos_col_str { j }
+            \str_if_eq:eeTF \l_@@_hpos_col_str { j }
               { \tl_clear:N \exp_not:N \l_@@_hpos_cell_tl } 
               { 
 %    \end{macrocode}
@@ -5302,9 +5299,9 @@ version 2005/12/01 or later.
               }
             #3
           }
-          { \str_if_eq:nnT \l_@@_vpos_col_str { m } \@@_center_cell_box: }
-          { \str_if_eq:nnT \l_@@_hpos_col_str { si } \siunitx_cell_begin:w }
-          { \str_if_eq:nnT \l_@@_hpos_col_str { si } \siunitx_cell_end: }
+          { \str_if_eq:eeT \l_@@_vpos_col_str { m } \@@_center_cell_box: }
+          { \str_if_eq:eeT \l_@@_hpos_col_str { si } \siunitx_cell_begin:w }
+          { \str_if_eq:eeT \l_@@_hpos_col_str { si } \siunitx_cell_end: }
           { #2 }
           {         
             \str_case:onF \l_@@_hpos_col_str 
@@ -5508,7 +5505,7 @@ version 2005/12/01 or later.
 % \medskip
 % For |V| (similar to the |V| of \pkg{varwidth}).
 %    \begin{macrocode}
-\cs_new:Npn \@@_V #1 #2
+\cs_new_protected:Npn \@@_V #1 #2
   {
     \str_if_eq:nnTF { #1 } { [ } 
       { \@@_make_preamble_V_i:w [ }
@@ -5533,8 +5530,8 @@ version 2005/12/01 or later.
 % \medskip
 % For |w| and |W|
 %    \begin{macrocode}
-\cs_new:Npn \@@_w { \@@_make_preamble_w:nnnn { } } 
-\cs_new:Npn \@@_W { \@@_make_preamble_w:nnnn { \@@_special_W: } } 
+\cs_new_protected:Npn \@@_w { \@@_make_preamble_w:nnnn { } } 
+\cs_new_protected:Npn \@@_W { \@@_make_preamble_w:nnnn { \@@_special_W: } } 
 %    \end{macrocode}
 %
 % |#1| is a special argument: empty for |w| and equal to |\@@_special_W:| for |W|;
@@ -5636,9 +5633,9 @@ version 2005/12/01 or later.
 % \medskip
 % For |S| (of \pkg{siunitx}). 
 %    \begin{macrocode}
-\cs_new:Npn \@@_S #1 #2
+\cs_new_protected:Npn \@@_S #1 #2
   {
-    \str_if_eq:nnTF { #1 } { [ }
+    \str_if_eq:nnTF { #2 } { [ } 
       { \@@_make_preamble_S:w [ }
       { \@@_make_preamble_S:w [ ] { #2 } }
   }
@@ -5677,7 +5674,7 @@ version 2005/12/01 or later.
 % \medskip
 % For |(|, |[| and |\{|.
 %    \begin{macrocode}
-\cs_new:cpn { @@ _ \token_to_str:N ( } #1 #2
+\cs_new_protected:cpn { @@ _ \token_to_str:N ( } #1 #2
   {
     \bool_if:NT \l_@@_small_bool { \@@_fatal:n { Delimiter~with~small } }
 %    \end{macrocode}
@@ -5723,7 +5720,8 @@ version 2005/12/01 or later.
 %
 % In fact, if would be possible to define |\left| and |\right| as no-op.
 %    \begin{macrocode}
-\cs_new:cpn { @@ _ \token_to_str:N \left } #1 { \use:c { @@ _ \token_to_str:N ( } }
+\cs_new_protected:cpn { @@ _ \token_to_str:N \left } #1 
+  { \use:c { @@ _ \token_to_str:N ( } }
 %    \end{macrocode}
 % 
 % \bigskip
@@ -5734,7 +5732,7 @@ version 2005/12/01 or later.
 % considered as the right delimiter of the environment if the environment is
 % |{NiceArray}|). 
 %    \begin{macrocode}
-\cs_new:cpn { @@ _ \token_to_str:N ) } #1 #2 
+\cs_new_protected:cpn { @@ _ \token_to_str:N ) } #1 #2 
   {
     \bool_if:NT \l_@@_small_bool { \@@_fatal:n { Delimiter~with~small } }
     \tl_if_in:nnTF { ) ] \} } { #2 }
@@ -5794,7 +5792,7 @@ version 2005/12/01 or later.
 %
 % \medskip
 %    \begin{macrocode}
-\cs_new:cpn { @@ _ \token_to_str:N \right } #1 
+\cs_new_protected:cpn { @@ _ \token_to_str:N \right } #1 
   { \use:c { @@ _ \token_to_str:N ) } } 
 %    \end{macrocode}
 %
@@ -5813,7 +5811,7 @@ version 2005/12/01 or later.
         \str_if_eq:nnTF { #1 } { @ }
           \@@_rec_preamble_after_col_ii:n
           {
-            \str_if_eq:nnTF \l_@@_vlines_clist { all }
+            \str_if_eq:eeTF \l_@@_vlines_clist { all }
               { 
                 \tl_gput_right:Nn \g_@@_array_preamble_tl 
                   { ! { \skip_horizontal:N \arrayrulewidth } }
@@ -5846,7 +5844,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_rec_preamble_after_col_ii:n #1
   {
-    \tl_if_eq:NNTF \l_@@_vlines_clist \c_@@_all_tl
+    \str_if_eq:eeTF \l_@@_vlines_clist { all }
       { 
         \tl_gput_right:Nn \g_@@_array_preamble_tl 
           { @ { #1 \skip_horizontal:N \arrayrulewidth } }
@@ -5865,7 +5863,7 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 %    \begin{macrocode}
-\cs_new:cpn { @@ _ * } #1 #2 #3
+\cs_new_protected:cpn { @@ _ * } #1 #2 #3
   { 
     \tl_clear:N \l_tmpa_tl
     \int_step_inline:nn { #2 } { \tl_put_right:Nn \l_tmpa_tl { #3 } } 
@@ -5877,7 +5875,7 @@ version 2005/12/01 or later.
 % The token |\NC@find| is at the head of the definition of the columns type done
 % by |\newcolumntype|. We wan't that token to be no-op here.
 %    \begin{macrocode}
-\cs_new:cpn { @@ _ \token_to_str:N \NC@find } #1 { \@@_rec_preamble:n }
+\cs_new_protected:cpn { @@ _ \token_to_str:N \NC@find } #1 { \@@_rec_preamble:n }
 %    \end{macrocode}
 % 
 % \bigskip
@@ -5885,7 +5883,7 @@ version 2005/12/01 or later.
 % (between square brackets). That's why we test whether there is a |[| after the
 % letter |X|.
 %    \begin{macrocode}
-\cs_new:Npn \@@_X #1 #2
+\cs_new_protected:Npn \@@_X #1 #2
   {
     \str_if_eq:nnTF { #2 } { [ }
       { \@@_make_preamble_X:w [ }
@@ -10868,13 +10866,13 @@ version 2005/12/01 or later.
         \tl_if_empty:NTF \l_tmpa_tl 
           { \cs_set_nopar:Npn \l_tmpa_tl { 1 } }  
           {
-            \tl_if_eq:NNT \l_tmpa_tl \c_@@_star_tl 
+            \str_if_eq:eeT \l_tmpa_tl { * }
               { \cs_set_nopar:Npn \l_tmpa_tl { 1 } }  
           }
         \tl_if_empty:NTF \l_tmpb_tl 
           { \tl_set:No \l_tmpb_tl { \int_use:N \c@jCol } }
           { 
-            \tl_if_eq:NNT \l_tmpb_tl \c_@@_star_tl 
+            \str_if_eq:eeT \l_tmpb_tl { * }
               { \tl_set:No \l_tmpb_tl { \int_use:N \c@jCol } }
           }
         \int_compare:nNnT \l_tmpb_tl > \g_@@_col_total_int
@@ -10901,13 +10899,13 @@ version 2005/12/01 or later.
             \tl_if_empty:NTF \l_tmpa_tl 
               { \cs_set_nopar:Npn \l_tmpa_tl { 1 } }  
               {
-                \tl_if_eq:NNT \l_tmpa_tl \c_@@_star_tl
+                \str_if_eq:eeT \l_tmpa_tl { * }
                   { \cs_set_nopar:Npn \l_tmpa_tl { 1 } }  
               }
             \tl_if_empty:NTF \l_tmpb_tl
               { \tl_set:No \l_tmpb_tl { \int_use:N \c@iRow } }
               {
-                \tl_if_eq:NNT \l_tmpb_tl \c_@@_star_tl
+                \str_if_eq:eeT \l_tmpb_tl { * }
                   { \tl_set:No \l_tmpb_tl { \int_use:N \c@iRow } }
               }
             \int_compare:nNnT \l_tmpb_tl > \g_@@_row_total_int
@@ -11638,7 +11636,7 @@ version 2005/12/01 or later.
           { \int_eval:n { \c@jCol + 1 } } 
       }
       { 
-        \tl_if_eq:NNF \l_@@_vlines_clist \c_@@_all_tl 
+        \str_if_eq:eeF \l_@@_vlines_clist { all }
           { \clist_if_in:NnT \l_@@_vlines_clist { ##1 } }
           { \@@_vline:n { position = ##1 , total-width = \arrayrulewidth } }
       }
@@ -11963,7 +11961,7 @@ version 2005/12/01 or later.
           { \int_eval:n { \c@iRow + 1 } } 
       }
       { 
-        \tl_if_eq:NNF \l_@@_hlines_clist \c_@@_all_tl 
+        \str_if_eq:eeF \l_@@_hlines_clist { all }
           { \clist_if_in:NnT \l_@@_hlines_clist { ##1 } }
           { \@@_hline:n { position = ##1 , total-width = \arrayrulewidth } }
       }
@@ -14192,7 +14190,7 @@ version 2005/12/01 or later.
         { ( \pgf@x - \l_tmpa_dim ) / \int_use:N \l_@@_split_int }
       \bool_lazy_or:nnT 
         \l_@@_vlines_block_bool 
-        { \tl_if_eq_p:NN \l_@@_vlines_clist \c_@@_all_tl }
+        { \str_if_eq_p:ee \l_@@_vlines_clist { all } }
         {
           \int_step_inline:nn { \l_@@_split_int - 1 } 
             { 
@@ -14491,7 +14489,7 @@ version 2005/12/01 or later.
 % If the user has used the key |color| of the command |\Block| without value,
 % the color fixed by |\arrayrulecolor| is used.
 %    \begin{macrocode}
-        \tl_if_eq:NNTF \l_@@_draw_tl \c_@@_default_tl 
+        \tl_if_eq:NnTF \l_@@_draw_tl { default }
           { \CT@arc@ } 
           { \@@_color:o \l_@@_draw_tl }
       }
@@ -15561,7 +15559,7 @@ version 2005/12/01 or later.
 % The last argument of |\int_step_inline:nn| or |\clist_map_inline:Nn| is given
 % by curryfication.
 %    \begin{macrocode}
-    \tl_if_eq:NNTF \l_@@_submatrix_vlines_clist \c_@@_all_tl
+    \str_if_eq:eeTF \l_@@_submatrix_vlines_clist { all }
       { \int_step_inline:nn { \l_@@_last_j_tl - \l_@@_first_j_tl } }
       { \clist_map_inline:Nn \l_@@_submatrix_vlines_clist }
       {
@@ -15586,7 +15584,7 @@ version 2005/12/01 or later.
 % The last argument of |\int_step_inline:nn| or |\clist_map_inline:Nn| is given
 % by curryfication.
 %    \begin{macrocode}
-    \tl_if_eq:NNTF \l_@@_submatrix_hlines_clist \c_@@_all_tl
+    \str_if_eq:eeTF \l_@@_submatrix_hlines_clist { all }
       { \int_step_inline:nn { \l_@@_last_i_tl - \l_@@_first_i_tl } }
       { \clist_map_inline:Nn \l_@@_submatrix_hlines_clist }
       {

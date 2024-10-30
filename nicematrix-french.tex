@@ -730,8 +730,12 @@ paragraphe de cette largeur.
 
 \item La spécification d'alignement horizontal donnée par le type de colonne
 (|c|, |r| ou |l|) est prise en compte pour le bloc. Pour un bloc dans une
-colonne de type |p{...}| (sans option à |p|), c'est un alignement |c| qui est
-retenu. Le bloc peut bien sûr avoir sa propre spécification d'alignement
+colonne de type |p{...}|, |b{...}|, |m{...}|, |V{...}| ou |X|, c'est un
+alignement |c| qui est retenu par défaut. Néanmoins, ces types de colonnes
+peuvent avoir une option d'alignement (par ex. |p[l]{...}|), et dans ce cas-là,
+c'est cette option d'alignement qui est transmise au bloc.
+
+Notons enfin que le bloc peut avoir sa propre spécification d'alignement
 horizontal : cf.~\ref{horizontal-bloc} p.~\pageref{horizontal-bloc}.
 
 \item Les spécifications de fontes imposées à une colonne via la construction
