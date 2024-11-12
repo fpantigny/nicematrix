@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{6.29ax2}
-\def\myfiledate{2024/10/30}
+\def\myfileversion{6.29b}
+\def\myfiledate{2024/11/12}
 %
 %
 %<*batchfile>  
@@ -1743,7 +1743,7 @@ version 2005/12/01 or later.
 % point and we have to take into account that point.
 %    \begin{macrocode}
 \seq_new:N \l_@@_notes_labels_seq
-\newcounter{nicematrix_draft}
+\newcounter { nicematrix_draft }
 \cs_new_protected:Npn \@@_notes_format:n #1
   { 
     \setcounter { nicematrix_draft } { #1 }
@@ -2223,8 +2223,8 @@ version 2005/12/01 or later.
 % \bigskip
 % The string |\l_@@_baseline_tl| may contain one of the three values |t|,
 % |c| or |b| as in the option of the environment |{array}|. However, it may also
-% contain an integer (which represents the number of the row to which align the
-% array). 
+% contain \textbf{an integer} (which represents the number of the row to which
+% align the array). 
 %    \begin{macrocode}
 \tl_new:N \l_@@_baseline_tl 
 \tl_set:Nn \l_@@_baseline_tl { c }
@@ -3502,7 +3502,8 @@ version 2005/12/01 or later.
 % (version for the Tagging Project), \pkg{array} uses |\ar@ialign| instead of
 % |\ialign|. In that case, of course, you do a saving of |\ar@ialign|.
 %    \begin{macrocode}
-\bool_if:NTF \c_@@_tagging_array_bool
+\bool_if:nTF 
+  { \c_@@_tagging_array_bool && ! \c_@@_revtex_bool }
   { \cs_set_eq:NN \@@_old_ar@ialign: \ar@ialign }
   { \cs_set_eq:NN \@@_old_ialign: \ialign }
 %    \end{macrocode}
@@ -3554,18 +3555,10 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-% 
-%
-% \bigskip
-% The following must \emph{not} be protected because it begins with |\noalign|. 
-%    \begin{macrocode}
-\cs_new:Npn \@@_everycr: { \noalign { \@@_everycr_i: } }
-%    \end{macrocode}
-%
 %
 % \bigskip
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_everycr_i:
+\cs_new_protected:Npn \@@_everycr:
   { 
     \bool_if:NT \c_@@_testphase_table_bool
       {
@@ -3642,22 +3635,20 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 % 
+% 
 % \bigskip
+% The following code has been simplified in the version 6.29a. 
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_redefine_everycr: 
-  { \everycr { \@@_everycr: } } 
 \hook_gput_code:nnn { begindocument } { . }
   {
-    \IfPackageLoadedT { colortbl }
+    \IfPackageLoadedTF { colortbl }
       {
         \cs_set_protected:Npn \@@_redefine_everycr:
-          {
-            \CT@everycr 
-              { 
-                \noalign { \cs_gset_eq:NN \CT@row@color \prg_do_nothing: }
-                \@@_everycr:
-              }
-          }
+          { \CT@everycr { \noalign { \@@_everycr: } } }
+      }
+      {
+        \cs_new_protected:Npn \@@_redefine_everycr: 
+          { \everycr { \noalign { \@@_everycr: } } } 
       }
   }
 %    \end{macrocode}
@@ -3758,12 +3749,13 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% The environment |{array}| uses internally the command |\ialign|. We change the
-% definition of |\ialign| for several reasons. In particular, |\ialign| sets
-% |\everycr| to |{ }| and we \emph{need} to have to change the value of
-% |\everycr|. 
+% The environment |{array}| (since version 2.6) uses internally the command
+% |\ar@ialign|. We change the definition of |\ialign| for several reasons. In
+% particular, |\ialign| sets |\everycr| to |{ }| and we \emph{need} to have to
+% change the value of |\everycr|. 
 %    \begin{macrocode}
-    \bool_if:NTF \c_@@_tagging_array_bool
+    \bool_if:nTF 
+      { \c_@@_tagging_array_bool && ! \c_@@_revtex_bool }
       {
         \cs_set_nopar:Npn \ar@ialign 
           { 
@@ -3784,7 +3776,10 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % The following part will be deleted when we will delete the boolean
 % |\c_@@_tagging_array_bool| (when we consider the version 2.6a of \pkg{array}
-% is required).
+% is required). Morevover, \cls{revtex4-2} modifies \pkg{array} and provides
+% commands which are meant to be the standard version of \pkg{array} but, at the
+% date of november 2024, these commands corresponds to the \emph{old} version of
+% \pkg{array}, that is to say without the |\ar@ialign|.
 %    \begin{macrocode}
       {
         \cs_set_nopar:Npn \ialign 
@@ -4398,18 +4393,18 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_patch_for_revtex:
   {
     \cs_set_eq:NN \@addamp \@addamp@LaTeX
-    \cs_set_eq:NN \insert@column \insert@column@array
-    \cs_set_eq:NN \@classx \@classx@array
-    \cs_set_eq:NN \@xarraycr \@xarraycr@array
-    \cs_set_eq:NN \@arraycr \@arraycr@array
-    \cs_set_eq:NN \@xargarraycr \@xargarraycr@array
-    \cs_set_eq:NN \array \array@array
     \cs_set_eq:NN \@array \@array@array
     \cs_set_eq:NN \@tabular \@tabular@array
-    \cs_set_eq:NN \@mkpream \@mkpream@array
-    \cs_set_eq:NN \endarray \endarray@array
     \cs_set:Npn \@tabarray { \@ifnextchar [ { \@array } { \@array [ c ] } }
+    \cs_set_eq:NN \array \array@array
+    \cs_set_eq:NN \endarray \endarray@array
     \cs_set:Npn \endtabular { \endarray $\egroup} % $
+    \cs_set_eq:NN \@mkpream \@mkpream@array
+    \cs_set_eq:NN \@classx \@classx@array
+    \cs_set_eq:NN \insert@column \insert@column@array
+    \cs_set_eq:NN \@arraycr \@arraycr@array
+    \cs_set_eq:NN \@xarraycr \@xarraycr@array
+    \cs_set_eq:NN \@xargarraycr \@xargarraycr@array
   }
 %    \end{macrocode}
 %
@@ -6773,9 +6768,9 @@ version 2005/12/01 or later.
         \peek_meaning:NTF \end 
           \@@_analyze_end:Nn 
           { 
-            \@@_transform_preamble:
+            \@@_transform_preamble: 
 %    \end{macrocode}
-% Here is the call to |\array| (we have a dedicated macro |\@@_array:| because
+% Here is the call to |\array| (we have a dedicated macro |\@@_array:n| because
 % of compatibility with the classes \cls{revtex4-1} and \cls{revtex4-2}).
 %    \begin{macrocode}
             \@@_array:o \g_@@_array_preamble_tl 
@@ -7219,17 +7214,13 @@ version 2005/12/01 or later.
     > 
       { 
 %    \end{macrocode}
-% At the beginning of the cell, we link |\CodeAfter| to a command which do
+% At the beginning of the cell, we link |\CodeAfter| to a command which 
 % begins with |\\| (whereas the standard version of |\CodeAfter| begins does
 % not).
 %    \begin{macrocode}
         \cs_set_eq:NN \CodeAfter \@@_CodeAfter_i:
         \bool_gset_true:N \g_@@_after_col_zero_bool
         \@@_begin_of_row:
-%    \end{macrocode}
-% The contents of the cell is constructed in the box |\l_@@_cell_box| because we
-% have to compute some dimensions of this box.
-%    \begin{macrocode}
         \hbox_set:Nw \l_@@_cell_box 
         \@@_math_toggle:
         \@@_tuning_key_small:
@@ -7307,10 +7298,6 @@ version 2005/12/01 or later.
         \bool_gset_true:N \g_@@_last_col_found_bool
         \int_gincr:N \c@jCol
         \int_gset_eq:NN \g_@@_col_total_int \c@jCol
-%    \end{macrocode}
-% The contents of the cell is constructed in the box |\l_tmpa_box| because we
-% have to compute some dimensions of this box.
-%    \begin{macrocode}
         \hbox_set:Nw \l_@@_cell_box 
           \@@_math_toggle:
           \@@_tuning_key_small:
@@ -7502,7 +7489,7 @@ version 2005/12/01 or later.
   { 
 %    \end{macrocode}
 % If the dimension |\l_@@_width_dim| is equal to $0$~pt, that means that it has
-% not be set by a previous use of |\NiceMatrixOptions|.
+% not been set by a previous use of |\NiceMatrixOptions|.
 %    \begin{macrocode}
     \dim_compare:nNnT \l_@@_width_dim = \c_zero_dim 
       { \dim_set_eq:NN \l_@@_width_dim \linewidth }

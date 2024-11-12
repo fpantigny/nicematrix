@@ -1107,7 +1107,7 @@ quelques restrictions.
 |\\| dans un bloc pour composer du texte sur plusieurs lignes.  
 
 \item Pour pouvoir utiliser |&|, la clé \Definition{ampersand-in-blocks} (alias:
-|&-in-blocks|) doit avoir été activée\footnote{Si ce n'est pas le cas,
+\Definition{\&-in-blocks}) doit avoir été activée\footnote{Si ce n'est pas le cas,
   l'utilisation de |&| dans l'argument principal de la commande |\Block|
   provoquera une erreur : |! Extra alignment tab has been changed to \cr| de
   TeX.}. Le bloc est alors divisé en sous-blocs comme illustré ci-dessous.
@@ -3583,7 +3583,8 @@ commande |\Hdotsfor| est utilisable même lorsque l'extension
 est chargée (mais vous risquez d'avoir des problèmes si vous utilisez
 |\rowcolor| sur la même rangée que |\Hdotsfor|). Néanmoins, dans le cadre de
 \pkg{nicematrix}, on conseille de ne pas utiliser \pkg{colortbl} mais d'utiliser
-les outils de nicematrix pour le coloriage des tableaux.
+les outils de nicematrix pour le coloriage des tableaux (cf.
+p.~\pageref{color-in-code-before}). 
 
 \medskip
 L'extension \pkg{nicematrix} propose aussi une commande
@@ -3911,13 +3912,13 @@ préambule.\footnote{Cette syntaxe est inspirée de l'extension \pkg{blkarray}.}
 \label{delimiters-in-preamble}%
 
 \smallskip
-\index{left@\texttt{\textbackslash left} : utilisé par \pkg{nicematrix}\newline pour des
-  délimiteurs\newline dans les préambules}
-\index{right@\texttt{\textbackslash right} : utilisé par \pkg{nicematrix}\newline pour des
-  délimiteurs\newline dans les préambules}
-Les délimiteurs ouvrants doivent être précédés du mot-clé |\left| et les
-délimiteurs fermants du mot-clé |\right|. Les mots-clés |\left| et |\right| n'ont
-pas d'obligation à être utilisés par paires.
+\index{left@\texttt{\textbackslash left} : utilisé par \pkg{nicematrix}\newline
+  pour des délimiteurs\newline dans les préambules}
+\index{right@\texttt{\textbackslash right} : utilisé par
+  \pkg{nicematrix}\newline pour des délimiteurs\newline dans les préambules} Les
+délimiteurs ouvrants doivent être précédés du mot-clé \DefinitionCommande{left}
+et les délimiteurs fermants du mot-clé \DefinitionCommande{right}. Les mots-clés
+|\left| et |\right| n'ont pas d'obligation à être utilisés par paires.
 
 \smallskip
 Tous les délimiteurs extensibles de LaTeX peuvent être utilisés. 
@@ -6498,18 +6499,6 @@ fichier les lignes suivantes :
 \end{Code}
 
 \medskip
-Pour pouvoir utiliser \pkg{nicematrix} avec la classe \cls{sn-jnl} (de
-\emph{Springer Nature}), \pkg{pgf} doit être chargé avant le |\documentclass|
-avec |\RequirePackage|:
-
-\begin{Verbatim}
-\RequirePackage{pgf}
-\documentclass{sn-jnl}
-\end{Verbatim}
-Mais il semble que ce ne soit plus nécessaire avec les versions récentes de
-\cls{sn-jnl}. 
-
-\medskip
 L'extension \pkg{nicematrix} n'est pas parfaitement compatible avec les classes
 et extensions de LuaTeX-ja: la détection des coins vides (cf.
 p.~\pageref{corners}) risque d'être erronée dans certaines circonstances.
@@ -7750,6 +7739,8 @@ TeXLive sont disponibles sur le serveur \textsc{svn} de TeXLive :
 \small
 \nolinkurl{www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
+
+\vspace{2cm}
 
 \tableofcontents
 

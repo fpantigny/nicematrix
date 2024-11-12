@@ -1067,16 +1067,17 @@ in the content of a block (in order to format its contents) but there is some re
 \item For |\\|, there is no other restriction. It's possible to use |\\| in a
 block to format a text on several rows.
 
-\item In order to use |&|, the key \Definition{ampersand-in-blocks} (alias: |&-in-blocks|)
-must been activated\footnote{Otherwise, the use of~|&| in the command |\Block|
-  will raise a TeX error :\\ 
-|! Extra alignment tab has been changed to \cr.|}. Then, the block is divided in sub-blocks as illustrated
-below. Be careful: with |ampersand-in-blocks| is in force, the (main) argument
-of the command |\Block| is syntactically divided into sub-blocks by splitting on
-the ampersands~|&|, the ampersands between curly braced are protected but not
-those in an environment.\footnote{It's not possible to write
-  |\Block[ampersand-in-blocks]{}{\begin{array}{cc}1&2\end{array}}|. Of course,
-  it's possible without the key |ampersand-in-blocks|.}
+\item In order to use |&|, the key \Definition{ampersand-in-blocks} (alias:
+\Definition{\&-in-blocks}) must been activated\footnote{Otherwise, the use
+  of~|&| in the command |\Block|
+  will raise a TeX error :\\
+  |! Extra alignment tab has been changed to \cr.|}. Then, the block is divided
+in sub-blocks as illustrated below. Be careful: with |ampersand-in-blocks| is in
+force, the (main) argument of the command |\Block| is syntactically divided into
+sub-blocks by splitting on the ampersands~|&|, the ampersands between curly
+braced are protected but not those in an environment.\footnote{It's not possible
+  to write |\Block[ampersand-in-blocks]{}{\begin{array}{cc}1&2\end{array}}|. Of
+  course, it's possible without the key |ampersand-in-blocks|.}
 \end{itemize}
 
 
@@ -3490,7 +3491,8 @@ recall that when \pkg{xcolor} is loaded with the option |table|, the
 package \pkg{colortbl} is loaded.} is loaded (but you might have problem if
 you use |\rowcolor| on the same row as |\Hdotsfor|). However, when using
 \pkg{nicematrix}, it's recommended to use the coloring tools provided by
-\pkg{nicematrix} instead of \pkg{colortbl}.
+\pkg{nicematrix} instead of \pkg{colortbl} (cf.
+p.~\pageref{color-in-code-before}). 
 
 \bigskip
 The package \pkg{nicematrix} also provides a command
@@ -3812,13 +3814,12 @@ possible to put vertical delimiters directly in the preamble of the
 environment.\footnote{This syntax is inspired by the extension \pkg{blkarray}.}
 
 \smallskip
-\index{left@\texttt{\textbackslash left} : used by \pkg{nicematrix} for\newline 
-  delimiters in the preambles}
-\index{right@\texttt{\textbackslash right} : used by \pkg{nicematrix} for\newline 
-  delimiters in the preambles}
-The opening delimiters should be prefixed by the keyword |\left| and the
-closing delimiters by the keyword |\right|. It's not mandatory to use
-|\left| and |\right| pair-wise.
+\index{left@\texttt{\textbackslash left} : used by \pkg{nicematrix} for\newline
+  delimiters in the preambles} \index{right@\texttt{\textbackslash right} : used
+  by \pkg{nicematrix} for\newline delimiters in the preambles} The opening
+delimiters should be prefixed by the keyword \DefinitionCommand{left} and the
+closing delimiters by the keyword \DefinitionCommand{right}. It's not mandatory
+to use |\left| and |\right| pair-wise.
 
 \smallskip
 All the vertical extensible delimiters of LaTeX are allowed.
@@ -6350,18 +6351,6 @@ add the following lines in the preamble of your document :
 \BeforeBegin{NiceMatrix}{\let\begin\BeginEnvironment}
 \end{Verbatim}
 
-\medskip
-In order to use \pkg{nicematrix} with the class \cls{sn-jnl} (of
-\emph{Springer Nature}), \pkg{pgf} must
-be loaded before the |\documentclass| with |\RequirePackage|:
-
-\begin{Verbatim}
-\RequirePackage{pgf}
-\documentclass{sn-jnl}
-\end{Verbatim}
-
-However, it seems that this is no longer mandatory with the recent versions of
-\cls{sn-jnl}. 
 
 \medskip
 The package \pkg{nicematrix} is not fully compatible with the packages and classes
@@ -6573,7 +6562,7 @@ stars.\footnote{Of course, it's realistic only when there is very few notes in
 the tabular.}
 
 \medskip
-First, we write a command |\stars| similar the well-known commands 
+First, we write a command |\stars| similar to the well-known commands 
 |\arabic|, |\alph|, |\Alph|, etc. which produces a number of stars equal to
 its argument\footnote{In fact: the value of its argument.}.
 \begin{Code}
