@@ -3305,7 +3305,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cell_end_for_w_s:
   { 
-    \@@_math_toggle: 
+    % \@@_math_toggle: 
     \hbox_set_end: 
     \bool_if:NF \g_@@_rotate_bool
       {
@@ -4067,14 +4067,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \skip_horizontal:N \l_@@_left_margin_dim 
     \skip_horizontal:N \l_@@_extra_left_margin_dim 
-%    \end{macrocode}
-%
-% The following code is a workaround to specify to the tagging system that the
-% following code is \emph{fake math} (it raises |\l__math_fakemath_bool| in
-% recent versions of LaTEX).
-%    \begin{macrocode}
-    \m@th
-    \c_math_toggle_token
+    \hbox \bgroup % added 
+     \m@th
+     $ % $
     \bool_if:NTF \l_@@_light_syntax_bool
       { \use:c { @@-light-syntax } }
       { \use:c { @@-normal-syntax } }
@@ -4572,7 +4567,8 @@ version 2005/12/01 or later.
     \bool_if:NTF \l_@@_light_syntax_bool
       { \use:c { end @@-light-syntax } }
       { \use:c { end @@-normal-syntax } }
-    \c_math_toggle_token
+    $ % $
+    \egroup % added
     \skip_horizontal:N \l_@@_right_margin_dim 
     \skip_horizontal:N \l_@@_extra_right_margin_dim 
  
@@ -7236,7 +7232,7 @@ version 2005/12/01 or later.
         \bool_gset_true:N \g_@@_after_col_zero_bool
         \@@_begin_of_row:
         \hbox_set:Nw \l_@@_cell_box 
-        \@@_math_toggle:
+        % \@@_math_toggle:
         \@@_tuning_key_small:
 %    \end{macrocode}
 % We insert |\l_@@_code_for_first_col_tl|... but we don't insert it in the
@@ -7260,7 +7256,7 @@ version 2005/12/01 or later.
     l
     < 
       { 
-        \@@_math_toggle:
+        % \@@_math_toggle:
         \hbox_set_end:
         \bool_if:NT \g_@@_rotate_bool \@@_rotate_cell_box:
         \@@_adjust_size_box:
@@ -7313,7 +7309,7 @@ version 2005/12/01 or later.
         \int_gincr:N \c@jCol
         \int_gset_eq:NN \g_@@_col_total_int \c@jCol
         \hbox_set:Nw \l_@@_cell_box 
-          \@@_math_toggle:
+          % \@@_math_toggle:
           \@@_tuning_key_small:
 %    \end{macrocode}
 % We insert |\l_@@_code_for_last_col_tl|... but we don't insert it in the
@@ -7333,7 +7329,7 @@ version 2005/12/01 or later.
     l
     < 
       { 
-        \@@_math_toggle:
+        % \@@_math_toggle:
         \hbox_set_end:
         \bool_if:NT \g_@@_rotate_bool \@@_rotate_cell_box:
         \@@_adjust_size_box:

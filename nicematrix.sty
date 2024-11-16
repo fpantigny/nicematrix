@@ -35,11 +35,10 @@
   {\IfPackageLoadedTF{#1}{}{#2}}
 \RequirePackage { amsmath }
 \RequirePackage { array }
-\bool_const:Nn \c__nicematrix_tagging_array_bool
+\bool_const:Nn \c__nicematrix_recent_array_bool
   { \IfPackageAtLeastTF { array } { 2024/05/01 } \c_true_bool \c_false_bool }
 \bool_const:Nn \c__nicematrix_testphase_table_bool
-  { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool
-  }
+  { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool }
 \cs_new_protected:Npn \__nicematrix_error:n { \msg_error:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_warning:n { \msg_warning:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_error:nn { \msg_error:nnn { nicematrix } }
@@ -1427,7 +1426,7 @@
     [ \str_if_eq:eeTF \l__nicematrix_baseline_tl c c t ]
   }
 \bool_if:nTF
-  { \c__nicematrix_tagging_array_bool && ! \c__nicematrix_revtex_bool }
+  { \c__nicematrix_recent_array_bool && ! \c__nicematrix_revtex_bool }
   { \cs_set_eq:NN \__nicematrix_old_ar@ialign: \ar@ialign }
   { \cs_set_eq:NN \__nicematrix_old_ialign: \ialign }
 \cs_new_protected:Npn \__nicematrix_create_row_node:
@@ -1465,9 +1464,9 @@
         \endpgfpicture
       }
   }
-\cs_new_protected:Npn \__nicematrix_everycr:
+\cs_new_protected:Npn \__nicematrix_in_everycr:
   {
-    \bool_if:NT \c__nicematrix_testphase_table_bool
+    \bool_if:NT \c__nicematrix_recent_array_bool
       {
         \tbl_if_row_was_started:T { \UseTaggingSocket { tbl / row / end } }
         \tbl_update_cell_data_for_next_row:
@@ -1517,12 +1516,12 @@
   {
     \IfPackageLoadedTF { colortbl }
       {
-        \cs_set_protected:Npn \__nicematrix_redefine_everycr:
-          { \CT@everycr { \noalign { \__nicematrix_everycr: } } }
+        \cs_set_protected:Npn \__nicematrix_everycr:
+          { \CT@everycr { \noalign { \__nicematrix_in_everycr: } } }
       }
       {
-        \cs_new_protected:Npn \__nicematrix_redefine_everycr:
-          { \everycr { \noalign { \__nicematrix_everycr: } } }
+        \cs_new_protected:Npn \__nicematrix_everycr:
+          { \everycr { \noalign { \__nicematrix_in_everycr: } } }
       }
   }
 \hook_gput_code:nnn { begindocument } { . }
@@ -1536,6 +1535,7 @@
   }
 \cs_new_protected:Npn \__nicematrix_some_initialization:
   {
+    \__nicematrix_everycr:
     \dim_gset:Nn \g__nicematrix_dp_row_zero_dim { \box_dp:N \@arstrutbox }
     \dim_gset:Nn \g__nicematrix_ht_row_zero_dim { \box_ht:N \@arstrutbox }
     \dim_gset_eq:NN \g__nicematrix_ht_row_one_dim \g__nicematrix_ht_row_zero_dim
@@ -1566,14 +1566,14 @@
           }
       }
     \bool_if:nTF
-      { \c__nicematrix_tagging_array_bool && ! \c__nicematrix_revtex_bool }
+      { \c__nicematrix_recent_array_bool && ! \c__nicematrix_revtex_bool }
       {
         \cs_set_nopar:Npn \ar@ialign
           {
-            \bool_if:NT \c__nicematrix_testphase_table_bool \tbl_init_cell_data_for_table:
-            \__nicematrix_redefine_everycr:
-            \dim_zero:N \tabskip
+            \bool_if:NT \c__nicematrix_testphase_table_bool
+              \tbl_init_cell_data_for_table:
             \__nicematrix_some_initialization:
+            \dim_zero:N \tabskip
             \cs_set_eq:NN \ar@ialign \__nicematrix_old_ar@ialign:
             \halign
           }
@@ -1581,9 +1581,8 @@
       {
         \cs_set_nopar:Npn \ialign
           {
-            \__nicematrix_redefine_everycr:
-            \dim_zero:N \tabskip
             \__nicematrix_some_initialization:
+            \dim_zero:N \tabskip
             \cs_set_eq:NN \ialign \__nicematrix_old_ialign:
             \halign
           }
@@ -1700,14 +1699,15 @@
       }
       {
         \dim_gset:Nn \l__nicematrix_left_delim_dim
-           { 2 \bool_if:NTF \l__nicematrix_tabular_bool \tabcolsep \arraycolsep }
+          { 2 \bool_if:NTF \l__nicematrix_tabular_bool \tabcolsep \arraycolsep }
         \dim_gset_eq:NN \l__nicematrix_right_delim_dim \l__nicematrix_left_delim_dim
       }
     \hbox_set:Nw \l__nicematrix_the_array_box
-    \bool_if:NT \c__nicematrix_testphase_table_bool
+    \bool_if:NT \c__nicematrix_recent_array_bool
       { \UseTaggingSocket { tbl / hmode / begin } }
     \skip_horizontal:N \l__nicematrix_left_margin_dim
     \skip_horizontal:N \l__nicematrix_extra_left_margin_dim
+    \m@th
     \c_math_toggle_token
     \bool_if:NTF \l__nicematrix_light_syntax_bool
       { \use:c { __nicematrix-light-syntax } }
@@ -2189,11 +2189,14 @@
               }
           }
       }
-    \dim_compare:nNnT \l__nicematrix_tabular_width_dim = \c_zero_dim
-      {
-        \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
-          { > { \__nicematrix_error_too_much_cols: } l }
-      }
+  \dim_compare:nNnT \l__nicematrix_tabular_width_dim = \c_zero_dim
+    {
+      \bool_if:NF \c__nicematrix_testphase_table_bool
+        {
+          \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
+            { > { \__nicematrix_error_too_much_cols: } l }
+        }
+    }
   }
 \cs_new_protected:Npn \__nicematrix_rec_preamble:n #1
   {
@@ -2804,7 +2807,7 @@
     \exp_args:No \@mkpream \g__nicematrix_preamble_tl
     \@addtopreamble \@empty
     \endgroup
-    \bool_if:NT \c__nicematrix_testphase_table_bool
+    \bool_if:NT \c__nicematrix_recent_array_bool
       { \UseTaggingSocket { tbl / colspan } { #1 } }
     \int_compare:nNnT { #1 } > \c_one_int
       {
@@ -3719,7 +3722,7 @@
   }
   {
     \endNiceArray
-    \bool_if:NT \c__nicematrix_testphase_table_bool
+    \bool_if:NT \c__nicematrix_recent_array_bool
       { \UseTaggingSocket { tbl / hmode / end } }
   }
 \cs_new_protected:Npn \__nicematrix_settings_for_tabular:
@@ -3889,7 +3892,7 @@
               }
           }
       }
-    \bool_if:NT \c__nicematrix_tagging_array_bool
+    \bool_if:NT \c__nicematrix_recent_array_bool
       { \cs_set_eq:NN \ar@ialign \__nicematrix_old_ar@ialign: }
     \cs_set_eq:NN \SubMatrix \__nicematrix_SubMatrix
     \cs_set_eq:NN \UnderBrace \__nicematrix_UnderBrace
@@ -7431,7 +7434,7 @@
   }
 \cs_new_protected:Npn \__nicematrix_draw_blocks:
   {
-    \bool_if:NTF \c__nicematrix_tagging_array_bool
+    \bool_if:NTF \c__nicematrix_recent_array_bool
       { \cs_set_eq:NN \ar@ialign \__nicematrix_old_ar@ialign: }
       { \cs_set_eq:NN \ialign \__nicematrix_old_ialign: }
     \seq_map_inline:Nn \g__nicematrix_blocks_seq { \__nicematrix_Block_iv:nnnnnn ##1 }
