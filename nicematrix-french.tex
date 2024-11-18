@@ -205,10 +205,10 @@ pour être utilisées à la compilation suivante. C'est pourquoi l'utilisation d
   automatiquement un nombre de compilations suffisant (en utilisant |latexmk|).}. L'utilisateur ne doit
 pas utiliser la commande |\nofiles| (qui bloque l'écriture du fichier |aux|). 
 
-\medskip
-La plupart des fonctionnalités de \pkg{nicematrix} sont accessibles sans avoir à
-utiliser explicitement \textsc{pgf} ou TikZ (ce dernier n'est d'ailleurs pas
-chargé par défaut).
+% \medskip
+% La plupart des fonctionnalités de \pkg{nicematrix} sont accessibles sans avoir à
+% utiliser explicitement \textsc{pgf} ou TikZ (ce dernier n'est d'ailleurs pas
+% chargé par défaut).
 
 \medskip
 \indexcommand{NiceMatrixOptions}
@@ -216,6 +216,10 @@ Une commande |\NiceMatrixOptions| est fournie pour régler les options (la port�
 des options fixées par cette commande est le groupe TeX courant : elles sont
 semi-globales).
 
+
+\medskip
+\colorbox{yellow!50}{\bfseries Nouveau 7.0}\enskip \pkg{nicematrix} est
+compatible avec le \emph{Tagging Project} : cf. p.~\pageref{Tagging Project}.
 
 \newpage
 
@@ -6300,7 +6304,6 @@ mante & raie & poule
 Première remarque : l'extension \pkg{nicematrix} doit être chargée après
 l'extension \pkg{underscore}. Si elle est chargée après, une erreur sera levée.
 
-
 \subsection{Lignes diagonales}
 
 \label{parallelization}
@@ -6515,6 +6518,55 @@ outils pour définir des filets en tiretés ou de différentes épaisseurs.
 \medskip
 Les colonnes |d| de l'extension \pkg{dcolumn} ne sont pas prises en compte (mais
 on peut utiliser les colonnes |S| de \pkg{siunitx}). 
+
+
+\subsection{Compatibilité avec le Tagging Project de LaTeX}
+
+\index{Tagging Project}
+\label{Tagging Project}
+
+\colorbox{yellow!50}{\bfseries Nouveau 7.0}
+
+Depuis la version 7.0, l'extension \pkg{nicematrix} est compatible avec le
+\emph{Tagging Project} de LaTeX visant à la création automatique de PDF balisés.
+Pour le moment, seuls les tableaux simples sont correctement balisés.
+
+Voici un exemple de code qui va produire un PDF correctement balisé.
+
+
+\bigskip
+\begin{center}
+\small
+\begin{Code}
+\DocumentMetadata{
+  lang        = en,
+  pdfversion  = 2.0,
+  pdfstandard = ua-2,
+  pdfstandard = a-4f, 
+  \emph{testphase   = {phase-III, table, math}}
+}
+\documentclass{article}
+\usepackage{lmodern}
+\usepackage{nicematrix}
+
+\begin{document}
+
+\begin{center}
+\emph{\tagpdfsetup{table/header-rows=1}}
+\begin{NiceTabular}{ccc}[hvlines]
+First name & Last name & Age \\
+Paul       & Imbert    & $66$ \\
+John       & Sarrus    & $23$ \\
+Liz        & Taylor    & $100$ \\
+George     & Adams     & $34$ 
+\end{NiceTabular}
+\end{center}
+
+\end{document}
+\end{Code}
+\end{center}
+
+
 
 
 \section{Exemples}

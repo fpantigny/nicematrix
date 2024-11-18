@@ -202,15 +202,20 @@ compilations}\footnote{If you use Overleaf, Overleaf will do automatically
 a sufficient number of compilations.}. One must not use the command |\nofiles|
 (which prevents the creation of the |aux| file).
 
-\medskip
-Most features of \pkg{nicematrix} may be used without explicit use of
-\textsc{pgf} or TikZ (which, in fact, is not loaded by default).
+% \medskip
+% Most features of \pkg{nicematrix} may be used without explicit use of
+% \textsc{pgf} or TikZ (which, in fact, is not loaded by default).
 
 \medskip
 \indexcommand{NiceMatrixOptions}
 A command |\NiceMatrixOptions| is provided to fix the options (the
 scope of the options fixed by this command is the current TeX group: they are
 semi-global). 
+
+
+\medskip
+\colorbox{yellow!50}{\bfseries New 7.0}\enskip \pkg{nicematrix} is 
+compatible with the \emph{Tagging Project} : cf. p.~\pageref{Tagging Project}.
 
 
 
@@ -6369,6 +6374,54 @@ widths.
 \bigskip
 The columns |d| of \pkg{dcolumn} are not supported (but it's possible to use
 the colums |S| of \pkg{siunitx}).
+
+
+\subsection{Compatibility with the Tagging Project of LaTeX}
+
+\index{Tagging Project}
+\label{Tagging Project}
+
+\colorbox{yellow!50}{\bfseries New 7.0}
+
+Since the version 7.0, the extension \pkg{nicematrix} is compatible with the
+\emph{Tagging Project} of LaTeX (whose aim is to create tagged PDF). At this time, only
+simple standard tabulars are correctly tagged.
+
+Here is a example of code which will produce a generate tagged PDF.
+
+\bigskip
+\begin{center}
+\small
+\begin{Code}
+\DocumentMetadata{
+  lang        = en,
+  pdfversion  = 2.0,
+  pdfstandard = ua-2,
+  pdfstandard = a-4f, 
+  \emph{testphase   = {phase-III, table, math}}
+}
+\documentclass{article}
+\usepackage{lmodern}
+\usepackage{nicematrix}
+
+\begin{document}
+
+\begin{center}
+\emph{\tagpdfsetup{table/header-rows=1}}
+\begin{NiceTabular}{ccc}[hvlines]
+First name & Last name & Age \\
+Paul       & Imbert    & $66$ \\
+John       & Sarrus    & $23$ \\
+Liz        & Taylor    & $100$ \\
+George     & Adams     & $34$ 
+\end{NiceTabular}
+\end{center}
+
+\end{document}
+\end{Code}
+\end{center}
+
+
 
 \section{Examples}
 
