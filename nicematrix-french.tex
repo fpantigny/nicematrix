@@ -2818,7 +2818,9 @@ La clé \Definition{rowcolor} fixe la couleur de fond et la clé \Definition{col
 fixe la couleur du texte.\footnote{La clé |color| utilise la commande |\color| mais
   insère aussi une instruction |\leavevmode| devant. Cela évite un espace
   vertical parasite dans les cases qui correspondent à des colonnes de type
-  |p|, |b|, |m|, |X| et |V| (qui débutent en mode vertical de LaTeX).}
+  |p|, |b|, |m|, et |X| (qui débutent en mode vertical de LaTeX). Pour les
+  colonnes de type |V| (de \pkg{varwith}), cela ne suffit malheureusement pas
+  sauf si on utilise LuaLaTeX avec \pkg{luacolor} (cf. question 460489 sur TeX StackExchange).}
 
 \item \index{bold (clé de \texttt{\textbackslash RowStyle})}
 La clé \Definition{bold} impose des caractères gras aux éléments de la rangée, qu'ils

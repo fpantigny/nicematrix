@@ -2736,8 +2736,10 @@ The key \Definition{rowcolor} sets the color of the background and the key
 \Definition{color} sets the color of the text.\footnote{The key |color| uses the command
 |\color| but also inserts an instruction |\leavevmode| before. This
 instruction prevents an extra vertical space in the cells which belong to
-columns of type |p|, |b|, |m|, |X| and |V| (which start in
-vertical mode of LaTeX).}
+columns of type |p|, |b|, |m| and |X| (which start in
+vertical mode of LaTeX). For the columns |V| (of \pkg{varwidth}), that's not
+enough, except when LuaLaTeX is used with the package \pkg{luacolor} (see
+question 460489 on TeX StackExchange).}
 \item \index{bold (key of \texttt{\textbackslash RowStyle})} The key
 \Definition{bold} enforces bold characters for the cells of the row, both in
 math and text mode. 

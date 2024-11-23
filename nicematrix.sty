@@ -1203,6 +1203,7 @@
 \cs_set_eq:NN \__nicematrix_tuning_key_small: \prg_do_nothing:
 \cs_set_nopar:Npn \__nicematrix_tuning_not_tabular_begin:
   {
+    \m@th % added 2024/11/21
     \c_math_toggle_token
     \__nicematrix_tuning_key_small:
   }
@@ -1250,6 +1251,7 @@
       {
         \hbox_set:Nn \l__nicematrix_cell_box
           {
+            \m@th % add 2024/11/21
             \c_math_toggle_token
             \vcenter { \box_use:N \l__nicematrix_cell_box }
             \c_math_toggle_token
@@ -1976,6 +1978,8 @@
           }
       }
     \hbox_set_end:
+    \bool_if:NT \c__nicematrix_recent_array_bool
+      { \UseTaggingSocket { tbl / hmode / end } }
     \bool_if:NT \l__nicematrix_width_used_bool
       {
         \int_if_zero:nT \g__nicematrix_total_X_weight_int
@@ -2054,6 +2058,7 @@
           { \dim_zero:N \l_tmpb_dim }
         \hbox_set:Nn \l_tmpa_box
           {
+            \m@th % added 2024/11/21
             \c_math_toggle_token
             \__nicematrix_color:o \l__nicematrix_delimiters_color_tl
             \exp_after:wN \left \g__nicematrix_left_delim_tl
@@ -2089,7 +2094,7 @@
     \bool_if:NT \l__nicematrix_preamble_bool
       {
         \int_compare:nNnT \c@jCol < \g__nicematrix_static_num_of_col_int
-          { \__nicematrix_warning_gredirect_none:n  { columns~not~used } }
+          { \__nicematrix_warning_gredirect_none:n { columns~not~used } }
       }
     \__nicematrix_after_array:
     \egroup
@@ -3199,6 +3204,7 @@
     \dim_zero_new:N \l__nicematrix_real_right_delim_dim
     \hbox_set:Nn \l_tmpb_box
       {
+        \m@th % added 2024/11/21
         \c_math_toggle_token
         \left #1
         \vcenter
@@ -3214,6 +3220,7 @@
       { \box_wd:N \l_tmpb_box - \nulldelimiterspace }
     \hbox_set:Nn \l_tmpb_box
       {
+        \m@th % added 2024/11/21
         \c_math_toggle_token
         \left .
         \vbox_to_ht:nn
@@ -3720,11 +3727,7 @@
     \__nicematrix_settings_for_tabular:
     \NiceArray { #2 }
   }
-  {
-    \endNiceArray
-    \bool_if:NT \c__nicematrix_recent_array_bool
-      { \UseTaggingSocket { tbl / hmode / end } }
-  }
+  { \endNiceArray }
 \cs_new_protected:Npn \__nicematrix_settings_for_tabular:
   {
     \bool_set_true:N \l__nicematrix_tabular_bool
@@ -7161,6 +7164,8 @@
                 \end { minipage }
               }
               {
+                \bool_if:NT \c__nicematrix_testphase_table_bool
+                  { \tagpdfsetup { table / tagging = presentation } }
                 \use:e
                   {
                     \exp_not:N \begin { tabular }%

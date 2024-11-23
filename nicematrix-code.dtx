@@ -3082,9 +3082,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_set_nopar:Npn \@@_tuning_not_tabular_begin: 
   { 
+    \m@th % added 2024/11/21
     \c_math_toggle_token 
 %    \end{macrocode}
-% A special value is provided by the following controls sequence when the key
+% A special value is provided by the following control sequence when the key
 % |small| is in force.
 %    \begin{macrocode}
     \@@_tuning_key_small:
@@ -3154,6 +3155,7 @@ version 2005/12/01 or later.
       {
         \hbox_set:Nn \l_@@_cell_box
           { 
+            \m@th % add 2024/11/21
             \c_math_toggle_token 
             \vcenter { \box_use:N \l_@@_cell_box } 
             \c_math_toggle_token 
@@ -4071,7 +4073,7 @@ version 2005/12/01 or later.
 %
 % The following code is a workaround to specify to the tagging system that the
 % following code is \emph{fake math} (it raises |\l__math_fakemath_bool| in
-% recent versions of LaTEX).
+% recent versions of LaTeX).
 %    \begin{macrocode}
     \m@th
     \c_math_toggle_token
@@ -4588,6 +4590,8 @@ version 2005/12/01 or later.
           }
       }
     \hbox_set_end:
+    \bool_if:NT \c_@@_recent_array_bool
+      { \UseTaggingSocket { tbl / hmode / end } }
 %    \end{macrocode}
 % End of the construction of the array (in the box |\l_@@_the_array_box|).
 %
@@ -4681,8 +4685,7 @@ version 2005/12/01 or later.
 % \textbf{Now, we begin the real construction in the output flow of TeX}. First, we take
 % into account a potential ``first column'' (we remind that this ``first
 % column'' has been constructed in an overlapping position and that we have
-% computed its width in |\g_@@_width_first_col_dim|: see
-% p.~\pageref{overlap-left}). 
+% computed its width in |\g_@@_width_first_col_dim|: see p.~\pageref{overlap-left}). 
 %    \begin{macrocode}
     \int_if_zero:nT \l_@@_first_col_int
       { \skip_horizontal:N \g_@@_width_first_col_dim }
@@ -4734,6 +4737,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}        
         \hbox_set:Nn \l_tmpa_box
           {
+            \m@th % added 2024/11/21
             \c_math_toggle_token
             \@@_color:o \l_@@_delimiters_color_tl
             \exp_after:wN \left \g_@@_left_delim_tl
@@ -4790,7 +4794,7 @@ version 2005/12/01 or later.
     \bool_if:NT \l_@@_preamble_bool
       {
         \int_compare:nNnT \c@jCol < \g_@@_static_num_of_col_int 
-          { \@@_warning_gredirect_none:n  { columns~not~used } }
+          { \@@_warning_gredirect_none:n { columns~not~used } }
       }
     \@@_after_array:
 %    \end{macrocode}
@@ -6138,7 +6142,7 @@ version 2005/12/01 or later.
 % \medskip
 % The following lines were in the original definition of |\multicolumn|.
 %    \begin{macrocode}
-    \cs_set_nopar:Npn \@sharp { #3 }
+    \cs_set_nopar:Npn \@sharp { #3 } 
     \@arstrut 
     \@preamble
     \null
@@ -6337,8 +6341,7 @@ version 2005/12/01 or later.
 % 
 % \medskip
 % The command |\@@_put_box_in_flow_i:| is used when the value of
-% |\l_@@_baseline_tl| is different of |c| (which is the initial value and the
-% most used).
+% |\l_@@_baseline_tl| is different of |c| (the initial value).
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_put_box_in_flow_i:
   {
@@ -6723,6 +6726,7 @@ version 2005/12/01 or later.
     \dim_zero_new:N \l_@@_real_right_delim_dim
     \hbox_set:Nn \l_tmpb_box
       {
+        \m@th % added 2024/11/21
         \c_math_toggle_token
         \left #1 
         \vcenter 
@@ -6738,6 +6742,7 @@ version 2005/12/01 or later.
       { \box_wd:N \l_tmpb_box - \nulldelimiterspace }  
     \hbox_set:Nn \l_tmpb_box
       {
+        \m@th % added 2024/11/21
         \c_math_toggle_token
         \left .
         \vbox_to_ht:nn 
@@ -6792,7 +6797,7 @@ version 2005/12/01 or later.
       }
   }
   { 
-    \@@_create_col_nodes: 
+    \@@_create_col_nodes:
     \endarray 
   }
 %    \end{macrocode}
@@ -7536,11 +7541,7 @@ version 2005/12/01 or later.
     \@@_settings_for_tabular:
     \NiceArray { #2 }
   }
-  { 
-    \endNiceArray 
-    \bool_if:NT \c_@@_recent_array_bool
-      { \UseTaggingSocket { tbl / hmode / end } }
-  }
+  { \endNiceArray }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -13371,6 +13372,8 @@ version 2005/12/01 or later.
 % In the other cases, we use a |{tabular}|.
 %    \begin{macrocode}
               { 
+                \bool_if:NT \c_@@_testphase_table_bool
+                  { \tagpdfsetup { table / tagging = presentation } }
                 \use:e 
                   { 
                     \exp_not:N \begin { tabular }%
