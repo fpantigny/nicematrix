@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.0}
-\def\myfiledate{2024/11/18}
+\def\myfileversion{7.0x}
+\def\myfiledate{2024/11/27}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \RequirePackage{l3keys2e}
@@ -1589,7 +1589,11 @@
             \halign
           }
       }
-
+     \bool_if:NT \c__nicematrix_revtex_bool
+       {
+         \IfPackageLoadedT { colortbl }
+           { \cs_set_protected:Npn \CT@setup { } }
+       }
     \cs_set_eq:NN \__nicematrix_old_ldots \ldots
     \cs_set_eq:NN \__nicematrix_old_cdots \cdots
     \cs_set_eq:NN \__nicematrix_old_vdots \vdots
@@ -1705,10 +1709,10 @@
         \dim_gset_eq:NN \l__nicematrix_right_delim_dim \l__nicematrix_left_delim_dim
       }
     \hbox_set:Nw \l__nicematrix_the_array_box
-    \bool_if:NT \c__nicematrix_recent_array_bool
-      { \UseTaggingSocket { tbl / hmode / begin } }
     \skip_horizontal:N \l__nicematrix_left_margin_dim
     \skip_horizontal:N \l__nicematrix_extra_left_margin_dim
+    \bool_if:NT \c__nicematrix_recent_array_bool
+      { \UseTaggingSocket { tbl / hmode / begin } }
     \m@th
     \c_math_toggle_token
     \bool_if:NTF \l__nicematrix_light_syntax_bool
@@ -1986,31 +1990,7 @@
           { \__nicematrix_error_or_warning:n { width~without~X~columns } }
       }
     \int_compare:nNnT \g__nicematrix_total_X_weight_int > \c_zero_int
-      {
-        \tl_gput_right:Ne \g__nicematrix_aux_tl
-          {
-            \bool_set_true:N \l__nicematrix_X_columns_aux_bool
-            \dim_set:Nn \l__nicematrix_X_columns_dim
-              {
-                \dim_compare:nNnTF
-                  {
-                    \dim_abs:n
-                      { \l__nicematrix_width_dim - \box_wd:N \l__nicematrix_the_array_box }
-                  }
-                  <
-                  { 0.001 pt }
-                  { \dim_use:N \l__nicematrix_X_columns_dim }
-                  {
-                    \dim_eval:n
-                      {
-                        ( \l__nicematrix_width_dim - \box_wd:N \l__nicematrix_the_array_box )
-                        / \int_use:N \g__nicematrix_total_X_weight_int
-                        + \l__nicematrix_X_columns_dim
-                      }
-                  }
-              }
-          }
-      }
+      { \__nicematrix_compute_width_X: }
     \int_compare:nNnT \l__nicematrix_last_row_int > { -2 }
       {
         \bool_if:NF \l__nicematrix_last_row_without_value_bool
@@ -2107,6 +2087,32 @@
       }
     \iow_now:Nn \@mainaux { \ExplSyntaxOff }
     \bool_if:NT \g__nicematrix_footnote_bool \endsavenotes
+  }
+\cs_new_protected:Npn \__nicematrix_compute_width_X:
+  {
+    \tl_gput_right:Ne \g__nicematrix_aux_tl
+      {
+        \bool_set_true:N \l__nicematrix_X_columns_aux_bool
+        \dim_set:Nn \l__nicematrix_X_columns_dim
+          {
+            \dim_compare:nNnTF
+              {
+                \dim_abs:n
+                  { \l__nicematrix_width_dim - \box_wd:N \l__nicematrix_the_array_box }
+              }
+              <
+              { 0.001 pt }
+              { \dim_use:N \l__nicematrix_X_columns_dim }
+              {
+                \dim_eval:n
+                  {
+                    ( \l__nicematrix_width_dim - \box_wd:N \l__nicematrix_the_array_box )
+                    / \int_use:N \g__nicematrix_total_X_weight_int
+                    + \l__nicematrix_X_columns_dim
+                  }
+              }
+          }
+      }
   }
 \cs_new_protected:Npn \__nicematrix_transform_preamble:
   {

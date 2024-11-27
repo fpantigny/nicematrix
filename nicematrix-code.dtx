@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.0}
-\def\myfiledate{2024/11/18}
+\def\myfileversion{7.0x}
+\def\myfiledate{2024/11/27}
 %
 %
 %<*batchfile>  
@@ -3776,7 +3776,7 @@ version 2005/12/01 or later.
           }
       }
 %    \end{macrocode}
-% The following part will be deleted when we will delete the boolean
+% The following part should be deleted when we will delete the boolean
 % |\c_@@_recent_array_bool| (when we consider the version 2.6a of \pkg{array}
 % is required). Moreover, \cls{revtex4-2} modifies \pkg{array} and provides
 % commands which are meant to be the standard version of \pkg{array} but, at the
@@ -3794,8 +3794,21 @@ version 2005/12/01 or later.
       }
 %    \end{macrocode}
 %
+% \medskip
+% It seems that there is a problem when \pkg{nicematrix} is used with in
+% \cls{revtex4-2} with the package \pkg{colortbl} loaded. 
+% The following code prevent that problem but it does \emph{not} treat the
+% actual problem! It's only a patch \emph{ad hoc}.
 %
-
+% That patch has been added in version 7.0x, 2024-11-27 (question by mail of
+% Tamra Nebabu).
+%    \begin{macrocode}
+     \bool_if:NT \c_@@_revtex_bool
+       {
+         \IfPackageLoadedT { colortbl }
+           { \cs_set_protected:Npn \CT@setup { } }
+       } 
+%    \end{macrocode}
 % 
 % We keep in memory the old versions or |\ldots|, |\cdots|, etc. only because we
 % use them inside |\phantom| commands in order that the new commands |\Ldots|,
@@ -4062,13 +4075,13 @@ version 2005/12/01 or later.
 % part of the environment (and the closing |\c_math_toggle_token| also).
 %    \begin{macrocode}
     \hbox_set:Nw \l_@@_the_array_box
-    \bool_if:NT \c_@@_recent_array_bool
-      { \UseTaggingSocket { tbl / hmode / begin } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
     \skip_horizontal:N \l_@@_left_margin_dim 
     \skip_horizontal:N \l_@@_extra_left_margin_dim 
+    \bool_if:NT \c_@@_recent_array_bool
+      { \UseTaggingSocket { tbl / hmode / begin } }
 %    \end{macrocode}
 %
 % The following code is a workaround to specify to the tagging system that the
@@ -4613,31 +4626,7 @@ version 2005/12/01 or later.
 % by~$n$. 
 %    \begin{macrocode}
     \int_compare:nNnT \g_@@_total_X_weight_int > \c_zero_int
-      { 
-        \tl_gput_right:Ne \g_@@_aux_tl
-          {
-            \bool_set_true:N \l_@@_X_columns_aux_bool
-            \dim_set:Nn \l_@@_X_columns_dim 
-              {
-                \dim_compare:nNnTF 
-                  { 
-                    \dim_abs:n 
-                      { \l_@@_width_dim - \box_wd:N \l_@@_the_array_box }  
-                  } 
-                  < 
-                  { 0.001 pt }
-                  { \dim_use:N \l_@@_X_columns_dim }
-                  {
-                    \dim_eval:n 
-                      {
-                        ( \l_@@_width_dim - \box_wd:N \l_@@_the_array_box ) 
-                        / \int_use:N \g_@@_total_X_weight_int 
-                        + \l_@@_X_columns_dim 
-                      }
-                  }
-              }
-          }
-      }
+      { \@@_compute_width_X: }
 %    \end{macrocode}
 % 
 % \bigskip
@@ -4826,6 +4815,43 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % This is the end of the environment |{NiceArrayWithDelims}|.
 %
+%
+% \bigskip
+% The following command will be used only once. We have written that command for
+% legibility. If there is at least one |X|-column in the environment, we compute
+% the width that those columns will have (in the next compilation). In fact,
+% |l_@@_X_columns_dim| will be the width of a column of weight $1$. For a
+% |X|-column of weight~$n$, the width will be |\l_@@_X_columns_dim| multiplied
+% by~$n$.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_compute_width_X:
+  { 
+    \tl_gput_right:Ne \g_@@_aux_tl
+      {
+        \bool_set_true:N \l_@@_X_columns_aux_bool
+        \dim_set:Nn \l_@@_X_columns_dim 
+          {
+            \dim_compare:nNnTF 
+              { 
+                \dim_abs:n 
+                  { \l_@@_width_dim - \box_wd:N \l_@@_the_array_box }  
+              } 
+              < 
+              { 0.001 pt }
+              { \dim_use:N \l_@@_X_columns_dim }
+              {
+                \dim_eval:n 
+                  {
+                    ( \l_@@_width_dim - \box_wd:N \l_@@_the_array_box ) 
+                    / \int_use:N \g_@@_total_X_weight_int 
+                    + \l_@@_X_columns_dim 
+                  }
+              }
+          }
+      }
+  }
+%    \end{macrocode}
+% 
 % \vspace{1cm}
 % \section{Construction of the preamble of the array}
 %
