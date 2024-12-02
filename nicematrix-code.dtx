@@ -647,7 +647,7 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % The following command must \emph{not} be protected since it will be used to
-% write instructions in the (internal) |\CodeBefore|.
+% write instructions in the |\g_@@_pre_code_before_tl|.
 %    \begin{macrocode}
 \cs_generate_variant:Nn \@@_exp_color_arg:Nn { N o }
 \cs_new:Npn \@@_exp_color_arg:Nn #1 #2
@@ -10188,8 +10188,12 @@ version 2005/12/01 or later.
         { \int_set:Nn \l_@@_key_nb_rows_int { 500 } } 
         { \int_set:Nn \l_@@_key_nb_rows_int { #1 } } ,
     nb-rows .value_required:n = true ,
-    rowcolor .tl_set:N = \l_tmpa_tl ,
-    rowcolor .value_required:n = true ,
+    fill .tl_set:N = \l_@@_fill_tl ,
+    fill .value_required:n = true , 
+    opacity .tl_set:N = \l_@@_opacity_tl , 
+    opacity .value_required:n = true , 
+    rowcolor .tl_set:N = \l_@@_fill_tl ,
+    rowcolor .value_required:n = true , 
     unknown .code:n = \@@_error:n { Unknown~key~for~RowStyle } 
   }
 %    \end{macrocode}
@@ -10200,17 +10204,19 @@ version 2005/12/01 or later.
 \NewDocumentCommand \@@_RowStyle:n { O { } m }
   { 
     \group_begin:
-    \tl_clear:N \l_tmpa_tl 
+    \tl_clear:N \l_@@_fill_tl 
+    \tl_clear:N \l_@@_opacity_tl
     \tl_clear:N \l_@@_color_tl
     \int_set_eq:NN \l_@@_key_nb_rows_int \c_one_int
     \dim_zero:N \l_tmpa_dim
     \dim_zero:N \l_tmpb_dim 
     \keys_set:nn { nicematrix / RowStyle } { #1 }
 %    \end{macrocode}
-% If the key |rowcolor| has been used.
+% If the key |rowcolor| (of its alias |fill|) has been used.
 %    \begin{macrocode}
-    \tl_if_empty:NF \l_tmpa_tl
+    \tl_if_empty:NF \l_@@_fill_tl
       { 
+        \@@_add_opacity_to_fill:
 %    \end{macrocode}
 % First, the end of the current row (we remind that |\RowStyle| applies to the
 % \emph{end} of the current row). 
@@ -10220,7 +10226,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % The command |\@@_exp_color_arg:No| is \emph{fully expandable}.
 %    \begin{macrocode}
-            \@@_exp_color_arg:No \@@_rectanglecolor \l_tmpa_tl 
+            \@@_exp_color_arg:No \@@_rectanglecolor \l_@@_fill_tl 
               { \int_use:N \c@iRow - \int_use:N \c@jCol }
               { \int_use:N \c@iRow - * }
           }
@@ -10231,7 +10237,7 @@ version 2005/12/01 or later.
           {
             \tl_gput_right:Ne \g_@@_pre_code_before_tl
               { 
-                \@@_exp_color_arg:No \@@_rowcolor \l_tmpa_tl 
+                \@@_exp_color_arg:No \@@_rowcolor \l_@@_fill_tl 
                   { 
                     \int_eval:n { \c@iRow + 1 }
                     - \int_eval:n { \c@iRow + \l_@@_key_nb_rows_int - 1 } 
@@ -13957,21 +13963,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \tl_if_empty:NF \l_@@_fill_tl
       {
-        \tl_if_empty:NF \l_@@_opacity_tl
-          {
-            \tl_if_head_eq_meaning:oNTF \l_@@_fill_tl [
-              { 
-                \tl_set:Ne \l_@@_fill_tl
-                  {
-                    [ opacity = \l_@@_opacity_tl ,
-                    \tl_tail:o \l_@@_fill_tl
-                  }
-              }
-              { 
-                \tl_set:Ne \l_@@_fill_tl
-                  { [ opacity = \l_@@_opacity_tl ] { \exp_not:o \l_@@_fill_tl } }
-              }
-          }
+        \@@_add_opacity_to_fill:
         \tl_gput_right:Ne \g_@@_pre_code_before_tl
           { 
             \exp_not:N \roundedrectanglecolor 
@@ -14497,7 +14489,31 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 % 
-%
+% \bigskip
+% The following command adds the value of |\l_@@_opacity_tl| (if not empty) to
+% the specification of color set in |\l_@@_fill_tl| (the information of opacity
+% is added in between square brackets before the color itself).
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_add_opacity_to_fill:
+  {
+    \tl_if_empty:NF \l_@@_opacity_tl
+      {
+        \tl_if_head_eq_meaning:oNTF \l_@@_fill_tl [
+          { 
+            \tl_set:Ne \l_@@_fill_tl
+              {
+                [ opacity = \l_@@_opacity_tl ,
+                \tl_tail:o \l_@@_fill_tl
+              }
+          }
+          { 
+            \tl_set:Ne \l_@@_fill_tl
+              { [ opacity = \l_@@_opacity_tl ] { \exp_not:o \l_@@_fill_tl } }
+          }
+      }
+  }
+%    \end{macrocode}
+% 
 % \bigskip
 % The first argument of |\@@_stroke_block:nnn| is a list of options for the
 % rectangle that you will stroke. The second argument is the upper-left cell of
@@ -17458,13 +17474,14 @@ version 2005/12/01 or later.
   }
   { 
     The~available~keys~are~(in~alphabetic~order):~
-    'bold',~
-    'cell-space-top-limit',~
-    'cell-space-bottom-limit',~
-    'cell-space-limits',~
-    'color',~
-    'nb-rows'~and~
-    'rowcolor'.
+    bold,~
+    cell-space-top-limit,~
+    cell-space-bottom-limit,~
+    cell-space-limits,~
+    color,~
+    fill~(alias:~rowcolor),~
+    nb-rows~and~
+    opacity.
   }
 %    \end{macrocode}
 %

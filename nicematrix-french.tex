@@ -595,7 +595,9 @@ la clé \Definition{fill} prend en argument une couleur et remplit le bloc
 avec cette couleur ;
 \item \index{opacity! (clé de la commande \texttt{\textbackslash Block})}
 la clé \Definition{opacity} fixe l'opacité de la couleur de remplissage donnée
-par |fill| ;
+par |fill| ;\footnote{Attention : cette fonctionnalité génère des
+  instructions de transparence dans le \textsc{pdf} résultant et certains
+  lecteurs de \textsc{pdf} n'acceptent pas la transparence.}
 \item \index{draw (clé de \texttt{\textbackslash Block})}
 la clé \Definition{draw} prend en argument une couleur et trace le cadre
 avec cette couleur (la valeur par défaut de cette clé est la couleur courante
@@ -2813,14 +2815,23 @@ clés globales de même nom (cf. p.~\pageref{cell-space}).
 
 \item 
 \index{rowcolor (clé de \texttt{\textbackslash RowStyle})}
-\index{color!clé de \texttt{\textbackslash RowStyle}}
-La clé \Definition{rowcolor} fixe la couleur de fond et la clé \Definition{color}
-fixe la couleur du texte.\footnote{La clé |color| utilise la commande |\color| mais
-  insère aussi une instruction |\leavevmode| devant. Cela évite un espace
-  vertical parasite dans les cases qui correspondent à des colonnes de type
-  |p|, |b|, |m|, et |X| (qui débutent en mode vertical de LaTeX). Pour les
-  colonnes de type |V| (de \pkg{varwith}), cela ne suffit malheureusement pas
-  sauf si on utilise LuaLaTeX avec \pkg{luacolor} (cf. question 460489 sur TeX StackExchange).}
+\index{fill!clé de \texttt{\textbackslash RowStyle}} 
+\index{opacity!clé de \texttt{\textbackslash RowStyle}} 
+La clé \Definition{rowcolor} (alias : \Definition{fill}) fixe la couleur de fond
+et la clé \Definition{opacity}\footnote{Attention : cette clé génère des
+  instructions de transparence dans le \textsc{pdf} résultant et certains
+  lecteurs de \textsc{pdf} n'acceptent pas la transparence.} l'opacité de cette
+couleur de fond.
+
+\item 
+\index{color!clé de \texttt{\textbackslash RowStyle}} 
+La clé \Definition{color} fixe la couleur du texte.\footnote{La clé |color|
+  utilise la commande |\color| mais insère aussi une instruction |\leavevmode|
+  devant. Cela évite un espace vertical parasite dans les cases qui
+  correspondent à des colonnes de type |p|, |b|, |m|, et |X| (qui débutent en
+  mode vertical de LaTeX). Pour les colonnes de type |V| (de \pkg{varwidth}),
+  cela ne suffit malheureusement pas sauf si on utilise LuaLaTeX avec
+  \pkg{luacolor} (cf. question 460489 sur TeX StackExchange).}
 
 \item \index{bold (clé de \texttt{\textbackslash RowStyle})}
 La clé \Definition{bold} impose des caractères gras aux éléments de la rangée, qu'ils

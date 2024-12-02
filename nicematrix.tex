@@ -569,7 +569,9 @@ the key \Definition{fill} takes in as value a color and fills the block
 with that color;
 \item \index{opacity  (key of \texttt{\textbackslash Block})} 
 the key \Definition{opacity} sets the opacity of the filling color specified by
-|fill|; 
+|fill|;\footnote{Caution: that feature creates instructions of
+  transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
+  support such instructions.} 
 \item \index{draw (key of \texttt{\textbackslash Block})}
 the key \Definition{draw} takes in as value a color and strokes the
 frame of the block with that color (the default value of that key is the
@@ -2090,8 +2092,9 @@ by a comma)
 the extension \pkg{xcolor};
 \item \index{opacity (key of commands such as\newline \texttt{\textbackslash rowcolor}, etc.)}
 a specification of opacity of the form \texttt{opacity =
-  \textsl{value}}.\footnote{Caution : that feature creates instructions of
-  transparency in the \textsc{pdf} and some \textsc{pdr} don't support such instructions.}
+  \textsl{value}}.\footnote{Caution: that feature creates instructions of
+  transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
+  support such instructions.} 
 \end{itemize}
 
 \bigskip
@@ -2731,15 +2734,22 @@ apply (with the special value |*|, it will apply to all the following rows).
 \Definition{cell-space-limits} are available with the same meaning that the
 corresponding global keys (cf. p.~\pageref{cell-space}).
 \item \index{rowcolor (key of \texttt{\textbackslash RowStyle})}
+\index{fill!key of \texttt{\textbackslash RowStyle}}
+\index{opacity!key of \texttt{\textbackslash RowStyle}}
+The key \Definition{rowcolor} (alias: \Definition{fill}) sets the color of the
+background and \Definition{opacity}\footnote{Caution: that feature creates instructions of
+  transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
+  support such instructions.} sets its opacity.
+
+\item 
 \index{color!key of \texttt{\textbackslash RowStyle}}
-The key \Definition{rowcolor} sets the color of the background and the key
-\Definition{color} sets the color of the text.\footnote{The key |color| uses the command
-|\color| but also inserts an instruction |\leavevmode| before. This
-instruction prevents an extra vertical space in the cells which belong to
-columns of type |p|, |b|, |m| and |X| (which start in
-vertical mode of LaTeX). For the columns |V| (of \pkg{varwidth}), that's not
-enough, except when LuaLaTeX is used with the package \pkg{luacolor} (see
-question 460489 on TeX StackExchange).}
+The key \Definition{color} sets the color of the text.\footnote{The key
+  |color| uses the command |\color| but also inserts an instruction
+  |\leavevmode| before. This instruction prevents an extra vertical space in the
+  cells which belong to columns of type |p|, |b|, |m| and |X| (which start in
+  vertical mode of LaTeX). For the columns |V| (of \pkg{varwidth}), that's not
+  enough, except when LuaLaTeX is used with the package \pkg{luacolor} (see
+  question 460489 on TeX StackExchange).}
 \item \index{bold (key of \texttt{\textbackslash RowStyle})} The key
 \Definition{bold} enforces bold characters for the cells of the row, both in
 math and text mode. 

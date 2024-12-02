@@ -5342,24 +5342,30 @@
         { \int_set:Nn \l__nicematrix_key_nb_rows_int { 500 } }
         { \int_set:Nn \l__nicematrix_key_nb_rows_int { #1 } } ,
     nb-rows .value_required:n = true ,
-    rowcolor .tl_set:N = \l_tmpa_tl ,
+    fill .tl_set:N = \l__nicematrix_fill_tl ,
+    fill .value_required:n = true ,
+    opacity .tl_set:N = \l__nicematrix_opacity_tl ,
+    opacity .value_required:n = true ,
+    rowcolor .tl_set:N = \l__nicematrix_fill_tl ,
     rowcolor .value_required:n = true ,
     unknown .code:n = \__nicematrix_error:n { Unknown~key~for~RowStyle }
   }
 \NewDocumentCommand \__nicematrix_RowStyle:n { O { } m }
   {
     \group_begin:
-    \tl_clear:N \l_tmpa_tl
+    \tl_clear:N \l__nicematrix_fill_tl
+    \tl_clear:N \l__nicematrix_opacity_tl
     \tl_clear:N \l__nicematrix_color_tl
     \int_set_eq:NN \l__nicematrix_key_nb_rows_int \c_one_int
     \dim_zero:N \l_tmpa_dim
     \dim_zero:N \l_tmpb_dim
     \keys_set:nn { nicematrix / RowStyle } { #1 }
-    \tl_if_empty:NF \l_tmpa_tl
+    \tl_if_empty:NF \l__nicematrix_fill_tl
       {
+        \__nicematrix_add_opacity_to_fill:
         \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
           {
-            \__nicematrix_exp_color_arg:No \__nicematrix_rectanglecolor \l_tmpa_tl
+            \__nicematrix_exp_color_arg:No \__nicematrix_rectanglecolor \l__nicematrix_fill_tl
               { \int_use:N \c@iRow - \int_use:N \c@jCol }
               { \int_use:N \c@iRow - * }
           }
@@ -5367,7 +5373,7 @@
           {
             \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
               {
-                \__nicematrix_exp_color_arg:No \__nicematrix_rowcolor \l_tmpa_tl
+                \__nicematrix_exp_color_arg:No \__nicematrix_rowcolor \l__nicematrix_fill_tl
                   {
                     \int_eval:n { \c@iRow + 1 }
                     - \int_eval:n { \c@iRow + \l__nicematrix_key_nb_rows_int - 1 }
@@ -7553,21 +7559,7 @@
       }
     \tl_if_empty:NF \l__nicematrix_fill_tl
       {
-        \tl_if_empty:NF \l__nicematrix_opacity_tl
-          {
-            \tl_if_head_eq_meaning:oNTF \l__nicematrix_fill_tl [
-              {
-                \tl_set:Ne \l__nicematrix_fill_tl
-                  {
-                    [ opacity = \l__nicematrix_opacity_tl ,
-                    \tl_tail:o \l__nicematrix_fill_tl
-                  }
-              }
-              {
-                \tl_set:Ne \l__nicematrix_fill_tl
-                  { [ opacity = \l__nicematrix_opacity_tl ] { \exp_not:o \l__nicematrix_fill_tl } }
-              }
-          }
+        \__nicematrix_add_opacity_to_fill:
         \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
           {
             \exp_not:N \roundedrectanglecolor
@@ -7930,6 +7922,24 @@
     \pgfsetfillcolor { #1 }
     \pgfusepath { fill }
     \endpgfpicture
+  }
+\cs_new_protected:Npn \__nicematrix_add_opacity_to_fill:
+  {
+    \tl_if_empty:NF \l__nicematrix_opacity_tl
+      {
+        \tl_if_head_eq_meaning:oNTF \l__nicematrix_fill_tl [
+          {
+            \tl_set:Ne \l__nicematrix_fill_tl
+              {
+                [ opacity = \l__nicematrix_opacity_tl ,
+                \tl_tail:o \l__nicematrix_fill_tl
+              }
+          }
+          {
+            \tl_set:Ne \l__nicematrix_fill_tl
+              { [ opacity = \l__nicematrix_opacity_tl ] { \exp_not:o \l__nicematrix_fill_tl } }
+          }
+      }
   }
 \cs_new_protected:Npn \__nicematrix_stroke_block:nnn #1 #2 #3
   {
@@ -9970,13 +9980,14 @@
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
-    'bold',~
-    'cell-space-top-limit',~
-    'cell-space-bottom-limit',~
-    'cell-space-limits',~
-    'color',~
-    'nb-rows'~and~
-    'rowcolor'.
+    bold,~
+    cell-space-top-limit,~
+    cell-space-bottom-limit,~
+    cell-space-limits,~
+    color,~
+    fill~(alias:~rowcolor),~
+    nb-rows~and~
+    opacity.
   }
 \__nicematrix_msg_new:nnn { Unknown~key~for~NiceMatrixOptions }
   {
