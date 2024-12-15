@@ -1,4 +1,4 @@
-% -*- coding: utf-8 ; -*-
+% -*- coding: utf-8 ; -*- 
 % Ce fichier doit être compilé avec LuaLaTeX uniquement.
 \documentclass[dvipsnames]{article}% dvipsnames is for xcolor (loaded by TikZ, loaded by nicematrix)
 \usepackage[french]{babel}
@@ -593,7 +593,7 @@ Les premières clés sont des outils rapides pour contrôler l'apparence du bloc
 \item \index{fill (clé de \texttt{\textbackslash Block})}
 la clé \Definition{fill} prend en argument une couleur et remplit le bloc
 avec cette couleur ;
-\item \index{opacity! (clé de la commande \texttt{\textbackslash Block})}
+\item \index{opacity!clé de la commande \texttt{\textbackslash Block}}
 la clé \Definition{opacity} fixe l'opacité de la couleur de remplissage donnée
 par |fill| ;\footnote{Attention : cette fonctionnalité génère des
   instructions de transparence dans le \textsc{pdf} résultant et certains
@@ -811,8 +811,7 @@ la consigne générale donnée dans le préambule pour cette colonne (cf.~\ref{h
 \item On peut tracer un cadre autour du bloc avec la clé |draw| de la commande
 |\Block| ou colorier le fond avec des bords arrondis avec les clés |fill| et
 |rounded-corners|.\footnote{Pour colorier simplement le fond d'une case, il n'y a pas besoin
-  d'utiliser un bloc mono-case : on peut utiliser la commande |\cellcolor| si la
-  clé |color-inside| est utilisée : voir p.~\pageref{color-inside}.}
+  d'utiliser un bloc mono-case : on peut utiliser la commande |\cellcolor|.}
 
 \item On peut tracer une ou plusieurs bordures de la case avec la clé |borders|.
 \end{itemize}
@@ -1872,13 +1871,13 @@ s'applique aussi entre les deux filets).
      }
   }
 
-\begin{NiceTabular}{ccc}[color-inside]
+\begin{NiceTabular}{ccc}
 un & deux & trois \\
 \emph{\DoubleRule}
 quatre & \cellcolor{yellow} cinq & six \\
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{ccc}[color-inside]
+\begin{NiceTabular}{ccc}
 un & deux & trois \\
 \DoubleRule
 quatre & \cellcolor{yellow} cinq & six \\
@@ -2155,8 +2154,8 @@ par une virgule) :
 \begin{itemize}
 \item le modèle colorimétrique (|RGB|, |rgb|, |HTML|, etc.) comme spécifié par
 l'extension \pkg{xcolor} ;
-\item \index{opacity (clé des commandes comme\newline \texttt{\textbackslash
-    rowcolor}, etc.)}
+\item \index{opacity!clé des commandes comme\newline \texttt{\textbackslash
+    rowcolor}, etc.}
 une spécification d'opacité selon la forme \texttt{opacity =
   \textsl{valeur}}.\footnote{Attention : cette fonctionnalité génère des instructions de
   transparence dans le \textsc{pdf} résultant et certains lecteurs de
@@ -2662,19 +2661,13 @@ On a utilisé le type de colonne |S| de \pkg{siunitx} (qu'il faut avoir chargé)
 
 \subsection{Outils de coloriage en tableau}
 
-\label{color-inside}
-\index{color-inside}
 \index{cellcolor@\texttt{\textbackslash cellcolor}!commande en tableau}
 \index{rowcolor@\texttt{\textbackslash rowcolor}!commande en tableau}
 \index{columncolor@\texttt{\textbackslash columncolor}!commande dans le
   préambule d'un environnement} 
 
 On peut accéder aux outils de coloriage précédents avec une syntaxe proche de
-celle proposée par \pkg{colortbl} (même si \pkg{colortbl} n'est pas chargé). On
-doit pour cela utiliser la clé \Definition{color-inside}\footnote{Il existe un
-  alias pour cette clé : \texttt{colortbl-like}.} dans l'environnement
-concerné.\footnote{Pour le moment, cette clé n'est \emph{pas} disponible dans
-  |\NiceMatrixOptions|.}
+celle proposée par \pkg{colortbl} (même si \pkg{colortbl} n'est pas chargé).
 
 On a alors accès aux commandes suivantes (les trois premières sont inspirées par
 \pkg{colortbl} mais sont indépendantes de \pkg{colortbl}) :
@@ -2708,7 +2701,7 @@ Beamer (comme |\only|, etc.)
 \medskip
 \begin{Code}
 \NewDocumentCommand { \Blue } { } {\emph{\columncolor{blue!15}}}
-\begin{NiceTabular}[color-inside]{>{\Blue}c>{\Blue}cc}
+\begin{NiceTabular}{>{\Blue}c>{\Blue}cc}
 \toprule
 \emph{\rowcolor{red!15}}
 Nom & Prénom & Année de naissance \\
@@ -2724,7 +2717,7 @@ Dupont & Chantal & 15 janvier 1998 \\
 
 \begin{center}
 \NewDocumentCommand { \Blue } { } {\columncolor{blue!15}}
-\begin{NiceTabular}[color-inside]{>{\Blue}c>{\Blue}cc}
+\begin{NiceTabular}{>{\Blue}c>{\Blue}cc}
 \toprule
 \rowcolor{red!15}
 Nom & Prénom & Année de naissance \\
@@ -2749,7 +2742,7 @@ En particulier, on peut engager un coloriage des rangées avec
 
 \bigskip
 \begin{Code}[width=10cm]
-\begin{NiceTabular}{c}[hvlines,color-inside]
+\begin{NiceTabular}{c}[hvlines]
 un \\
 deux \\
 \emph{\rowlistcolors{red!15}}
@@ -2761,7 +2754,7 @@ six \\
 sept \\
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{c}[hvlines,color-inside]
+\begin{NiceTabular}{c}[hvlines]
 un \\
 deux \\
 \rowlistcolors{red!15}
@@ -3252,6 +3245,7 @@ On peut contrôler l'apparence de ces rangées et colonnes avec les options
 sont des listes de tokens qui seront insérées au début de chaque case de la
 rangée ou de la colonne considérée.
 
+\bigskip
 \begin{Code}
 \NiceMatrixOptions{\emph{code-for-first-row} = \color{red},
                    \emph{code-for-first-col} = \color{blue},
@@ -4452,8 +4446,8 @@ numéro de rangée et $j$ le numéro de colonne ;
 \pkg{nicematrix} (avec \textsc{pgf}) au-dessus de l'accolade (pour la commande
 |\OverBrace|) ou au-dessous (pour |\UnderBrace|).
 
-\colorbox{yellow!50}{\textbf{Nouveau 2.9}}\enskip Il est possible de mettre des
-commandes |\\| dans ce dernier argument pour fomater le label sur plusieurs lignes.
+Il est possible de mettre des commandes |\\| dans ce dernier argument pour
+fomater le label sur plusieurs lignes.
 \end{itemize}
 
 \bigskip
@@ -5090,8 +5084,8 @@ coins arrondis avec un rayon égal à la valeur de cette clé (la valeur par dé
 décrit maintenant.
 \begin{itemize}
 \item Toutes les commandes de coloriage de cases, colonnes et rangées (que ce
-soit dans le |\CodeBefore| ou bien directement dans le tableau (quand la clé
-|color-inside| est utilisée) respectent ces coins arrondis pour le tableau.
+soit dans le |\CodeBefore| ou bien directement dans le tableau respectent ces
+coins arrondis pour le tableau. 
 
 \item Quand la clé |hvlines| est utilisée, les filets extérieurs sont tracés
 avec des coins arrondis.\footnote{Bien sûr, lorsqu'il s'agit d'un environnement
@@ -7463,16 +7457,13 @@ composantes de la matrice.\footnote{Pour la commande |\cline|, voir la remarque
 
 \vspace{1cm}
 Il est possible de colorier une rangée avec |\rowcolor| dans le |\CodeBefore|
-(ou avec |\rowcolor| dans une case de la rangée si on utilise la clé
-|color-inside|).
+(ou avec |\rowcolor| dans une case de la rangée.
 
-
-\index{color-inside|textit}
 \index{rowcolor@\texttt{\textbackslash rowcolor}!commande en tableau|textit}
 
 \begin{Code}
 \begin{pNiceArray}{>{\strut}cccc}% <-- % obligatoire
-    [margin, extra-margin=2pt,color-inside,no-cell-nodes]
+    [margin, extra-margin=2pt,no-cell-nodes]
   \emph{\rowcolor{red!15}}A_{11} & A_{12} & A_{13} & A_{14} \\
   A_{21} & \emph{\rowcolor{red!15}}A_{22} & A_{23} & A_{24} \\
   A_{31} & A_{32} & \emph{\rowcolor{red!15}}A_{33} & A_{34} \\
@@ -7482,7 +7473,7 @@ Il est possible de colorier une rangée avec |\rowcolor| dans le |\CodeBefore|
 
 
 
-\[\begin{pNiceArray}{>{\strut}cccc}[margin, extra-margin=2pt,color-inside,no-cell-nodes]
+\[\begin{pNiceArray}{>{\strut}cccc}[margin, extra-margin=2pt,no-cell-nodes]
   \rowcolor{red!15}A_{11} & A_{12} & A_{13} & A_{14} \\
   A_{21} & \rowcolor{red!15}A_{22} & A_{23} & A_{24} \\
   A_{31} & A_{32} & \rowcolor{red!15}A_{33} & A_{34} \\

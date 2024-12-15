@@ -716,7 +716,6 @@
 \tl_new:N \l__nicematrix_short_caption_tl
 \tl_new:N \l__nicematrix_label_tl
 \bool_new:N \l__nicematrix_caption_above_bool
-\bool_new:N \l__nicematrix_color_inside_bool
 \bool_new:N \l__nicematrix_standard_cline_bool
 \dim_new:N \l__nicematrix_cell_space_top_limit_dim
 \dim_new:N \l__nicematrix_cell_space_bottom_limit_dim
@@ -821,6 +820,8 @@
   }
 \keys_define:nn { nicematrix / Global }
   {
+    color-inside .code:n = ,
+    colortbl-like .code:n = ,
     ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
     ampersand-in-blocks .default:n = true ,
     &-in-blocks .meta:n = ampersand-in-blocks ,
@@ -956,11 +957,6 @@
     name .value_required:n = true ,
     code-after .tl_gset:N = \g_nicematrix_code_after_tl ,
     code-after .value_required:n = true ,
-    color-inside .code:n =
-      \bool_set_true:N \l__nicematrix_color_inside_bool
-      \bool_set_true:N \l__nicematrix_code_before_bool ,
-    color-inside .value_forbidden:n = true ,
-    colortbl-like .meta:n = color-inside
   }
 \keys_define:nn { nicematrix / notes }
   {
@@ -1505,14 +1501,6 @@
     \cs_set_eq:NN \iddots \__nicematrix_Iddots
     \cs_set_eq:NN \dots \__nicematrix_Ldots
     \cs_set_eq:NN \hdotsfor \__nicematrix_Hdotsfor:
-  }
-\cs_new_protected:Npn \__nicematrix_test_color_inside:
-  {
-    \bool_if:NF \l__nicematrix_color_inside_bool
-      {
-        \bool_if:NF \g__nicematrix_aux_found_bool
-          { \__nicematrix_error:n { without~color-inside } }
-      }
   }
 \hook_gput_code:nnn { begindocument } { . }
   {
@@ -2844,7 +2832,6 @@
       }
     \RenewDocumentCommand \cellcolor { O { } m }
       {
-        \__nicematrix_test_color_inside:
         \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
           {
             \__nicematrix_rectanglecolor [ ##1 ]
@@ -5348,6 +5335,8 @@
     opacity .value_required:n = true ,
     rowcolor .tl_set:N = \l__nicematrix_fill_tl ,
     rowcolor .value_required:n = true ,
+    rounded-corners .dim_set:N = \l__nicematrix_rounded_corners_dim ,
+    rounded-corners .default:n = 4 pt ,
     unknown .code:n = \__nicematrix_error:n { Unknown~key~for~RowStyle }
   }
 \NewDocumentCommand \__nicematrix_RowStyle:n { O { } m }
@@ -5357,6 +5346,7 @@
     \tl_clear:N \l__nicematrix_opacity_tl
     \tl_clear:N \l__nicematrix_color_tl
     \int_set_eq:NN \l__nicematrix_key_nb_rows_int \c_one_int
+    \dim_zero:N \l__nicematrix_rounded_corners_dim
     \dim_zero:N \l_tmpa_dim
     \dim_zero:N \l_tmpb_dim
     \keys_set:nn { nicematrix / RowStyle } { #1 }
@@ -5365,20 +5355,16 @@
         \__nicematrix_add_opacity_to_fill:
         \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
           {
-            \__nicematrix_exp_color_arg:No \__nicematrix_rectanglecolor \l__nicematrix_fill_tl
-              { \int_use:N \c@iRow - \int_use:N \c@jCol }
-              { \int_use:N \c@iRow - * }
-          }
-        \int_compare:nNnT \l__nicematrix_key_nb_rows_int > \c_one_int
-          {
-            \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
+            \int_compare:nNnTF \c@jCol > \c_one_int
               {
-                \__nicematrix_exp_color_arg:No \__nicematrix_rowcolor \l__nicematrix_fill_tl
-                  {
-                    \int_eval:n { \c@iRow + 1 }
-                    - \int_eval:n { \c@iRow + \l__nicematrix_key_nb_rows_int - 1 }
-                  }
+                \__nicematrix_exp_color_arg:No \__nicematrix_roundedrectanglecolor \l__nicematrix_fill_tl
+                  { \int_use:N \c@iRow - \int_use:N \c@jCol }
+                  { \int_use:N \c@iRow - * }
+                  { \dim_use:N \l__nicematrix_rounded_corners_dim }
+                \int_compare:nNnT \l__nicematrix_key_nb_rows_int > \c_one_int
+                  { \__nicematrix_rounded_from_row:n { \c@iRow + 1 } }
               }
+              { \__nicematrix_rounded_from_row:n { \c@iRow } }
           }
       }
     \__nicematrix_put_in_row_style:n { \exp_not:n { #2 } }
@@ -5431,6 +5417,16 @@
     \group_end:
     \g__nicematrix_row_style_tl
     \ignorespaces
+  }
+\cs_new:Npn \__nicematrix_rounded_from_row:n #1
+  {
+    \__nicematrix_exp_color_arg:No \__nicematrix_roundedrectanglecolor \l__nicematrix_fill_tl
+      { \int_eval:n { #1 } - 1 }
+      {
+        \int_eval:n { \c@iRow + \l__nicematrix_key_nb_rows_int - 1 }
+        - \exp_not:n { \int_use:N \c@jCol }
+      }
+      { \dim_use:N \l__nicematrix_rounded_corners_dim }
   }
 \cs_generate_variant:Nn \__nicematrix_add_to_colors_seq:nn { e }
 \cs_generate_variant:Nn \__nicematrix_add_to_colors_seq:nn { e e }
@@ -5868,7 +5864,6 @@
   }
 \NewDocumentCommand \__nicematrix_cellcolor_tabular { O { } m }
   {
-    \__nicematrix_test_color_inside:
     \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
       {
         \__nicematrix_cellcolor [ #1 ] { \exp_not:n { #2 } }
@@ -5878,7 +5873,6 @@
   }
 \NewDocumentCommand \__nicematrix_rowcolor_tabular { O { } m }
   {
-    \__nicematrix_test_color_inside:
     \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
       {
         \__nicematrix_rectanglecolor [ #1 ] { \exp_not:n { #2 } }
@@ -5891,7 +5885,6 @@
   { \__nicematrix_rowlistcolors_tabular [ #1 ] { { #2 } , { #3 } } }
 \NewDocumentCommand { \__nicematrix_rowlistcolors_tabular } { O { } m O { } }
   {
-    \__nicematrix_test_color_inside:
     \peek_remove_spaces:n
       { \__nicematrix_rowlistcolors_tabular:nnn { #1 } { #2 } { #3 } }
   }
@@ -7562,10 +7555,7 @@
         \__nicematrix_add_opacity_to_fill:
         \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
           {
-            \exp_not:N \roundedrectanglecolor
-              \tl_if_head_eq_meaning:oNTF \l__nicematrix_fill_tl [
-                { \l__nicematrix_fill_tl }
-                { { \l__nicematrix_fill_tl } }
+            \__nicematrix_exp_color_arg:No \__nicematrix_roundedrectanglecolor \l__nicematrix_fill_tl
               { #1 - #2 }
               { \int_use:N \l__nicematrix_last_row_int - \int_use:N \l__nicematrix_last_col_int }
               { \dim_use:N \l__nicematrix_rounded_corners_dim }
@@ -9803,14 +9793,6 @@
     command~'\token_to_str:N\Block')~but~tikz~is~not~loaded.~
     That~key~will~be~ignored.
   }
-\__nicematrix_msg_new:nn { without~color-inside }
-  {
-    If~order~to~use~\token_to_str:N \cellcolor,~\token_to_str:N \rowcolor,~
-    \token_to_str:N \rowcolors\ or~\token_to_str:N \rowlistcolors\
-    outside~\token_to_str:N \CodeBefore,~you~
-    should~have~used~the~key~'color-inside'~in~your~\__nicematrix_full_name_env:.\\
-    You~can~go~on~but~you~may~need~more~compilations.
-  }
 \__nicematrix_msg_new:nn { color~in~custom-line~with~tikz }
   {
     Erroneous~use.\\
@@ -9986,8 +9968,9 @@
     cell-space-limits,~
     color,~
     fill~(alias:~rowcolor),~
-    nb-rows~and~
-    opacity.
+    nb-rows,
+    opacity~and~
+    rounded-corners.
   }
 \__nicematrix_msg_new:nnn { Unknown~key~for~NiceMatrixOptions }
   {
@@ -10067,7 +10050,6 @@
     code-for-first-row,~
     code-for-last-col,~
     code-for-last-row,~
-    color-inside,~
     columns-width,~
     corners,~
     create-extra-nodes,~
@@ -10126,7 +10108,6 @@
     code-for-first-row,~
     code-for-last-col,~
     code-for-last-row,~
-    color-inside,~
     columns-type,~
     columns-width,~
     corners,~
@@ -10189,7 +10170,6 @@
     code-for-first-row,~
     code-for-last-col,~
     code-for-last-row,~
-    color-inside,~
     columns-width,~
     corners,~
     custom-line,~

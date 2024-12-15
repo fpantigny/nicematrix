@@ -567,7 +567,7 @@ First, there are keys which are quick tools to control the apperance of the bloc
 \item \index{fill (key of \texttt{\textbackslash Block})}
 the key \Definition{fill} takes in as value a color and fills the block
 with that color;
-\item \index{opacity  (key of \texttt{\textbackslash Block})} 
+\item \index{opacity!key of \texttt{\textbackslash Block}} 
 the key \Definition{opacity} sets the opacity of the filling color specified by
 |fill|;\footnote{Caution: that feature creates instructions of
   transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
@@ -779,8 +779,7 @@ derogation of the type of column given in the preamble of the array.
 command |\Block| and to fill the background with rounded corners with the keys
 |fill| and |rounded-corners|.\footnote{If one simply wishes to color the
 background of a unique cell, there is no point using the command |\Block|:
-it's possible to use the command |\cellcolor| (when the key |color-inside| is
-used).}
+it's possible to use the command |\cellcolor|.}
 
 \item It's possible to draw one or several borders of the cell with the key |borders|.
 \end{itemize}
@@ -1812,13 +1811,13 @@ between both rules above the cell not colored by the color of the cell).
      }
   }
 
-\begin{NiceTabular}{ccc}[color-inside]
+\begin{NiceTabular}{ccc}
 one & two & three \\
 \emph{\DoubleRule}
 four & \cellcolor{yellow} five & six \\
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{ccc}[color-inside]
+\begin{NiceTabular}{ccc}
 one & two & three \\
 \DoubleRule
 four & \cellcolor{yellow} five & six \\
@@ -2090,7 +2089,7 @@ by a comma)
 \begin{itemize}
 \item the colorimetric space (|RGB|, |rgb|, |HTML|, etc) as specified by the
 the extension \pkg{xcolor};
-\item \index{opacity (key of commands such as\newline \texttt{\textbackslash rowcolor}, etc.)}
+\item \index{opacity!key of commands such as\newline \texttt{\textbackslash rowcolor}, etc.}
 a specification of opacity of the form \texttt{opacity =
   \textsl{value}}.\footnote{Caution: that feature creates instructions of
   transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
@@ -2588,7 +2587,6 @@ We have used the type of column |S| of \pkg{siunitx}.
 
 \subsection{Color tools to be used inside the tabular}
 
-\index{color-inside}
 \index{cellcolor@\texttt{\textbackslash cellcolor}!command in tabular}
 \index{rowcolor@\texttt{\textbackslash rowcolor}!command in tabular}
 \index{columncolor@\texttt{\textbackslash columncolor}!command in the preamble
@@ -2596,9 +2594,7 @@ We have used the type of column |S| of \pkg{siunitx}.
 
 
 It's possible to access the preceding tools with a syntax close to the syntax
-of \pkg{colortbl}. For that, one must use the key \Definition{color-inside}\footnote{There
-  is an alias for that key : \texttt{colortbl-like}.} in the
-current environment.\footnote{Up to now, this key is \emph{not} available in |\NiceMatrixOptions|.}
+of \pkg{colortbl}.
 
 There are several commands available (the first three ones are inspired by
 \pkg{colortbl} but are \emph{independent} of \pkg{colortbl}):
@@ -2632,7 +2628,7 @@ These commands are compatible with the commands for the overlays of Beamer
 \smallskip
 \begin{Code}
 \NewDocumentCommand { \Blue } { } { \emph{\columncolor{blue!15}} }
-\begin{NiceTabular}[color-inside]{>{\Blue}c>{\Blue}cc} 
+\begin{NiceTabular}{>{\Blue}c>{\Blue}cc} 
 \toprule
 \emph{\rowcolor{red!15}}
 Last name & First name & Birth day \\
@@ -2648,7 +2644,7 @@ Dupont & Chantal & 15 janvier 1998 \\
 
 \begin{center}
 \NewDocumentCommand { \Blue } { } { \columncolor{blue!15} }
-\begin{NiceTabular}[color-inside]{>{\Blue}c>{\Blue}cc} 
+\begin{NiceTabular}{>{\Blue}c>{\Blue}cc} 
 \toprule
 \rowcolor{red!15}
 Last name & First name & Birth day \\
@@ -2672,7 +2668,7 @@ coloring by a command |\rowlistcolors| with an empty argument.
 
 \bigskip
 \begin{Code}[width=10cm]
-\begin{NiceTabular}{c}[hvlines,color-inside]
+\begin{NiceTabular}{c}[hvlines]
 one \\
 two \\
 \emph{\rowlistcolors{red!15}}
@@ -2684,7 +2680,7 @@ six \\
 seven \\
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{c}[hvlines,color-inside]
+\begin{NiceTabular}{c}[hvlines]
 one \\
 two \\
 \rowlistcolors{red!15}
@@ -4349,8 +4345,8 @@ syntax $i$|-|$j$ where $i$ the number of row and $j$ the number of column;
 \pkg{nicematrix} (with \textsc{pgf}) above the brace (for the command
 |\OverBrace|) or under the brace (for |\UnderBrace|).
 
-\colorbox{yellow!50}{\bfseries{New 6.29}}\enskip It's possible to use the
-command |\\| in this third argument in order to format the label on several lignes.
+It's possible to use the command |\\| in this third argument in order to format
+the label on several lignes.
 \end{itemize}
 
 \bigskip
@@ -4969,8 +4965,7 @@ rounded corners with a radius equal to the value of that key (the default value 
   Tikz.}). More precisely, that key has two effects that we describe now.
 \begin{itemize}
 \item All the commands for coloring the cells, columns and rows (in the
-|\CodeBefore| but also directly in the array when the key |color-inside| is
-used) will respect those rounded corners.
+|\CodeBefore| but also directly in the array will respect those rounded corners. 
 
 \item When the key |hvlines| is used, the exterior rules will be drawn with
 rounded corners.\footnote{Of course, when used in an environment with delimiters
@@ -7293,17 +7288,15 @@ see the remark p.~\pageref{remark-cline}.}
 
 \vspace{1cm}
 It's possible to color a row with |\rowcolor| in the |code-before| (or with
-|\rowcolor| in the first cell of the row if the key |color-inside| is
-used−even when \pkg{colortbl} is not loaded).
+|\rowcolor| in the first cell of the row.
 
-\index{color-inside|textit}
 \index{rowcolor@\texttt{\textbackslash rowcolor}!command in tabular|textit}
 
 
 \medskip
 \begin{Code}
 \begin{pNiceArray}{>{\strut}cccc}% <-- % mandatory
-   [margin, extra-margin=2pt,color-inside,no-cell-nodes]
+   [margin, extra-margin=2pt,no-cell-nodes]
   \emph{\rowcolor{red!15}}A_{11} & A_{12} & A_{13} & A_{14} \\
   A_{21} & \emph{\rowcolor{red!15}}A_{22} & A_{23} & A_{24} \\
   A_{31} & A_{32} & \emph{\rowcolor{red!15}}A_{33} & A_{34} \\
@@ -7311,7 +7304,7 @@ used−even when \pkg{colortbl} is not loaded).
 \end{pNiceArray}
 \end{Code}
 
-\[\begin{pNiceArray}{>{\strut}cccc}[margin, extra-margin=2pt,color-inside,no-cell-nodes]
+\[\begin{pNiceArray}{>{\strut}cccc}[margin, extra-margin=2pt,no-cell-nodes]
   \rowcolor{red!15}A_{11} & A_{12} & A_{13} & A_{14} \\
   A_{21} & \rowcolor{red!15}A_{22} & A_{23} & A_{24} \\
   A_{31} & A_{32} & \rowcolor{red!15}A_{33} & A_{34} \\

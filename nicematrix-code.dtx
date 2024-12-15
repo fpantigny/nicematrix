@@ -2130,15 +2130,6 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% By default, the commands |\cellcolor| and |\rowcolor| are available for the
-% user in the cells of the tabular (the user may use the commands provided by
-% |\colortbl|). However, if the key |color-inside| is used, these
-% commands are available.
-%    \begin{macrocode}
-\bool_new:N \l_@@_color_inside_bool
-%    \end{macrocode}
-% 
-% \bigskip
 % By default, the behaviour of |\cline| is changed in the environments of
 % \pkg{nicematrix}: a |\cline| spreads the array by an amount equal to
 % |\arrayrulewidth|. It's possible to disable this feature with the key
@@ -2465,6 +2456,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Global }
   {
+    color-inside .code:n = ,
+    colortbl-like .code:n = ,
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
     ampersand-in-blocks .default:n = true , 
     &-in-blocks .meta:n = ampersand-in-blocks ,
@@ -2631,11 +2624,6 @@ version 2005/12/01 or later.
     name .value_required:n = true ,
     code-after .tl_gset:N = \g_nicematrix_code_after_tl ,
     code-after .value_required:n = true ,
-    color-inside .code:n = 
-      \bool_set_true:N \l_@@_color_inside_bool 
-      \bool_set_true:N \l_@@_code_before_bool ,
-    color-inside .value_forbidden:n = true , 
-    colortbl-like .meta:n = color-inside
   }
 %    \end{macrocode}
 %
@@ -3621,21 +3609,6 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-%
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_test_color_inside: 
-  { 
-    \bool_if:NF \l_@@_color_inside_bool
-      { 
-%    \end{macrocode}
-% We will issue an error only during the first run.
-%    \begin{macrocode}
-        \bool_if:NF \g_@@_aux_found_bool
-          { \@@_error:n { without~color-inside } }
-      }
-  }
-%    \end{macrocode}
-% 
 % 
 % \bigskip
 % The following code has been simplified in the version 6.29a. 
@@ -6153,7 +6126,6 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \RenewDocumentCommand \cellcolor { O { } m }
       {
-        \@@_test_color_inside:
         \tl_gput_right:Ne \g_@@_pre_code_before_tl
           { 
             \@@_rectanglecolor [ ##1 ] 
@@ -7920,9 +7892,8 @@ version 2005/12/01 or later.
 % 
 % \medskip
 % |\g_@@_pre_code_before_tl| is for instructions in the cells of the array such as
-% |\rowcolor| and |\cellcolor| (when the key |color-inside| is in
-% force). These instructions will be written on the |aux| file to be added to
-% the |code-before| in the next run.
+% |\rowcolor| and |\cellcolor|. These instructions will be written on the |aux|
+% file to be added to the |code-before| in the next run.
 %    \begin{macrocode}
     \seq_if_empty:NF \g_@@_rowlistcolors_seq { \@@_clear_rowlistcolors_seq: }
     \tl_if_empty:NF \g_@@_pre_code_before_tl
@@ -10144,7 +10115,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% |\@@_put_in_row_style| will be used several times by |\RowStyle|.
+% |\@@_put_in_row_style| will be used several times in |\RowStyle|.
 %    \begin{macrocode}
 \cs_generate_variant:Nn \@@_put_in_row_style:n { e }
 \cs_set_protected:Npn \@@_put_in_row_style:n #1
@@ -10194,6 +10165,8 @@ version 2005/12/01 or later.
     opacity .value_required:n = true , 
     rowcolor .tl_set:N = \l_@@_fill_tl ,
     rowcolor .value_required:n = true , 
+    rounded-corners .dim_set:N = \l_@@_rounded_corners_dim ,
+    rounded-corners .default:n = 4 pt ,
     unknown .code:n = \@@_error:n { Unknown~key~for~RowStyle } 
   }
 %    \end{macrocode}
@@ -10208,6 +10181,7 @@ version 2005/12/01 or later.
     \tl_clear:N \l_@@_opacity_tl
     \tl_clear:N \l_@@_color_tl
     \int_set_eq:NN \l_@@_key_nb_rows_int \c_one_int
+    \dim_zero:N \l_@@_rounded_corners_dim 
     \dim_zero:N \l_tmpa_dim
     \dim_zero:N \l_tmpb_dim 
     \keys_set:nn { nicematrix / RowStyle } { #1 }
@@ -10217,32 +10191,36 @@ version 2005/12/01 or later.
     \tl_if_empty:NF \l_@@_fill_tl
       { 
         \@@_add_opacity_to_fill:
-%    \end{macrocode}
-% First, the end of the current row (we remind that |\RowStyle| applies to the
-% \emph{end} of the current row). 
-%    \begin{macrocode}
         \tl_gput_right:Ne \g_@@_pre_code_before_tl
           { 
 %    \end{macrocode}
-% The command |\@@_exp_color_arg:No| is \emph{fully expandable}.
+% First, the case when the command |\RowStyle| is \emph{not} issued in the first
+% column of the array. In that case, the commande applies to the end of the row
+% in the row where the command |\RowStyle| is issued, but in the other whole
+% rows, if the key |nb-rows| is used.
 %    \begin{macrocode}
-            \@@_exp_color_arg:No \@@_rectanglecolor \l_@@_fill_tl 
-              { \int_use:N \c@iRow - \int_use:N \c@jCol }
-              { \int_use:N \c@iRow - * }
-          }
+            \int_compare:nNnTF \c@jCol > \c_one_int 
+              {
 %    \end{macrocode}
-% Then, the other rows (if there is several rows).
+% First, the end of the current row (we remind that |\RowStyle| applies to the
+% \emph{end} of the current row). The command |\@@_exp_color_arg:No| is
+% \emph{fully expandable}. 
 %    \begin{macrocode}
-        \int_compare:nNnT \l_@@_key_nb_rows_int > \c_one_int
-          {
-            \tl_gput_right:Ne \g_@@_pre_code_before_tl
-              { 
-                \@@_exp_color_arg:No \@@_rowcolor \l_@@_fill_tl 
-                  { 
-                    \int_eval:n { \c@iRow + 1 }
-                    - \int_eval:n { \c@iRow + \l_@@_key_nb_rows_int - 1 } 
-                  }
+                \@@_exp_color_arg:No \@@_roundedrectanglecolor \l_@@_fill_tl 
+                  { \int_use:N \c@iRow - \int_use:N \c@jCol }
+                  { \int_use:N \c@iRow - * }
+                  { \dim_use:N \l_@@_rounded_corners_dim }
+%    \end{macrocode}
+% Then, the other rows (if there are several rows).
+%    \begin{macrocode}
+                \int_compare:nNnT \l_@@_key_nb_rows_int > \c_one_int
+                  { \@@_rounded_from_row:n { \c@iRow + 1 } }
               }
+%    \end{macrocode}
+% Now, directly all the rows in the case of a command |\RowStyle| issued in the
+% first column of the array.
+%    \begin{macrocode}
+              { \@@_rounded_from_row:n { \c@iRow } }   
           }
       }
     \@@_put_in_row_style:n { \exp_not:n { #2 } }
@@ -10279,6 +10257,8 @@ version 2005/12/01 or later.
           }
       }
 %    \end{macrocode}
+% 
+%
 % |\l_@@_color_tl| is the value of the key |color| of |\RowStyle|.
 %    \begin{macrocode}
     \tl_if_empty:NF \l_@@_color_tl
@@ -10314,6 +10294,23 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% \medskip
+% The following commande must \emph{not} be protected.
+%    \begin{macrocode}
+\cs_new:Npn \@@_rounded_from_row:n #1 
+  {
+    \@@_exp_color_arg:No \@@_roundedrectanglecolor \l_@@_fill_tl 
+%    \end{macrocode}
+% In the following code, the ``|- 1|'' is \emph{not} a subtraction.
+%    \begin{macrocode}
+      { \int_eval:n { #1 } - 1 }
+      {
+        \int_eval:n { \c@iRow + \l_@@_key_nb_rows_int - 1 } 
+        - \exp_not:n { \int_use:N \c@jCol }
+      }
+      { \dim_use:N \l_@@_rounded_corners_dim }
+  }
+%    \end{macrocode}
 % 
 % \bigskip
 % \section{Colors of cells, rows and columns}
@@ -11073,12 +11070,10 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% When the user uses the key |color-inside|, the following command will
-% be linked to |\cellcolor| in the tabular.
+% The following command will be linked to |\cellcolor| in the tabular.
 %    \begin{macrocode}
 \NewDocumentCommand \@@_cellcolor_tabular { O { } m }
   {
-    \@@_test_color_inside:
     \tl_gput_right:Ne \g_@@_pre_code_before_tl
       { 
 %    \end{macrocode}
@@ -11094,12 +11089,10 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% When the user uses the key |color-inside|, the following command will
-% be linked to |\rowcolor| in the tabular.
+% The following command will be linked to |\rowcolor| in the tabular.
 %    \begin{macrocode}
 \NewDocumentCommand \@@_rowcolor_tabular { O { } m }
   {
-    \@@_test_color_inside:
     \tl_gput_right:Ne \g_@@_pre_code_before_tl
       { 
         \@@_rectanglecolor [ #1 ] { \exp_not:n { #2 } } 
@@ -11111,9 +11104,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% When the user uses the key |color-inside|, the following command will
-% be linked to |\rowcolors| in the tabular. The last argument (an optional
-% argument between square brackets is taken by curryfication).
+% The following command will be linked to |\rowcolors| in the tabular. The last
+% argument (an optional argument between square brackets is taken by
+% curryfication).
 %    \begin{macrocode}
 \NewDocumentCommand { \@@_rowcolors_tabular } { O { } m m }
   { \@@_rowlistcolors_tabular [ #1 ] { { #2 } , { #3 } } }
@@ -11121,12 +11114,10 @@ version 2005/12/01 or later.
 % The braces around |#2| and |#3| are mandatory.
 %
 % \bigskip
-% When the user uses the key |color-inside|, the following command will
-% be linked to |\rowlistcolors| in the tabular.
+% The following command will be linked to |\rowlistcolors| in the tabular.
 %    \begin{macrocode}
 \NewDocumentCommand { \@@_rowlistcolors_tabular } { O { } m O { } }
   {
-    \@@_test_color_inside:
     \peek_remove_spaces:n 
       { \@@_rowlistcolors_tabular:nnn { #1 } { #2 } { #3 } }
   }
@@ -13966,10 +13957,7 @@ version 2005/12/01 or later.
         \@@_add_opacity_to_fill:
         \tl_gput_right:Ne \g_@@_pre_code_before_tl
           { 
-            \exp_not:N \roundedrectanglecolor 
-              \tl_if_head_eq_meaning:oNTF \l_@@_fill_tl [
-                { \l_@@_fill_tl }
-                { { \l_@@_fill_tl } }
+            \@@_exp_color_arg:No \@@_roundedrectanglecolor \l_@@_fill_tl
               { #1 - #2 } 
               { \int_use:N \l_@@_last_row_int - \int_use:N \l_@@_last_col_int } 
               { \dim_use:N \l_@@_rounded_corners_dim }
@@ -13989,7 +13977,7 @@ version 2005/12/01 or later.
               { \int_use:N \l_@@_last_row_int }
               { \int_use:N \l_@@_last_col_int }
 %    \end{macrocode}
-% We will have in that last field a list of list of Tikz keys.
+% We will have in that last field a list of lists of Tikz keys.
 %    \begin{macrocode}
           }
       }
@@ -17248,17 +17236,6 @@ version 2005/12/01 or later.
     That~key~will~be~ignored.
   }
 %    \end{macrocode}
-%
-%    \begin{macrocode}
-\@@_msg_new:nn { without~color-inside } 
-  {
-    If~order~to~use~\token_to_str:N \cellcolor,~\token_to_str:N \rowcolor,~
-    \token_to_str:N \rowcolors\ or~\token_to_str:N \rowlistcolors\ 
-    outside~\token_to_str:N \CodeBefore,~you~
-    should~have~used~the~key~'color-inside'~in~your~\@@_full_name_env:.\\
-    You~can~go~on~but~you~may~need~more~compilations.
-  }
-%    \end{macrocode}
 % 
 %    \begin{macrocode}
 \@@_msg_new:nn { color~in~custom-line~with~tikz }
@@ -17480,8 +17457,9 @@ version 2005/12/01 or later.
     cell-space-limits,~
     color,~
     fill~(alias:~rowcolor),~
-    nb-rows~and~
-    opacity.
+    nb-rows,
+    opacity~and~
+    rounded-corners.
   }
 %    \end{macrocode}
 %
@@ -17569,7 +17547,6 @@ version 2005/12/01 or later.
     code-for-first-row,~
     code-for-last-col,~
     code-for-last-row,~
-    color-inside,~
     columns-width,~
     corners,~
     create-extra-nodes,~
@@ -17635,7 +17612,6 @@ version 2005/12/01 or later.
     code-for-first-row,~
     code-for-last-col,~
     code-for-last-row,~
-    color-inside,~
     columns-type,~
     columns-width,~
     corners,~
@@ -17701,7 +17677,6 @@ version 2005/12/01 or later.
     code-for-first-row,~
     code-for-last-col,~
     code-for-last-row,~
-    color-inside,~
     columns-width,~
     corners,~
     custom-line,~
