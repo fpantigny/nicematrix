@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.0x}
-\def\myfiledate{2024/11/27}
+\def\myfileversion{7.0a}
+\def\myfiledate{2024/12/16}
 %
 %
 %<*batchfile>  
@@ -2456,8 +2456,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Global }
   {
-    color-inside .code:n = ,
-    colortbl-like .code:n = ,
+    color-inside .code:n = 
+      \@@_warning_gredirect_none:n { key~color-inside } ,
+    colortbl-like .code:n = 
+      \@@_warning_gredirect_none:n { key~color-inside } ,
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
     ampersand-in-blocks .default:n = true , 
     &-in-blocks .meta:n = ampersand-in-blocks ,
@@ -4116,8 +4118,8 @@ version 2005/12/01 or later.
 %
 %
 % Now, we will create all the |col| nodes and |row| nodes with the informations
-% written in the |aux| file. You use the technique described in the page~1229 of
-% |pgfmanual.pdf|, version~3.1.4b.
+% written in the |aux| file. You use the technique described in the page~1247 of
+% |pgfmanual.pdf|, version~3.1.10.
 %    \begin{macrocode}
     \pgfsys@markposition { \@@_env: - position }
     \pgfsys@getposition { \@@_env: - position } \@@_picture_position: 
@@ -16527,6 +16529,17 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 % 
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { key~color-inside }
+  {
+    Key~deprecated.\\
+    The~key~'color-inside'~(and~its~alias~'colortbl-like')~is~now~point-less~
+    and~have~been~deprecated.\\
+    You~won't~have~similar~message~till~the~end~of~the~document.
+  }
+%    \end{macrocode}
+%
 %    \begin{macrocode}
 \@@_msg_new:nn { negative~weight }
   {

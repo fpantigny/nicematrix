@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.0x}
-\def\myfiledate{2024/11/27}
+\def\myfileversion{7.0a}
+\def\myfiledate{2024/12/16}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \RequirePackage{l3keys2e}
@@ -820,8 +820,10 @@
   }
 \keys_define:nn { nicematrix / Global }
   {
-    color-inside .code:n = ,
-    colortbl-like .code:n = ,
+    color-inside .code:n =
+      \__nicematrix_warning_gredirect_none:n { key~color-inside } ,
+    colortbl-like .code:n =
+      \__nicematrix_warning_gredirect_none:n { key~color-inside } ,
     ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
     ampersand-in-blocks .default:n = true ,
     &-in-blocks .meta:n = ampersand-in-blocks ,
@@ -9290,6 +9292,13 @@
     Incompatible~options.\\
     You~should~not~use~'hvlines',~'rounded-corners'~and~'corners'~at~this~time.\\
     The~output~will~not~be~reliable.
+  }
+\__nicematrix_msg_new:nn { key~color-inside }
+  {
+    Key~deprecated.\\
+    The~key~'color-inside'~(and~its~alias~'colortbl-like')~is~now~point-less~
+    and~have~been~deprecated.\\
+    You~won't~have~similar~message~till~the~end~of~the~document.
   }
 \__nicematrix_msg_new:nn { negative~weight }
   {
