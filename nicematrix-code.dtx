@@ -3814,6 +3814,10 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \CodeAfter \@@_CodeAfter:
     \cs_set_eq:NN \diagbox \@@_diagbox:nn
     \cs_set_eq:NN \NotEmpty \@@_NotEmpty:
+    \cs_set_eq:NN \EmptyCol \@@_EmptyCol:
+    \cs_set_eq:NN \TopRule \@@_TopRule
+    \cs_set_eq:NN \MidRule \@@_MidRule
+    \cs_set_eq:NN \BottomRule \@@_BottomRule
     \cs_set_eq:NN \RowStyle \@@_RowStyle:n
     \seq_map_inline:Nn \l_@@_custom_line_commands_seq
       { \cs_set_eq:cc { ##1 } { nicematrix - ##1 } } 
@@ -6048,7 +6052,10 @@ version 2005/12/01 or later.
   { \@@_fatal:n { Preamble~forgotten } }
 \cs_set_eq:cc { @@ _ \token_to_str:N \Hline } { @@ _ \token_to_str:N \hline } 
 \cs_set_eq:cc { @@ _ \token_to_str:N \toprule } { @@ _ \token_to_str:N \hline } 
+\cs_set_eq:cc { @@ _ \token_to_str:N \Block } { @@ _ \token_to_str:N \hline } 
 \cs_set_eq:cc { @@ _ \token_to_str:N \CodeBefore } { @@ _ \token_to_str:N \hline } 
+\cs_set_eq:cc { @@ _ \token_to_str:N \RowStyle } { @@ _ \token_to_str:N \hline } 
+\cs_set_eq:cc { @@ _ \token_to_str:N \diagbox } { @@ _ \token_to_str:N \hline } 
 %    \end{macrocode}
 % 
 % \bigskip
@@ -10902,6 +10909,8 @@ version 2005/12/01 or later.
             \str_if_eq:eeT \l_tmpa_tl { * }
               { \cs_set_nopar:Npn \l_tmpa_tl { 1 } }  
           }
+        \int_compare:nNnT \l_tmpa_tl > \g_@@_col_total_int
+          { \@@_error:n { Invalid~col~number } }
         \tl_if_empty:NTF \l_tmpb_tl 
           { \tl_set:No \l_tmpb_tl { \int_use:N \c@jCol } }
           { 
@@ -10941,6 +10950,8 @@ version 2005/12/01 or later.
                 \str_if_eq:eeT \l_tmpb_tl { * }
                   { \tl_set:No \l_tmpb_tl { \int_use:N \c@iRow } }
               }
+            \int_compare:nNnT \l_tmpa_tl > \g_@@_row_total_int 
+              { \@@_error:n { Invalid~row~number } }
             \int_compare:nNnT \l_tmpb_tl > \g_@@_row_total_int
               { \tl_set:No \l_tmpb_tl { \int_use:N \g_@@_row_total_int } }
 %    \end{macrocode}
@@ -11339,7 +11350,76 @@ version 2005/12/01 or later.
 % |\l_@@_last_row_int| may be equal to $-2$ or $-1$ (we can't write 
 % |\int_compare:nNnT \c@iRow < \l_@@_last_row_int|).
 % 
+% \bigskip
+% \subsubsection*{EmptyCol}
 %
+% The command |\EmptyCol| should be used in the preamble of an environment with
+% preamble in a construction |>{...}| prefixing a colummn. No rule will be drawn
+% in that column and no cell will be colored (whatever the coloring instructions
+% used). 
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_EmptyCol:
+  { 
+    \tl_set:Nx \l_tmpa_tl  
+      { { -2 } { \int_use:N \c@jCol } { 99 } { \int_use:N \c@jCol } { } } 
+    \seq_if_in:NoF \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl  
+      { \seq_gput_right:No \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl }
+    \cellcolor { nocolor } 
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\NewExpandableDocumentCommand { \@@_TopRule } { }
+  { 
+    \IfPackageLoadedTF { tikz } 
+      {
+        \IfPackageLoadedTF { booktabs } 
+          {
+            \Hline [ total-width = \heavyrulewidth, 
+                     tikz = { line~width=\heavyrulewidth } ]
+            \noalign { \skip_vertical:N \belowrulesep } 
+          }
+          { \@@_error:nn { TopRule~without~booktabs } { \TopRule } }
+      }
+      { \@@_error:nn { TopRule~without~tikz } { \TopRule } }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\NewExpandableDocumentCommand { \@@_BottomRule } { }
+  { 
+    \IfPackageLoadedTF { tikz } 
+      {
+        \IfPackageLoadedTF { booktabs } 
+          {
+            \noalign { \skip_vertical:N \aboverulesep }
+            \Hline [ total-width = \heavyrulewidth , 
+                     tikz = {line~width=\heavyrulewidth } ]
+          }
+          { \@@_error:nn { TopRule~without~booktabs } { \BottomRule } }
+      }
+      { \@@_error:nn { TopRule~without~tikz } { \BottomRule } }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\NewExpandableDocumentCommand { \@@_MidRule } { }
+  { 
+    \IfPackageLoadedTF { tikz } 
+      {
+        \IfPackageLoadedTF { booktabs } 
+          {
+            \noalign { \vskip \belowrulesep }
+            \Hline [ total-width = \lightrulewidth,
+                     tikz = { line~width = \lightrulewidth } ]
+            \noalign { \skip_vertical:N \aboverulesep }
+          }
+          { \@@_error:nn { TopRule~without~booktabs } { \MidRule } }
+      }
+      { \@@_error:nn { TopRule~without~tikz } { \MidRule } }
+  }
+%    \end{macrocode}
+% 
 % \bigskip
 % \subsubsection*{General system for drawing rules}
 %
@@ -16595,8 +16675,10 @@ version 2005/12/01 or later.
     In~the~row~\int_eval:n { \c@iRow },~
     ~you~try~to~use~more~columns~than~allowed~by~your~
     \@@_full_name_env:.\@@_message_hdotsfor:\ The~maximal~number~of~columns~is~ 
-    \int_use:N \g_@@_static_num_of_col_int\ 
-    ~(plus~the~potential~exterior~ones).~
+    \int_use:N \g_@@_static_num_of_col_int 
+    \bool_if:nT
+      { \int_compare_p:nNn \l_@@_first_col_int = 0 || \g_@@_last_col_found_bool }
+      { ~(plus~the~exterior~ones) }.~
     This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -16653,11 +16735,29 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { in~last~row }
   {
+    Erroneous~use.\\
     You~can't~use~the~command~#1 in~the~last~row~(exterior)~of~the~array.\\
     That~command~will~be~ignored.
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\@@_msg_new:nn { TopRule~without~booktabs } 
+  {
+    Erroneous~use.\\
+    You~can't~use~the~command~ #1 because~'booktabs'~is~not~loaded.\\
+    That~command~will~be~ignored.
+  }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+\@@_msg_new:nn { TopRule~without~tikz } 
+  {
+    Erroneous~use.\\
+    You~can't~use~the~command~ #1 because~'tikz'~is~not~loaded.\\
+    That~command~will~be~ignored.
+  }
+%    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_msg_new:nn { caption~outside~float }
@@ -17778,7 +17878,25 @@ version 2005/12/01 or later.
     This~error~is~fatal.
   }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Invalid~col~number }
+  {
+    Invalid~column~number.\\
+    A~color~instruction~the~\token_to_str:N \CodeBefore\ 
+    specifies~a~column~which~is~outside~the~array.~It~will~be~ignored. 
+  }
+%    \end{macrocode}
 % 
+%    \begin{macrocode}
+\@@_msg_new:nn { Invalid~row~number }
+  {
+    Invalid~row~number.\\
+    A~color~instruction~the~\token_to_str:N \CodeBefore\ 
+    specifies~a~row~which~is~outside~the~array.~It~will~be~ignored. 
+  }
+%    \end{macrocode}
+%
 % \newpage
 % \tableofcontents
 %

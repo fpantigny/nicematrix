@@ -301,9 +301,10 @@ crochets, une liste optionnelle de paires de la forme \textsl{clé=valeur}.
 \index{cell-space-bottom-limit}
 \index{cell-space-limits}
 
-Il est bien connu que certaines rangées des tableaux créés par défaut avec
-LaTeX sont trop proches l'une de l'autre. On en donne ci-dessous un exemple
-classique.
+Il est bien connu que certaines rangées\footnote{Dans ce document, on parlera de
+  \emph{rangée} pour désigner uniquement les rangées horizontales. Les colonnes,
+  par opposition, sont verticales.} des tableaux créés par défaut avec LaTeX
+sont trop proches l'une de l'autre. On en donne ci-dessous un exemple classique.
 
 \medskip
 \begin{Code}[width=9cm]
@@ -731,8 +732,9 @@ Les blocs mono-colonne ont un comportement spécial.
 largeur de la colonne courante.
 
 Dans les colonnes à largeur fixée (|p{...}|, |b{...}|, |m{...}|, |w{...}{...}|,
-|W{...}{...}|, |V{...}| et~|X|), le contenu du bloc est mis en forme comme un
-paragraphe de cette largeur.
+|W{...}{...}|, |V{...}|, similaires aux colonnes |V| de \pkg{varwidth}, et~|X|,
+similaires aux colonnes |X| de \pkg{tabularx}), le contenu du bloc est mis en
+forme comme un paragraphe de cette largeur.
 
 \item La spécification d'alignement horizontal donnée par le type de colonne
 (|c|, |r| ou |l|) est prise en compte pour le bloc. Pour un bloc dans une
@@ -951,17 +953,16 @@ Rang & \Block[C]{1-3}{Premier groupe} & & & \Block{1-3}{Deuxième groupe} \\
 \end{center}
 
 \bigskip
-\colorbox{yellow!50}{\bfseries Nouveau 6.28}\par\nobreak
 
-\smallskip
 La commande |\Block| accepte aussi les clés |p| et |j|. Avec la clé
 \Definition{p}, le contenu du bloc est composé comme un paragraphe (de manière
 similaire à une colonne standard de type |p|). Cette clé peut s'utiliser en
 conjonction avec les clés |l|, |c| ou |r| et, alors, le paragraphe est composé
-avec |\raggedright|, |\centering| ou |\raggedleft| (et les commandes
-|\RaggedRight|, |\Centering| et |\RaggedLeft| dans le cas où l'extension
-\pkg{ragged2e} est chargée). Avec la clé \Definition{j},
-le paragraphe est composé de manière justifiée.
+avec |\raggedright|, |\centering| ou |\raggedleft| (en fait, quand
+\pkg{ragged2e} est chargée, ce sont les commandes
+|\RaggedRight|, |\Centering| et |\RaggedLeft| fournies par cette extension qui
+seront utilisées au lieu de |\raggedright|, |\centering| et |\raggedleft|).
+Avec la clé \Definition{j}, le paragraphe est composé de manière justifiée.
 
 
 \subsection{Positionnement vertical du contenu des blocs}
@@ -981,10 +982,10 @@ contenu du bloc est centré verticalement.
 \item Avec la clé \Definition{t}, la ligne de base du contenu du bloc est alignée avec la
 ligne de base de la première rangée concernée par le bloc.
 
-\item Avec la clé \Definition{b}, la ligne de base de la dernière rangée du contenu du bloc
-(rappelons que le contenu du bloc peut comporter plusieurs rangées séparées par
-|\\|) est alignée avec la ligne de base de la dernière des rangées du tableau
-impliquées dans le bloc.
+\item Avec la clé \Definition{b}, la ligne de base de la dernière rangée du
+contenu du bloc (rappelons que le contenu du bloc peut comporter plusieurs
+rangées séparées par |\\|) est alignée avec la ligne de base de la dernière des
+rangées du tableau impliquées dans le bloc.
 
 \item Avec la clé \Definition{T}, le contenu du bloc est calé vers le haut.
 
@@ -1097,8 +1098,6 @@ text & text \\
 
 \index{ampersand-in-blocks}
 \index{\&-in-blocks}
-
-\colorbox{yellow!50}{\bfseries Nouveau 6.28}\par\nobreak
 
 \medskip
 L'extension \pkg{nicematrix} offre la possibilité d'utiliser directement |\\| et
@@ -2770,9 +2769,9 @@ sept \\
 
 \index{nocolor}
 
-L'extension \pkg{nicematrix} propose la couleur spéciale |nocolor| utilisable
-dans toutes les commandes de coloriage fournies par \pkg{nicematrix} (dans le
-|\CodeBefore| ou bien dans le tableau proprement dit).
+L'extension \pkg{nicematrix} propose la couleur spéciale \Definition{nocolor}
+utilisable dans toutes les commandes de coloriage fournies par \pkg{nicematrix}
+(dans le |\CodeBefore| ou bien dans le tableau proprement dit).
 
 Les cases marquées par cette couleur ne seront pas coloriées, quelles que soient
 les autres commandes de coloriage qui auraient pu s'appliquer à ces cases. 
@@ -2810,11 +2809,13 @@ clés globales de même nom (cf. p.~\pageref{cell-space}).
 \index{rowcolor (clé de \texttt{\textbackslash RowStyle})}
 \index{fill!clé de \texttt{\textbackslash RowStyle}} 
 \index{opacity!clé de \texttt{\textbackslash RowStyle}} 
+\index{rounded-corners!clé de \texttt{\textbackslash RowStyle}}
 La clé \Definition{rowcolor} (alias : \Definition{fill}) fixe la couleur de fond
 et la clé \Definition{opacity}\footnote{Attention : cette clé génère des
   instructions de transparence dans le \textsc{pdf} résultant et certains
   lecteurs de \textsc{pdf} n'acceptent pas la transparence.} l'opacité de cette
-couleur de fond.
+couleur de fond. Si la clé \Definition{rounded-corners} est utilisée, ce fond
+aura des coins arrondis.
 
 \item 
 \index{color!clé de \texttt{\textbackslash RowStyle}} 
@@ -2909,11 +2910,12 @@ supprimé (il est évidemment possible de le supprimer en mettant |\tabcolsep| o
 |\arraycolsep| à~$0$ avant).
 
 \medskip
-Il est possible de donner la valeur spéciale |auto| à l'option |columns-width|:
-toutes les colonnes du tableau auront alors une largeur égale à la largeur de la
-case la plus large du tableau.\footnote{Le résultat est atteint dès la première
-  compilation (mais PGF-TikZ écrivant des informations dans le fichier |aux|,
-  un message demandant une deuxième compilation apparaîtra).}\par\nobreak
+Il est possible de donner la valeur spéciale \Definition{auto} à l'option
+|columns-width|: toutes les colonnes du tableau auront alors une largeur égale à
+la largeur de la case la plus large du tableau.\footnote{Le résultat est atteint
+  dès la première compilation (mais PGF-TikZ écrivant des informations dans le
+  fichier |aux|, un message demandant une deuxième compilation
+  apparaîtra).}\par\nobreak
 
 \medskip
 \begin{Code}[width=10cm]
@@ -4079,20 +4081,20 @@ cases adjacentes.
 \begin{Code}[width=11cm]
 \NiceMatrixOptions{xdots/shorten = 0.6 em}
 \begin{pNiceMatrix}
-I       & 0      & \Cdots  &0     \\
-0       & I      & \Ddots  &\Vdots\\
-\Vdots  &\Ddots  & I       &0     \\
-0       &\Cdots  & 0       &I
+I       & 0      & \Cdots  & 0      \\
+0       & I      & \Ddots  & \Vdots \\
+\Vdots  & \Ddots & I       & 0      \\
+0       & \Cdots & 0       & I
 \emph{\CodeAfter \line{2-2}{3-3}}
 \end{pNiceMatrix}
 \end{Code}
 \begin{scope}
 \NiceMatrixOptions{xdots/shorten = 0.6 em}
 $\begin{pNiceMatrix}
-I       & 0      & \Cdots  &0     \\
-0       & I      & \Ddots  &\Vdots\\
-\Vdots  &\Ddots  & I       &0     \\
-0       &\Cdots  & 0       &I
+I       & 0      & \Cdots  & 0     \\
+0       & I      & \Ddots  & \Vdots\\
+\Vdots  &\Ddots  & I       & 0     \\
+0       &\Cdots  & 0       & I
 \CodeAfter \line{2-2}{3-3}
 \end{pNiceMatrix}$
 \end{scope}
@@ -4187,9 +4189,9 @@ avec la construction suivante.
 \hfuzz=15cm
 \begin{Code}[width=11cm]
 $\begin{NiceArray}{\emph{(ccc)(c)}}[cell-space-limits=2pt]
- 1          & 1           & 1           & x \\
+ 1           & 1            & 1            & x \\
 \dfrac{1}{4} & \dfrac{1}{2} & \dfrac{1}{4} & y \\
- 1          & 2           & 3           & z 
+ 1           & 2            & 3            & z 
 \end{NiceArray}$
 \end{Code}
 \end{scope}
@@ -4204,7 +4206,7 @@ $\begin{NiceArray}{(ccc)(c)}[cell-space-limits=2pt]
 \bigskip
 La commande |\SubMatrix| accepte en fait également deux arguments optionnels
 spécifiés par les symboles traditionnels |^| et |_| pour des éléments en
-exposant et en indice.
+exposant et en indice (mais aucun espace n'est réservé pour ces éléments).
 
 \medskip
 \begin{scope}
@@ -4357,7 +4359,7 @@ Part A              & the first part \\
                     & a second sub-part \\
 \bottomrule
 \CodeAfter
-  \emph{\emph{\SubMatrix{\{}{2-2}{3-2}{.}}}
+  \emph{\SubMatrix{\{}{2-2}{3-2}{.}}
 \end{NiceTabular}
 \end{Code}
 \hspace{2cm}
@@ -6053,10 +6055,9 @@ car ils ne sont peut-être pas tracés). Le dernier nœud a aussi un alias nomm�
 simplement |last|. 
 
 \smallskip
-\colorbox{yellow!50}{\textbf{Modification 6.28}}\enskip Il existe aussi des nœuds nommés
-$i$|.1|, $i$|.2|, $i$|.25|, $i$|.3|, $i$|.4|, $i$|.5|, $i$|.6|, $i$|.7|,
-$i$|.75|, $i$|.8| et $i$|.9| intermédiaires entre le nœud~$i$ et le
-nœud~$i+1$.
+Il existe aussi des nœuds nommés $i$|.1|, $i$|.2|, $i$|.25|, $i$|.3|, $i$|.4|,
+$i$|.5|, $i$|.6|, $i$|.7|, $i$|.75|, $i$|.8| et $i$|.9| intermédiaires entre le
+nœud~$i$ et le nœud~$i+1$.
 
 \smallskip
 Ces nœuds sont accessibles dans le

@@ -6,7 +6,7 @@
 %%
 %% nicematrix-code.dtx  (with options: `package')
 %% 
-%% Copyright (C) 2018-2024 by F. Pantigny
+%% Copyright (C) 2018-2025 by F. Pantigny
 %% 
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, either
@@ -1608,6 +1608,10 @@
     \cs_set_eq:NN \CodeAfter \__nicematrix_CodeAfter:
     \cs_set_eq:NN \diagbox \__nicematrix_diagbox:nn
     \cs_set_eq:NN \NotEmpty \__nicematrix_NotEmpty:
+    \cs_set_eq:NN \EmptyCol \__nicematrix_EmptyCol:
+    \cs_set_eq:NN \TopRule \__nicematrix_TopRule
+    \cs_set_eq:NN \MidRule \__nicematrix_MidRule
+    \cs_set_eq:NN \BottomRule \__nicematrix_BottomRule
     \cs_set_eq:NN \RowStyle \__nicematrix_RowStyle:n
     \seq_map_inline:Nn \l__nicematrix_custom_line_commands_seq
       { \cs_set_eq:cc { ##1 } { nicematrix - ##1 } }
@@ -2793,7 +2797,10 @@
   { \__nicematrix_fatal:n { Preamble~forgotten } }
 \cs_set_eq:cc { __nicematrix _ \token_to_str:N \Hline } { __nicematrix _ \token_to_str:N \hline }
 \cs_set_eq:cc { __nicematrix _ \token_to_str:N \toprule } { __nicematrix _ \token_to_str:N \hline }
+\cs_set_eq:cc { __nicematrix _ \token_to_str:N \Block } { __nicematrix _ \token_to_str:N \hline }
 \cs_set_eq:cc { __nicematrix _ \token_to_str:N \CodeBefore } { __nicematrix _ \token_to_str:N \hline }
+\cs_set_eq:cc { __nicematrix _ \token_to_str:N \RowStyle } { __nicematrix _ \token_to_str:N \hline }
+\cs_set_eq:cc { __nicematrix _ \token_to_str:N \diagbox } { __nicematrix _ \token_to_str:N \hline }
 \cs_new:Npn \__nicematrix_multicolumn:nnn #1 #2 #3
   {
     \multispan { #1 }
@@ -5749,6 +5756,8 @@
             \str_if_eq:eeT \l_tmpa_tl { * }
               { \cs_set_nopar:Npn \l_tmpa_tl { 1 } }
           }
+        \int_compare:nNnT \l_tmpa_tl > \g__nicematrix_col_total_int
+          { \__nicematrix_error:n { Invalid~col~number } }
         \tl_if_empty:NTF \l_tmpb_tl
           { \tl_set:No \l_tmpb_tl { \int_use:N \c@jCol } }
           {
@@ -5782,6 +5791,8 @@
                 \str_if_eq:eeT \l_tmpb_tl { * }
                   { \tl_set:No \l_tmpb_tl { \int_use:N \c@iRow } }
               }
+            \int_compare:nNnT \l_tmpa_tl > \g__nicematrix_row_total_int
+              { \__nicematrix_error:n { Invalid~row~number } }
             \int_compare:nNnT \l_tmpb_tl > \g__nicematrix_row_total_int
               { \tl_set:No \l_tmpb_tl { \int_use:N \g__nicematrix_row_total_int } }
             \cs_if_exist:cF
@@ -5982,6 +5993,57 @@
               { \bool_if:NF \l__nicematrix_in_last_col_bool { #1 } }
           }
       }
+  }
+\cs_new_protected:Npn \__nicematrix_EmptyCol:
+  {
+    \tl_set:Nx \l_tmpa_tl
+      { { -2 } { \int_use:N \c@jCol } { 99 } { \int_use:N \c@jCol } { } }
+    \seq_if_in:NoF \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl
+      { \seq_gput_right:No \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl }
+    \cellcolor { nocolor }
+  }
+\NewExpandableDocumentCommand { \__nicematrix_TopRule } { }
+  {
+    \IfPackageLoadedTF { tikz }
+      {
+        \IfPackageLoadedTF { booktabs }
+          {
+            \Hline [ total-width = \heavyrulewidth,
+                     tikz = { line~width=\heavyrulewidth } ]
+            \noalign { \skip_vertical:N \belowrulesep }
+          }
+          { \__nicematrix_error:nn { TopRule~without~booktabs } { \TopRule } }
+      }
+      { \__nicematrix_error:nn { TopRule~without~tikz } { \TopRule } }
+  }
+\NewExpandableDocumentCommand { \__nicematrix_BottomRule } { }
+  {
+    \IfPackageLoadedTF { tikz }
+      {
+        \IfPackageLoadedTF { booktabs }
+          {
+            \noalign { \skip_vertical:N \aboverulesep }
+            \Hline [ total-width = \heavyrulewidth ,
+                     tikz = {line~width=\heavyrulewidth } ]
+          }
+          { \__nicematrix_error:nn { TopRule~without~booktabs } { \BottomRule } }
+      }
+      { \__nicematrix_error:nn { TopRule~without~tikz } { \BottomRule } }
+  }
+\NewExpandableDocumentCommand { \__nicematrix_MidRule } { }
+  {
+    \IfPackageLoadedTF { tikz }
+      {
+        \IfPackageLoadedTF { booktabs }
+          {
+            \noalign { \vskip \belowrulesep }
+            \Hline [ total-width = \lightrulewidth,
+                     tikz = { line~width = \lightrulewidth } ]
+            \noalign { \skip_vertical:N \aboverulesep }
+          }
+          { \__nicematrix_error:nn { TopRule~without~booktabs } { \MidRule } }
+      }
+      { \__nicematrix_error:nn { TopRule~without~tikz } { \MidRule } }
   }
 \keys_define:nn { nicematrix / Rules }
   {
@@ -9340,8 +9402,10 @@
     In~the~row~\int_eval:n { \c@iRow },~
     ~you~try~to~use~more~columns~than~allowed~by~your~
     \__nicematrix_full_name_env:.\__nicematrix_message_hdotsfor:\ The~maximal~number~of~columns~is~
-    \int_use:N \g__nicematrix_static_num_of_col_int\
-    ~(plus~the~potential~exterior~ones).~
+    \int_use:N \g__nicematrix_static_num_of_col_int
+    \bool_if:nT
+      { \int_compare_p:nNn \l__nicematrix_first_col_int = 0 || \g__nicematrix_last_col_found_bool }
+      { ~(plus~the~exterior~ones) }.~
     This~error~is~fatal.
   }
 \__nicematrix_msg_new:nn { columns~not~used }
@@ -9378,7 +9442,20 @@
   }
 \__nicematrix_msg_new:nn { in~last~row }
   {
+    Erroneous~use.\\
     You~can't~use~the~command~#1 in~the~last~row~(exterior)~of~the~array.\\
+    That~command~will~be~ignored.
+  }
+\__nicematrix_msg_new:nn { TopRule~without~booktabs }
+  {
+    Erroneous~use.\\
+    You~can't~use~the~command~ #1 because~'booktabs'~is~not~loaded.\\
+    That~command~will~be~ignored.
+  }
+\__nicematrix_msg_new:nn { TopRule~without~tikz }
+  {
+    Erroneous~use.\\
+    You~can't~use~the~command~ #1 because~'tikz'~is~not~loaded.\\
     That~command~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { caption~outside~float }
@@ -10252,6 +10329,18 @@
     You~have~probably~forgotten~the~preamble~of~your~
     \__nicematrix_full_name_env:. \\
     This~error~is~fatal.
+  }
+\__nicematrix_msg_new:nn { Invalid~col~number }
+  {
+    Invalid~column~number.\\
+    A~color~instruction~the~\token_to_str:N \CodeBefore\
+    specifies~a~column~which~is~outside~the~array.~It~will~be~ignored.
+  }
+\__nicematrix_msg_new:nn { Invalid~row~number }
+  {
+    Invalid~row~number.\\
+    A~color~instruction~the~\token_to_str:N \CodeBefore\
+    specifies~a~row~which~is~outside~the~array.~It~will~be~ignored.
   }
 
 \endinput
