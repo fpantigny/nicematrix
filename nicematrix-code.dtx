@@ -7979,12 +7979,12 @@ version 2005/12/01 or later.
     { #1 } 
     { #2 } 
     {
-      \int_compare:nNnTF { #3 } > { 99 }
+      \int_compare:nNnTF { #3 } > { 98 }
         { \int_use:N \c@iRow }
         { #3 } 
     }
     {
-      \int_compare:nNnTF { #4 } > { 99 }
+      \int_compare:nNnTF { #4 } > { 98 }
         { \int_use:N \c@jCol }
         { #4 }
     }
@@ -11361,7 +11361,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_EmptyCol:
   { 
     \tl_set:Nx \l_tmpa_tl  
-      { { -2 } { \int_use:N \c@jCol } { 99 } { \int_use:N \c@jCol } { } } 
+      { { -2 } { \int_use:N \c@jCol } { 100 } { \int_use:N \c@jCol } { } } 
     \seq_if_in:NoF \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl  
       { \seq_gput_right:No \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl }
     \cellcolor { nocolor } 
@@ -11369,16 +11369,12 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\NewExpandableDocumentCommand { \@@_TopRule } { }
+\NewExpandableDocumentCommand { \@@_TopRule } {  }
   { 
     \IfPackageLoadedTF { tikz } 
       {
         \IfPackageLoadedTF { booktabs } 
-          {
-            \Hline [ total-width = \heavyrulewidth, 
-                     tikz = { line~width=\heavyrulewidth } ]
-            \noalign { \skip_vertical:N \belowrulesep } 
-          }
+          { \@@_TopRule_i: }          
           { \@@_error:nn { TopRule~without~booktabs } { \TopRule } }
       }
       { \@@_error:nn { TopRule~without~tikz } { \TopRule } }
@@ -11386,16 +11382,44 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
+\cs_new:Npn \@@_TopRule_i:
+  {
+    \noalign \bgroup 
+      \peek_meaning:NTF [ 
+        { \@@_TopRule_ii: }
+        { \@@_TopRule_ii: [ \dim_use:N \heavyrulewidth ] }
+  }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+\NewDocumentCommand \@@_TopRule_ii: { o }
+  {
+    \tl_gput_right:Ne \g_@@_pre_code_after_tl
+      { 
+        \@@_hline:n 
+          { 
+            position = \int_eval:n { \c@iRow + 1 } ,
+            tikz = 
+              { 
+                line~width = #1 , 
+                yshift =  0.25 \arrayrulewidth ,
+                shorten~< = - 0.5 \arrayrulewidth
+              } , 
+            total-width = #1
+          } 
+      }
+    \skip_vertical:n { \belowrulesep + #1 }
+    \egroup 
+  }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
 \NewExpandableDocumentCommand { \@@_BottomRule } { }
   { 
     \IfPackageLoadedTF { tikz } 
       {
         \IfPackageLoadedTF { booktabs } 
-          {
-            \noalign { \skip_vertical:N \aboverulesep }
-            \Hline [ total-width = \heavyrulewidth , 
-                     tikz = {line~width=\heavyrulewidth } ]
-          }
+          { \@@_BottomRule_i: }
           { \@@_error:nn { TopRule~without~booktabs } { \BottomRule } }
       }
       { \@@_error:nn { TopRule~without~tikz } { \BottomRule } }
@@ -11403,20 +11427,87 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
+\cs_new:Npn \@@_BottomRule_i:
+  {
+    \noalign \bgroup 
+      \peek_meaning:NTF [ 
+        { \@@_BottomRule_ii: }
+        { \@@_BottomRule_ii: [ \dim_use:N \heavyrulewidth ] }
+  }
+%    \end{macrocode}
+%
+%
+%    \begin{macrocode}
+\NewDocumentCommand \@@_BottomRule_ii: { o }
+  {
+    \tl_gput_right:Ne \g_@@_pre_code_after_tl
+      { 
+        \@@_hline:n 
+          { 
+            position = \int_eval:n { \c@iRow + 1 } ,
+            tikz = 
+              { 
+                line~width = #1 , 
+                yshift =  0.25 \arrayrulewidth ,
+                shorten~< = - 0.5 \arrayrulewidth
+              } , 
+            total-width = #1 ,
+          } 
+      }
+    \skip_vertical:N \aboverulesep 
+    \@@_create_row_node_i:
+    \skip_vertical:n { #1 }
+    \egroup
+  }
+%    \end{macrocode}
+%
+%
+%
+%    \begin{macrocode}
 \NewExpandableDocumentCommand { \@@_MidRule } { }
   { 
     \IfPackageLoadedTF { tikz } 
       {
         \IfPackageLoadedTF { booktabs } 
-          {
-            \noalign { \vskip \belowrulesep }
-            \Hline [ total-width = \lightrulewidth,
-                     tikz = { line~width = \lightrulewidth } ]
-            \noalign { \skip_vertical:N \aboverulesep }
-          }
+          { \@@_MidRule_i: }
           { \@@_error:nn { TopRule~without~booktabs } { \MidRule } }
       }
       { \@@_error:nn { TopRule~without~tikz } { \MidRule } }
+  }
+%    \end{macrocode}
+%
+%
+%    \begin{macrocode}
+\cs_new:Npn \@@_MidRule_i:
+  {
+    \noalign \bgroup 
+      \peek_meaning:NTF [ 
+        { \@@_MidRule_ii: }
+        { \@@_MidRule_ii: [ \dim_use:N \lightrulewidth ] } 
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\NewDocumentCommand \@@_MidRule_ii: { o }
+  {
+    \skip_vertical:N \aboverulesep
+    \@@_create_row_node_i:
+    \tl_gput_right:Ne \g_@@_pre_code_after_tl
+      { 
+        \@@_hline:n 
+          { 
+            position = \int_eval:n { \c@iRow + 1 } ,
+            tikz = 
+              { 
+                line~width = #1 , 
+                yshift =  0.25 \arrayrulewidth ,
+                shorten~< = - 0.5 \arrayrulewidth
+              } , 
+            total-width = #1 ,
+          } 
+      }
+    \skip_vertical:n { \belowrulesep + #1 }
+    \egroup
   }
 %    \end{macrocode}
 % 
@@ -12091,9 +12182,9 @@ version 2005/12/01 or later.
   { 
     \peek_remove_spaces:n
       {
-       \peek_meaning:NTF \Hline
-         { \@@_Hline_ii:nn { #1 + 1 } } 
-         { \@@_Hline_iii:n { #1 } } 
+        \peek_meaning:NTF \Hline
+          { \@@_Hline_ii:nn { #1 + 1 } } 
+          { \@@_Hline_iii:n { #1 } } 
       }
   }
 %    \end{macrocode}
@@ -12109,7 +12200,7 @@ version 2005/12/01 or later.
 % 
 %
 %    \begin{macrocode}
-\cs_set:Npn \@@_Hline_iv:nn #1 #2 
+\cs_set_protected:Npn \@@_Hline_iv:nn #1 #2 
   {
     \@@_compute_rule_width:n { multiplicity = #1 , #2 }
     \skip_vertical:N \l_@@_rule_width_dim 
@@ -13876,7 +13967,6 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\cs_generate_variant:Nn \@@_Block_v:nnnnnn { n n e e }
 \cs_new_protected:Npn \@@_Block_iv:nnnnnn #1 #2 #3 #4 #5 #6
   {
 %    \end{macrocode}
@@ -13889,18 +13979,22 @@ version 2005/12/01 or later.
 %
 % We remind that the first mandatory argument of the command |\Block| is the
 % size of the block with the special format $i$|-|$j$. However, the user is
-% allowed to omit $i$ or $j$ (or both). This will be interpreted as: the last
-% row (resp. column) of the block will be the last row (resp. column) of the
-% block (without the potential exterior row---resp. column---of the array). By
-% convention, this is stored in |\g_@@_blocks_seq| as a number of rows (resp.
-% columns) for the block equal to 100. That's what we detect now.
+% allowed to omit $i$ or $j$ (or both). This will be interpreted as follows: the
+% last row (resp. column) of the block will be the last row (resp. column) of
+% the block (without the potential exterior row---resp. column---of the array).
+% By convention, this is stored in |\g_@@_blocks_seq| as a number of rows (resp.
+% columns) for the block equal to 100. That's what we detect now (we write 98
+% for the case the the command |\Block| has been issued in the ``first row'').
 %    \begin{macrocode}
-    \int_compare:nNnTF { #3 } > { 99 }
+    \int_compare:nNnTF { #3 } > { 98 }
       { \int_set_eq:NN \l_@@_last_row_int \c@iRow }
       { \int_set:Nn \l_@@_last_row_int { #3 } }
-    \int_compare:nNnTF { #4 } > { 99 }
+    \int_compare:nNnTF { #4 } > { 98 }
       { \int_set_eq:NN \l_@@_last_col_int \c@jCol }
       { \int_set:Nn \l_@@_last_col_int { #4 } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
     \int_compare:nNnTF \l_@@_last_col_int > \g_@@_col_total_int 
       {
         \bool_lazy_and:nnTF
@@ -13942,6 +14036,7 @@ version 2005/12/01 or later.
 % |#5| is a list of \textsl{key=value} options;
 % |#6| is the label
 %    \begin{macrocode}
+\cs_generate_variant:Nn \@@_Block_v:nnnnnn { n n e e }
 \cs_new_protected:Npn \@@_Block_v:nnnnnn #1 #2 #3 #4 #5 #6
   {  
 %    \end{macrocode}

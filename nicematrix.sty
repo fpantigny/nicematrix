@@ -3951,12 +3951,12 @@
     { #1 }
     { #2 }
     {
-      \int_compare:nNnTF { #3 } > { 99 }
+      \int_compare:nNnTF { #3 } > { 98 }
         { \int_use:N \c@iRow }
         { #3 }
     }
     {
-      \int_compare:nNnTF { #4 } > { 99 }
+      \int_compare:nNnTF { #4 } > { 98 }
         { \int_use:N \c@jCol }
         { #4 }
     }
@@ -5997,53 +5997,122 @@
 \cs_new_protected:Npn \__nicematrix_EmptyCol:
   {
     \tl_set:Nx \l_tmpa_tl
-      { { -2 } { \int_use:N \c@jCol } { 99 } { \int_use:N \c@jCol } { } }
+      { { -2 } { \int_use:N \c@jCol } { 100 } { \int_use:N \c@jCol } { } }
     \seq_if_in:NoF \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl
       { \seq_gput_right:No \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl }
     \cellcolor { nocolor }
   }
-\NewExpandableDocumentCommand { \__nicematrix_TopRule } { }
+\NewExpandableDocumentCommand { \__nicematrix_TopRule } {  }
   {
     \IfPackageLoadedTF { tikz }
       {
         \IfPackageLoadedTF { booktabs }
-          {
-            \Hline [ total-width = \heavyrulewidth,
-                     tikz = { line~width=\heavyrulewidth } ]
-            \noalign { \skip_vertical:N \belowrulesep }
-          }
+          { \__nicematrix_TopRule_i: }
           { \__nicematrix_error:nn { TopRule~without~booktabs } { \TopRule } }
       }
       { \__nicematrix_error:nn { TopRule~without~tikz } { \TopRule } }
+  }
+\cs_new:Npn \__nicematrix_TopRule_i:
+  {
+    \noalign \bgroup
+      \peek_meaning:NTF [
+        { \__nicematrix_TopRule_ii: }
+        { \__nicematrix_TopRule_ii: [ \dim_use:N \heavyrulewidth ] }
+  }
+\NewDocumentCommand \__nicematrix_TopRule_ii: { o }
+  {
+    \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
+      {
+        \__nicematrix_hline:n
+          {
+            position = \int_eval:n { \c@iRow + 1 } ,
+            tikz =
+              {
+                line~width = #1 ,
+                yshift =  0.25 \arrayrulewidth ,
+                shorten~< = - 0.5 \arrayrulewidth
+              } ,
+            total-width = #1
+          }
+      }
+    \skip_vertical:n { \belowrulesep + #1 }
+    \egroup
   }
 \NewExpandableDocumentCommand { \__nicematrix_BottomRule } { }
   {
     \IfPackageLoadedTF { tikz }
       {
         \IfPackageLoadedTF { booktabs }
-          {
-            \noalign { \skip_vertical:N \aboverulesep }
-            \Hline [ total-width = \heavyrulewidth ,
-                     tikz = {line~width=\heavyrulewidth } ]
-          }
+          { \__nicematrix_BottomRule_i: }
           { \__nicematrix_error:nn { TopRule~without~booktabs } { \BottomRule } }
       }
       { \__nicematrix_error:nn { TopRule~without~tikz } { \BottomRule } }
+  }
+\cs_new:Npn \__nicematrix_BottomRule_i:
+  {
+    \noalign \bgroup
+      \peek_meaning:NTF [
+        { \__nicematrix_BottomRule_ii: }
+        { \__nicematrix_BottomRule_ii: [ \dim_use:N \heavyrulewidth ] }
+  }
+\NewDocumentCommand \__nicematrix_BottomRule_ii: { o }
+  {
+    \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
+      {
+        \__nicematrix_hline:n
+          {
+            position = \int_eval:n { \c@iRow + 1 } ,
+            tikz =
+              {
+                line~width = #1 ,
+                yshift =  0.25 \arrayrulewidth ,
+                shorten~< = - 0.5 \arrayrulewidth
+              } ,
+            total-width = #1 ,
+          }
+      }
+    \skip_vertical:N \aboverulesep
+    \__nicematrix_create_row_node_i:
+    \skip_vertical:n { #1 }
+    \egroup
   }
 \NewExpandableDocumentCommand { \__nicematrix_MidRule } { }
   {
     \IfPackageLoadedTF { tikz }
       {
         \IfPackageLoadedTF { booktabs }
-          {
-            \noalign { \vskip \belowrulesep }
-            \Hline [ total-width = \lightrulewidth,
-                     tikz = { line~width = \lightrulewidth } ]
-            \noalign { \skip_vertical:N \aboverulesep }
-          }
+          { \__nicematrix_MidRule_i: }
           { \__nicematrix_error:nn { TopRule~without~booktabs } { \MidRule } }
       }
       { \__nicematrix_error:nn { TopRule~without~tikz } { \MidRule } }
+  }
+\cs_new:Npn \__nicematrix_MidRule_i:
+  {
+    \noalign \bgroup
+      \peek_meaning:NTF [
+        { \__nicematrix_MidRule_ii: }
+        { \__nicematrix_MidRule_ii: [ \dim_use:N \lightrulewidth ] }
+  }
+\NewDocumentCommand \__nicematrix_MidRule_ii: { o }
+  {
+    \skip_vertical:N \aboverulesep
+    \__nicematrix_create_row_node_i:
+    \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
+      {
+        \__nicematrix_hline:n
+          {
+            position = \int_eval:n { \c@iRow + 1 } ,
+            tikz =
+              {
+                line~width = #1 ,
+                yshift =  0.25 \arrayrulewidth ,
+                shorten~< = - 0.5 \arrayrulewidth
+              } ,
+            total-width = #1 ,
+          }
+      }
+    \skip_vertical:n { \belowrulesep + #1 }
+    \egroup
   }
 \keys_define:nn { nicematrix / Rules }
   {
@@ -6463,15 +6532,15 @@
   {
     \peek_remove_spaces:n
       {
-       \peek_meaning:NTF \Hline
-         { \__nicematrix_Hline_ii:nn { #1 + 1 } }
-         { \__nicematrix_Hline_iii:n { #1 } }
+        \peek_meaning:NTF \Hline
+          { \__nicematrix_Hline_ii:nn { #1 + 1 } }
+          { \__nicematrix_Hline_iii:n { #1 } }
       }
   }
 \cs_set:Npn \__nicematrix_Hline_ii:nn #1 #2 { \__nicematrix_Hline_i:n { #1 } }
 \cs_set:Npn \__nicematrix_Hline_iii:n #1
   { \__nicematrix_collect_options:n { \__nicematrix_Hline_iv:nn { #1 } } }
-\cs_set:Npn \__nicematrix_Hline_iv:nn #1 #2
+\cs_set_protected:Npn \__nicematrix_Hline_iv:nn #1 #2
   {
     \__nicematrix_compute_rule_width:n { multiplicity = #1 , #2 }
     \skip_vertical:N \l__nicematrix_rule_width_dim
@@ -7513,15 +7582,14 @@
       { \cs_set_eq:NN \ialign \__nicematrix_old_ialign: }
     \seq_map_inline:Nn \g__nicematrix_blocks_seq { \__nicematrix_Block_iv:nnnnnn ##1 }
   }
-\cs_generate_variant:Nn \__nicematrix_Block_v:nnnnnn { n n e e }
 \cs_new_protected:Npn \__nicematrix_Block_iv:nnnnnn #1 #2 #3 #4 #5 #6
   {
     \int_zero_new:N \l__nicematrix_last_row_int
     \int_zero_new:N \l__nicematrix_last_col_int
-    \int_compare:nNnTF { #3 } > { 99 }
+    \int_compare:nNnTF { #3 } > { 98 }
       { \int_set_eq:NN \l__nicematrix_last_row_int \c@iRow }
       { \int_set:Nn \l__nicematrix_last_row_int { #3 } }
-    \int_compare:nNnTF { #4 } > { 99 }
+    \int_compare:nNnTF { #4 } > { 98 }
       { \int_set_eq:NN \l__nicematrix_last_col_int \c@jCol }
       { \int_set:Nn \l__nicematrix_last_col_int { #4 } }
     \int_compare:nNnTF \l__nicematrix_last_col_int > \g__nicematrix_col_total_int
@@ -7553,6 +7621,7 @@
           }
       }
   }
+\cs_generate_variant:Nn \__nicematrix_Block_v:nnnnnn { n n e e }
 \cs_new_protected:Npn \__nicematrix_Block_v:nnnnnn #1 #2 #3 #4 #5 #6
   {
     \group_begin:
