@@ -6002,16 +6002,18 @@
       { \seq_gput_right:No \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl }
     \cellcolor { nocolor }
   }
-\NewExpandableDocumentCommand { \__nicematrix_TopRule } {  }
+\cs_new:Npn \__nicematrix_tikz_booktabs_loaded:nn #1 #2
   {
     \IfPackageLoadedTF { tikz }
       {
         \IfPackageLoadedTF { booktabs }
-          { \__nicematrix_TopRule_i: }
-          { \__nicematrix_error:nn { TopRule~without~booktabs } { \TopRule } }
+          { #2 }
+          { \__nicematrix_error:nn { TopRule~without~booktabs } { #1 } }
       }
-      { \__nicematrix_error:nn { TopRule~without~tikz } { \TopRule } }
+      { \__nicematrix_error:nn { TopRule~without~tikz } { #1 } }
   }
+\NewExpandableDocumentCommand { \__nicematrix_TopRule } {  }
+  { \__nicematrix_tikz_booktabs_loaded:nn \TopRule \__nicematrix_TopRule_i: }
 \cs_new:Npn \__nicematrix_TopRule_i:
   {
     \noalign \bgroup
@@ -6039,15 +6041,7 @@
     \egroup
   }
 \NewExpandableDocumentCommand { \__nicematrix_BottomRule } { }
-  {
-    \IfPackageLoadedTF { tikz }
-      {
-        \IfPackageLoadedTF { booktabs }
-          { \__nicematrix_BottomRule_i: }
-          { \__nicematrix_error:nn { TopRule~without~booktabs } { \BottomRule } }
-      }
-      { \__nicematrix_error:nn { TopRule~without~tikz } { \BottomRule } }
-  }
+  { \__nicematrix_tikz_booktabs_loaded:nn \BottomRule \__nicematrix_BottomRule_i: }
 \cs_new:Npn \__nicematrix_BottomRule_i:
   {
     \noalign \bgroup
@@ -6077,15 +6071,7 @@
     \egroup
   }
 \NewExpandableDocumentCommand { \__nicematrix_MidRule } { }
-  {
-    \IfPackageLoadedTF { tikz }
-      {
-        \IfPackageLoadedTF { booktabs }
-          { \__nicematrix_MidRule_i: }
-          { \__nicematrix_error:nn { TopRule~without~booktabs } { \MidRule } }
-      }
-      { \__nicematrix_error:nn { TopRule~without~tikz } { \MidRule } }
-  }
+  { \__nicematrix_tikz_booktabs_loaded:nn \MidRule \__nicematrix_MidRule_i: }
 \cs_new:Npn \__nicematrix_MidRule_i:
   {
     \noalign \bgroup

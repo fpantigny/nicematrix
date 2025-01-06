@@ -11368,19 +11368,26 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% The following command will be used for |\Toprule|, |\BottomRule| and |\MidRule|.
 %    \begin{macrocode}
-\NewExpandableDocumentCommand { \@@_TopRule } {  }
-  { 
+\cs_new:Npn \@@_tikz_booktabs_loaded:nn #1 #2
+  {
     \IfPackageLoadedTF { tikz } 
       {
         \IfPackageLoadedTF { booktabs } 
-          { \@@_TopRule_i: }          
-          { \@@_error:nn { TopRule~without~booktabs } { \TopRule } }
+          { #2 }          
+          { \@@_error:nn { TopRule~without~booktabs } { #1 } }
       }
-      { \@@_error:nn { TopRule~without~tikz } { \TopRule } }
+      { \@@_error:nn { TopRule~without~tikz } { #1 } }
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\NewExpandableDocumentCommand { \@@_TopRule } {  }
+  { \@@_tikz_booktabs_loaded:nn \TopRule \@@_TopRule_i: }
+%    \end{macrocode}
+%
+% 
 %    \begin{macrocode}
 \cs_new:Npn \@@_TopRule_i:
   {
@@ -11415,15 +11422,7 @@ version 2005/12/01 or later.
 % 
 %    \begin{macrocode}
 \NewExpandableDocumentCommand { \@@_BottomRule } { }
-  { 
-    \IfPackageLoadedTF { tikz } 
-      {
-        \IfPackageLoadedTF { booktabs } 
-          { \@@_BottomRule_i: }
-          { \@@_error:nn { TopRule~without~booktabs } { \BottomRule } }
-      }
-      { \@@_error:nn { TopRule~without~tikz } { \BottomRule } }
-  }
+  { \@@_tikz_booktabs_loaded:nn \BottomRule \@@_BottomRule_i: }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -11462,18 +11461,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %
-%
 %    \begin{macrocode}
 \NewExpandableDocumentCommand { \@@_MidRule } { }
-  { 
-    \IfPackageLoadedTF { tikz } 
-      {
-        \IfPackageLoadedTF { booktabs } 
-          { \@@_MidRule_i: }
-          { \@@_error:nn { TopRule~without~booktabs } { \MidRule } }
-      }
-      { \@@_error:nn { TopRule~without~tikz } { \MidRule } }
-  }
+  { \@@_tikz_booktabs_loaded:nn \MidRule \@@_MidRule_i: }
 %    \end{macrocode}
 %
 %
