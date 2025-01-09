@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.0a}
-\def\myfiledate{2024/12/16}
+\def\myfileversion{7.0x}
+\def\myfiledate{2025/01/07}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \RequirePackage{l3keys2e}
@@ -334,6 +334,7 @@
 \bool_new:N \g__nicematrix_rotate_bool
 \bool_new:N \g__nicematrix_rotate_c_bool
 \bool_new:N \l__nicematrix_X_bool
+\bool_new:N \l__nicematrix_S_bool
 \bool_new:N \g__nicematrix_caption_finished_bool
 \tl_new:N \g__nicematrix_aux_tl
 \bool_new:N \g__nicematrix_aux_found_bool
@@ -1311,10 +1312,10 @@
       { \box_use_drop:N \l__nicematrix_cell_box }
       {
         \bool_if:NTF \g__nicematrix_not_empty_cell_bool
-          \__nicematrix_node_for_cell:
+          \__nicematrix_node_for_cell_wrapper:
           {
             \dim_compare:nNnTF { \box_wd:N \l__nicematrix_cell_box } > \c_zero_dim
-              \__nicematrix_node_for_cell:
+              \__nicematrix_node_for_cell_wrapper:
               { \box_use_drop:N \l__nicematrix_cell_box }
           }
       }
@@ -1349,6 +1350,21 @@
        inner~sep = \c_zero_dim ,
        minimum~width = \c_zero_dim
      }
+  }
+\cs_new_protected:Npn \__nicematrix_node_for_cell_wrapper:
+  {
+    \bool_if:NT \l__nicematrix_S_bool
+      {
+        \use:c
+          {
+            __siunitx_table_align_
+            \bool_if:NTF \l__siunitx_table_text_bool
+              \l__siunitx_table_align_text_tl
+              \l__siunitx_table_align_number_tl
+            :n
+          }
+      }
+      { \__nicematrix_node_for_cell: }
   }
 \cs_new_protected:Npn \__nicematrix_node_for_cell:
   {
@@ -2575,12 +2591,24 @@
     \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
       {
         > {
-            \__nicematrix_cell_begin:
+            \bool_set_true:N \l__nicematrix_S_bool
             \keys_set:nn { siunitx } { #1 }
+            \__nicematrix_cell_begin:
             \siunitx_cell_begin:w
           }
         c
-        < { \siunitx_cell_end: \__nicematrix_cell_end: }
+        <
+          {
+            \siunitx_cell_end:
+            \tl_gput_right:Ne \g__nicematrix_cell_after_hook_tl
+              {
+                \bool_if:NTF \l__siunitx_table_text_bool
+                  \bool_set_true:N
+                  \bool_set_false:N
+                \l__siunitx_table_text_bool
+              }
+            \__nicematrix_cell_end:
+          }
       }
      \int_gincr:N \c@jCol
      \__nicematrix_rec_preamble_after_col:n
@@ -7472,11 +7500,7 @@
       {
         \l_tmpa_tl
         { \exp_not:n { #3 } }
-        {
-          \group_begin:
-          \exp_not:n { #4 #5 }
-          \group_end:
-        }
+        { { \exp_not:n { #4 #5 } } }
       }
   }
 \cs_generate_variant:Nn \__nicematrix_Block_vii:nnnnn { e e }

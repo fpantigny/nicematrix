@@ -962,7 +962,8 @@ avec |\raggedright|, |\centering| ou |\raggedleft| (en fait, quand
 \pkg{ragged2e} est chargée, ce sont les commandes
 |\RaggedRight|, |\Centering| et |\RaggedLeft| fournies par cette extension qui
 seront utilisées au lieu de |\raggedright|, |\centering| et |\raggedleft|).
-Avec la clé \Definition{j}, le paragraphe est composé de manière justifiée.
+Avec la clé \Definition{j} (qui force la clé |p|), le paragraphe est composé de
+manière justifiée. 
 
 
 \subsection{Positionnement vertical du contenu des blocs}
@@ -1124,7 +1125,8 @@ environnement.\footnote{On ne peut donc pas écrire :
 \end{itemize}
 
 \bigskip
-L'esperluette |&| permet de diviser horizontalement un bloc en sous-blocs \emph{de même taille}.
+L'esperluette |&| permet de diviser horizontalement un bloc en sous-blocs
+\emph{de même taille}.
 
 \medskip
 \begin{Code}[width=85mm]
@@ -1132,7 +1134,7 @@ L'esperluette |&| permet de diviser horizontalement un bloc en sous-blocs \emph{
    [hvlines,\emph{ampersand-in-blocks}]
   & les cinq premiers entiers naturels \\
 3 & \Block{}{un&deux&trois} \\
-4 & \Block{}{un&deux&trois& quatre} \\
+4 & \Block{}{un&deux&trois&quatre} \\
 5 & \Block{}{un&deux&trois&quatre&cinq} \\
 \end{NiceTabular}
 \end{Code}
@@ -1146,9 +1148,9 @@ L'esperluette |&| permet de diviser horizontalement un bloc en sous-blocs \emph{
 \end{NiceTabular}
 
 \medskip
-Comme on le voit, le bloc (qui était ici mono-case) a été divisé en sous-cases
-de même taille. Dans le cas présent, on aurait peut-être préféré le codage
-suivant :
+Comme on le voit, chaque bloc (ici, à chaque fois mono-case) a été divisé en
+sous-cases de \emph{même taille}. Dans le cas présent, on aurait peut-être
+préféré le codage suivant :
 
 \medskip
 \begin{Code}[width=85mm]
@@ -1960,10 +1962,12 @@ composantes de la matrice par |\Cdots|, |\Vdots|, etc. (voir
 p.~\pageref{Cdots}).
 
 \medskip
-L'extension \pkg{nicematrix} prédéfinit en fait les commandes \DefinitionCommande{hdottedline} et
-\DefinitionCommande{cdottedline} et la lettre «|:|» pour ces filets en pointillés.\footnote{Néanmoins, l'utilisateur peut écraser ces définitions de
-  |\hdottedline|, |\cdottedline| et de «|:|» avec |custom-line| s'il le souhaite
-  (par exemple pour les remplacer par des lignes en tiretés).}
+L'extension \pkg{nicematrix} prédéfinit en fait les commandes
+\DefinitionCommande{hdottedline} et \DefinitionCommande{cdottedline} et la
+lettre «|:|» pour ces filets en pointillés.\footnote{Néanmoins, l'utilisateur
+  peut écraser ces définitions de |\hdottedline|, |\cdottedline| et de «|:|»
+  avec |custom-line| s'il le souhaite (par exemple pour les remplacer par des
+  lignes en tiretés).}
 
 \smallskip
 \begin{Code}
@@ -2116,7 +2120,8 @@ De nouvelles commandes sont disponibles dans ce |\CodeBefore|: |\cellcolor|,
   position des filets éventuels sont également accessibles : cf.
   p.~\pageref{nodes-i}.}
 
-Les noms de certaines de ces commandes sont inspirés des noms des commandes de \pkg{colortbl}.
+Les noms de certaines de ces commandes sont inspirés des noms des commandes de
+\pkg{colortbl}.
 
 \label{code-before}
 \index{cellcolor@\texttt{\textbackslash cellcolor}!commande du
@@ -3860,7 +3865,8 @@ d'options TikZ applicables à un chemin (à l'exception de «|color|»,
 «|shorten >|» et «|shorten <|»).
 
 \medskip
-Voici par exemple une matrice tridiagonale avec le style |loosely dotted| :\par\nobreak
+Voici par exemple une matrice tridiagonale avec le style |loosely dotted|
+:\par\nobreak
 
 \medskip
 \begin{Code}
@@ -5008,11 +5014,11 @@ modifier ce type de liste de \pkg{enumitem} (en utilisant en interne la commande
 
 
 \item La clé \Definition{notes/enumitem-keys-para} est similaire à la précédente
-mais elle est utilisée pour le type de liste qui sera utilisé quand l'option |para| est
-choisie. Bien entendu, quand cette option |para| est active, c'est une liste de
-type |inline| (suivant le vocabulaire de \pkg{enumitem}) qui est utilisée et les
-paires \textsl{clé=valeur} doivent donc correspondre à une telle liste de type
-|inline|.
+mais elle est utilisée pour le type de liste qui sera utilisé quand l'option
+|para| est choisie. Bien entendu, quand cette option |para| est active, c'est
+une liste de type |inline| (suivant le vocabulaire de \pkg{enumitem}) qui est
+utilisée et les paires \textsl{clé=valeur} doivent donc correspondre à une telle
+liste de type |inline|.
 
 Initialement, le style de liste utilisé est défini par :\quad 
 
@@ -5160,8 +5166,7 @@ semi-transparent pour estomper le tableau (attention : certains lecteurs de
 
 Si l'extension \pkg{siunitx} est chargée (avant ou après \pkg{nicematrix}), il
 est possible d'utiliser les colonnes de type |S| de \pkg{siunitx} dans les
-environnements de \pkg{nicematrix}. L'implémentation n'utilise explicitement
-aucune macro privée de \pkg{siunitx}.
+environnements de \pkg{nicematrix}. 
 
 \medskip
 \begin{Code}[width = 10.6cm]
@@ -5891,7 +5896,8 @@ clés \Definition{extra-left-margin} et \Definition{extra-right-margin}. Ces
 marges ne sont pas incorporées dans les «nœuds larges». Dans l'exemple suivant,
 nous avons utilisé |extra-left-margin| et |extra-right-margin| avec la valeur $3$~pt.
 \[\begin{pNiceMatrix}%
-   [create-large-nodes,left-margin,right-margin,extra-right-margin=3pt,extra-left-margin=3pt]
+   [create-large-nodes,left-margin,right-margin,extra-right-margin=3pt,
+    extra-left-margin=3pt]
 \CodeBefore [create-cell-nodes]
     \begin{tikzpicture}
        [every node/.style = {inner sep = 0 pt},

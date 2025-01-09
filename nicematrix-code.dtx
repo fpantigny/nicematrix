@@ -2,7 +2,7 @@
 %
 % This file should be compiled with $lualatex$.
 %
-% Copyright (C) 2018-2024 by F. Pantigny
+% Copyright (C) 2018-2025 by F. Pantigny
 % ------------------------------------------
 %
 % This file may be distributed and/or modified under the
@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.0a}
-\def\myfiledate{2024/12/16}
+\def\myfileversion{7.0x}
+\def\myfiledate{2025/01/07}
 %
 %
 %<*batchfile>  
@@ -29,7 +29,7 @@
 \preamble
 
 
-Copyright (C) 2018-2024 by F. Pantigny
+Copyright (C) 2018-2025 by F. Pantigny
 -----------------------------------
 
 This file may be distributed and/or modified under the
@@ -909,11 +909,18 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % In a cell, it will be possible to know whether we are in a cell of a column of
-% type |X| thanks to that flag.
+% type |X| thanks to that flag (the |X| columns of \pkg{nicematrix} are inspired
+% by those of \pkg{tabularx}).
 %    \begin{macrocode}
 \bool_new:N \l_@@_X_bool 
 %    \end{macrocode}
 %
+% \bigskip
+% The following flag will be raised in a column of type |S| (of \pkg{siunitx}).
+%    \begin{macrocode}
+\bool_new:N \l_@@_S_bool
+%    \end{macrocode}
+% 
 %    \begin{macrocode}
 \bool_new:N \g_@@_caption_finished_bool
 %    \end{macrocode}
@@ -3266,10 +3273,10 @@ version 2005/12/01 or later.
       { \box_use_drop:N \l_@@_cell_box } 
       {
         \bool_if:NTF \g_@@_not_empty_cell_bool
-          \@@_node_for_cell:
+          \@@_node_for_cell_wrapper:
           { 
             \dim_compare:nNnTF { \box_wd:N \l_@@_cell_box } > \c_zero_dim 
-              \@@_node_for_cell:
+              \@@_node_for_cell_wrapper:
               { \box_use_drop:N \l_@@_cell_box } 
           }
       }
@@ -3325,7 +3332,27 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % The following command creates the \textsc{pgf} name of the node with, of
-% course, |\l_@@_cell_box| as the content.
+% course, |\l_@@_cell_box| as the content. First, we have a command
+% |\@@_node_for_cell_wrapper:|, which is, as its names says, a wrapper around
+% |\@@_node_for_cell:|.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_node_for_cell_wrapper:
+  {
+    \bool_if:NT \l_@@_S_bool 
+      { 
+        \use:c 
+          { 
+            __siunitx_table_align_ 
+            \bool_if:NTF \l__siunitx_table_text_bool
+              \l__siunitx_table_align_text_tl 
+              \l__siunitx_table_align_number_tl 
+            :n 
+          } 
+      }
+      { \@@_node_for_cell: }
+  }
+%    \end{macrocode}
+%
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_node_for_cell:
   {
@@ -5060,7 +5087,7 @@ version 2005/12/01 or later.
     \tl_gput_right:No \g_@@_array_preamble_tl \g_@@_pre_cell_tl 
     \tl_gclear:N \g_@@_pre_cell_tl
     \tl_gput_right:Nn \g_@@_array_preamble_tl 
-      { > \@@_cell_begin: c < \@@_cell_end: }  
+      { > \@@_cell_begin: c < \@@_cell_end: }
 %    \end{macrocode}
 %
 % We increment the counter of columns and then we test for the presence of a |<|.
@@ -5673,12 +5700,32 @@ version 2005/12/01 or later.
     \tl_gput_right:Nn \g_@@_array_preamble_tl 
       {
         > { 
-            \@@_cell_begin: 
+            \bool_set_true:N \l_@@_S_bool
             \keys_set:nn { siunitx } { #1 } 
+            \@@_cell_begin: 
             \siunitx_cell_begin:w 
           }
         c
-        < { \siunitx_cell_end: \@@_cell_end: }
+        < 
+          { 
+            \siunitx_cell_end: 
+%    \end{macrocode}
+% We want the value of |\l__siunitx_table_text_bool| available \emph{after}
+% |\@@_cell_end:| because we need it to know how to align our box after the
+% construction of the PGF/TikZ node. That's why we use
+% |\g_@@_cell_after_hook_tl| to reset the correct value of
+% |\l__siunitx_table_text_bool| (of course, if will stay local within the cell
+% of the underlying |\halign|).
+%    \begin{macrocode}
+            \tl_gput_right:Ne \g_@@_cell_after_hook_tl 
+              { 
+                \bool_if:NTF \l__siunitx_table_text_bool 
+                  \bool_set_true:N
+                  \bool_set_false:N 
+                \l__siunitx_table_text_bool 
+              }
+            \@@_cell_end: 
+          }
       }
 %    \end{macrocode}
 % We increment the counter of columns and then we test for the presence of a |<|.
@@ -13826,18 +13873,17 @@ version 2005/12/01 or later.
       {   
         \l_tmpa_tl
         { \exp_not:n { #3 } }
-        {
-          \group_begin:
-          \exp_not:n { #4 #5 }
-          \group_end:
-        }
+%    \end{macrocode}
+% Here, the curly braces for the group are mandatory.
+%    \begin{macrocode}
+        { { \exp_not:n { #4 #5 } } }
       }
   }
 %    \end{macrocode}
 %
 %
 % \bigskip
-% The following macro is for the case of a |\Block| which uses the key~|p|.
+% The following macro is also for the case of a |\Block| which uses the key~|p|.
 %    \begin{macrocode}
 \cs_generate_variant:Nn \@@_Block_vii:nnnnn { e e }
 \cs_new_protected:Npn \@@_Block_vii:nnnnn #1 #2 #3 #4 #5 
@@ -16535,7 +16581,7 @@ version 2005/12/01 or later.
     footnote .bool_set:N = \g_@@_footnote_bool ,
     footnotehyper .bool_set:N = \g_@@_footnotehyper_bool ,
 %    \end{macrocode}
-% The test for a potential modification of \pkg{array} has been deleted. You
+% The test for a potential modification of \pkg{array} has been deleted. We
 % keep the following key only for compatibility but maybe we will delete it.
 %    \begin{macrocode}
     no-test-for-array .code:n =  \prg_do_nothing: ,

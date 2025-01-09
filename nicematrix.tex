@@ -925,8 +925,8 @@ The command |\Block| supports also the keys |p| and |j|. With the key
 column of type |p|). That key may be used in conjunction with the key: |l|, |c|
 or |r|, and, in that case, the paragraph is formatted with |\raggedright|,
 |\centering| or |\raggedleft| (or |\RaggedRight|, |\Centering| and |\RaggedLeft|
-when \pkg{ragged2e}) est chargée. With the key \Definition{j}, the paragraph is
-justified.
+when \pkg{ragged2e}) est chargée. With the key \Definition{j} (which inforces
+the key |p|), the paragraph is justified.
 
 \subsection{Vertical position of the content of the block}
 
@@ -937,8 +937,9 @@ For the vertical position, the command |\Blocks| accepts the keys
 
 
 \begin{itemize}
-\item \index{v-center (key of \texttt{\textbackslash Block})}
-With the key \Definition{m}\footnote{That key has an alias: |v-center|.}, the content of the block is vertically centered.
+\item \index{v-center (key of \texttt{\textbackslash Block})} With the key
+\Definition{m}\footnote{That key has an alias: |v-center|.}, the content of the
+block is vertically centered.
 \item With the key \Definition{t}, the baseline of the content of the block is aligned
 with the baseline of the first row concerned by the block.
 \item with the key \Definition{b}, the baseline of the last row of the content of the
@@ -1060,7 +1061,8 @@ text & text \\
 
 \medskip
 The extension \pkg{nicematrix} provides the ability to use |\\| and |&| directly
-in the content of a block (in order to format its contents) but there is some rectrictions.
+in the content of a block (in order to format its contents) but there is some
+rectrictions.
 
 \begin{itemize}
 \item One must not use both |\\| and |&| in the same block.
@@ -1107,7 +1109,8 @@ sub-blocks of \emph{the same size}.
 
 
 As we can see, the blocks (which was are in fact mono-cell blocks) are divided
-into sub-blocks of the same size. However, maybe the following code would be prefered.
+into sub-blocks of the \emph{same size}. However, maybe the following code would
+be prefered.
 
 \medskip
 \begin{Code}[width=90mm]
@@ -1896,10 +1899,10 @@ dotted rules are also used by \pkg{nicematrix} to draw continuous dotted rules
 between cells of the matrix with |\Cdots|, |\Vdots|, etc. (cf. p.~\pageref{Cdots}).
 
 In fact, \pkg{nicematrix} defines by default the commands
-\DefinitionCommand{hdottedline} and \DefinitionCommand{cdottedline} and the letter ``|:|'' for
-those dotted rules.\footnote{However, it's possible to overwrite those
-  definitions with a |custom-line| (in order, for example, to switch to dashed
-  lines).}
+\DefinitionCommand{hdottedline} and \DefinitionCommand{cdottedline} and the
+letter ``|:|'' for those dotted rules.\footnote{However, it's possible to
+  overwrite those definitions with a |custom-line| (in order, for example, to
+  switch to dashed lines).}
 
 \smallskip
 \begin{Code}
@@ -5036,8 +5039,8 @@ readers don't support transparency).
 
 If the package \pkg{siunitx} is loaded (before or after \pkg{nicematrix}),
 it's possible to use the |S| column type of \pkg{siunitx} in the environments
-of \pkg{nicematrix}. The implementation doesn't use explicitly any private
-macro of \pkg{siunitx}. 
+of \pkg{nicematrix}. 
+
 
 
 \medskip
