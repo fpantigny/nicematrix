@@ -914,12 +914,6 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \bool_new:N \l_@@_X_bool 
 %    \end{macrocode}
-%
-% \bigskip
-% The following flag will be raised in a column of type |S| (of \pkg{siunitx}).
-%    \begin{macrocode}
-\bool_new:N \l_@@_S_bool
-%    \end{macrocode}
 % 
 %    \begin{macrocode}
 \bool_new:N \g_@@_caption_finished_bool
@@ -3273,10 +3267,10 @@ version 2005/12/01 or later.
       { \box_use_drop:N \l_@@_cell_box } 
       {
         \bool_if:NTF \g_@@_not_empty_cell_bool
-          \@@_node_for_cell_wrapper:
+          \@@_print_node_cell:
           { 
             \dim_compare:nNnTF { \box_wd:N \l_@@_cell_box } > \c_zero_dim 
-              \@@_node_for_cell_wrapper:
+              \@@_print_node_cell:
               { \box_use_drop:N \l_@@_cell_box } 
           }
       }
@@ -3331,28 +3325,32 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% The following command creates the \textsc{pgf} name of the node with, of
-% course, |\l_@@_cell_box| as the content. First, we have a command
-% |\@@_node_for_cell_wrapper:|, which is, as its names says, a wrapper around
-% |\@@_node_for_cell:|.
+% In the cells of a column of type |S| (of \pkg{siunitx}), we have to wrap the
+% command |\@@_node_for_cell:| inside a command of \pkg{siunitx} to inforce the
+% correct horizontal alignment. In the cells of the columns with other columns
+% type, we don't have to do that job. That's why we create a socket with its
+% default plug (|identity|) and a plug when we have to do the wrapping.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_node_for_cell_wrapper:
+\socket_new:nn { nicematrix / siunitx-wrap } { 1 }
+\socket_new_plug:nnn { nicematrix / siunitx-wrap } { active }
   {
-    \bool_if:NT \l_@@_S_bool 
+    \use:c 
       { 
-        \use:c 
-          { 
-            __siunitx_table_align_ 
-            \bool_if:NTF \l__siunitx_table_text_bool
-              \l__siunitx_table_align_text_tl 
-              \l__siunitx_table_align_number_tl 
-            :n 
-          } 
-      }
-      { \@@_node_for_cell: }
+        __siunitx_table_align_ 
+        \bool_if:NTF \l__siunitx_table_text_bool
+          \l__siunitx_table_align_text_tl 
+          \l__siunitx_table_align_number_tl 
+        :n 
+      } 
+      { #1 }
   }
+\cs_new_protected:Npn \@@_print_node_cell:
+  { \socket_use:nn { nicematrix / siunitx-wrap } { \@@_node_for_cell: } }
 %    \end{macrocode}
 %
+% \bigskip
+% The following command creates the \textsc{pgf} name of the node with, of
+% course, |\l_@@_cell_box| as the content. 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_node_for_cell:
   {
@@ -5700,7 +5698,14 @@ version 2005/12/01 or later.
     \tl_gput_right:Nn \g_@@_array_preamble_tl 
       {
         > { 
-            \bool_set_true:N \l_@@_S_bool
+%    \end{macrocode}
+% In the cells of a column of type |S|, we have to wrap the command
+% |\@@_node_for_cell:| for the horizontal alignment of the content of the cell
+% (\pkg{siunitx} has done a job but it's without effect since we have to put the
+% content in a box for the PGF/TikZ node and that's why we have to do the job of
+% horizontal alignement once again). 
+%    \begin{macrocode}
+            \socket_assign_plug:nn { nicematrix / siunitx-wrap } { active }
             \keys_set:nn { siunitx } { #1 } 
             \@@_cell_begin: 
             \siunitx_cell_begin:w 

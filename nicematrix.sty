@@ -334,7 +334,6 @@
 \bool_new:N \g__nicematrix_rotate_bool
 \bool_new:N \g__nicematrix_rotate_c_bool
 \bool_new:N \l__nicematrix_X_bool
-\bool_new:N \l__nicematrix_S_bool
 \bool_new:N \g__nicematrix_caption_finished_bool
 \tl_new:N \g__nicematrix_aux_tl
 \bool_new:N \g__nicematrix_aux_found_bool
@@ -1312,10 +1311,10 @@
       { \box_use_drop:N \l__nicematrix_cell_box }
       {
         \bool_if:NTF \g__nicematrix_not_empty_cell_bool
-          \__nicematrix_node_for_cell_wrapper:
+          \__nicematrix_print_node_cell:
           {
             \dim_compare:nNnTF { \box_wd:N \l__nicematrix_cell_box } > \c_zero_dim
-              \__nicematrix_node_for_cell_wrapper:
+              \__nicematrix_print_node_cell:
               { \box_use_drop:N \l__nicematrix_cell_box }
           }
       }
@@ -1351,19 +1350,22 @@
        minimum~width = \c_zero_dim
      }
   }
-\cs_new_protected:Npn \__nicematrix_node_for_cell_wrapper:
+\socket_new:nn { nicematrix / siunitx-wrap } { 1 }
+\socket_new_plug:nnn { nicematrix / siunitx-wrap } { active }
   {
-    \bool_if:NT \l__nicematrix_S_bool
+    \use:c
       {
-        \use:c
-          {
-            __siunitx_table_align_
-            \bool_if:NTF \l__siunitx_table_text_bool
-              \l__siunitx_table_align_text_tl
-              \l__siunitx_table_align_number_tl
-            :n
-          }
+        __siunitx_table_align_
+        \bool_if:NTF \l__siunitx_table_text_bool
+          \l__siunitx_table_align_text_tl
+          \l__siunitx_table_align_number_tl
+        :n
       }
+      { #1 }
+  }
+\cs_new_protected:Npn \__nicematrix_print_node_cell:
+  {
+    \socket_use:nn { nicematrix / siunitx-wrap }
       { \__nicematrix_node_for_cell: }
   }
 \cs_new_protected:Npn \__nicematrix_node_for_cell:
@@ -2591,7 +2593,7 @@
     \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
       {
         > {
-            \bool_set_true:N \l__nicematrix_S_bool
+            \socket_assign_plug:nn { nicematrix / siunitx-wrap } { active }
             \keys_set:nn { siunitx } { #1 }
             \__nicematrix_cell_begin:
             \siunitx_cell_begin:w
