@@ -1268,7 +1268,8 @@ version 2005/12/01 or later.
 % \bigskip
 % In the |\CodeBefore|, the value of |\g_@@_pos_of_blocks_seq| will be the value
 % read in the |aux| file from a previous run. However, in the |\CodeBefore|, the
-% command |\EmptyColumn| will write virtual positions of blocks in the following sequence.
+% commands |\EmptyColumn| and |\EmptyRow| will write virtual positions of blocks
+% in the following sequence. 
 %    \begin{macrocode}
 \seq_new:N \g_@@_future_pos_of_blocks_seq 
 %    \end{macrocode}
@@ -4231,6 +4232,7 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \ShowCellNames \@@_ShowCellNames
     \cs_set_eq:NN \TikzEveryCell \@@_TikzEveryCell
     \cs_set_eq:NN \EmptyColumn \@@_EmptyColumn:n
+    \cs_set_eq:NN \EmptyRow \@@_EmptyRow:n
   }
 %    \end{macrocode}
 % 
@@ -11362,9 +11364,24 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_EmptyColumn:n #1
   {
-    \seq_gput_right:Nn \g_@@_future_pos_of_blocks_seq 
-      { { -2 } { #1 } { 98 } { #1 } { } } % 98 and not 99 !
-    \columncolor { nocolor } { #1 }
+    \clist_map_inline:nn { #1 }
+      {
+        \seq_gput_right:Nn \g_@@_future_pos_of_blocks_seq 
+          { { -2 } { #1 } { 98 } { ##1 } { } } % 98 and not 99 !
+        \columncolor { nocolor } { ##1 }
+      }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_EmptyRow:n #1
+  {
+    \clist_map_inline:nn { #1 }
+      {
+        \seq_gput_right:Nn \g_@@_future_pos_of_blocks_seq 
+          { { ##1 } { -2 } { ##1 } { 98 } { } } % 98 and not 99 !
+        \rowcolor { nocolor } { ##1 }
+      }
   }
 %    \end{macrocode}
 % 

@@ -1786,6 +1786,7 @@
     \cs_set_eq:NN \ShowCellNames \__nicematrix_ShowCellNames
     \cs_set_eq:NN \TikzEveryCell \__nicematrix_TikzEveryCell
     \cs_set_eq:NN \EmptyColumn \__nicematrix_EmptyColumn:n
+    \cs_set_eq:NN \EmptyRow \__nicematrix_EmptyRow:n
   }
 \cs_new_protected:Npn \__nicematrix_exec_code_before:
   {
@@ -6006,9 +6007,21 @@
   }
 \cs_new_protected:Npn \__nicematrix_EmptyColumn:n #1
   {
-    \seq_gput_right:Nn \g__nicematrix_future_pos_of_blocks_seq
-      { { -2 } { #1 } { 98 } { #1 } { } } % 98 and not 99 !
-    \columncolor { nocolor } { #1 }
+    \clist_map_inline:nn { #1 }
+      {
+        \seq_gput_right:Nn \g__nicematrix_future_pos_of_blocks_seq
+          { { -2 } { #1 } { 98 } { ##1 } { } } % 98 and not 99 !
+        \columncolor { nocolor } { ##1 }
+      }
+  }
+\cs_new_protected:Npn \__nicematrix_EmptyRow:n #1
+  {
+    \clist_map_inline:nn { #1 }
+      {
+        \seq_gput_right:Nn \g__nicematrix_future_pos_of_blocks_seq
+          { { ##1 } { -2 } { ##1 } { 98 } { } } % 98 and not 99 !
+        \rowcolor { nocolor } { ##1 }
+      }
   }
 \cs_set_eq:NN \OnlyMainNiceMatrix \use:n
 \cs_new_protected:Npn \__nicematrix_OnlyMainNiceMatrix:n #1
