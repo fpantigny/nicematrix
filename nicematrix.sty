@@ -335,6 +335,7 @@
 \bool_new:N \g__nicematrix_rotate_c_bool
 \bool_new:N \l__nicematrix_X_bool
 \bool_new:N \g__nicematrix_caption_finished_bool
+\bool_new:N \l__nicematrix_no_cell_nodes_bool
 \tl_new:N \g__nicematrix_aux_tl
 \bool_new:N \g__nicematrix_aux_found_bool
 \seq_new:N \g__nicematrix_size_seq
@@ -408,6 +409,7 @@
 \dim_new:N \g__nicematrix_width_first_col_dim
 \seq_new:N \g__nicematrix_blocks_seq
 \seq_new:N \g__nicematrix_pos_of_blocks_seq
+\seq_new:N \g__nicematrix_future_pos_of_blocks_seq
 \seq_new:N \g__nicematrix_pos_of_xdots_seq
 \seq_new:N \g__nicematrix_pos_of_stroken_blocks_seq
 \clist_new:N \l__nicematrix_corners_cells_clist
@@ -828,6 +830,7 @@
     ampersand-in-blocks .default:n = true ,
     &-in-blocks .meta:n = ampersand-in-blocks ,
     no-cell-nodes .code:n =
+      \bool_set_true:N \l__nicematrix_no_cell_nodes_bool
       \cs_set_protected:Npn \__nicematrix_node_for_cell:
         { \box_use_drop:N \l__nicematrix_cell_box } ,
     no-cell-nodes .value_forbidden:n = true ,
@@ -1364,10 +1367,7 @@
       { #1 }
   }
 \cs_new_protected:Npn \__nicematrix_print_node_cell:
-  {
-    \socket_use:nn { nicematrix / siunitx-wrap }
-      { \__nicematrix_node_for_cell: }
-  }
+  { \socket_use:nn { nicematrix / siunitx-wrap } { \__nicematrix_node_for_cell: } }
 \cs_new_protected:Npn \__nicematrix_node_for_cell:
   {
     \pgfpicture
@@ -1626,7 +1626,6 @@
     \cs_set_eq:NN \CodeAfter \__nicematrix_CodeAfter:
     \cs_set_eq:NN \diagbox \__nicematrix_diagbox:nn
     \cs_set_eq:NN \NotEmpty \__nicematrix_NotEmpty:
-    \cs_set_eq:NN \EmptyCol \__nicematrix_EmptyCol:
     \cs_set_eq:NN \TopRule \__nicematrix_TopRule
     \cs_set_eq:NN \MidRule \__nicematrix_MidRule
     \cs_set_eq:NN \BottomRule \__nicematrix_BottomRule
@@ -1700,7 +1699,7 @@
     \seq_gclear:N \g__nicematrix_cols_vlism_seq
     \seq_gclear:N \g__nicematrix_submatrix_seq
     \bool_if:NT \l__nicematrix_code_before_bool \__nicematrix_exec_code_before:
-    \seq_gclear:N \g__nicematrix_pos_of_blocks_seq
+    \seq_gset_eq:NN \g__nicematrix_pos_of_blocks_seq \g__nicematrix_future_pos_of_blocks_seq
     \seq_gclear_new:N \g__nicematrix_multicolumn_cells_seq
     \seq_gclear_new:N \g__nicematrix_multicolumn_sizes_seq
     \int_gset:Nn \g__nicematrix_last_row_node_int { -2 }
@@ -1786,6 +1785,7 @@
     \cs_set_eq:NN \SubMatrix \__nicematrix_SubMatrix_in_code_before
     \cs_set_eq:NN \ShowCellNames \__nicematrix_ShowCellNames
     \cs_set_eq:NN \TikzEveryCell \__nicematrix_TikzEveryCell
+    \cs_set_eq:NN \EmptyColumn \__nicematrix_EmptyColumn:n
   }
 \cs_new_protected:Npn \__nicematrix_exec_code_before:
   {
@@ -3910,7 +3910,12 @@
           { 0.6 \l__nicematrix_xdots_shorten_end_dim }
       }
     \__nicematrix_draw_dotted_lines:
-    \clist_if_empty:NF \l__nicematrix_corners_clist \__nicematrix_compute_corners:
+    \clist_if_empty:NF \l__nicematrix_corners_clist
+      {
+        \bool_if:NTF \l__nicematrix_no_cell_nodes_bool
+          { \__nicematrix_error:n { corners~with~no-cell-nodes } }
+          { \__nicematrix_compute_corners: }
+      }
     \__nicematrix_adjust_pos_of_blocks_seq:
     \__nicematrix_deal_with_rounded_corners:
     \clist_if_empty:NF \l__nicematrix_hlines_clist \__nicematrix_draw_hlines:
@@ -5999,6 +6004,12 @@
       }
       { \cs_new_protected:Npn \__nicematrix_revert_colortbl: { } }
   }
+\cs_new_protected:Npn \__nicematrix_EmptyColumn:n #1
+  {
+    \seq_gput_right:Nn \g__nicematrix_future_pos_of_blocks_seq
+      { { -2 } { #1 } { 98 } { #1 } { } } % 98 and not 99 !
+    \columncolor { nocolor } { #1 }
+  }
 \cs_set_eq:NN \OnlyMainNiceMatrix \use:n
 \cs_new_protected:Npn \__nicematrix_OnlyMainNiceMatrix:n #1
   {
@@ -6023,14 +6034,6 @@
               { \bool_if:NF \l__nicematrix_in_last_col_bool { #1 } }
           }
       }
-  }
-\cs_new_protected:Npn \__nicematrix_EmptyCol:
-  {
-    \tl_set:Nx \l_tmpa_tl
-      { { -2 } { \int_use:N \c@jCol } { 100 } { \int_use:N \c@jCol } { } }
-    \seq_if_in:NoF \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl
-      { \seq_gput_right:No \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl }
-    \cellcolor { nocolor }
   }
 \cs_new:Npn \__nicematrix_tikz_booktabs_loaded:nn #1 #2
   {
@@ -6961,11 +6964,22 @@
   {
     \bool_if:nTF \l__nicematrix_medium_nodes_bool
       {
-        \bool_if:NTF \l__nicematrix_large_nodes_bool
-          \__nicematrix_create_medium_and_large_nodes:
-          \__nicematrix_create_medium_nodes:
+        \bool_if:NTF \l__nicematrix_no_cell_nodes_bool
+          { \__nicematrix_error:n { extra-nodes~with~no-cell-nodes } }
+          {
+            \bool_if:NTF \l__nicematrix_large_nodes_bool
+              \__nicematrix_create_medium_and_large_nodes:
+              \__nicematrix_create_medium_nodes:
+          }
       }
-      { \bool_if:NT \l__nicematrix_large_nodes_bool \__nicematrix_create_large_nodes: }
+      {
+        \bool_if:NT \l__nicematrix_large_nodes_bool
+          {
+            \bool_if:NTF \l__nicematrix_no_cell_nodes_bool
+              { \__nicematrix_error:n { extra-nodes~with~no-cell-nodes } }
+              \__nicematrix_create_large_nodes:
+          }
+      }
   }
 \cs_new_protected:Npn \__nicematrix_computations_for_medium_nodes:
   {
@@ -9337,6 +9351,11 @@
     renew-dots,~and~
     renew-matrix.
   }
+\__nicematrix_msg_new:nn { no-test-for-array }
+  {
+    The~key~'no-test-for-array'~has~been~deprecated~and~will~be~
+    deleted~in~a~future~version~of~nicematrix.
+  }
 \keys_define:nn { nicematrix / Package }
   {
     renew-dots .bool_set:N = \l__nicematrix_renew_dots_bool ,
@@ -9346,7 +9365,7 @@
     messages-for-Overleaf .bool_set:N = \g__nicematrix_messages_for_Overleaf_bool ,
     footnote .bool_set:N = \g__nicematrix_footnote_bool ,
     footnotehyper .bool_set:N = \g__nicematrix_footnotehyper_bool ,
-    no-test-for-array .code:n =  \prg_do_nothing: ,
+    no-test-for-array .code:n = \__nicematrix_warning:n { no-test-for-array } ,
     unknown .code:n = \__nicematrix_error:n { Unknown~key~for~package }
   }
 \ProcessKeysOptions { nicematrix / Package }
@@ -9567,6 +9586,20 @@
     Bad~line~style.\\
     Since~you~haven't~loaded~Tikz,~the~only~value~you~can~give~to~'line-style'~
     is~'standard'.~That~key~will~be~ignored.
+  }
+\__nicematrix_msg_new:nn { corners~with~no-cell-nodes }
+  {
+    Incompatible~keys.\\
+    You~can't~use~the~key~'corners'~here~because~the~key~'no-cell-nodes'~
+    is~in~force.\\
+    If~you~go~on,~that~key~will~be~ignored.
+  }
+\__nicematrix_msg_new:nn { extra-nodes~with~no-cell-nodes }
+  {
+    Incompatible~keys.\\
+    You~can't~create~'extra~nodes'~here~because~the~key~'no-cell-nodes'~
+    is~in~force.\\
+    If~you~go~on,~those~extra~nodes~won't~be~created.
   }
 \__nicematrix_msg_new:nn { Identical~notes~in~caption }
   {

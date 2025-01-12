@@ -899,7 +899,6 @@ version 2005/12/01 or later.
 \bool_new:N \g_@@_rotate_bool
 %    \end{macrocode}
 %
-%
 % \bigskip
 % The following boolean will be raise then the command |\rotate| is used with
 % the key |c|.
@@ -917,6 +916,12 @@ version 2005/12/01 or later.
 % 
 %    \begin{macrocode}
 \bool_new:N \g_@@_caption_finished_bool
+%    \end{macrocode}
+%
+% \bigskip
+% The following boolean will be raised when the key |no-cell-nodes| is used. 
+%    \begin{macrocode}
+\bool_new:N \l_@@_no_cell_nodes_bool
 %    \end{macrocode}
 % 
 % \bigskip
@@ -1260,6 +1265,17 @@ version 2005/12/01 or later.
 % |\diagbox|. The sequence |\g_@@_pos_of_blocks_seq| will be used when we will
 % draw the rules (which respect the blocks).
 %
+% \bigskip
+% In the |\CodeBefore|, the value of |\g_@@_pos_of_blocks_seq| will be the value
+% read in the |aux| file from a previous run. However, in the |\CodeBefore|, the
+% command |\EmptyColumn| will write virtual positions of blocks in the following sequence.
+%    \begin{macrocode}
+\seq_new:N \g_@@_future_pos_of_blocks_seq 
+%    \end{macrocode}
+% The, after the execution of the |\CodeBefore|, the sequence
+% |\g_@@_pos_of_blocs_seq| will erased and replaced by the value of 
+% |\g_@@_future_pos_of_blocks_seq|. 
+% 
 % \bigskip
 % We will also manage a sequence for the positions of the dotted lines. These
 % dotted lines are created in the array by |\Cdots|, |\Vdots|, |\Ddots|, etc.
@@ -2465,6 +2481,7 @@ version 2005/12/01 or later.
     ampersand-in-blocks .default:n = true , 
     &-in-blocks .meta:n = ampersand-in-blocks ,
     no-cell-nodes .code:n = 
+      \bool_set_true:N \l_@@_no_cell_nodes_bool 
       \cs_set_protected:Npn \@@_node_for_cell: 
         { \box_use_drop:N \l_@@_cell_box } ,
     no-cell-nodes .value_forbidden:n = true ,
@@ -2580,7 +2597,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / environments } 
   { 
-    corners .clist_set:N = \l_@@_corners_clist ,
+    corners .clist_set:N = \l_@@_corners_clist , 
     corners .default:n = { NW , SW , NE , SE } ,
     code-before .code:n = 
       {
@@ -3839,7 +3856,6 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \CodeAfter \@@_CodeAfter:
     \cs_set_eq:NN \diagbox \@@_diagbox:nn
     \cs_set_eq:NN \NotEmpty \@@_NotEmpty:
-    \cs_set_eq:NN \EmptyCol \@@_EmptyCol:
     \cs_set_eq:NN \TopRule \@@_TopRule
     \cs_set_eq:NN \MidRule \@@_MidRule
     \cs_set_eq:NN \BottomRule \@@_BottomRule
@@ -4015,7 +4031,7 @@ version 2005/12/01 or later.
 % that variable because it will be reconstructed during the creation of the
 % array.
 %    \begin{macrocode}
-    \seq_gclear:N \g_@@_pos_of_blocks_seq
+    \seq_gset_eq:NN \g_@@_pos_of_blocks_seq \g_@@_future_pos_of_blocks_seq
 %    \end{macrocode}
 % Idem for other sequences written on the |aux| file.
 %    \begin{macrocode}
@@ -4214,6 +4230,7 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \SubMatrix \@@_SubMatrix_in_code_before
     \cs_set_eq:NN \ShowCellNames \@@_ShowCellNames
     \cs_set_eq:NN \TikzEveryCell \@@_TikzEveryCell
+    \cs_set_eq:NN \EmptyColumn \@@_EmptyColumn:n
   }
 %    \end{macrocode}
 % 
@@ -7873,7 +7890,12 @@ version 2005/12/01 or later.
 % in |\l_@@_corners_cells_clist| which will contain all the cells which are empty
 % (and not in a block) considered in the corners of the array.
 %    \begin{macrocode}
-    \clist_if_empty:NF \l_@@_corners_clist \@@_compute_corners:
+    \clist_if_empty:NF \l_@@_corners_clist 
+      { 
+        \bool_if:NTF \l_@@_no_cell_nodes_bool
+          { \@@_error:n { corners~with~no-cell-nodes } }
+          { \@@_compute_corners: }
+      }
 %    \end{macrocode}
 %
 % \bigskip
@@ -7918,7 +7940,7 @@ version 2005/12/01 or later.
 % When |light-syntax| is used, we insert systematically a |\CodeAfter| in the
 % flow. Thus, it's possible to have two instructions |\CodeAfter| and the second
 % may be in |\g_nicematrix_code_after_tl|. That's why we set
-% |\Code-after| to be \textsl{no-op} now.
+% |\CodeAfter| to be \textsl{no-op} now.
 %    \begin{macrocode}
     \cs_set_eq:NN \CodeAfter \prg_do_nothing:
 %    \end{macrocode}
@@ -11335,6 +11357,16 @@ version 2005/12/01 or later.
       { \cs_new_protected:Npn \@@_revert_colortbl: { } }
   }
 %    \end{macrocode}
+%
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_EmptyColumn:n #1
+  {
+    \seq_gput_right:Nn \g_@@_future_pos_of_blocks_seq 
+      { { -2 } { #1 } { 98 } { #1 } { } } % 98 and not 99 !
+    \columncolor { nocolor } { #1 }
+  }
+%    \end{macrocode}
 % 
 % \bigskip
 % \section{The vertical and horizontal rules}
@@ -11403,23 +11435,6 @@ version 2005/12/01 or later.
 % |\int_compare:nNnT \c@iRow < \l_@@_last_row_int|).
 % 
 % \bigskip
-% \subsubsection*{EmptyCol}
-%
-% The command |\EmptyCol| should be used in the preamble of an environment with
-% preamble in a construction |>{...}| prefixing a colummn. No rule will be drawn
-% in that column and no cell will be colored (whatever the coloring instructions
-% used). 
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_EmptyCol:
-  { 
-    \tl_set:Nx \l_tmpa_tl  
-      { { -2 } { \int_use:N \c@jCol } { 100 } { \int_use:N \c@jCol } { } } 
-    \seq_if_in:NoF \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl  
-      { \seq_gput_right:No \g__nicematrix_pos_of_blocks_seq \l_tmpa_tl }
-    \cellcolor { nocolor } 
-  }
-%    \end{macrocode}
-%
 % The following command will be used for |\Toprule|, |\BottomRule| and |\MidRule|.
 %    \begin{macrocode}
 \cs_new:Npn \@@_tikz_booktabs_loaded:nn #1 #2
@@ -12910,11 +12925,22 @@ version 2005/12/01 or later.
   {
     \bool_if:nTF \l_@@_medium_nodes_bool
       { 
-        \bool_if:NTF \l_@@_large_nodes_bool
-          \@@_create_medium_and_large_nodes:
-          \@@_create_medium_nodes:
+        \bool_if:NTF \l_@@_no_cell_nodes_bool
+          { \@@_error:n { extra-nodes~with~no-cell-nodes } }
+          {
+            \bool_if:NTF \l_@@_large_nodes_bool
+              \@@_create_medium_and_large_nodes:
+              \@@_create_medium_nodes:
+          }
       }
-      { \bool_if:NT \l_@@_large_nodes_bool \@@_create_large_nodes: }
+      { 
+        \bool_if:NT \l_@@_large_nodes_bool 
+          {
+            \bool_if:NTF \l_@@_no_cell_nodes_bool 
+              { \@@_error:n { extra-nodes~with~no-cell-nodes } }
+              \@@_create_large_nodes: 
+          }
+      }
   }
 %    \end{macrocode}
 %
@@ -16576,6 +16602,14 @@ version 2005/12/01 or later.
 %
 %
 %    \begin{macrocode}
+\@@_msg_new:nn { no-test-for-array }
+  { 
+    The~key~'no-test-for-array'~has~been~deprecated~and~will~be~
+    deleted~in~a~future~version~of~nicematrix.
+  }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
 \keys_define:nn { nicematrix / Package }
   {
     renew-dots .bool_set:N = \l_@@_renew_dots_bool ,
@@ -16589,7 +16623,7 @@ version 2005/12/01 or later.
 % The test for a potential modification of \pkg{array} has been deleted. We
 % keep the following key only for compatibility but maybe we will delete it.
 %    \begin{macrocode}
-    no-test-for-array .code:n =  \prg_do_nothing: ,
+    no-test-for-array .code:n = \@@_warning:n { no-test-for-array } ,
     unknown .code:n = \@@_error:n { Unknown~key~for~package } 
   }
 \ProcessKeysOptions { nicematrix / Package }
@@ -16936,6 +16970,26 @@ version 2005/12/01 or later.
     Bad~line~style.\\
     Since~you~haven't~loaded~Tikz,~the~only~value~you~can~give~to~'line-style'~
     is~'standard'.~That~key~will~be~ignored.
+  }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+\@@_msg_new:nn { corners~with~no-cell-nodes }
+  {
+    Incompatible~keys.\\
+    You~can't~use~the~key~'corners'~here~because~the~key~'no-cell-nodes'~
+    is~in~force.\\
+    If~you~go~on,~that~key~will~be~ignored.
+  }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+\@@_msg_new:nn { extra-nodes~with~no-cell-nodes }
+  {
+    Incompatible~keys.\\
+    You~can't~create~'extra~nodes'~here~because~the~key~'no-cell-nodes'~
+    is~in~force.\\
+    If~you~go~on,~those~extra~nodes~won't~be~created.
   }
 %    \end{macrocode}
 % 

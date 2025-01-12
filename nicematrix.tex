@@ -145,8 +145,11 @@ L_2    & a_{21}  & a_{22}  & \Cdots & a_{2n} \\
 \Vdots & \Vdots & \Vdots & \Ddots & \Vdots\\
 L_n    & a_{n1}  & a_{n2}  & \Cdots & a_{nn} 
 \end{bNiceArray}$\hspace{2cm}
-\begin{NiceTabular}{lSSSS}%
-  [code-before = \rowcolor{red!15}{1-2} \rowcolors{3}{blue!15}{}]
+\begin{NiceTabular}{lSSSS}[no-cell-nodes]
+\CodeBefore
+  \rowcolor{red!15}{1-2} 
+  \rowcolors{3}{blue!15}{}
+\Body
 \toprule
 \Block{2-1}{Product} & \multicolumn{3}{c}{dimensions (cm)} 
        & \Block{2-1}{\rotate Price} \\
@@ -324,7 +327,7 @@ $\begin{pNiceMatrix}
 \end{Code}
 \begin{scope}
 \NiceMatrixOptions{cell-space-limits = 1pt}
-$\begin{pNiceMatrix}
+$\begin{pNiceMatrix}[no-cell-nodes]
 \frac12 & -\frac12 \\
 \frac13 & \frac14 \\
 \end{pNiceMatrix}$
@@ -353,7 +356,7 @@ $A = \begin{pNiceMatrix}[\emph{baseline=2}]
 1 & p & 1+p
 \end{pNiceMatrix}$
 \end{Code}
-$A = \begin{pNiceMatrix}[baseline=2]
+$A = \begin{pNiceMatrix}[baseline=2,no-cell-nodes]
 \frac{1}{\sqrt{1+p^2}} & p & 1-p \\
 1 & 1 & 1 \\
 1 & p & 1+p
@@ -393,7 +396,7 @@ u_n & 1 & 2 & 4 & 8 & 16 & 32
 \item an item
 \smallskip
 \item \renewcommand{\arraystretch}{1.2}
-$\begin{NiceArray}[t]{lcccccc}
+$\begin{NiceArray}[t]{lcccccc}[no-cell-nodes]
 \hline
 n   & 0 & 1 & 2 & 3 & 4  & 5  \\
 u_n & 1 & 2 & 4 & 8 & 16 & 32 \\
@@ -428,7 +431,7 @@ u_n & 1 & 2 & 4 & 8 & 16 & 32
 \item an item
 \smallskip
 \item 
-$\begin{NiceArray}[t]{lcccccc}
+$\begin{NiceArray}[t]{lcccccc}[no-cell-nodes]
 \toprule
 n   & 0 & 1 & 2 & 3 & 4  & 5  \\
 \midrule
@@ -461,7 +464,7 @@ $A=\begin{pNiceArray}{cc|cc}\emph{[baseline=line-3]}
 \end{Code}
 \begin{scope}
 \NiceMatrixOptions{cell-space-limits=1pt}
-\raisebox{-5mm}{$A=\begin{pNiceArray}{cc|cc}[baseline=line-3]
+\raisebox{-5mm}{$A=\begin{pNiceArray}{cc|cc}[baseline=line-3,no-cell-nodes]
 \dfrac{1}{A} & \dfrac{1}{B} & 0 & 0 \\
 \dfrac{1}{C} & \dfrac{1}{D} & 0 & 0 \\
 \hline
@@ -906,7 +909,7 @@ Rank & \emph{\Block[C]{1-3}{First group}} & & & \Block{1-3}{Second group} \\
 
 \bigskip
 \begin{center}
-\begin{NiceTabular}{@{}c!{\qquad}ccc!{\qquad}ccc@{}}
+\begin{NiceTabular}{@{}c!{\qquad}ccc!{\qquad}ccc@{}}[no-cell-nodes]
 \toprule
 Rank & \Block[C]{1-3}{First group} & & & \Block{1-3}{Second group} \\
      & 1A & 1B & 1C & 2A & 2B & 2C \\
@@ -1100,7 +1103,7 @@ sub-blocks of \emph{the same size}.
 \end{Code}
 %
 \begin{NiceTabular}{ll}%
-   [hvlines,ampersand-in-blocks]
+   [hvlines,ampersand-in-blocks,no-cell-nodes]
   & the five first naturels numbers \\ 
 3 & \Block{}{one & two & three} \\
 4 & \Block{}{one& two & three & four} \\
@@ -1125,7 +1128,7 @@ be prefered.
 \end{Code}
 %
 \begin{NiceTabular}{lccccc}%
-   [hvlines,ampersand-in-blocks]
+   [hvlines,ampersand-in-blocks,no-cell-nodes]
   & \Block{1-5}{the five first natural numbers} \\ 
 3 & \Block{1-5}{one & two & three} \\
 4 & \Block{1-5}{one& two & three & four} \\
@@ -1198,7 +1201,7 @@ a & b & c & d \\ \midrule
 1 & 2 & 3 & 4 \\ \bottomrule
 \end{NiceArray}$
 \end{Code}
-$\begin{NiceArray}{c|ccc}
+$\begin{NiceArray}{c|ccc}[no-cell-nodes]
 \toprule
 a & b & c & d \\
 \midrule
@@ -1265,7 +1268,7 @@ A&B&C&D \\ \hline
 \end{Code}
 \begin{scope}
 \setlength{\arrayrulewidth}{2pt}
-\begin{NiceTabular}[c]{cccc}
+\begin{NiceTabular}[c]{cccc}[no-cell-nodes]
 \hline
 A&B&C&D \\ \cline{2}
 A&B&C&D \\ \hline
@@ -1313,7 +1316,8 @@ muguet & dahlia & souci \\
 \end{NiceTabular}
 \end{Code}
 \hspace{-5cm}
-\begin{NiceTabular}{|ccc|}[rules/color=[gray]{0.9},rules/width=1pt]
+\begin{NiceTabular}{|ccc|}%
+  [rules/color=[gray]{0.9},rules/width=1pt,no-cell-nodes]
 \hline
 rose & tulipe & lys \\
 arum & iris & violette \\
@@ -1385,7 +1389,7 @@ c & d \\
 \end{NiceTabular}
 \end{Code}
 %
-\begin{NiceTabular}{|c|[color=blue]c|}
+\begin{NiceTabular}{|c|[color=blue]c|}[no-cell-nodes]
 \Hline
 a & b \\
 \Hline[color=red]
@@ -1419,7 +1423,7 @@ $\begin{pNiceMatrix}[\emph{vlines},rules/width=0.2pt]
 1 & 2 & 3 & 4 & 5 & 6 
 \end{pNiceMatrix}$
 \end{Code}
-$\begin{pNiceMatrix}[vlines,rules/width=0.2pt]
+$\begin{pNiceMatrix}[vlines,rules/width=0.2pt,no-cell-nodes]
 1 & 2 & 3 & 4 & 5 & 6 \\
 1 & 2 & 3 & 4 & 5 & 6 \\
 1 & 2 & 3 & 4 & 5 & 6 
@@ -1441,7 +1445,7 @@ y & 0 & 0 & 0 & 0 & 0 \\
 z & 0 & 0 & 0 & 0 & 0 \\
 \end{NiceArray}$
 \end{Code}
-$\begin{NiceArray}{c||ccccc}[hlines,vlines]
+$\begin{NiceArray}{c||ccccc}[hlines,vlines,no-cell-nodes]
   & a & b & c & d & e \\ \Hline\Hline
 x & 0 & 0 & 0 & 0 & 0 \\
 y & 0 & 0 & 0 & 0 & 0 \\
@@ -1520,7 +1524,11 @@ In the example on the right (where B is in the center of a block of size
 $2\times2$), we have colored in blue the four (empty) corners of the array. 
 \end{minipage}\hspace{2cm}%
 \begin{NiceTabular}
-  [cell-space-top-limit=3pt,hvlines,rules={color=white,width=0.1pt}]
+  [cell-space-top-limit=3pt,
+   hvlines,
+   rules={color=white,width=0.1pt} ,
+   no-cell-nodes
+  ]
   {*{6}{c}}
 \CodeBefore
   \rectanglecolor{blue!10}{1-1}{4-2}
@@ -1559,11 +1567,16 @@ the corners).
 A & A & A & A & A & A \\
 A & A & A & A & A & A \\
   & A & A & A \\
-  & \Block{2-2}{B} & & A \\
+  & \Block[C]{2-2}{B} & & A \\
   &   &   & A \\
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{*{6}{c}}[corners,hvlines,cell-space-top-limit=3pt]
+\begin{NiceTabular}{*{6}{c}}%
+  [
+    corners,
+    hvlines,
+    cell-space-top-limit=3pt
+  ]
   &   &   &   & A \\
   &   & A & A & A \\
   &   &   & A \\
@@ -1571,7 +1584,7 @@ A & A & A & A & A & A \\
 A & A & A & A & A & A \\
 A & A & A & A & A & A \\
   & A & A & A \\
-  & \Block{2-2}{B} & & A \\
+  & \Block[C]{2-2}{B} & & A \\
   &   &   & A \\
 \end{NiceTabular}
 
@@ -1592,7 +1605,8 @@ corners (designed by |NW|, |SW|, |NE| and |SE|).
  & & & & &1
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{*{6}{c}}[c,corners=NE,hvlines,cell-space-top-limit=3pt]
+\begin{NiceTabular}{*{6}{c}}%
+ [c,corners=NE,hvlines,cell-space-top-limit=3pt]
 1\\
 1&1\\
 1&2&1\\
@@ -1626,7 +1640,7 @@ b & b & c & e & a \\
 c & c & b & a & e 
 \end{NiceArray}$
 \end{Code}
-$\begin{NiceArray}{*{5}{c}}[hvlines]
+$\begin{NiceArray}{*{5}{c}}[hvlines,no-cell-nodes]
 \diagbox{x}{y}  & e & a & b & c \\
 e & e & a & b & c \\
 a & a & e & c & b \\
@@ -1647,7 +1661,7 @@ b & b & c & e & a \\
 c & c & b & a & e
 \end{NiceArray}$
 \end{Code}
-$\begin{NiceArray}{*{5}{c}}[hvlines]
+$\begin{NiceArray}{*{5}{c}}[hvlines,no-cell-nodes]
 \Block{2-2}{\diagbox{x}{y}} &  & a & b & c \\
   &   & a & b & c \\
 a & a & e & c & b \\
@@ -1669,7 +1683,7 @@ b & b & c & e & a \\
 c & c & b & a & e
 \end{NiceArray}$
 \end{Code}
-$\begin{NiceArray}{*{5}{c}}[hvlines]
+$\begin{NiceArray}{*{5}{c}}[hvlines,no-cell-nodes]
 \Block{2-2}{\diagbox{}{}} & y & a & b & c \\
 x &   & a & b & c \\
 a & a & e & c & b \\
@@ -1768,7 +1782,7 @@ Product C & 5 & 4 & 1 \\
 
 
 \begin{center}
-\begin{NiceTabular}{lcIcIc}[custom-line = {letter=I, color=blue}]
+\begin{NiceTabular}{lcIcIc}[custom-line = {letter=I, color=blue},no-cell-nodes]
 \hline
           & \Block{1-3}{dimensions} \\
           & L & l & H \\
@@ -1876,7 +1890,7 @@ seven & eight & nine
        total-width = \pgflinewidth
      }
   }
-\begin{NiceTabular}{cIcIc}
+\begin{NiceTabular}{cIcIc}[no-cell-nodes]
 one & two & three \\
 four & five & six \\
 seven & eight & nine
@@ -1931,7 +1945,7 @@ draw horizontal dotted rules.
 11 & 12 & 13 & 14 & 15 
 \end{pNiceMatrix}
 \end{Code}
-$\begin{pNiceMatrix}
+$\begin{pNiceMatrix}[no-cell-nodes]
 1 & 2 & 3 & 4 & 5 \\
 \hdottedline
 6 & 7 & 8 & 9 & 10 \\
@@ -1953,7 +1967,7 @@ $\left(\begin{NiceArray}{cccc\emph{:}c}
 11 & 12 & 13 & 14 & 15 
 \end{NiceArray}\right)
 \end{Code}
-$\left(\begin{NiceArray}{cccc:c}
+$\left(\begin{NiceArray}{cccc:c}[no-cell-nodes]
 1 & 2 & 3 & 4 & 5 \\
 6 & 7 & 8 & 9 & 10 \\
 11 & 12 & 13 & 14 & 15 
@@ -2122,7 +2136,7 @@ e & f & g \\
 h & i & j \\ 
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{ccc}[hvlines]
+\begin{NiceTabular}{ccc}[hvlines,no-cell-nodes]
 \CodeBefore
   \cellcolor[HTML]{FFFF88}{3-1,2-2,-3}
 \Body
@@ -2150,9 +2164,9 @@ e & f & g \\
 h & i & j \\ 
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{ccc}[hvlines]
+\begin{NiceTabular}{ccc}[hvlines,no-cell-nodes]
 \CodeBefore
-   \rectanglecolor{blue!15}{2-2}{3-3}
+  \rectanglecolor{blue!15}{2-2}{3-3}
 \Body
 a & b & c \\ 
 e & f & g \\ 
@@ -2185,9 +2199,9 @@ $\begin{pNiceMatrix}[r,margin]
 1 & -1 & 1 
 \end{pNiceMatrix}$
 \end{Code}
-$\begin{pNiceMatrix}[r,baseline=1, margin] 
+$\begin{pNiceMatrix}[r,baseline=1, margin,no-cell-nodes] 
 \CodeBefore 
-\chessboardcolors{red!15}{blue!15}
+  \chessboardcolors{red!15}{blue!15}
 \Body
 1 & -1 & 1 \\
 -1 & 1 & -1 \\
@@ -2227,9 +2241,9 @@ a_9 & b_9 & c_9 \\
 a_{10} & b_{10} & c_{10} \\
 \end{NiceArray}$
 \end{Code}
-$\begin{NiceArray}{lll}[baseline=4,hvlines] 
+$\begin{NiceArray}{lll}[baseline=4,hvlines,no-cell-nodes] 
 \CodeBefore 
-\rowcolor{red!15}{1,3-5,8-}
+  \rowcolor{red!15}{1,3-5,8-}
 \Body
 a_1 & b_1 & c_1 \\
 a_2 & b_2 & c_2 \\
@@ -2305,7 +2319,7 @@ Henry & 14 \\
 Madison & 15 
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{clr}[hvlines,baseline=2]
+\begin{NiceTabular}{clr}[hvlines,baseline=2,no-cell-nodes]
 \CodeBefore
  \rowcolors[gray]{2}{0.8}{}[cols=2-3,restart]
 \Body
@@ -2339,7 +2353,7 @@ Henry                & 14 \\
                      & 19
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{lr}[hvlines,baseline=c]
+\begin{NiceTabular}{lr}[hvlines,baseline=c,no-cell-nodes]
 \CodeBefore
   \rowcolors{1}{blue!10}{}[respect-blocks]
 \Body
@@ -2381,7 +2395,7 @@ Jane \\
 Alexandra \\
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{c}
+\begin{NiceTabular}{c}[no-cell-nodes]
 \CodeBefore
   \rowlistcolors{1}{red!15,blue!15,green!15}
 \Body
@@ -2425,7 +2439,7 @@ Alexandra \\
 \end{NiceTabular}
 \end{Code}
 \hspace{-1cm}
-\begin{NiceTabular}{c}
+\begin{NiceTabular}{c}[no-cell-nodes]
 \CodeBefore
    \definecolorseries{BlueWhite}{rgb}{last}{blue}{white}
    \resetcolorseries[\value{iRow}]{BlueWhite}
@@ -2464,7 +2478,8 @@ which are in the ``corners''. In the following example, we use the key
 \end{NiceTabular}
 \end{Code}
 \hspace{-6cm}
-\begin{NiceTabular}{ccccccc}[corners=NE,margin,hvlines,first-row,first-col]
+\begin{NiceTabular}{ccccccc}%
+  [corners=NE,margin,hvlines,first-row,first-col]
 \CodeBefore
   \rowlistcolors{1}{blue!15, }
 \Body
@@ -2510,7 +2525,8 @@ In the following example, we require a color in the column~$0$ (which is the
 \end{NiceTabular}
 \end{Code}
 \hspace{-6cm}
-\begin{NiceTabular}{ccccccc}[corners=NE,margin,hvlines,first-row,first-col]
+\begin{NiceTabular}{ccccccc}%
+  [corners=NE,margin,hvlines,first-row,first-col]
 \CodeBefore
   \rowlistcolors{1}{blue!15, }
   \columncolor{red!15}{0}
@@ -2557,7 +2573,7 @@ special  & 12  & 12   & 0.5 & 70    \\
 \emph{\bottomrule}
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}[c]{lSSSS}
+\begin{NiceTabular}[c]{lSSSS}[no-cell-nodes]
 \CodeBefore
   \rowcolor{red!15}{1-2} 
   \rowcolors{3}{blue!15}{}
@@ -2642,7 +2658,7 @@ Dupont & Chantal & 15 janvier 1998 \\
 
 \begin{center}
 \NewDocumentCommand { \Blue } { } { \columncolor{blue!15} }
-\begin{NiceTabular}{>{\Blue}c>{\Blue}cc} 
+\begin{NiceTabular}{>{\Blue}c>{\Blue}cc}[no-cell-nodes]
 \toprule
 \rowcolor{red!15}
 Last name & First name & Birth day \\
@@ -2763,7 +2779,7 @@ I & II & III & IV
 \end{NiceTabular}
 \end{Code}
 \index{rotate@\texttt{\textbackslash rotate}|textit}
-\begin{NiceTabular}{cccc}
+\begin{NiceTabular}{cccc}[no-cell-nodes]
 \hline
 \RowStyle[cell-space-limits=3pt]{\rotate}
 first & second & third & fourth \\
@@ -2794,7 +2810,7 @@ Berlin & London   & Roma   \\
 Rio    & Tokyo    & Oslo 
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{W{c}{2cm}cc}[hvlines]
+\begin{NiceTabular}{W{c}{2cm}cc}[hvlines,no-cell-nodes]
 Paris  & New York & Madrid \\
 Berlin & London   & Roma   \\
 Rio    & Tokyo    & Oslo 
@@ -2815,7 +2831,7 @@ $\begin{pNiceMatrix}[\emph{columns-width = 1cm}]
 4  & 1  & 2 
 \end{pNiceMatrix}$
 \end{Code}
-$\begin{pNiceMatrix}[columns-width = 1cm]
+$\begin{pNiceMatrix}[columns-width = 1cm,no-cell-nodes]
 1  & 12 & -123 \\
 12 & 0  & 0    \\
 4  & 1  & 2 
@@ -2842,7 +2858,7 @@ $\begin{pNiceMatrix}[\emph{columns-width = auto}]
 4  & 1  & 2 
 \end{pNiceMatrix}$
 \end{Code}
-$\begin{pNiceMatrix}[columns-width = auto]
+$\begin{pNiceMatrix}[columns-width = auto,no-cell-nodes]
 1  & 12 & -123 \\
 12 & 0  & 0    \\
 4  & 1  & 2 
@@ -4632,7 +4648,7 @@ Dupont & Chantal & January 15, 1998 \\
 
 
 \begin{center}
-\begin{NiceTabular}{@{}llr@{}}
+\begin{NiceTabular}{@{}llr@{}}[no-cell-nodes]
 \toprule \RowStyle{\bfseries}
 Last name & First name & Birth day \\
 \midrule
@@ -4744,7 +4760,8 @@ Wallis & John & 87 \\
     note in the caption} ,
     label = t:tabularnote ,
     tabularnote = Some text before the notes. ,
-    notes/bottomrule
+    notes/bottomrule ,
+    no-cell-nodes
   ]
 \toprule
 Last name & First name & Length of life \\
@@ -4992,7 +5009,7 @@ Arvy & Jacques & Physicist \\
 Jalon & Amandine & Physicist
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{ccc}[hvlines,rounded-corners]
+\begin{NiceTabular}{ccc}[hvlines,rounded-corners,no-cell-nodes]
 \CodeBefore
   \rowcolor{red!15}{1}
 \Body
@@ -5024,7 +5041,7 @@ readers don't support transparency).
 \emph{\CodeAfter \ShowCellNames}
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
+\begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt,no-cell-nodes]
   \Block{2-2}{} &           & test \\
                 &           & blabla \\
                 & some text & nothing 
@@ -5053,7 +5070,7 @@ $\begin{pNiceArray}{\emph{S}cW{c}{1cm}c}[nullify-dots,first-row]
 7.2  & 0 & \Cdots & 0 
 \end{pNiceArray}$
 \end{Code}
-$\begin{pNiceArray}{ScW{c}{1cm}c}[nullify-dots,first-row]
+$\begin{pNiceArray}{ScW{c}{1cm}c}[nullify-dots,first-row,no-cell-nodes]
 {C_1} & \Cdots &  & C_n \\
 2.3  & 0 & \Cdots & 0 \\
 12.4 & \Vdots & & \Vdots \\
@@ -5087,7 +5104,7 @@ $\begin{bNiceMatrix}\emph{[r]}
 \sin x & \cos x 
 \end{bNiceMatrix}$
 \end{Code}
-$\begin{bNiceMatrix}[r]
+$\begin{bNiceMatrix}[r,no-cell-nodes]
 \cos x & - \sin x \\
 \sin x & \cos x 
 \end{bNiceMatrix}$
@@ -5127,7 +5144,7 @@ e_1 & e_2 & e_3       \\
 \NiceMatrixOptions%
  {code-for-first-row = \scriptstyle\rotate \text{image of },
   code-for-last-col = \scriptstyle }
-$ A = \begin{pNiceMatrix}[first-row,last-col=4]
+$ A = \begin{pNiceMatrix}[first-row,last-col=4,no-cell-nodes]
 e_1 & e_2 & e_3 \\
 1   & 2   & 3  & e_1 \\
 4   & 5   & 6  & e_2 \\
@@ -5162,7 +5179,7 @@ $A = \begin{pNiceMatrix}[last-row=4,last-col=4]
 \NiceMatrixOptions%
  {code-for-last-row = \scriptstyle\rotate ,
   code-for-last-col = \scriptstyle }%
-$A = \begin{pNiceMatrix}[last-row=4,last-col=4]
+$A = \begin{pNiceMatrix}[last-row=4,last-col=4,no-cell-nodes]
 1   & 2   & 3  & e_1 \\
 4   & 5   & 6  & e_2 \\
 7   & 8   & 9  & e_3 \\
@@ -5195,7 +5212,7 @@ With the option \Definition{small}, the environments of the package
 \bigskip
 \begin{Code}
 $\begin{bNiceArray}{cccc|c}[\emph{small},
-                            last-col, 
+                            last-col , 
                             code-for-last-col = \scriptscriptstyle, 
                             columns-width = 3mm ] 
 1 & -2 & 3 & 4 & 5 \\
@@ -5204,9 +5221,14 @@ $\begin{bNiceArray}{cccc|c}[\emph{small},
 \end{bNiceArray}$
 \end{Code}
 %
-\[\begin{bNiceArray}{cccc|c}[small, last-col, 
-                     code-for-last-col = \scriptscriptstyle, 
-                     columns-width=3mm]
+\[\begin{bNiceArray}{cccc|c}%
+  [ 
+    small, 
+    last-col ,
+    code-for-last-col = \scriptscriptstyle, 
+    columns-width=3mm,
+    no-cell-nodes
+  ]
 1 & -2 & 3 & 4 & 5 \\
 0 & 3  & 2 & 1 & 2 & L_2 \gets 2 L_1 - L_2 \\
 0 & 1  & 1 & 2 & 3 & L_3 \gets L_1 + L_3 
@@ -5272,7 +5294,8 @@ $\begin{pNiceMatrix}% don’t forget the %
 $\begin{pNiceMatrix}[first-row,
                    first-col,
                    code-for-first-row = \mathbf{\alph{jCol}} ,
-                   code-for-first-col = \mathbf{\arabic{iRow}} ]
+                   code-for-first-col = \mathbf{\arabic{iRow}} ,
+                   no-cell-nodes]
 &   &    &    &   \\
 & 1 & 2  & 3  & 4 \\
 & 5 & 6  & 7  & 8 \\
@@ -5337,7 +5360,7 @@ a  2\cos a       {\cos a + \cos b} ;
 b \cos a+\cos b  { 2 \cos b }
 \end{bNiceMatrix}$
 \end{Code}
-$\begin{bNiceMatrix}[light-syntax,first-row,first-col]
+$\begin{bNiceMatrix}[light-syntax,first-row,first-col,no-cell-nodes]
 {} a             b                 ;
 a  2\cos a       {\cos a + \cos b} ;
 b \cos a+\cos b  { 2 \cos b }
@@ -5417,7 +5440,7 @@ $\begin{\emph{NiceArrayWithDelims}}
 \end{\emph{NiceArrayWithDelims}}$
 \end{Code}
 $\begin{NiceArrayWithDelims}
-   {\downarrow}{\uparrow}{ccc}[margin]
+   {\downarrow}{\uparrow}{ccc}[margin,no-cell-nodes]
 1 & 2 & 3 \\
 4 & 5 & 6 \\
 7 & 8 & 9 
@@ -5467,7 +5490,10 @@ lines (cf. p.~\pageref{Cdots}) and the computation of the ``corners''
 \medskip
 The creation of those nodes needs time and memory. It's possible to desactive
 ponctually the creation of those nodes with the key \Definition{no-cell-nodes}
-in order to speed up the compilations.
+in order to speed up the compilations. But e careful: those nodes are used
+internally but \pkg{nicematrix} for several features. One should use the key
+|no-cell-nodes| only when those feateures are not used. Among these are the key
+|corners| and the commands for the continuous dotted lines (|\Cdots|, etc.).
 
 \medskip
 The nodes of a document must have distinct names. That's why the names of the
@@ -6331,6 +6357,18 @@ environments of \pkg{nicematrix} are not affected).
 
 \index{Incompatibilities}
 
+There might be incompatibilities between \pkg{nicematrix} and \pkg{babel} with
+the language which activate (in the TeX sens) some characters, in particular
+the character |<|. 
+
+Par exemple, for Spanish, it's recommended to deactivate the abreviations at
+load-time with the instruction:
+
+\begin{Code}
+\usepackage[spanish,es-noshorthands]{babel}
+\end{Code}
+
+\medskip
 The extension \pkg{nicematrix} is usually not compatible with the classes and
 packages that redefine the environments |{tabular}| and |{array}|. In
 particular, it's the case of the class |socg-lipics-v2021|. However, in that
@@ -6468,7 +6506,7 @@ For the following example, we also need the TikZ library |patterns|.
 
 \begin{center}
 \ttfamily \small
-\begin{NiceTabular}{X[m]X[m]X[m]}[hvlines,cell-space-limits=3pt,rounded-corners]
+\begin{NiceTabular}{X[m]X[m]X[m]}[hvlines,cell-space-limits=3pt,rounded-corners,no-cell-nodes]
   \Block[tikz={pattern=grid,pattern color=lightgray}]{}
     {pattern = grid,\\ pattern color = lightgray}
 & \Block[tikz={pattern = north west lines,pattern color=blue}]{}
@@ -6696,7 +6734,7 @@ Dupont & Chantal & 15 janvier 1998 \\
 \end{Code}
 
 \begin{center}
-\begin{NiceTabular}{@{}llr@{}}
+\begin{NiceTabular}{@{}llr@{}}[no-cell-nodes]
 \toprule \RowStyle{\bfseries}
 Last name & First name & Birth day \\
 \midrule
