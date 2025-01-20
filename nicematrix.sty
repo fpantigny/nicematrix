@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.0x}
-\def\myfiledate{2025/01/07}
+\def\myfileversion{7.0b}
+\def\myfiledate{2025/01/20}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \RequirePackage{l3keys2e}
@@ -470,7 +470,7 @@
 \int_set:Nn \l__nicematrix_last_col_int { -2 }
 \bool_new:N \g__nicematrix_last_col_found_bool
 \bool_new:N \l__nicematrix_in_last_col_bool
-\cs_set_protected:Npn \__nicematrix_cut_on_hyphen:w #1-#2\q_stop
+\cs_new_protected:Npn \__nicematrix_cut_on_hyphen:w #1-#2\q_stop
   {
     \cs_set_nopar:Npn \l_tmpa_tl { #1 }
     \cs_set_nopar:Npn \l_tmpb_tl { #2 }
@@ -2423,10 +2423,7 @@
         \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
           { > \__nicematrix_test_if_empty_for_S: }
       }
-      {
-        \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
-          { > \__nicematrix_test_if_empty: }
-      }
+      { \tl_gput_right:Nn \g__nicematrix_array_preamble_tl { > \__nicematrix_test_if_empty: } }
     \tl_gput_right:No \g__nicematrix_array_preamble_tl \g__nicematrix_pre_cell_tl
     \tl_gclear:N \g__nicematrix_pre_cell_tl
     \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
@@ -2463,15 +2460,25 @@
   {
     \group_align_safe_begin:
     \peek_meaning:NTF &
+      \__nicematrix_the_cell_is_empty:
       {
-        \group_align_safe_end:
-        \tl_gput_right:Nn \g__nicematrix_cell_after_hook_tl
+        \peek_meaning:NTF \\
+          \__nicematrix_the_cell_is_empty:
           {
-            \box_set_wd:Nn \l__nicematrix_cell_box \c_zero_dim
-            \skip_horizontal:N \l__nicematrix_col_width_dim
+            \peek_meaning:NTF \crcr
+              \__nicematrix_the_cell_is_empty:
+              \group_align_safe_end:
           }
       }
-      { \group_align_safe_end: }
+  }
+\cs_new_protected:Npn \__nicematrix_the_cell_is_empty:
+  {
+    \group_align_safe_end:
+    \tl_gput_right:Nn \g__nicematrix_cell_after_hook_tl
+      {
+        \box_set_wd:Nn \l__nicematrix_cell_box \c_zero_dim
+        \skip_horizontal:N \l__nicematrix_col_width_dim
+      }
   }
 \cs_new_protected:Npn \__nicematrix_test_if_empty_for_S:
   {

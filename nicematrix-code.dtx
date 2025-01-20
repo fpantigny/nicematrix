@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.0x}
-\def\myfiledate{2025/01/07}
+\def\myfileversion{7.0b}
+\def\myfiledate{2025/01/20}
 %
 %
 %<*batchfile>  
@@ -1616,7 +1616,7 @@ version 2005/12/01 or later.
 %
 % \medskip
 %    \begin{macrocode}
-\cs_set_protected:Npn \@@_cut_on_hyphen:w #1-#2\q_stop
+\cs_new_protected:Npn \@@_cut_on_hyphen:w #1-#2\q_stop
   {
 %    \end{macrocode}
 % Here, we use |\cs_set_nopar:Npn| instead of |\tl_set:Nn| for efficiency only.
@@ -5418,10 +5418,7 @@ version 2005/12/01 or later.
         \tl_gput_right:Nn \g_@@_array_preamble_tl 
           { > \@@_test_if_empty_for_S: } 
       }
-      { 
-        \tl_gput_right:Nn \g_@@_array_preamble_tl 
-          { > \@@_test_if_empty: } 
-      }
+      { \tl_gput_right:Nn \g_@@_array_preamble_tl { > \@@_test_if_empty: } } 
     \tl_gput_right:No \g_@@_array_preamble_tl \g_@@_pre_cell_tl 
     \tl_gclear:N \g_@@_pre_cell_tl
     \tl_gput_right:Nn \g_@@_array_preamble_tl
@@ -5497,23 +5494,35 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \group_align_safe_begin:
     \peek_meaning:NTF & 
+      \@@_the_cell_is_empty: 
       { 
-        \group_align_safe_end: 
-        \tl_gput_right:Nn \g_@@_cell_after_hook_tl 
+        \peek_meaning:NTF \\
+          \@@_the_cell_is_empty: 
           { 
+            \peek_meaning:NTF \crcr
+              \@@_the_cell_is_empty: 
+              \group_align_safe_end: 
+          }
+      } 
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_the_cell_is_empty:
+  {
+    \group_align_safe_end: 
+    \tl_gput_right:Nn \g_@@_cell_after_hook_tl 
+      { 
 %    \end{macrocode}
 % Be careful: here, we can't merely use 
 % |\bool_gset_true: \g_@@_empty_cell_bool|, 
 % in particular because of the columns of type~|X|. 
 %    \begin{macrocode}
-            \box_set_wd:Nn \l_@@_cell_box \c_zero_dim 
-            \skip_horizontal:N \l_@@_col_width_dim 
-          }
+        \box_set_wd:Nn \l_@@_cell_box \c_zero_dim 
+        \skip_horizontal:N \l_@@_col_width_dim 
       }
-      { \group_align_safe_end: } 
   }
 %    \end{macrocode}
-%
 % 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_if_empty_for_S: 
