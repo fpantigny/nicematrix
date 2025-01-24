@@ -832,7 +832,7 @@
     no-cell-nodes .code:n =
       \bool_set_true:N \l__nicematrix_no_cell_nodes_bool
       \cs_set_protected:Npn \__nicematrix_node_for_cell:
-        { \box_use_drop:N \l__nicematrix_cell_box } ,
+        { \set@color \box_use_drop:N \l__nicematrix_cell_box } ,
     no-cell-nodes .value_forbidden:n = true ,
     rounded-corners .dim_set:N = \l__nicematrix_tab_rounded_corners_dim ,
     rounded-corners .default:n = 4 pt ,
@@ -1630,6 +1630,8 @@
     \cs_set_eq:NN \MidRule \__nicematrix_MidRule
     \cs_set_eq:NN \BottomRule \__nicematrix_BottomRule
     \cs_set_eq:NN \RowStyle \__nicematrix_RowStyle:n
+    \cs_set_eq:NN \Hbrace \__nicematrix_Hbrace
+    \cs_set_eq:NN \Vbrace \__nicematrix_Vbrace
     \seq_map_inline:Nn \l__nicematrix_custom_line_commands_seq
       { \cs_set_eq:cc { ##1 } { nicematrix - ##1 } }
     \cs_set_eq:NN \cellcolor \__nicematrix_cellcolor_tabular
@@ -5350,6 +5352,8 @@
   }
 \cs_new:Npn \__nicematrix_if_row_less_than:nn #1 #2
   { \int_compare:nNnT { \c@iRow } < { #1 } { #2 } }
+\cs_new:Npn \__nicematrix_if_col_greater_than:nn #1 #2
+  { \int_compare:nNnF { \c@jCol } < { #1 } { #2 }  }
 \cs_generate_variant:Nn \__nicematrix_put_in_row_style:n { e }
 \cs_set_protected:Npn \__nicematrix_put_in_row_style:n #1
   {
@@ -5358,7 +5362,12 @@
         \exp_not:N
         \__nicematrix_if_row_less_than:nn
           { \int_eval:n { \c@iRow + \l__nicematrix_key_nb_rows_int } }
-          { \exp_not:n { #1 } \scan_stop: }
+          {
+            \exp_not:N
+            \__nicematrix_if_col_greater_than:nn
+              { \int_eval:n { \c@jCol } }
+              { \exp_not:n { #1 } \scan_stop: }
+          }
       }
   }
 \keys_define:nn { nicematrix / RowStyle }
@@ -8173,8 +8182,9 @@
   }
 \cs_new_protected:Npn \__nicematrix_vlines_block:nnn #1 #2 #3
   {
-    \dim_set_eq:NN \l__nicematrix_line_width_dim \arrayrulewidth
+    \group_begin:
     \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
+    \dim_set_eq:NN \arrayrulewidth \l__nicematrix_line_width_dim
     \__nicematrix_cut_on_hyphen:w #2 \q_stop
     \tl_set_eq:NN \l__nicematrix_tmpc_tl \l_tmpa_tl
     \tl_set_eq:NN \l__nicematrix_tmpd_tl \l_tmpb_tl
@@ -8194,11 +8204,13 @@
               }
           }
       }
+    \group_end:
   }
 \cs_new_protected:Npn \__nicematrix_hlines_block:nnn #1 #2 #3
   {
-    \dim_set_eq:NN \l__nicematrix_line_width_dim \arrayrulewidth
+    \group_begin:
     \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
+    \dim_set_eq:NN \arrayrulewidth \l__nicematrix_line_width_dim
     \__nicematrix_cut_on_hyphen:w #2 \q_stop
     \tl_set_eq:NN \l__nicematrix_tmpc_tl \l_tmpa_tl
     \tl_set_eq:NN \l__nicematrix_tmpd_tl \l_tmpb_tl
@@ -8218,6 +8230,7 @@
               }
           }
       }
+    \group_end:
   }
 \cs_new_protected:Npn \__nicematrix_stroke_borders_block:nnn #1 #2 #3
   {
@@ -9170,6 +9183,119 @@
       }
       { }
       { }
+  }
+\hook_gput_code:nnn { begindocument } { . }
+  {
+    \IfPackageLoadedT { tikz }
+      {
+        \tikzset
+          {
+            nicematrix~normal~brace / .style =
+              {
+                decoration = brace ,
+                decorate ,
+                outer~sep = 0.25 em
+              } ,
+            nicematrix~mirrored~brace / .style =
+              {
+                decoration = { brace , mirror } ,
+                decorate ,
+                outer~sep = 0.25 em
+              }
+          }
+     }
+  }
+\NewExpandableDocumentCommand { \__nicematrix_Hbrace } { O { } m m }
+  {
+    \int_compare:nNnTF \c@iRow < 1
+      {
+        \str_if_eq:nnTF { #2 } { * }
+          {
+            \NiceMatrixOptions{nullify-dots}
+            \Ldots
+              [
+                line-style = nicematrix~normal~brace ,
+                #1 ,
+                up = \exp_not:n { #3 }
+              ]
+          }
+          { \Hdotsfor
+              [
+                line-style = nicematrix~normal~brace ,
+                #1 ,
+                up = \exp_not:n { #3 }
+              ]
+              { #2 }
+          }
+
+      }
+      {
+        \str_if_eq:nnTF { #2 } { * }
+          {
+            \NiceMatrixOptions{nullify-dots}
+            \Ldots
+              [
+                line-style = nicematrix~mirrored~brace ,
+                #1 ,
+                down = \exp_not:n { #3 }
+              ]
+          }
+          {
+            \Hdotsfor
+              [
+                line-style = nicematrix~mirrored~brace ,
+                #1 ,
+                down = \exp_not:n { #3 }
+              ]
+            { #2 }
+          }
+      }
+  }
+\NewExpandableDocumentCommand { \__nicematrix_Vbrace } { O { } m m }
+  {
+    \int_compare:nNnTF \c@jCol = 0
+      {
+        \str_if_eq:nnTF { #2 } { * }
+          {
+            \NiceMatrixOptions{nullify-dots}
+            \Vdots
+              [
+                line-style = nicematrix~mirrored~brace ,
+                #1 ,
+                down = \exp_not:n { #3 }
+              ]
+          }
+          {
+            \Vdotsfor
+              [
+                line-style = nicematrix~mirrored~brace ,
+                #1 ,
+                down = \exp_not:n { #3 }
+              ]
+            { #2 }
+          }
+      }
+      {
+        \str_if_eq:nnTF { #2 } { * }
+          {
+            \NiceMatrixOptions{nullify-dots}
+            \Vdots
+              [
+                line-style =  nicematrix~normal~brace ,
+                #1 ,
+                up = \exp_not:n { #3 }
+              ]
+          }
+          {
+            \Vdotsfor
+              [
+                line-style = nicematrix~normal~brace ,
+                #1 ,
+                up = \exp_not:n { #3 }
+              ]
+            { #2 }
+          }
+      }
   }
 \bool_new:N \l__nicematrix_not_empty_bool
 \bool_new:N \l__nicematrix_empty_bool

@@ -968,6 +968,56 @@ seront utilisées au lieu de |\raggedright|, |\centering| et |\raggedleft|).
 Avec la clé \Definition{j} (qui force la clé |p|), le paragraphe est composé de
 manière justifiée. 
 
+\bigskip
+On peut mettre un environnement |{itemize}| ou |{enumerate}| dans dans un bloc
+qui utilise la clé |p| ou la clé |j| (dans les autres cas, on a une erreur 
+|Not allowed in LR mode|). Dans l'exemple suivant, on a chargé
+l'extension \pkg{enumitem} (pour pouvoir utiliser la clé |left| de
+l'environnement |{itemize}|). 
+
+\medskip
+\begin{Code}
+\begin{NiceTabular}[hvlines]{ccc}
+un & deux deux & trois trois \\
+un & 
+\Block\emph{[p,l]}{*-2}{%
+\begin{itemize}[left=0pt]
+\item un deux trois quatre cinq 
+\item deux 
+\item trois
+\end{itemize}%
+} \\
+un & \\
+un & \\
+un & \\
+un & \\
+un & \\
+un & \\
+\end{NiceTabular}
+\end{Code}
+
+
+\begin{center}
+\begin{NiceTabular}[hvlines]{ccc}
+un & deux deux & trois trois \\
+un & 
+\Block[p,l]{*-2}{%
+\begin{itemize}[left=0pt]
+\item un deux trois quatre cinq 
+\item deux 
+\item trois
+\end{itemize}%
+} \\
+un & \\
+un & \\
+un & \\
+un & \\
+un & \\
+un & \\
+\end{NiceTabular}
+\end{center}
+
+
 
 \subsection{Positionnement vertical du contenu des blocs}
 

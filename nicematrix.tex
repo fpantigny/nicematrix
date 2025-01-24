@@ -931,6 +931,54 @@ or |r|, and, in that case, the paragraph is formatted with |\raggedright|,
 when \pkg{ragged2e}) est chargée. With the key \Definition{j} (which inforces
 the key |p|), the paragraph is justified.
 
+\bigskip
+It's possible to put an environment |{itemize}| or |{enumerate}| in a block
+which uses the key~|p| or |j| (in the other case, you have a LaTeX error 
+|Not allowed in LR mode|). For the following example, we have loaded the package
+\pkg{enumitem} (for the key |left| of the environment |{itemize}|).
+
+\begin{Code}
+\begin{NiceTabular}[hvlines]{ccc}
+one & two two & three three \\
+one & 
+\Block\emph{[p]}{*-2}{%
+\begin{itemize}[left=0pt]
+\item one two three four five 
+\item two 
+\item three
+\end{itemize}
+} \\
+one & \\
+one & \\
+one & \\
+one & \\
+one & \\
+one & \\
+\end{NiceTabular}
+\end{Code}
+
+
+\begin{center}
+\begin{NiceTabular}[hvlines]{ccc}
+one & two two & three three \\
+one & 
+\Block[p]{*-2}{%
+\begin{itemize}[left=0pt]
+\item one two three four five 
+\item two 
+\item three
+\end{itemize}
+} \\
+one & \\
+one & \\
+one & \\
+one & \\
+one & \\
+one & \\
+\end{NiceTabular}
+\end{center}
+
+
 \subsection{Vertical position of the content of the block}
 
 \label{vertical-pos-block}
