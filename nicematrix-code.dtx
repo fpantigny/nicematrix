@@ -3861,8 +3861,7 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \MidRule \@@_MidRule
     \cs_set_eq:NN \BottomRule \@@_BottomRule
     \cs_set_eq:NN \RowStyle \@@_RowStyle:n
-    \cs_set_eq:NN \Hbrace \@@_Hbrace
-    \cs_set_eq:NN \Vbrace \@@_Vbrace
+    \@@_define_Hbrace:
     \seq_map_inline:Nn \l_@@_custom_line_commands_seq
       { \cs_set_eq:cc { ##1 } { nicematrix - ##1 } } 
     \cs_set_eq:NN \cellcolor \@@_cellcolor_tabular
@@ -16395,12 +16394,24 @@ version 2005/12/01 or later.
 % \bigskip
 % \section{The commands HBrace et VBrace}
 %
-%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_define_Hbrace:
+  {
+    \cs_set_eq:NN \Hbrace \@@_Hbrace_error
+    \cs_set_eq:NN \Vbrace \@@_Hbrace_error
+  }
+%    \end{macrocode}
+% 
 %    \begin{macrocode} 
 \hook_gput_code:nnn { begindocument } { . } 
   {
-    \IfPackageLoadedT { tikz }
+    \bool_if:NT \c_@@_tikz_braces_bool
       {
+        \cs_set_protected:Npn \@@_define_Hbrace:
+          {
+            \cs_set_eq:NN \Hbrace \@@_Hbrace
+            \cs_set_eq:NN \Vbrace \@@_Vbrace
+          }       
         \tikzset
           {
             nicematrix~normal~brace / .style = 
@@ -16420,6 +16431,11 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_Hbrace_error
+  { \@@_fatal:n { Hbrace~and~Vbrace~not~allowed } }
+%    \end{macrocode}
+% 
 %    \begin{macrocode}
 \NewExpandableDocumentCommand { \@@_Hbrace } { O { } m m }
   {
@@ -16771,7 +16787,8 @@ version 2005/12/01 or later.
     footnotehyper,~
     messages-for-Overleaf,~
     renew-dots,~and~
-    renew-matrix.
+    renew-matrix,~and~
+    tikz-braces
   }
 %    \end{macrocode}
 %
@@ -16784,6 +16801,10 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 % 
+%    \begin{macrocode}
+\bool_new:N \c_@@_tikz_braces_bool
+%    \end{macrocode}
+%
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Package }
   {
@@ -16799,11 +16820,28 @@ version 2005/12/01 or later.
 % keep the following key only for compatibility but maybe we will delete it.
 %    \begin{macrocode}
     no-test-for-array .code:n = \@@_warning:n { no-test-for-array } ,
+    tikz-braces .bool_set:N = \c_@@_tikz_braces_bool , 
     unknown .code:n = \@@_error:n { Unknown~key~for~package } 
   }
 \ProcessKeysOptions { nicematrix / Package }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\bool_if:NT \c_@@_tikz_braces_bool 
+  {
+    \usepackage { tikz }
+    \AtBeginDocument
+      {
+        \usetikzlibrary 
+          { 
+            decorations.pathmorphing, 
+            decorations.pathreplacing,
+            decorations.shapes
+          }
+      }
+  }
+%    \end{macrocode}
+% 
 % \bigskip
 %    \begin{macrocode}
 \@@_msg_new:nn { footnote~with~footnotehyper~package }
@@ -17382,6 +17420,16 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\@@_msg_new:nn { Hbrace~and~Vbrace~not~allowed }
+  {
+    Command~not~allowed.\\
+    You~can't~use~the~commands~\token_to_str:N \Hbrace\ and~
+    \token_to_str:N \Vbrace\ because~you~have~not~loaded~'nicematrix'~
+    with~the~key~'tikz-braces'.
+  }
+%    \end{macrocode}
+% 
 %    \begin{macrocode}
 \@@_msg_new:nn { Wrong~line~in~SubMatrix } 
   { 
