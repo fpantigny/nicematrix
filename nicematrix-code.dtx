@@ -16394,6 +16394,10 @@ version 2005/12/01 or later.
 % \bigskip
 % \section{The commands HBrace et VBrace}
 %
+% When the package |nicematrix| has been loaded without the key |tikz-braces|,
+% we will use the following definition of |\@@_define_Hbrace:|, and, in the
+% environments of \pkg{nicematrix}, the commands |\Hbrace| and |\Vbrace| will
+% raise errors.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_define_Hbrace:
   {
@@ -16402,6 +16406,12 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 % 
+% 
+% \bigskip
+% However, when \pkg{nicematrix} has been loaded with the key |tikz-braces|, we
+% will use another definition of |\@@_define_Hbrace:| which will link, in the
+% environments of \pkg{nicematrix}, |\Hbrace| and |\Vbrace| to ``active
+% versions'' of the commands.
 %    \begin{macrocode} 
 \hook_gput_code:nnn { begindocument } { . } 
   {
@@ -16457,7 +16467,8 @@ version 2005/12/01 or later.
                 up = \exp_not:n { #3 } 
               ] 
           }
-          { \Hdotsfor 
+          { 
+            \Hdotsfor 
               [ 
                 line-style = nicematrix~normal~brace , 
                 #1 , 

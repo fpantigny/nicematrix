@@ -7,7 +7,7 @@
 \usepackage{geometry}
 \geometry{left=2.8cm,right=2.8cm,top=2.5cm,bottom=2.5cm,papersize={21cm,29.7cm}}
 
-\usepackage{nicematrix}
+\usepackage[tikz-braces]{nicematrix}
 
 \usepackage{tikz}
 \usetikzlibrary{fit,patterns,arrows.meta,decorations.pathmorphing,babel}
@@ -969,11 +969,11 @@ Avec la clé \Definition{j} (qui force la clé |p|), le paragraphe est composé 
 manière justifiée. 
 
 \bigskip
-On peut mettre un environnement |{itemize}| ou |{enumerate}| dans dans un bloc
-qui utilise la clé |p| ou la clé |j| (dans les autres cas, on a une erreur 
-|Not allowed in LR mode|). Dans l'exemple suivant, on a chargé
-l'extension \pkg{enumitem} (pour pouvoir utiliser la clé |left| de
-l'environnement |{itemize}|). 
+On peut mettre un environnement |{itemize}| ou |{enumerate}| dans un bloc qui
+utilise la clé |p| ou la clé |j| (dans les autres cas, on a une erreur 
+|Not allowed in LR mode|). Dans l'exemple suivant, on a chargé l'extension
+\pkg{enumitem} (pour pouvoir utiliser la clé |left| de l'environnement
+|{itemize}|).
 
 \medskip
 \begin{Code}
@@ -3949,6 +3949,102 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 \end{pNiceMatrix}\]
 
 
+
+
+\subsection{Les commandes \textbackslash Hbrace et \textbackslash Vbrace}
+
+\colorbox{yellow!50}{\textbf{Nouveau 7.1}}
+
+\indexcommand{Hbrace}
+\indexcommand{Vbrace}
+\index{tikz-braces (clé au chargement de \texttt{nicematrix)}}
+
+\smallskip
+Puisque, comme dit dans la partie précédente, il est possible d'utiliser, avec
+les commandes |\Cdots|, |\Ldots|, |\Vdots|, etc. n'importe quel style de ligne
+fourni par TikZ, on peut envisager de tracer des accolades dans le style de la
+librairie \pkg{decorations.shapes} de TikZ.
+
+\smallskip
+Pour faciliter cet usage, \pkg{nicematrix} propose les deux commandes
+\DefinitionCommande{Hbrace} et \DefinitionCommande{Vbrace}. 
+
+Néanmoins, celles-ci ne sont disponibles que si \pkg{nicematrix} a été chargée
+avec l'option \Definition{tikz-braces}.
+
+\smallskip
+\begin{Code}
+\usepackage[\emph{tikz-braces}]{nicematrix}
+\end{Code}
+
+L'utilisation de cette clé va charger TikZ (par défaut, \pkg{nicematrix} ne
+charge que PGF, qui est une sous-couche de TikZ) ainsi que les librairies de TikZ
+suivantes : 
+\begin{itemize}
+\item \pkg{decorations.pathmorphing} ;
+\item \pkg{decorations.pathreplacing} ;
+\item \pkg{decorations.shapes}. 
+\end{itemize}
+
+Les commandes |\Hbrace| et |\Vbrace| sont alors disponibles dans les
+environnements de \pkg{nicematrix}. Les deux commandes ont la même syntaxe. Elles
+prennent trois arguments:
+
+\begin{itemize}
+\item un premier argument optionnel (entre crochets) pour une liste de couples
+\textsl{clé=valeur} (ces clés sont les mêmes que celles décrites dans la section
+précédente pour la personnalisation du style de ligne) ;
+
+\item un deuxième argument, obligatoire, qui est le nombre de colonnes (pour
+|\Hbrace|) ou de rangées (pour |\Vbrace|) sur lesquelles l'accolade va s'étendre.
+
+\item un troisième argument, obligatoire, qui est le label de l'accolade.
+\end{itemize}
+
+Concernant la commande |\Hbrace|, son comportement vis à vis des esperluettes
+(|&|) est le même que celui des commandes |\multicolumn|, |\hdotsfor|,
+|\Hdotsfor|, etc. : on ne doit mettre qu'une seule esperluette après la
+commande, même si l'accolade s'étend sur plusieurs colonnes.
+
+\begin{Code}[width=11.2cm]
+$\begin{NiceArray}{ccccc}%
+  [ hvlines ,
+    first-row ,
+    last-row = 6,
+    first-col ,
+    last-col ,
+    xdots/horizontal-labels ]
+& \emph{\Hbrace{3}{p}} & \emph{\Hbrace{2}{q}} \\
+\emph{\Vbrace{3}{p}} & 1 & 1 & 134 & 1 & 1 & \emph{\Vbrace{3}{p}} \\
+& 1 & 1 & 134 & 1 & 1 \\
+& 1 & 1 & 13456 & 1 & 1 \\
+\emph{\Vbrace{2}{q}} & 1 & 1 & 134 & 1 & 1 & \emph{\Vbrace{2}{q}}\\
+& 1 & 1 & 134 & 1 & 1 \\
+& \emph{\Hbrace{3}{p}} & \emph{\Hbrace[color=blue]{2}{q}} \\
+\end{NiceArray}$
+\end{Code}
+$\begin{NiceArray}{ccccc}%
+  [
+    hvlines ,
+    first-row ,
+    last-row = 6,
+    first-col ,
+    last-col ,
+    xdots/horizontal-labels 
+  ]
+& \Hbrace{3}{p} & \Hbrace{2}{q} \\
+\Vbrace{3}{p} & 1 & 1 & 134 & 1 & 1 & \Vbrace{3}{p} \\
+& 1 & 1 & 134 & 1 & 1 \\
+& 1 & 1 & 13456 & 1 & 1 \\
+\Vbrace{2}{q}& 1 & 1 & 134 & 1 & 1 & \Vbrace{2}{q}\\
+& 1 & 1 & 134 & 1 & 1 \\
+& \Hbrace{3}{p} & \Hbrace[color=blue]{2}{q} \\
+\end{NiceArray}$
+
+\medskip
+Pour un autre exemple de |\Hbrace| et |\Vbrace|, voir la partie «Des lignes
+pointillées qui ne sont plus pointillées».
+
 \subsection{Les lignes pointillées et les filets}
 
 \label{dotted-and-rules}
@@ -3977,6 +4073,7 @@ $\begin{bNiceMatrix}[margin,hvlines]
 \end{bNiceMatrix}$
 
 \index{Pointillés@\textbf{Pointillés (lignes en ---)}|)}
+
 
 \section{Délimiteurs dans le préambule de l'environnement}
 
@@ -4012,7 +4109,7 @@ $\begin{NiceArray}{\emph{\left\lgroup} ccc\emph{\right\rgroup} l}
 \end{NiceArray}$
 \end{Code}
 
-\[\begin{NiceArray}{\left\lgroup ccc\right\rgroup l}[no-cell-nodes]
+\[\begin{NiceArray}{\left\lgroup ccc\right\rgroup l}
 1 & 2 & 3 &  \\
 4 & 1 & 6 &  \\
 7 & 8 & 9 & \scriptstyle L_3 \gets L_3 + L_1 + L_2
@@ -4069,7 +4166,7 @@ a_{31} & a_{32}                                     & a_{33}
 \end{pNiceArray}$
 \end{Code}
 
-\[\begin{pNiceArray}{(c)(c)(c)}[no-cell-nodes]
+\[\begin{pNiceArray}{(c)(c)(c)}
 a_{11} & a_{12}                                     & a_{13} \\
 a_{21} & \displaystyle \int_0^1\dfrac{1}{x^2+1}\,dx & a_{23} \\
 a_{31} & a_{32}                                     & a_{33}
@@ -4590,7 +4687,7 @@ $\begin{pNiceMatrix}
 \texttt{\textbackslash CodeBefore})|textbf}
 \label{TikzEveryCell}
 \index{empty (clé de \texttt{\textbackslash TikzEveryCell})}
-\index{non empty (clé de \texttt{\textbackslash TikzEveryCell})}
+\index{non-empty (clé de \texttt{\textbackslash TikzEveryCell})}
 
 La commande \DefinitionCommande{TikzEveryCell} exécute avec TikZ le chemin
 rectangulaire qui correspond à chaque case du tableau, avec comme paramètres
@@ -7069,15 +7166,29 @@ pointillées (TikZ doit être chargé).
 \end{pNiceMatrix}\]
 \end{scope}
 
-
+\pagebreak
 
 \interitem
 On peut même tracer des lignes continues.\footnote{Dans ce document, la
   bibliothèque \pkg{arrows.meta} de TikZ a été chargée, ce qui a une incidence
   sur la forme des pointes de flèches.}
 
-\begin{Verbatim}
-\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
+\medskip
+\begin{Code}[width=11cm]
+\NiceMatrixOptions
+  {xdots={horizontal-labels,line-style = <->}}
+$\begin{pNiceArray}{ccc|cc}%
+   [first-row,last-col,margin]
+\emph{\Hdotsfor{3}^{3}} & \emph{\Hdotsfor{2}^{2}} \\
+2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}^{3}}\\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{2}^{2}}\\
+1 & 1 & 1 & 1 & 1 \\
+\end{pNiceArray}$
+\end{Code}
+{\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \Hdotsfor{3}^{3} & \Hdotsfor{2}^{2} \\
 2 & 1 & 1 & 1 & 1 & \Vdotsfor{3}^{3}\\
@@ -7086,30 +7197,30 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \Hline
 1 & 1 & 1 & 1 & 1 & \Vdotsfor{2}^{2}\\
 1 & 1 & 1 & 1 & 1 \\
-\end{pNiceArray}$
-\end{Verbatim}
+\end{pNiceArray}$}
 
-
-\begin{center}
-\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
-$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
-\Hdotsfor{3}^{3} & \Hdotsfor{2}^{2} \\
-2 & 1 & 1 & 1 & 1 & \Vdotsfor{3}^{3}\\
-1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 \\
-\Hline
-1 & 1 & 1 & 1 & 1 & \Vdotsfor{2}^{2}\\
-1 & 1 & 1 & 1 & 1 \\
-\end{pNiceArray}$
-\end{center}
 
 \interitem
 \label{ex:colon}
 Si on veut mettre les labels sur les flèches, il convient d'utiliser le
 caractère spécial~«|:|» :
 
-\begin{Verbatim}
-\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
+\medskip
+\begin{Code}[width=11cm]
+\NiceMatrixOptions
+  {xdots={horizontal-labels,line-style = <->}}
+$\begin{pNiceArray}{ccc|cc}%
+   [first-row,last-col,margin]
+\emph{\Hdotsfor{3}:{3}} & \emph{\Hdotsfor{2}:{2}} \\
+2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}:{3}} \\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{2}:{2}} \\
+1 & 1 & 1 & 1 & 1 \\
+\end{pNiceArray}$
+\end{Code}
+{\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \Hdotsfor{3}:{3} & \Hdotsfor{2}:{2} \\
 2 & 1 & 1 & 1 & 1 & \Vdotsfor{3}:{3}\\
@@ -7118,24 +7229,79 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \Hline
 1 & 1 & 1 & 1 & 1 & \Vdotsfor{2}:{2}\\
 1 & 1 & 1 & 1 & 1 \\
-\end{pNiceArray}$
-\end{Verbatim}
+\end{pNiceArray}$}
 
 
-\begin{center}
-\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
-$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
-\Hdotsfor{3}:{3} & \Hdotsfor{2}:{2} \\
-2 & 1 & 1 & 1 & 1 & \Vdotsfor{3}:{3}\\
+\interitem
+\label{ex:hbrace}
+Si on préfère des accolades de la bibliothèque \pkg{decorations.shapes} de TikZ,
+le mieux est d'utiliser les commandes |\Hbrace| et |\Vbrace| proposées par
+\pkg{nicematrix}.\footnote{Ces commandes ne sont disponibles que si
+  \pkg{nicematrix} a été chargée avec la clé |tikz-braces|.}
+
+\medskip
+\begin{Code}[width=11cm]
+\NiceMatrixOptions{xdots/horizontal-labels}
+$\begin{pNiceArray}{ccc|cc}%
+  [first-row,last-col,margin]
+\emph{\Hbrace{3}{3}} & \emph{\Hbrace{2}{2}} \\
+2 & 1 & 1 & 1 & 1 & \emph{\Vbrace{3}{3}} \\
 1 & 1 & 1 & 1 & 1 \\
 1 & 1 & 1 & 1 & 1 \\
 \Hline
-1 & 1 & 1 & 1 & 1 & \Vdotsfor{2}:{2}\\
+1 & 1 & 1 & 1 & 1 & \emph{\Vbrace{2}{2}} \\
 1 & 1 & 1 & 1 & 1 \\
 \end{pNiceArray}$
-\end{center}
+\end{Code}
+{\NiceMatrixOptions{xdots/horizontal-labels}
+$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
+\Hbrace{3}{3} & \Hbrace{2}{2} \\
+2 & 1 & 1 & 1 & 1 & \Vbrace{3}{3}\\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \Vbrace{2}{2}\\
+1 & 1 & 1 & 1 & 1 \\
+\end{pNiceArray}$}
 
 
+
+
+
+\pagebreak
+Si on préfère les accolades de la fonte mathématique courante, il convient
+d'utiliser les commandes |\SubMatrix|, |\OverBrace| et |\UnderBrace| dans le
+|\CodeAfter|.
+
+\medskip
+\begin{Code}[width=11cm]
+$\begin{pNiceArray}{ccc|cc}[margin,last-col]
+2 & 1 & 1 & 1 & 1 & \Block{3-1}{\quad 3} \\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \Block{2-1}{\quad 2} \\
+1 & 1 & 1 & 1 & 1 \\
+\CodeAfter
+  \emph{\OverBrace[shorten,yshift=1.5mm]{1-1}{1-3}{3}}
+  \emph{\OverBrace[shorten,yshift=1.5mm]{1-4}{1-5}{2}}
+  \emph{\SubMatrix{.}{1-1}{3-5}{\rbrace}[xshift=3.5mm]}
+  \emph{\SubMatrix{.}{4-1}{5-5}{\rbrace}[xshift=3.5mm]}
+\end{pNiceArray}$
+\end{Code}
+$\begin{pNiceArray}{ccc|cc}[margin,last-col]
+2 & 1 & 1 & 1 & 1 & \Block{3-1}{\quad 3} \\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \Block{2-1}{\quad 2} \\
+1 & 1 & 1 & 1 & 1 \\
+\CodeAfter
+  \OverBrace[shorten,yshift=1.5mm]{1-1}{1-3}{3}
+  \OverBrace[shorten,yshift=1.5mm]{1-4}{1-5}{2}
+  \SubMatrix{.}{1-1}{3-5}{\}}[xshift=3.5mm]
+  \SubMatrix{.}{4-1}{5-5}{\}}[xshift=3.5mm]
+\end{pNiceArray}$
 
 \subsection{Lignes en tiretés}
 

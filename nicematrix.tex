@@ -6,7 +6,7 @@
 \usepackage{geometry}
 \geometry{left=2.8cm,right=2.8cm,top=2.5cm,bottom=2.5cm,papersize={21cm,29.7cm}}
 
-\usepackage{nicematrix}
+\usepackage[tikz-braces]{nicematrix}
 
 \usepackage{tikz}
 \usetikzlibrary{fit,patterns,arrows.meta,decorations.pathmorphing}
@@ -3846,6 +3846,101 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 \end{pNiceMatrix}\]
 
 
+
+\subsection{The commands \textbackslash Hbrace and \textbackslash Vbrace}
+
+\colorbox{yellow!50}{\textbf{New 7.1}}
+
+\indexcommand{Hbrace}
+\indexcommand{Vbrace}
+\index{tikz-braces (key at load-tome of \texttt{nicematrix)}}
+
+\smallskip
+Since, as said in the previous part, it's possible to use, with the commands
+|\Cdots|, |\Ldots|, |\Vdots|, etc. all the styles of lines provided by TikZ, one
+may wish to use those commands to draw braces with the shape provided by the
+library \pkg{decorations.shapes} of TikZ.
+
+\smallskip
+In order to facilitate that use, \pkg{nicematrix} provides two commands
+\DefinitionCommand{Hbrace} and \DefinitionCommand{Vbrace}.
+
+However, those commands are available only when the package \pkg{nicematrix} has
+been loaded with the key \Definition{tikz-braces}.
+
+\smallskip
+\begin{Code}
+\usepackage[\emph{tikz-braces}]{nicematrix}
+\end{Code}
+
+The use of that key will load TikZ (by default, \pkg{nicematrix} only loads PGF,
+which is a sublayer of TikZ) and the following TikZ libraries: 
+\begin{itemize}
+\item \pkg{decorations.pathmorphing} ;
+\item \pkg{decorations.pathreplacing} ;
+\item \pkg{decorations.shapes}. 
+\end{itemize}
+
+Then, the commands |\Hbrace| and |\Vbrace| are available in the environments of
+\pkg{nicematrix}. Both commands take in three arguments:
+\begin{itemize}
+\item an optional argument, between square brackets, which contains a list of
+\textsl{key=value} pairs (the keys are the same as the keys described in the
+previous section, for the customization of the rules);
+
+\item a mandatory argument which is the number of columns (for |\Hbrace|) or the
+number of rows (for |\Vbrace|) over which the command applies;
+
+\item an mandatory argument which is the label of the curly brace.
+\end{itemize}
+
+As regards the ampersands (|&|), |\Hbrace| has the same behavior as the commands
+|\multicolumn|, |\hdotsfor|, |\Hdotsfor|, etc.: only one ampersand must be
+inserted, even if the brace that will be drawn will extend on several columns.
+
+
+\bigskip
+\begin{Code}[width=11.2cm]
+$\begin{NiceArray}{ccccc}%
+  [ hvlines ,
+    first-row ,
+    last-row = 6,
+    first-col ,
+    last-col ,
+    xdots/horizontal-labels ]
+& \emph{\Hbrace{3}{p}} & \emph{\Hbrace{2}{q}} \\
+\emph{\Vbrace{3}{p}} & 1 & 1 & 134 & 1 & 1 & \emph{\Vbrace{3}{p}} \\
+& 1 & 1 & 134 & 1 & 1 \\
+& 1 & 1 & 13456 & 1 & 1 \\
+\emph{\Vbrace{2}{q}} & 1 & 1 & 134 & 1 & 1 & \emph{\Vbrace{2}{q}}\\
+& 1 & 1 & 134 & 1 & 1 \\
+& \emph{\Hbrace{3}{p}} & \emph{\Hbrace[color=blue]{2}{q}} \\
+\end{NiceArray}$
+\end{Code}
+$\begin{NiceArray}{ccccc}%
+  [
+    hvlines ,
+    first-row ,
+    last-row = 6,
+    first-col ,
+    last-col ,
+    xdots/horizontal-labels 
+  ]
+& \Hbrace{3}{p} & \Hbrace{2}{q} \\
+\Vbrace{3}{p} & 1 & 1 & 134 & 1 & 1 & \Vbrace{3}{p} \\
+& 1 & 1 & 134 & 1 & 1 \\
+& 1 & 1 & 13456 & 1 & 1 \\
+\Vbrace{2}{q}& 1 & 1 & 134 & 1 & 1 & \Vbrace{2}{q}\\
+& 1 & 1 & 134 & 1 & 1 \\
+& \Hbrace{3}{p} & \Hbrace[color=blue]{2}{q} \\
+\end{NiceArray}$
+
+
+\medskip
+For another example of use of |\Hbrace| and |\Vbrace|, see
+the section ``Dotted lines that are no longer dotted'', p.~\pageref{ex:hbrace}.  
+
+
 \subsection{The dotted lines and the rules}
 
 \label{dotted-and-rules}
@@ -6916,13 +7011,27 @@ not longer dotted (TikZ should be loaded).
 \end{pNiceMatrix}\]
 \end{scope}
 
-\interitem
+\pagebreak
 In fact, it's even possible to draw solid lines with the commands |\Cdots|,
 |\Vdots|, etc.\footnote{In this document, the TikZ library \pkg{arrows.meta}
 has been loaded, which impacts the shape of the arrow tips.}
 
-\begin{Verbatim}
-\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
+\medskip
+\begin{Code}[width=11cm]
+\NiceMatrixOptions
+  {xdots={horizontal-labels,line-style = <->}}
+$\begin{pNiceArray}{ccc|cc}%
+   [first-row,last-col,margin]
+\emph{\Hdotsfor{3}^{3}} & \emph{\Hdotsfor{2}^{2}} \\
+2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}^{3}}\\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{2}^{2}} \\
+1 & 1 & 1 & 1 & 1 \\
+\end{pNiceArray}$
+\end{Code}
+{\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \Hdotsfor{3}^{3} & \Hdotsfor{2}^{2} \\
 2 & 1 & 1 & 1 & 1 & \Vdotsfor{3}^{3}\\
@@ -6931,29 +7040,29 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \Hline
 1 & 1 & 1 & 1 & 1 & \Vdotsfor{2}^{2}\\
 1 & 1 & 1 & 1 & 1 \\
-\end{pNiceArray}$
-\end{Verbatim}
+\end{pNiceArray}$}
 
-
-\begin{center}
-\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
-$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
-\Hdotsfor{3}^{3} & \Hdotsfor{2}^{2} \\
-2 & 1 & 1 & 1 & 1 & \Vdotsfor{3}^{3}\\
-1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 \\
-\Hline
-1 & 1 & 1 & 1 & 1 & \Vdotsfor{2}^{2}\\
-1 & 1 & 1 & 1 & 1 \\
-\end{pNiceArray}$
-\end{center}
 
 \interitem
 \label{ex:colon}
 If you want the label \emph{on the line}, you should use the special token~``|:|'':
 
-\begin{Verbatim}
-\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
+\medskip
+\begin{Code}[width=11cm]
+\NiceMatrixOptions
+  {xdots={horizontal-labels,line-style = <->}}
+$\begin{pNiceArray}{ccc|cc}%
+  [first-row,last-col,margin]
+\emph{\Hdotsfor{3}:{3}} & \emph{\Hdotsfor{2}:{2}} \\
+2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}:{3}} \\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{2}:{2}} \\
+1 & 1 & 1 & 1 & 1 \\
+\end{pNiceArray}$
+\end{Code}
+{\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \Hdotsfor{3}:{3} & \Hdotsfor{2}:{2} \\
 2 & 1 & 1 & 1 & 1 & \Vdotsfor{3}:{3}\\
@@ -6962,22 +7071,77 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \Hline
 1 & 1 & 1 & 1 & 1 & \Vdotsfor{2}:{2}\\
 1 & 1 & 1 & 1 & 1 \\
-\end{pNiceArray}$
-\end{Verbatim}
+\end{pNiceArray}$}
 
 
-\begin{center}
-\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
+
+\interitem
+\label{ex:hbrace}
+If one prefers the braces of the library \pkg{decorations.shapes} of TikZ, the
+best way is to use the commands |\Hbrace| and |\Vbrace| provided by
+\pkg{nicematrix}.\footnote{Those commands are available only if \pkg{nicematrix}
+has been loaded with the key |tikz-braces|.}
+
+\medskip
+\begin{Code}[width=11cm]
+\NiceMatrixOptions{xdots/horizontal-labels}
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
-\Hdotsfor{3}:{3} & \Hdotsfor{2}:{2} \\
-2 & 1 & 1 & 1 & 1 & \Vdotsfor{3}:{3}\\
+\emph{\Hbrace{3}{3}} & \emph{\Hbrace{2}{2}} \\
+2 & 1 & 1 & 1 & 1 & \emph{\Vbrace{3}{3}} \\
 1 & 1 & 1 & 1 & 1 \\
 1 & 1 & 1 & 1 & 1 \\
 \Hline
-1 & 1 & 1 & 1 & 1 & \Vdotsfor{2}:{2}\\
+1 & 1 & 1 & 1 & 1 & \emph{\Vbrace{2}{2}} \\
 1 & 1 & 1 & 1 & 1 \\
 \end{pNiceArray}$
-\end{center}
+\end{Code}
+{\NiceMatrixOptions{xdots/horizontal-labels}
+$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
+\Hbrace{3}{3} & \Hbrace{2}{2} \\
+2 & 1 & 1 & 1 & 1 & \Vbrace{3}{3}\\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \Vbrace{2}{2}\\
+1 & 1 & 1 & 1 & 1 \\
+\end{pNiceArray}$}
+
+
+\pagebreak
+If one prefers the curly braces of the current mathematical font of LaTeX, one
+should use the commands |\SubMatrix|, |\OverBrace| and |\UnderBrace| in the
+|\CodeAfter|.
+
+\medskip
+\begin{Code}[width=11cm]
+$\begin{pNiceArray}{ccc|cc}[margin,last-col]
+2 & 1 & 1 & 1 & 1 & \Block{3-1}{\quad 3} \\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \Block{2-1}{\quad 2} \\
+1 & 1 & 1 & 1 & 1 \\
+\CodeAfter
+  \emph{\OverBrace[shorten,yshift=1.5mm]{1-1}{1-3}{3}}
+  \emph{\OverBrace[shorten,yshift=1.5mm]{1-4}{1-5}{2}}
+  \emph{\SubMatrix{.}{1-1}{3-5}{\rbrace}[xshift=3.5mm]}
+  \emph{\SubMatrix{.}{4-1}{5-5}{\rbrace}[xshift=3.5mm]}
+\end{pNiceArray}$
+\end{Code}
+{$\begin{pNiceArray}{ccc|cc}[margin,last-col]
+2 & 1 & 1 & 1 & 1 & \Block{3-1}{\quad 3} \\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \Block{2-1}{\quad 2} \\
+1 & 1 & 1 & 1 & 1 \\
+\CodeAfter
+  \OverBrace[shorten,yshift=1.5mm]{1-1}{1-3}{3}
+  \OverBrace[shorten,yshift=1.5mm]{1-4}{1-5}{2}
+  \SubMatrix{.}{1-1}{3-5}{\rbrace}[xshift=3.5mm]
+  \SubMatrix{.}{4-1}{5-5}{\rbrace}[xshift=3.5mm]
+\end{pNiceArray}$}
+
 
 
 
@@ -7697,6 +7861,16 @@ The successive versions of the file |nicematrix.sty| provided by TeXLive are ava
 \small
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
+
+
+\subsection*{Changes between version 7.0 and 7.1}
+
+New commands |\Hbrace| and |\Vbrace|.
+
+\subsection*{Changes between version 6.29 and 7.0}
+
+The package \pkg{nicematrix} is now compatible (for the tabulars) with the
+Tagging Project.
 
 \subsection*{Changes between version 6.28 and 6.29}
 
