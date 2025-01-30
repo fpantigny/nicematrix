@@ -9,7 +9,13 @@
 \usepackage{nicematrix}
 
 \usepackage{tikz}
-\usetikzlibrary{fit,patterns,arrows.meta,decorations.pathmorphing,decorations.pathreplacing}
+\usetikzlibrary
+  {  
+    fit,
+    patterns,
+    arrows.meta,
+    decorations.pathreplacing
+  }
 
 \usepackage{enumitem}
 \usepackage{siunitx}
@@ -3902,10 +3908,10 @@ provided by the library \pkg{decorations.pathreplacing} of TikZ.
 
 \smallskip
 In order to facilitate that use, \pkg{nicematrix} provides two commands
-\DefinitionCommand{Hbrace} and \DefinitionCommand{Vbrace}.
-
-Those commands are available only when TikZ has been loaded with the library 
-\pkg{decorations.pathreplacing} (if they are not loaded, an error will be raised).
+\DefinitionCommand{Hbrace} and \DefinitionCommand{Vbrace}. Those commands are
+available only if TikZ has been loaded with its library
+\pkg{decorations.pathreplacing} (before or after the loading of
+\pkg{nicematrix}). Otherwise, a (non-fatal) error will be raised.
 \begin{Verbatim}
 \usepackage{tikz}
 \usetikzlibrary{decorations.pathreplacing}
@@ -7178,8 +7184,10 @@ $\begin{pNiceArray}{ccc|cc}[margin,last-col]
   \SubMatrix{.}{4-1}{5-5}{\rbrace}[xshift=3.5mm]
 \end{pNiceArray}$}
 
-
-
+\medskip
+Or course, the output may seem disappointing. That's why, for this type of use,
+we recommend the use of the commands |\Hbrace| and |\Vbrace| (provided by
+\pkg{nicematrix}), as shown in the previous example.
 
 
 \subsection{Dashed rules}

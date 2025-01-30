@@ -15,7 +15,6 @@
     fit,
     patterns,
     arrows.meta,
-    decorations.pathmorphing,
     decorations.pathreplacing,
     babel
   }
@@ -4023,9 +4022,10 @@ fourni par TikZ, on peut envisager de tracer des accolades avec la décoration
 \smallskip
 Pour faciliter cet usage, \pkg{nicematrix} propose les deux commandes
 \DefinitionCommande{Hbrace} et \DefinitionCommande{Vbrace}. 
-
-Celles-ci ne seront disponibles que TikZ a été chargé ainsi que la bibliothèque 
-\pkg{decorations.pathreplacing} (si elles ne sont pas chargées, une erreur sera levée).
+Celles-ci ne sont disponibles que si TikZ, ainsi que sa bibliothèque
+\pkg{decorations.pathreplacing}, ont été chargées (avant ou après le chargement
+de \pkg{nicematrix}). Si elles ne sont pas chargées, une erreur (non fatale) sera
+levée. 
 \begin{Verbatim}
 \usepackage{tikz}
 \usetikzlibrary{decorations.pathreplacing}
@@ -7359,6 +7359,12 @@ $\begin{pNiceArray}{ccc|cc}[margin,last-col]
   \SubMatrix{.}{1-1}{3-5}{\}}[xshift=3.5mm]
   \SubMatrix{.}{4-1}{5-5}{\}}[xshift=3.5mm]
 \end{pNiceArray}$
+
+
+\medskip
+Le résultat peut sembler décevant. C'est pourquoi, pour ce type d'usage, on
+recommande plutôt l'utilisation des commandes |\Hbrace| et |\Vbrace| (fournies par
+\pkg{nicematrix}), comme dans l'exemple précédent.
 
 \subsection{Lignes en tiretés}
 
