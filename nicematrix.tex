@@ -6,10 +6,10 @@
 \usepackage{geometry}
 \geometry{left=2.8cm,right=2.8cm,top=2.5cm,bottom=2.5cm,papersize={21cm,29.7cm}}
 
-\usepackage[tikz-braces]{nicematrix}
+\usepackage{nicematrix}
 
 \usepackage{tikz}
-\usetikzlibrary{fit,patterns,arrows.meta,decorations.pathmorphing}
+\usetikzlibrary{fit,patterns,arrows.meta,decorations.pathmorphing,decorations.pathreplacing}
 
 \usepackage{enumitem}
 \usepackage{siunitx}
@@ -567,7 +567,7 @@ square brackets) a list of couples \textsl{key=value}.
 First, there are keys which are quick tools to control the apperance of the block.
 
 \begin{itemize}
-\item \index{fill (key of \texttt{\textbackslash Block})}
+\item \index{fill!key of \texttt{\textbackslash Block}}
 the key \Definition{fill} takes in as value a color and fills the block
 with that color;
 \item \index{opacity!key of \texttt{\textbackslash Block}} 
@@ -1419,7 +1419,7 @@ those keys, see |custom-line| on p.~\pageref{custom-line}.\footnote{Technical
   shall be ensured that this new command is expandable in the TeX sens (by
   using, for instance, |\NewExpandableDocumentCommand| of LaTeX3, |\newcommand|
   of LaTeX or |\def| of TeX). Example:
-  |\NewDocumentCommand{\RedLine}{}{\Hline[color=red]}|}
+  |\NewExpandableDocumentCommand}{}{\Hline[color=red]}|}
 
 
 \bigskip
@@ -2644,7 +2644,44 @@ special  & 12  & 12   & 0.5 & 70    \\
 
 \index{S (the columns S of \pkg{siunitx})|textit}
 \medskip 
-We have used the type of column |S| of \pkg{siunitx}.
+We have used the type of column |S| of \pkg{siunitx} (which should be loaded by
+the user).
+
+
+\bigskip
+\index{EmptyRow@\texttt{\textbackslash EmptyRow} (command of \texttt{\textbackslash CodeBefore})}
+\index{EmptyColumn@\texttt{\textbackslash EmptyColumn} (command of \texttt{\textbackslash CodeBefore})}
+
+\colorbox{yellow!50}{\textbf{New 7.1}}\par\nobreak
+
+\smallskip
+It's also possible, in the |\CodeBefore|, to use the commands
+\DefinitionCommand{EmptyColumn} and \DefinitionCommand{EmptyRow}. The command
+|\EmptyColumn| takes in as argument a (comma-separated) list of numbers of
+columns and requires that no rules nor backbround colors will be drawn in the
+corresponding columns. The command |\EmptyRow| is similar for the rows.
+
+\medskip
+\begin{Code}[width=10cm]
+\begin{NiceTabular}{ccccc}[hvlines]
+\CodeBefore
+  \rowcolor{blue!15}{1}
+  \emph{\EmptyColumn{3}}
+\Body
+   one & two && three & four \\
+   one & \Block{}{two\\ rows} && three & four \\
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{ccccc}[hvlines]
+\CodeBefore
+  \rowcolor{blue!15}{1}
+  \EmptyColumn{3}
+\Body
+   one & two && three & four \\
+   one & \Block{}{two\\ rows} && three & four \\
+\end{NiceTabular}
+
+
 
 
 \subsection{Color tools to be used inside the tabular}
@@ -3854,39 +3891,34 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 \indexcommand{Hbrace}
 \indexcommand{Vbrace}
 \index{tikz-braces (key at load-tome of \texttt{nicematrix)}}
+\label{Hbrace}
+
 
 \smallskip
 Since, as said in the previous part, it's possible to use, with the commands
 |\Cdots|, |\Ldots|, |\Vdots|, etc. all the styles of lines provided by TikZ, one
-may wish to use those commands to draw braces with the shape provided by the
-library \pkg{decorations.shapes} of TikZ.
+may wish to use those commands to draw braces with the decoration |brace|
+provided by the library \pkg{decorations.pathreplacing} of TikZ.
 
 \smallskip
 In order to facilitate that use, \pkg{nicematrix} provides two commands
 \DefinitionCommand{Hbrace} and \DefinitionCommand{Vbrace}.
 
-However, those commands are available only when the package \pkg{nicematrix} has
-been loaded with the key \Definition{tikz-braces}.
+Those commands are available only when TikZ has been loaded with the library 
+\pkg{decorations.pathreplacing} (if they are not loaded, an error will be raised).
+\begin{Verbatim}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing}
+\end{Verbatim}
 
-\smallskip
-\begin{Code}
-\usepackage[\emph{tikz-braces}]{nicematrix}
-\end{Code}
-
-The use of that key will load TikZ (by default, \pkg{nicematrix} only loads PGF,
-which is a sublayer of TikZ) and the following TikZ libraries: 
-\begin{itemize}
-\item \pkg{decorations.pathmorphing} ;
-\item \pkg{decorations.pathreplacing} ;
-\item \pkg{decorations.shapes}. 
-\end{itemize}
-
-Then, the commands |\Hbrace| and |\Vbrace| are available in the environments of
-\pkg{nicematrix}. Both commands take in three arguments:
+\medskip
+The commands |\Hbrace| and |\Vbrace| have the same syntax. Both commands take in
+three arguments:
 \begin{itemize}
 \item an optional argument, between square brackets, which contains a list of
 \textsl{key=value} pairs (the keys are the same as the keys described in the
-previous section, for the customization of the rules);
+previous section, for the customization of the rules, in particular |color| and
+|horizontal-labels|); 
 
 \item a mandatory argument which is the number of columns (for |\Hbrace|) or the
 number of rows (for |\Vbrace|) over which the command applies;
@@ -3938,7 +3970,9 @@ $\begin{NiceArray}{ccccc}%
 
 \medskip
 For another example of use of |\Hbrace| and |\Vbrace|, see
-the section ``Dotted lines that are no longer dotted'', p.~\pageref{ex:hbrace}.  
+the section ``Dotted lines that are no longer dotted'',
+p.~\pageref{ex:no-longer-dotted-rules}. 
+
 
 
 \subsection{The dotted lines and the rules}
@@ -6961,6 +6995,8 @@ $\begin{pNiceArray}{*6c|c}[nullify-dots,last-col,code-for-last-col=\scriptstyle]
 
 \subsection{Dotted lines which are no longer dotted}
 
+\label{ex:no-longer-dotted-rules}
+
 The option |line-style| controls the style of the lines drawn by |\Ldots|,
 |\Cdots|, etc. Thus, it's possible with these commands to draw lines which are
 not longer dotted (TikZ should be loaded).
@@ -7017,11 +7053,11 @@ In fact, it's even possible to draw solid lines with the commands |\Cdots|,
 has been loaded, which impacts the shape of the arrow tips.}
 
 \medskip
+\begin{Code}
+\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
+\end{Code}
 \begin{Code}[width=11cm]
-\NiceMatrixOptions
-  {xdots={horizontal-labels,line-style = <->}}
-$\begin{pNiceArray}{ccc|cc}%
-   [first-row,last-col,margin]
+$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \emph{\Hdotsfor{3}^{3}} & \emph{\Hdotsfor{2}^{2}} \\
 2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}^{3}}\\
 1 & 1 & 1 & 1 & 1 \\
@@ -7045,14 +7081,15 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 \interitem
 \label{ex:colon}
-If you want the label \emph{on the line}, you should use the special token~``|:|'':
+If you want the label \emph{on the line}, you should use the special
+token~``|:|'' instead of~``|^|'':
 
 \medskip
+\begin{Code}
+\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
+\end{Code}
 \begin{Code}[width=11cm]
-\NiceMatrixOptions
-  {xdots={horizontal-labels,line-style = <->}}
-$\begin{pNiceArray}{ccc|cc}%
-  [first-row,last-col,margin]
+$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \emph{\Hdotsfor{3}:{3}} & \emph{\Hdotsfor{2}:{2}} \\
 2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}:{3}} \\
 1 & 1 & 1 & 1 & 1 \\
@@ -7076,11 +7113,10 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 
 \interitem
-\label{ex:hbrace}
-If one prefers the braces of the library \pkg{decorations.shapes} of TikZ, the
+If one prefers the braces of the library \pkg{decorations.pathreplacing} of TikZ, the
 best way is to use the commands |\Hbrace| and |\Vbrace| provided by
-\pkg{nicematrix}.\footnote{Those commands are available only if \pkg{nicematrix}
-has been loaded with the key |tikz-braces|.}
+\pkg{nicematrix} (cf. p.~\pageref{Hbrace}).\footnote{Those commands are
+available only if \pkg{nicematrix} has been loaded with the key |tikz-braces|.}
 
 \medskip
 \begin{Code}[width=11cm]
@@ -7867,6 +7903,8 @@ The successive versions of the file |nicematrix.sty| provided by TeXLive are ava
 
 New commands |\Hbrace| and |\Vbrace|.
 
+New commands |\EmptyColumn| and |\EmptyRow| in the |\CodeBefore|.
+
 \subsection*{Changes between version 6.29 and 7.0}
 
 The package \pkg{nicematrix} is now compatible (for the tabulars) with the
@@ -8075,178 +8113,6 @@ Key |vlines-in-sub-matrix|.
 Better computation of the widths of the |X| columns.
 
 Key |\color| for the command |\RowStyle|.
-
-\subsection*{Changes between versions 5.19 and 6.0}
-
-Columns |X| and environment |{NiceTabularX}|.
-
-Command |\rowlistcolors| available in the |\CodeBefore|.
-
-In columns with fixed width, the blocks are composed as paragraphs (wrapping
-of the lines).
-
-The key |define-L-C-R| has been deleted.
-
-\subsection*{Changes between versions 5.18 and 5.19}
-
-New key |tikz| for the command |\Block|.
-
-\subsection*{Changes between versions 5.17 and 5.18}
-
-New command |\RowStyle|
-
-\subsection*{Changes between versions 5.16 and 5.17}
-
-The key |define-L-C-R| (only available at load-time) now raises a (non fatal)
-error.
-
-Keys |L|, |C| and |R| for the command |\Block|.
-
-Key |hvlines-except-borders|.
-
-It's now possible to use a key |l|, |r| or |c| with the command
-|\pAutoNiceMatrix| (and the similar ones).
-
-\subsection*{Changes between versions 5.15 and 5.16}
-
-It's now possible to use the cells corresponding to the contents of the nodes
-(of the form |i-j|) in the |\CodeBefore| when the key |create-cell-nodes| of
-that |\CodeBefore| is used. The medium and the large nodes are also available
-if the corresponding keys are used.
-
-\subsection*{Changes between versions 5.14 and 5.15}
-
-Key |hvlines| for the command |\Block|.
-
-The commands provided by \pkg{nicematrix} to color cells, rows and columns
-don't color the cells which are in the ``corners'' (when the key |corner| is
-used).
-
-It's now possible to specify delimiters for submatrices in the preamble of an
-environment. 
-
-The version 5.15b is compatible with the version 3.0+ of \pkg{siunitx}
-(previous versions were not).
-
-\subsection*{Changes between versions 5.13 and 5.14}
-
-Nodes of the form |(1.5)|, |(2.5)|, |(3.5)|, etc. 
-
-Keys |t| and |b| for the command |\Block|.
-
-Key |corners|. 
-
-\subsection*{Changes between versions 5.12 and 5.13}
-
-New command |\arraycolor| in the |\CodeBefore| (with its key
-|except-corners|).
-
-New key |borders| for the command |\Block|.
-
-New command |\Hline| (for horizontal rules not drawn in the blocks).
-
-The keys |vlines| and |hlines| takes in as value a (comma-separated) list of
-numbers (for the rules to draw).
-
-\subsection*{Changes between versions 5.11 and 5.12}
-
-Keywords |\CodeBefore| and |\Body| (alternative syntax to the key
-|code-before|). 
-
-New key |delimiters/max-width|.
-
-New keys |hlines|, |vlines| and |hvlines| for the command |\SubMatrix| in the
-|\CodeAfter|. 
-
-New key |rounded-corners| for the command |\Block|.
-
-\subsection*{Changes between versions 5.10 and 5.11}
-
-It's now possible, in the |code-before| and in the |\CodeAfter|, to use the
-syntax \verb+|(i-|j)+ for the TikZ node at the intersection of the (potential)
-horizontal rule number~$i$ and the (potential) vertical rule number~$j$.
-
-\subsection*{Changes between versions 5.9 and 5.10}
-
-New command |\SubMatrix| available in the |\CodeAfter|.
-
-It's possible to provide options (between brackets) to the keyword |\CodeAfter|.
-
-\subsection*{Changes between versions 5.8 and 5.9}
-
-Correction of a bug: in the previous versions, it was not possible to use the
-key |line-style| for the continuous dotted lines when the TikZ library |babel|
-was loaded.
-
-New key |cell-space-limits|.
-
-\subsection*{Changes between versions 5.7 and 5.8}
-
-Keys |cols| and |restart| of the command |\rowcolors| in the |code-before|.
-
-Modification of the behaviour of |\\| in the columns of type |p|, |m| or |b|
-(for a behaviour similar to the environments of \pkg{array}).
-
-Better error messages for the command |\Block|.
-
-\subsection*{Changes between versions 5.6 and 5.7}
-
-New key |delimiters-color|
-
-Keys |fill|, |draw| and |line-width| for the command |\Block|.
-
-\subsection*{Changes between versions 5.5 and 5.6}
-
-Different behaviour for the mono-row blocks.
-
-New command |\NotEmpty|.
-
-\subsection*{Changes between versions 5.4 and 5.5}
-
-The user must never put |\omit| before |\CodeAfter|.
-
-Correction of a bug: the tabular notes |\tabularnotes| were not composed when
-present in a block (except a mono-column block).
-
-\subsection*{Changes between versions 5.3 and 5.4}
-
-Key |tabularnote|.
-
-Different behaviour for the mono-column blocks.
-
-\subsection*{Changes between versions 5.2 and 5.3}
-
-Keys |c|, |r| and |l| for the command |\Block|.
-
-It's possible to use the key |draw-first| with |\Ddots| and |\Iddots| to
-specify which dotted line will be drawn first (the other lines will be drawn
-parallel to that one if parallelization is activated).
-
-\subsection*{Changes between versions 5.1 and 5.2}
-
-The vertical rules specified by \verb+|+ or \verb+||+ in the preamble respect
-the blocks.
-
-Key |respect-blocks| for |\rowcolors| (with a \emph{s}) in the |code-before|.
-
-The variable |\g_nicematrix_code_before_tl| is now public.
-
-The key |baseline| may take in as value an expression of the form
-\textsl{line-i} to align the |\hline| in the row \textsl{i}.
-
-The key |hvlines-except-corners| may take in as value a list of corners (eg: NW,SE).
-
-\subsection*{Changes between versions 5.0 and 5.1}
-
-The vertical rules specified by \verb+|+ in the preamble are not broken by
-|\hline\hline| (and other).
-
-Environment |{NiceTabular*}|
-
-Command |\Vdotsfor| similar to |\Hdotsfor|
-
-The variable |\g_nicematrix_code_after_tl| is now public.
-
 
 \cleardoublepage
 

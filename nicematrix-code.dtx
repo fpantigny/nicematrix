@@ -3861,7 +3861,8 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \MidRule \@@_MidRule
     \cs_set_eq:NN \BottomRule \@@_BottomRule
     \cs_set_eq:NN \RowStyle \@@_RowStyle:n
-    \@@_define_Hbrace:
+    \cs_set_eq:NN \Hbrace \@@_Hbrace
+    \cs_set_eq:NN \Vbrace \@@_Vbrace
     \seq_map_inline:Nn \l_@@_custom_line_commands_seq
       { \cs_set_eq:cc { ##1 } { nicematrix - ##1 } } 
     \cs_set_eq:NN \cellcolor \@@_cellcolor_tabular
@@ -4034,7 +4035,9 @@ version 2005/12/01 or later.
 % array.
 %    \begin{macrocode}
     \seq_gset_eq:NN \g_@@_pos_of_blocks_seq \g_@@_future_pos_of_blocks_seq
+    \seq_gclear:N \g_@@_future_pos_of_blocks_seq
 %    \end{macrocode}
+%
 % Idem for other sequences written on the |aux| file.
 %    \begin{macrocode}
     \seq_gclear_new:N \g_@@_multicolumn_cells_seq
@@ -16394,34 +16397,13 @@ version 2005/12/01 or later.
 % \bigskip
 % \section{The commands HBrace et VBrace}
 %
-% When the package |nicematrix| has been loaded without the key |tikz-braces|,
-% we will use the following definition of |\@@_define_Hbrace:|, and, in the
-% environments of \pkg{nicematrix}, the commands |\Hbrace| and |\Vbrace| will
-% raise errors.
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_define_Hbrace:
-  {
-    \cs_set_eq:NN \Hbrace \@@_Hbrace_error
-    \cs_set_eq:NN \Vbrace \@@_Hbrace_error
-  }
-%    \end{macrocode}
-% 
 % 
 % \bigskip
-% However, when \pkg{nicematrix} has been loaded with the key |tikz-braces|, we
-% will use another definition of |\@@_define_Hbrace:| which will link, in the
-% environments of \pkg{nicematrix}, |\Hbrace| and |\Vbrace| to ``active
-% versions'' of the commands.
 %    \begin{macrocode} 
 \hook_gput_code:nnn { begindocument } { . } 
   {
-    \bool_if:NT \c_@@_tikz_braces_bool
+    \cs_if_exist:cT { tikz@library@decorations.pathreplacing@loaded }
       {
-        \cs_set_protected:Npn \@@_define_Hbrace:
-          {
-            \cs_set_eq:NN \Hbrace \@@_Hbrace
-            \cs_set_eq:NN \Vbrace \@@_Vbrace
-          }       
         \tikzset
           {
             nicematrix~normal~brace / .style = 
@@ -16441,17 +16423,21 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_Hbrace_error
-  { \@@_fatal:n { Hbrace~and~Vbrace~not~allowed } }
-%    \end{macrocode}
 % 
 %    \begin{macrocode}
 \NewExpandableDocumentCommand { \@@_Hbrace } { O { } m m }
   {
+    \cs_if_exist:cTF { tikz@library@decorations.pathreplacing@loaded }
+      { \@@_hbrace:nnn { #1 } { #2 } { #3 } }
+      { \@@_error:n { Hbrace~not~allowed } }
+  }
 %    \end{macrocode}
-% Here, we need an expandable test.
+% 
+% \bigskip
+% The following command must \emph{not} be protected.
 %    \begin{macrocode}
+\cs_new:Npn \@@_hbrace:nnn #1 #2 #3
+  {
     \int_compare:nNnTF \c@iRow < 1 
       { 
 %    \end{macrocode}
@@ -16502,9 +16488,20 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-%
+% \bigskip
 %    \begin{macrocode}
 \NewExpandableDocumentCommand { \@@_Vbrace } { O { } m m }
+  {
+    \cs_if_exist:cTF { tikz@library@decorations.pathreplacing@loaded }
+      { \@@_vbrace:nnn { #1 } { #2 } { #3 } }
+      { \@@_error:n { Vbrace~not~allowed } }
+  }
+%    \end{macrocode}
+% 
+%
+% The following command must \emph{not} be protected.
+%    \begin{macrocode}
+\cs_new:Npn \@@_vbrace:nnn #1 #2 #3 
   {
     \int_compare:nNnTF \c@jCol = 0 
       { 
@@ -16798,8 +16795,7 @@ version 2005/12/01 or later.
     footnotehyper,~
     messages-for-Overleaf,~
     renew-dots,~and~
-    renew-matrix,~and~
-    tikz-braces
+    renew-matrix.
   }
 %    \end{macrocode}
 %
@@ -16810,10 +16806,6 @@ version 2005/12/01 or later.
     The~key~'no-test-for-array'~has~been~deprecated~and~will~be~
     deleted~in~a~future~version~of~nicematrix.
   }
-%    \end{macrocode}
-% 
-%    \begin{macrocode}
-\bool_new:N \c_@@_tikz_braces_bool
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -16826,32 +16818,11 @@ version 2005/12/01 or later.
     messages-for-Overleaf .bool_set:N = \g_@@_messages_for_Overleaf_bool , 
     footnote .bool_set:N = \g_@@_footnote_bool ,
     footnotehyper .bool_set:N = \g_@@_footnotehyper_bool ,
-%    \end{macrocode}
-% The test for a potential modification of \pkg{array} has been deleted. We
-% keep the following key only for compatibility but maybe we will delete it.
-%    \begin{macrocode}
-    no-test-for-array .code:n = \@@_warning:n { no-test-for-array } ,
-    tikz-braces .bool_set:N = \c_@@_tikz_braces_bool , 
     unknown .code:n = \@@_error:n { Unknown~key~for~package } 
   }
 \ProcessKeysOptions { nicematrix / Package }
 %    \end{macrocode}
 %
-%    \begin{macrocode}
-\bool_if:NT \c_@@_tikz_braces_bool 
-  {
-    \usepackage { tikz }
-    \AtBeginDocument
-      {
-        \usetikzlibrary 
-          { 
-            decorations.pathmorphing, 
-            decorations.pathreplacing,
-            decorations.shapes
-          }
-      }
-  }
-%    \end{macrocode}
 % 
 % \bigskip
 %    \begin{macrocode}
@@ -17432,12 +17403,28 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\@@_msg_new:nn { Hbrace~and~Vbrace~not~allowed }
+\@@_msg_new:nn { Hbrace~not~allowed }
   {
     Command~not~allowed.\\
-    You~can't~use~the~commands~\token_to_str:N \Hbrace\ and~
-    \token_to_str:N \Vbrace\ because~you~have~not~loaded~'nicematrix'~
-    with~the~key~'tikz-braces'.
+    You~can't~use~the~command~\token_to_str:N \Hbrace\ 
+    because~you~have~not~loaded~TikZ~
+    and~the~TikZ~library~'decorations.pathreplacing'.\\
+    Use:~\token_to_str:N \usepackage\{tikz\}~
+    \token_to_str:N \usetikzlibrary \{ decorations.pathreplacing \} \\
+    That~command~will~be~ignored. 
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Vbrace~not~allowed }
+  {
+    Command~not~allowed.\\
+    You~can't~use~the~command~\token_to_str:N \Vbrace\ 
+    because~you~have~not~loaded~TikZ~
+    and~the~TikZ~library~'decorations.pathreplacing'.\\
+    Use:~\token_to_str:N \usepackage\{tikz\}~
+    \token_to_str:N \usetikzlibrary \{ decorations.pathreplacing \} \\
+    That~command~will~be~ignored. 
   }
 %    \end{macrocode}
 % 

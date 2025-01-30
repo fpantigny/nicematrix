@@ -7,10 +7,18 @@
 \usepackage{geometry}
 \geometry{left=2.8cm,right=2.8cm,top=2.5cm,bottom=2.5cm,papersize={21cm,29.7cm}}
 
-\usepackage[tikz-braces]{nicematrix}
+\usepackage{nicematrix}
 
 \usepackage{tikz}
-\usetikzlibrary{fit,patterns,arrows.meta,decorations.pathmorphing,babel}
+\usetikzlibrary
+  {
+    fit,
+    patterns,
+    arrows.meta,
+    decorations.pathmorphing,
+    decorations.pathreplacing,
+    babel
+  }
 
 \usepackage{enumitem}
 \usepackage{siunitx}
@@ -594,7 +602,7 @@ liste de couples \textsl{clé=valeur}.
 Les premières clés sont des outils rapides pour contrôler l'apparence du bloc :
 
 \begin{itemize}
-\item \index{fill (clé de \texttt{\textbackslash Block})}
+\item \index{fill!clé de \texttt{\textbackslash Block}}
 la clé \Definition{fill} prend en argument une couleur et remplit le bloc
 avec cette couleur ;
 \item \index{opacity!clé de la commande \texttt{\textbackslash Block}}
@@ -1476,7 +1484,7 @@ p.~\pageref{custom-line}.\footnote{Remarque technique. Si l'utilisateur définit
   une commande par-dessus la commande |\Hline|, il doit veiller à ce qu'elle
   soit \emph{développable} au sens de TeX (en utilisant
   |\NewExpandableDocumentCommand| de LaTeX3, |\newcommand| de LaTeX ou même
-  |\def| de TeX). Exemple : |\NewDocumentCommand{\RedLine}{}{\Hline[color=red]}|}
+  |\def| de TeX). Exemple : |\NewExpandableDocumentCommand{\RedLine}{}{\Hline[color=red]}|}
 
 De même que la commande |\Hline|, le specificateur «\verb+|+» admet entre crochets
 des options qui caractérisent le filet à tracer. 
@@ -2721,6 +2729,45 @@ spécial  & 12  & 12   & 0.5 & 70    \\
 On a utilisé le type de colonne |S| de \pkg{siunitx} (qu'il faut avoir chargé).
 
 
+\bigskip
+\index{EmptyRow@\texttt{\textbackslash EmptyRow} (commande du \texttt{\textbackslash CodeBefore})}
+\index{EmptyColumn@\texttt{\textbackslash EmptyColumn} (commande du \texttt{\textbackslash CodeBefore})}
+
+\colorbox{yellow!50}{\textbf{Nouveau 7.1}}\par\nobreak
+
+\smallskip
+On peut aussi, dans le |\CodeBefore|, utiliser les commandes
+\DefinitionCommande{EmptyColumn} et \DefinitionCommande{EmptyRow}. La commande
+|\EmptyColumn| prend en argument une liste de numéros de colonnes et impose qu'aucun
+coloriage ni tracé de filets n'aura lieu dans les colonnes correspondantes. La
+commande |\EmptyRow| est similaire.
+
+
+\medskip
+\begin{Code}[width=10cm]
+\begin{NiceTabular}{ccccc}[hvlines]
+\CodeBefore
+  \rowcolor{blue!15}{1}
+  \emph{\EmptyColumn{3}}
+\Body
+  un & deux && trois & quatre \\
+  un & \Block{}{deux\\ lignes} && trois & quatre \\
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{ccccc}[hvlines]
+\CodeBefore
+  \rowcolor{blue!15}{1}
+  \EmptyColumn{3}
+\Body
+  un & deux && trois & quatre \\
+  un & \Block{}{deux\\ lignes} && trois & quatre \\
+\end{NiceTabular}
+
+
+
+
+
+
 \subsection{Outils de coloriage en tableau}
 
 \index{cellcolor@\texttt{\textbackslash cellcolor}!commande en tableau}
@@ -2791,6 +2838,8 @@ Dupont & Chantal & 15 janvier 1998 \\
 \bottomrule
 \end{NiceTabular}
 \end{center}
+
+
 
 \bigskip
 Chaque utilisation de |\rowlistcolors| (et de |\rowcolors| qui en est un cas
@@ -2918,6 +2967,8 @@ I & II & III & IV \\
 
 \medskip
 La commande |\rotate| est présentée p.~\pageref{rotate}.
+
+
 
 
 \section{La largeur des colonnes}
@@ -3216,6 +3267,9 @@ version 0.92). Par exemple, avec LuaLaTeX, elle ne fonctionne pas si le contenu
 commence par une instruction |\color|.
 
 \index{Largeur@\textbf{Largeur des colonnes}|)}
+
+
+
 
 \medskip
 \section{Les rangées et colonnes extérieures}
@@ -3955,45 +4009,37 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 
 \colorbox{yellow!50}{\textbf{Nouveau 7.1}}
 
+\label{Hbrace}
 \indexcommand{Hbrace}
 \indexcommand{Vbrace}
-\index{tikz-braces (clé au chargement de \texttt{nicematrix)}}
 
 \smallskip
 Puisque, comme dit dans la partie précédente, il est possible d'utiliser, avec
 les commandes |\Cdots|, |\Ldots|, |\Vdots|, etc. n'importe quel style de ligne
-fourni par TikZ, on peut envisager de tracer des accolades dans le style de la
-librairie \pkg{decorations.shapes} de TikZ.
+fourni par TikZ, on peut envisager de tracer des accolades avec la décoration
+|brace| fournie par la bibliothèque \pkg{decorations.pathreplacing} de TikZ.
+
 
 \smallskip
 Pour faciliter cet usage, \pkg{nicematrix} propose les deux commandes
 \DefinitionCommande{Hbrace} et \DefinitionCommande{Vbrace}. 
 
-Néanmoins, celles-ci ne sont disponibles que si \pkg{nicematrix} a été chargée
-avec l'option \Definition{tikz-braces}.
+Celles-ci ne seront disponibles que TikZ a été chargé ainsi que la bibliothèque 
+\pkg{decorations.pathreplacing} (si elles ne sont pas chargées, une erreur sera levée).
+\begin{Verbatim}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing}
+\end{Verbatim}
 
-\smallskip
-\begin{Code}
-\usepackage[\emph{tikz-braces}]{nicematrix}
-\end{Code}
-
-L'utilisation de cette clé va charger TikZ (par défaut, \pkg{nicematrix} ne
-charge que PGF, qui est une sous-couche de TikZ) ainsi que les librairies de TikZ
-suivantes : 
-\begin{itemize}
-\item \pkg{decorations.pathmorphing} ;
-\item \pkg{decorations.pathreplacing} ;
-\item \pkg{decorations.shapes}. 
-\end{itemize}
-
-Les commandes |\Hbrace| et |\Vbrace| sont alors disponibles dans les
-environnements de \pkg{nicematrix}. Les deux commandes ont la même syntaxe. Elles
-prennent trois arguments:
+\medskip
+Les commandes |\Hbrace| et |\Vbrace| ont la même syntaxe. Elles prennent trois
+arguments:
 
 \begin{itemize}
 \item un premier argument optionnel (entre crochets) pour une liste de couples
 \textsl{clé=valeur} (ces clés sont les mêmes que celles décrites dans la section
-précédente pour la personnalisation du style de ligne) ;
+précédente pour la personnalisation du style de ligne, en particulier |color| et
+|horizontal-labels|) ; 
 
 \item un deuxième argument, obligatoire, qui est le nombre de colonnes (pour
 |\Hbrace|) ou de rangées (pour |\Vbrace|) sur lesquelles l'accolade va s'étendre.
@@ -4006,6 +4052,7 @@ Concernant la commande |\Hbrace|, son comportement vis à vis des esperluettes
 |\Hdotsfor|, etc. : on ne doit mettre qu'une seule esperluette après la
 commande, même si l'accolade s'étend sur plusieurs colonnes.
 
+\bigskip
 \begin{Code}[width=11.2cm]
 $\begin{NiceArray}{ccccc}%
   [ hvlines ,
@@ -4042,8 +4089,9 @@ $\begin{NiceArray}{ccccc}%
 \end{NiceArray}$
 
 \medskip
-Pour un autre exemple de |\Hbrace| et |\Vbrace|, voir la partie «Des lignes
-pointillées qui ne sont plus pointillées».
+Pour un autre exemple d'utilisation de |\Hbrace| et |\Vbrace|, voir la partie
+«Des lignes pointillées qui ne sont plus pointillées»,
+p.~\pageref{ex:no-longer-dotted-rules}.
 
 \subsection{Les lignes pointillées et les filets}
 
@@ -4073,6 +4121,9 @@ $\begin{bNiceMatrix}[margin,hvlines]
 \end{bNiceMatrix}$
 
 \index{Pointillés@\textbf{Pointillés (lignes en ---)}|)}
+
+
+
 
 
 \section{Délimiteurs dans le préambule de l'environnement}
@@ -4180,6 +4231,8 @@ couvrant pas toutes les rangées, on aura intérêt à considérer la commande
 p.~\pageref{sub-matrix}. 
 
 
+
+
 \section{Le \textbackslash CodeAfter}
 
 \index{CodeAfter@\texttt{\textbackslash CodeAfter}|(}
@@ -4282,6 +4335,8 @@ autres lignes diagonales (par défaut, les lignes tracées par |\Ddots| sont
 0      & \Cdots & 0 & 1      & 2      & \Cdots          & 2
 \CodeAfter \line[shorten=6pt]{1-5}{4-7}
 \end{bNiceMatrix}\]
+
+
 
 
 \subsection{La commande \textbackslash SubMatrix dans le \textbackslash
@@ -4584,6 +4639,8 @@ $\begin{NiceArray}{ccc@{}w{c}{5mm}@{}ccc}
 Comme on le voit, le tracé effectué par la commande |\MyDraw| est \emph{relatif}
 à la sous-matrice à laquelle elle s'applique.
 
+
+
 \subsection{Les commandes \textbackslash OverBrace et \textbackslash
   UnderBrace dans le \textbackslash CodeAfter}
 
@@ -4680,6 +4737,8 @@ $\begin{pNiceMatrix}
 \end{pNiceMatrix}$
 
 
+
+
 \subsection{La commande \textbackslash TikzEveryCell dans le \textbackslash CodeAfter}
 
 \index{tikzeverycell@\texttt{\textbackslash TikzEveryCell} (commande du 
@@ -4713,7 +4772,6 @@ autres clés de l'argument de |\TikzEveryCell|.
 \begingroup
 \bigskip
 \begin{Code}[width=9cm]
-
 \renewcommand{\arraystretch}{1.3}
 \begin{NiceTabular}{ccc}[corners]
   & \Block{1-2}{columns} \\
@@ -4780,11 +4838,10 @@ cases non vides.
 \medskip
 La commande |\TikzEveryCell| est en fait aussi disponible dans le |\CodeBefore|.
 
-
-
-
-
 \index{CodeAfter@\texttt{\textbackslash CodeAfter}|)}
+
+
+
 
 \section{Les légendes et les notes dans les tableaux}
 
@@ -6966,7 +7023,7 @@ Bien entendu, on change le style des notes avec la clé |notes/style|. Mais, il
 serait bon aussi de changer certains paramètres du type de liste (au sens de
 \pkg{enumitem}) utilisé pour composer les notes après le tableau. On demande de
 composer les labels avec une largeur égale à celle du plus grand des labels. Or,
-le label le plus large est bien entendu celui avec le maximum d'astéristiques.
+le label le plus large est bien entendu celui avec le maximum d'astérisques.
 On connaît ce nombre : il est égal à |\value{tabularnote}| (car |tabularnote|
 est le compteur LaTeX utilisé par |\tabularnote| et il est donc égal à la fin au
 nombre total de notes dans le tableau). On utilise alors la clé |widest*| de
@@ -7113,6 +7170,7 @@ $\begin{pNiceArray}{*6c|c}[nullify-dots,last-col,code-for-last-col=\scriptstyle]
 
 \subsection{Des lignes pointillées qui ne sont plus pointillées}
 
+\label{ex:no-longer-dotted-rules}
 
 L'option |line-style| permet de changer le style des lignes tracées par
 |\Ldots|, |\Cdots|, etc. On peut de ce fait tracer des lignes qui ne sont plus
@@ -7174,11 +7232,11 @@ On peut même tracer des lignes continues.\footnote{Dans ce document, la
   sur la forme des pointes de flèches.}
 
 \medskip
+\begin{Code}
+\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
+\end{Code}
 \begin{Code}[width=11cm]
-\NiceMatrixOptions
-  {xdots={horizontal-labels,line-style = <->}}
-$\begin{pNiceArray}{ccc|cc}%
-   [first-row,last-col,margin]
+$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \emph{\Hdotsfor{3}^{3}} & \emph{\Hdotsfor{2}^{2}} \\
 2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}^{3}}\\
 1 & 1 & 1 & 1 & 1 \\
@@ -7203,14 +7261,14 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \interitem
 \label{ex:colon}
 Si on veut mettre les labels sur les flèches, il convient d'utiliser le
-caractère spécial~«|:|» :
+caractère spécial~«|:|» au lieu de~«|^|»:
 
 \medskip
+\begin{Code}
+\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
+\end{Code}
 \begin{Code}[width=11cm]
-\NiceMatrixOptions
-  {xdots={horizontal-labels,line-style = <->}}
-$\begin{pNiceArray}{ccc|cc}%
-   [first-row,last-col,margin]
+$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \emph{\Hdotsfor{3}:{3}} & \emph{\Hdotsfor{2}:{2}} \\
 2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}:{3}} \\
 1 & 1 & 1 & 1 & 1 \\
@@ -7234,16 +7292,18 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 \interitem
 \label{ex:hbrace}
-Si on préfère des accolades de la bibliothèque \pkg{decorations.shapes} de TikZ,
-le mieux est d'utiliser les commandes |\Hbrace| et |\Vbrace| proposées par
-\pkg{nicematrix}.\footnote{Ces commandes ne sont disponibles que si
+Si on préfère des accolades comme celles proposées par la bibliothèque
+\pkg{decorations.pathreplacing} de TikZ, le mieux est d'utiliser les commandes
+|\Hbrace| et |\Vbrace| proposées par \pkg{nicematrix} (cf.
+p.~\pageref{Hbrace}).\footnote{Ces commandes ne sont disponibles que si
   \pkg{nicematrix} a été chargée avec la clé |tikz-braces|.}
 
 \medskip
-\begin{Code}[width=11cm]
+\begin{Code}
 \NiceMatrixOptions{xdots/horizontal-labels}
-$\begin{pNiceArray}{ccc|cc}%
-  [first-row,last-col,margin]
+\end{Code}
+\begin{Code}[width=11cm]
+$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \emph{\Hbrace{3}{3}} & \emph{\Hbrace{2}{2}} \\
 2 & 1 & 1 & 1 & 1 & \emph{\Vbrace{3}{3}} \\
 1 & 1 & 1 & 1 & 1 \\
@@ -7263,9 +7323,6 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 1 & 1 & 1 & 1 & 1 & \Vbrace{2}{2}\\
 1 & 1 & 1 & 1 & 1 \\
 \end{pNiceArray}$}
-
-
-
 
 
 \pagebreak
@@ -7313,6 +7370,7 @@ Dans l'exemple suivant, on utilise des commandes |\Block| pour tracer des filets
 en tiretés. Cet exemple nécessite que TikZ soit chargé (par
 |\usepackage{tikz}|). 
 
+\medskip
 \begin{Code}
 \begin{pNiceMatrix}
 \emph{\Block[borders={bottom,right,tikz=dashed}]{2-2}{}}
@@ -7706,7 +7764,7 @@ composantes de la matrice.\footnote{Pour la commande |\cline|, voir la remarque
 
 \vspace{1cm}
 Il est possible de colorier une rangée avec |\rowcolor| dans le |\CodeBefore|
-(ou avec |\rowcolor| dans une case de la rangée.
+(ou avec |\rowcolor| dans une case de la rangée).
 
 \index{rowcolor@\texttt{\textbackslash rowcolor}!commande en tableau|textit}
 

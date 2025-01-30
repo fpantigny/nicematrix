@@ -1630,7 +1630,8 @@
     \cs_set_eq:NN \MidRule \__nicematrix_MidRule
     \cs_set_eq:NN \BottomRule \__nicematrix_BottomRule
     \cs_set_eq:NN \RowStyle \__nicematrix_RowStyle:n
-    \__nicematrix_define_Hbrace:
+    \cs_set_eq:NN \Hbrace \__nicematrix_Hbrace
+    \cs_set_eq:NN \Vbrace \__nicematrix_Vbrace
     \seq_map_inline:Nn \l__nicematrix_custom_line_commands_seq
       { \cs_set_eq:cc { ##1 } { nicematrix - ##1 } }
     \cs_set_eq:NN \cellcolor \__nicematrix_cellcolor_tabular
@@ -1701,6 +1702,7 @@
     \seq_gclear:N \g__nicematrix_submatrix_seq
     \bool_if:NT \l__nicematrix_code_before_bool \__nicematrix_exec_code_before:
     \seq_gset_eq:NN \g__nicematrix_pos_of_blocks_seq \g__nicematrix_future_pos_of_blocks_seq
+    \seq_gclear:N \g__nicematrix_future_pos_of_blocks_seq
     \seq_gclear_new:N \g__nicematrix_multicolumn_cells_seq
     \seq_gclear_new:N \g__nicematrix_multicolumn_sizes_seq
     \int_gset:Nn \g__nicematrix_last_row_node_int { -2 }
@@ -9183,20 +9185,10 @@
       { }
       { }
   }
-\cs_new_protected:Npn \__nicematrix_define_Hbrace:
-  {
-    \cs_set_eq:NN \Hbrace \__nicematrix_Hbrace_error
-    \cs_set_eq:NN \Vbrace \__nicematrix_Hbrace_error
-  }
 \hook_gput_code:nnn { begindocument } { . }
   {
-    \bool_if:NT \c__nicematrix_tikz_braces_bool
+    \cs_if_exist:cT { tikz@library@decorations.pathreplacing@loaded }
       {
-        \cs_set_protected:Npn \__nicematrix_define_Hbrace:
-          {
-            \cs_set_eq:NN \Hbrace \__nicematrix_Hbrace
-            \cs_set_eq:NN \Vbrace \__nicematrix_Vbrace
-          }
         \tikzset
           {
             nicematrix~normal~brace / .style =
@@ -9214,9 +9206,13 @@
           }
      }
   }
-\cs_new_protected:Npn \__nicematrix_Hbrace_error
-  { \__nicematrix_fatal:n { Hbrace~and~Vbrace~not~allowed } }
 \NewExpandableDocumentCommand { \__nicematrix_Hbrace } { O { } m m }
+  {
+    \cs_if_exist:cTF { tikz@library@decorations.pathreplacing@loaded }
+      { \__nicematrix_hbrace:nnn { #1 } { #2 } { #3 } }
+      { \__nicematrix_error:n { Hbrace~not~allowed } }
+  }
+\cs_new:Npn \__nicematrix_hbrace:nnn #1 #2 #3
   {
     \int_compare:nNnTF \c@iRow < 1
       {
@@ -9230,7 +9226,8 @@
                 up = \exp_not:n { #3 }
               ]
           }
-          { \Hdotsfor
+          {
+            \Hdotsfor
               [
                 line-style = nicematrix~normal~brace ,
                 #1 ,
@@ -9263,6 +9260,12 @@
       }
   }
 \NewExpandableDocumentCommand { \__nicematrix_Vbrace } { O { } m m }
+  {
+    \cs_if_exist:cTF { tikz@library@decorations.pathreplacing@loaded }
+      { \__nicematrix_vbrace:nnn { #1 } { #2 } { #3 } }
+      { \__nicematrix_error:n { Vbrace~not~allowed } }
+  }
+\cs_new:Npn \__nicematrix_vbrace:nnn #1 #2 #3
   {
     \int_compare:nNnTF \c@jCol = 0
       {
@@ -9506,15 +9509,13 @@
     footnotehyper,~
     messages-for-Overleaf,~
     renew-dots,~and~
-    renew-matrix,~and~
-    tikz-braces
+    renew-matrix.
   }
 \__nicematrix_msg_new:nn { no-test-for-array }
   {
     The~key~'no-test-for-array'~has~been~deprecated~and~will~be~
     deleted~in~a~future~version~of~nicematrix.
   }
-\bool_new:N \c__nicematrix_tikz_braces_bool
 \keys_define:nn { nicematrix / Package }
   {
     renew-dots .bool_set:N = \l__nicematrix_renew_dots_bool ,
@@ -9524,24 +9525,9 @@
     messages-for-Overleaf .bool_set:N = \g__nicematrix_messages_for_Overleaf_bool ,
     footnote .bool_set:N = \g__nicematrix_footnote_bool ,
     footnotehyper .bool_set:N = \g__nicematrix_footnotehyper_bool ,
-    no-test-for-array .code:n = \__nicematrix_warning:n { no-test-for-array } ,
-    tikz-braces .bool_set:N = \c__nicematrix_tikz_braces_bool ,
     unknown .code:n = \__nicematrix_error:n { Unknown~key~for~package }
   }
 \ProcessKeysOptions { nicematrix / Package }
-\bool_if:NT \c__nicematrix_tikz_braces_bool
-  {
-    \usepackage { tikz }
-    \AtBeginDocument
-      {
-        \usetikzlibrary
-          {
-            decorations.pathmorphing,
-            decorations.pathreplacing,
-            decorations.shapes
-          }
-      }
-  }
 \__nicematrix_msg_new:nn { footnote~with~footnotehyper~package }
   {
     You~can't~use~the~option~'footnote'~because~the~package~
@@ -9928,12 +9914,25 @@
     A~name~must~be~accepted~by~the~regular~expression~[A-Za-z][A-Za-z0-9]*.\\
     This~key~will~be~ignored.
   }
-\__nicematrix_msg_new:nn { Hbrace~and~Vbrace~not~allowed }
+\__nicematrix_msg_new:nn { Hbrace~not~allowed }
   {
     Command~not~allowed.\\
-    You~can't~use~the~commands~\token_to_str:N \Hbrace\ and~
-    \token_to_str:N \Vbrace\ because~you~have~not~loaded~'nicematrix'~
-    with~the~key~'tikz-braces'.
+    You~can't~use~the~command~\token_to_str:N \Hbrace\
+    because~you~have~not~loaded~TikZ~
+    and~the~TikZ~library~'decorations.pathreplacing'.\\
+    Use:~\token_to_str:N \usepackage\{tikz\}~
+    \token_to_str:N \usetikzlibrary \{ decorations.pathreplacing \} \\
+    That~command~will~be~ignored.
+  }
+\__nicematrix_msg_new:nn { Vbrace~not~allowed }
+  {
+    Command~not~allowed.\\
+    You~can't~use~the~command~\token_to_str:N \Vbrace\
+    because~you~have~not~loaded~TikZ~
+    and~the~TikZ~library~'decorations.pathreplacing'.\\
+    Use:~\token_to_str:N \usepackage\{tikz\}~
+    \token_to_str:N \usetikzlibrary \{ decorations.pathreplacing \} \\
+    That~command~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { Wrong~line~in~SubMatrix }
   {
