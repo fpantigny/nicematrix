@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.0b}
-\def\myfiledate{2025/01/20}
+\def\myfileversion{7.1}
+\def\myfiledate{2025/02/01}
 %
 %
 %<*batchfile>  
@@ -1101,8 +1101,8 @@ version 2005/12/01 or later.
 % 
 % 
 % \bigskip
-% The following parameter will be raised when a block content a |&| in its
-% content (=label).
+% The following parameter will be raised when a block contains an ampersand
+% (|&|) in its content (=label).
 %    \begin{macrocode}
 \bool_new:N \l_@@_ampersand_bool
 %    \end{macrocode}
@@ -1182,7 +1182,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% The use of |\l_@@_code_before_tl| is not clear. Maybe that with the evolutions
+% The use of |\l_@@_code_before_tl| is not clear. Maybe that, with the evolutions
 % of \pkg{nicematrix}, it has become obsolete. We should have a look at that.
 %    \begin{macrocode}
 \tl_new:N \l_@@_code_before_tl
@@ -16467,7 +16467,7 @@ version 2005/12/01 or later.
                 line-style = nicematrix~normal~brace ,  
                 #1 , 
                 up = 
-                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
+                  \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
               ] 
           }
           { 
@@ -16476,7 +16476,7 @@ version 2005/12/01 or later.
                 line-style = nicematrix~normal~brace , 
                 #1 , 
                 up = 
-                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
+                  \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
               ] 
               { #2 } 
           }
@@ -16490,7 +16490,7 @@ version 2005/12/01 or later.
                 line-style = nicematrix~mirrored~brace , 
                 #1 , 
                 down = 
-                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } } 
+                  \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
               ] 
           }
           { 
@@ -16499,7 +16499,7 @@ version 2005/12/01 or later.
                 line-style = nicematrix~mirrored~brace , 
                 #1 , 
                 down = 
-                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
+                  \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
               ] 
             { #2 } 
           }
@@ -16534,7 +16534,7 @@ version 2005/12/01 or later.
                 line-style = nicematrix~mirrored~brace , 
                 #1 , 
                 down = 
-                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
+                  \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
               ] 
           }
           { 
@@ -16543,7 +16543,7 @@ version 2005/12/01 or later.
                 line-style = nicematrix~mirrored~brace , 
                 #1 , 
                 down = 
-                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
+                  \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
               ] 
             { #2 } 
           }
@@ -16557,8 +16557,7 @@ version 2005/12/01 or later.
                 line-style =  nicematrix~normal~brace , 
                 #1 , 
                 up = 
-                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
-
+                  \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
               ] 
           }
           { 
@@ -16567,7 +16566,7 @@ version 2005/12/01 or later.
                 line-style = nicematrix~normal~brace , 
                 #1 , 
                 up = 
-                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
+                  \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } } 
               ] 
             { #2 } 
           }
