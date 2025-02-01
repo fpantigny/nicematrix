@@ -4037,9 +4037,8 @@ arguments:
 
 \begin{itemize}
 \item un premier argument optionnel (entre crochets) pour une liste de couples
-\textsl{clé=valeur} (ces clés sont les mêmes que celles décrites dans la section
-précédente pour la personnalisation du style de ligne, en particulier |color| et
-|horizontal-labels|) ; 
+\textsl{clé=valeur} : les clés autorisées sont |color|, |horizontal-labels|,
+|shorten|, |shorten-start| et |shorten-end|.
 
 \item un deuxième argument, obligatoire, qui est le nombre de colonnes (pour
 |\Hbrace|) ou de rangées (pour |\Vbrace|) sur lesquelles l'accolade va s'étendre.
@@ -7295,8 +7294,9 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 Si on préfère des accolades comme celles proposées par la bibliothèque
 \pkg{decorations.pathreplacing} de TikZ, le mieux est d'utiliser les commandes
 |\Hbrace| et |\Vbrace| proposées par \pkg{nicematrix} (cf.
-p.~\pageref{Hbrace}).\footnote{Ces commandes ne sont disponibles que si
-  \pkg{nicematrix} a été chargée avec la clé |tikz-braces|.}
+p.~\pageref{Hbrace}).\footnote{Ces commandes ne sont disponibles que si TikZ a
+  été chargée ainsi que la bibliothèque \pkg{decorations.pathreplacing} de TikZ.}
+
 
 \medskip
 \begin{Code}

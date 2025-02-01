@@ -3922,9 +3922,8 @@ The commands |\Hbrace| and |\Vbrace| have the same syntax. Both commands take in
 three arguments:
 \begin{itemize}
 \item an optional argument, between square brackets, which contains a list of
-\textsl{key=value} pairs (the keys are the same as the keys described in the
-previous section, for the customization of the rules, in particular |color| and
-|horizontal-labels|); 
+\textsl{key=value} pairs: the keys allowed are |color|, |horizontal-labels|,
+|shorten|, |shorten-start| and |shorten-end|.
 
 \item a mandatory argument which is the number of columns (for |\Hbrace|) or the
 number of rows (for |\Vbrace|) over which the command applies;
@@ -7122,7 +7121,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 If one prefers the braces of the library \pkg{decorations.pathreplacing} of TikZ, the
 best way is to use the commands |\Hbrace| and |\Vbrace| provided by
 \pkg{nicematrix} (cf. p.~\pageref{Hbrace}).\footnote{Those commands are
-available only if \pkg{nicematrix} has been loaded with the key |tikz-braces|.}
+available only if TikZ has been loaded with the library \pkg{decorations.pathreplacing}.}
 
 \medskip
 \begin{Code}[width=11cm]

@@ -9206,6 +9206,15 @@
           }
      }
   }
+\keys_define:nn { nicematrix / Hbrace }
+  {
+    color .code:n = ,
+    horizontal-labels .code:n = ,
+    shorten .code:n = ,
+    shorten-start .code:n = ,
+    shorten-end .code:n = ,
+    unknown .code:n = \__nicematrix_error:n { Unknown~key~for~Hbrace }
+  }
 \NewExpandableDocumentCommand { \__nicematrix_Hbrace } { O { } m m }
   {
     \cs_if_exist:cTF { tikz@library@decorations.pathreplacing@loaded }
@@ -9235,7 +9244,6 @@
               ]
               { #2 }
           }
-
       }
       {
         \str_if_eq:nnTF { #2 } { * }
@@ -9258,6 +9266,7 @@
             { #2 }
           }
       }
+   \keys_set:nn { nicematrix / Hbrace } { #1 }
   }
 \NewExpandableDocumentCommand { \__nicematrix_Vbrace } { O { } m m }
   {
@@ -9310,6 +9319,7 @@
             { #2 }
           }
       }
+   \keys_set:nn { nicematrix / Hbrace } { #1 }
   }
 \bool_new:N \l__nicematrix_not_empty_bool
 \bool_new:N \l__nicematrix_empty_bool
@@ -9510,11 +9520,6 @@
     messages-for-Overleaf,~
     renew-dots,~and~
     renew-matrix.
-  }
-\__nicematrix_msg_new:nn { no-test-for-array }
-  {
-    The~key~'no-test-for-array'~has~been~deprecated~and~will~be~
-    deleted~in~a~future~version~of~nicematrix.
   }
 \keys_define:nn { nicematrix / Package }
   {
@@ -9782,6 +9787,15 @@
     Unknown~key.\\
     There~is~only~two~keys~available~here:~width~and~color.\\
     Your~key~'\l_keys_key_str'~will~be~ignored.
+  }
+\__nicematrix_msg_new:nn { Unknown~key~for~Hbrace }
+  {
+    Unknown~key.\\
+    You~have~used~the~key~'\l_keys_key_str'~but~the~only~
+    keys~allowed~for~the~commands~\token_to_str:N \Hbrace\
+    and~\token_to_str:N \Vbrace\ are:~'color',~
+    'horizontal-labels',~'shorten'~'shorten-end'~
+    and~'shorten-start'.
   }
 \__nicematrix_msg_new:nn { Unknown~key~for~TikzEveryCell }
   {
@@ -10223,7 +10237,7 @@
   }
 \__nicematrix_msg_new:nnn { Unknow~key~for~RulesBis }
   {
-    Unkown~key.\\
+    Unknown~key.\\
     Your~key~'\l_keys_key_str'~is~unknown~for~a~rule.\\
     \c__nicematrix_available_keys_str
   }
