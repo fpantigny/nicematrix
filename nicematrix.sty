@@ -9232,7 +9232,8 @@
               [
                 line-style = nicematrix~normal~brace ,
                 #1 ,
-                up = \exp_not:n { #3 }
+                up =
+                  \exp_not:n { \bool_if:NT \l__nicematrix_tabular_bool \text { #3 } }
               ]
           }
           {
@@ -9240,7 +9241,8 @@
               [
                 line-style = nicematrix~normal~brace ,
                 #1 ,
-                up = \exp_not:n { #3 }
+                up =
+                  \exp_not:n { \bool_if:NT \l__nicematrix_tabular_bool \text { #3 } }
               ]
               { #2 }
           }
@@ -9253,7 +9255,8 @@
               [
                 line-style = nicematrix~mirrored~brace ,
                 #1 ,
-                down = \exp_not:n { #3 }
+                down =
+                  \exp_not:n { \bool_if:NT \l__nicematrix_tabular_bool \text { #3 } }
               ]
           }
           {
@@ -9261,7 +9264,8 @@
               [
                 line-style = nicematrix~mirrored~brace ,
                 #1 ,
-                down = \exp_not:n { #3 }
+                down =
+                  \exp_not:n { \bool_if:NT \l__nicematrix_tabular_bool \text { #3 } }
               ]
             { #2 }
           }
@@ -9285,7 +9289,8 @@
               [
                 line-style = nicematrix~mirrored~brace ,
                 #1 ,
-                down = \exp_not:n { #3 }
+                down =
+                  \exp_not:n { \bool_if:NT \l__nicematrix_tabular_bool \text { #3 } }
               ]
           }
           {
@@ -9293,7 +9298,8 @@
               [
                 line-style = nicematrix~mirrored~brace ,
                 #1 ,
-                down = \exp_not:n { #3 }
+                down =
+                  \exp_not:n { \bool_if:NT \l__nicematrix_tabular_bool \text { #3 } }
               ]
             { #2 }
           }
@@ -9306,7 +9312,9 @@
               [
                 line-style =  nicematrix~normal~brace ,
                 #1 ,
-                up = \exp_not:n { #3 }
+                up =
+                  \exp_not:n { \bool_if:NT \l__nicematrix_tabular_bool \text { #3 } }
+
               ]
           }
           {
@@ -9314,7 +9322,8 @@
               [
                 line-style = nicematrix~normal~brace ,
                 #1 ,
-                up = \exp_not:n { #3 }
+                up =
+                  \exp_not:n { \bool_if:NT \l__nicematrix_tabular_bool \text { #3 } }
               ]
             { #2 }
           }

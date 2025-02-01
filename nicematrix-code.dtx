@@ -16424,6 +16424,8 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
+% The following set of keys will be used only for security since the keys will
+% be sent to the command |\Ldots| or |\Vdots|.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Hbrace }
   {
@@ -16464,7 +16466,8 @@ version 2005/12/01 or later.
               [ 
                 line-style = nicematrix~normal~brace ,  
                 #1 , 
-                up = \exp_not:n { #3 } 
+                up = 
+                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
               ] 
           }
           { 
@@ -16472,7 +16475,8 @@ version 2005/12/01 or later.
               [ 
                 line-style = nicematrix~normal~brace , 
                 #1 , 
-                up = \exp_not:n { #3 } 
+                up = 
+                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
               ] 
               { #2 } 
           }
@@ -16485,7 +16489,8 @@ version 2005/12/01 or later.
               [ 
                 line-style = nicematrix~mirrored~brace , 
                 #1 , 
-                down = \exp_not:n { #3 }
+                down = 
+                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } } 
               ] 
           }
           { 
@@ -16493,7 +16498,8 @@ version 2005/12/01 or later.
               [ 
                 line-style = nicematrix~mirrored~brace , 
                 #1 , 
-                down = \exp_not:n { #3 } 
+                down = 
+                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
               ] 
             { #2 } 
           }
@@ -16527,7 +16533,8 @@ version 2005/12/01 or later.
               [ 
                 line-style = nicematrix~mirrored~brace , 
                 #1 , 
-                down = \exp_not:n { #3 }
+                down = 
+                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
               ] 
           }
           { 
@@ -16535,7 +16542,8 @@ version 2005/12/01 or later.
               [ 
                 line-style = nicematrix~mirrored~brace , 
                 #1 , 
-                down = \exp_not:n { #3 }
+                down = 
+                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
               ] 
             { #2 } 
           }
@@ -16548,7 +16556,9 @@ version 2005/12/01 or later.
               [ 
                 line-style =  nicematrix~normal~brace , 
                 #1 , 
-                up = \exp_not:n { #3 }
+                up = 
+                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
+
               ] 
           }
           { 
@@ -16556,7 +16566,8 @@ version 2005/12/01 or later.
               [ 
                 line-style = nicematrix~normal~brace , 
                 #1 , 
-                up = \exp_not:n { #3 }
+                up = 
+                  \exp_not:n { \bool_if:NT \l_@@_tabular_bool \text { #3 } }  
               ] 
             { #2 } 
           }
