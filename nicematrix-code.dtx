@@ -1182,8 +1182,6 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% The use of |\l_@@_code_before_tl| is not clear. Maybe that, with the evolutions
-% of \pkg{nicematrix}, it has become obsolete. We should have a look at that.
 %    \begin{macrocode}
 \tl_new:N \l_@@_code_before_tl
 \bool_new:N \l_@@_code_before_bool
@@ -1208,7 +1206,7 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % The L3 programming layer provides scratch dimensions |\l_tmpa_dim| and
-% |\l_tmpb_dim|. We creates several more in the same spirit.
+% |\l_tmpb_dim|. We create several more in the same spirit.
 %    \begin{macrocode}
 \dim_new:N \l_@@_tmpc_dim 
 \dim_new:N \l_@@_tmpd_dim
@@ -1420,7 +1418,7 @@ version 2005/12/01 or later.
 % 
 % \medskip
 % Here is the dimension for the width of the rule when a block (created by
-% |\Block|) is stroked.
+% |\Block|) is stroked or when the key |hvlines| is used.
 %    \begin{macrocode}
 \dim_new:N \l_@@_line_width_dim
 %    \end{macrocode}
@@ -4537,8 +4535,7 @@ version 2005/12/01 or later.
 % 
 % The sequence |\g_@@_blocks_seq| will contain the carateristics of the blocks
 % (specified by |\Block|) of the array. The sequence |\g_@@_pos_of_blocks_seq|
-% will contain only the position of the blocks (except the blocks with the key
-% |hvlines|). 
+% will contain only the position of the blocks.
 %    \begin{macrocode}
     \seq_gclear:N \g_@@_blocks_seq
     \seq_gclear:N \g_@@_pos_of_blocks_seq
@@ -6208,7 +6205,10 @@ version 2005/12/01 or later.
                 { \int_use:N \c@iRow }
             } 
             { \int_eval:n { \c@jCol + #1 } }
-            { } % for the name of the block
+%    \end{macrocode}
+% The last argument is for the name of the block
+%    \begin{macrocode}
+            { }
           }
       }
 %    \end{macrocode}
@@ -14188,8 +14188,8 @@ version 2005/12/01 or later.
       }
     \bool_if:NF \l_@@_transparent_bool 
       { 
-        \bool_lazy_and:nnF \l_@@_vlines_block_bool \l_@@_hlines_block_bool 
-          {
+         \bool_lazy_and:nnF \l_@@_vlines_block_bool \l_@@_hlines_block_bool 
+           {
 %    \end{macrocode}
 % The sequence of the positions of the blocks (excepted the blocks with the key
 % |hvlines|) will be used when drawing the rules (in fact, there is also the
@@ -14197,7 +14197,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
             \seq_gput_left:Ne \g_@@_pos_of_blocks_seq 
               { { #1 } { #2 } { #3 } { #4 } { \l_@@_block_name_str } }  
-          }
+           }
       }
 %    \end{macrocode}
 %
@@ -14896,6 +14896,9 @@ version 2005/12/01 or later.
       }
     \group_end:
   }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
 \cs_new_protected:Npn \@@_hlines_block:nnn #1 #2 #3
   {
     \group_begin:
@@ -16001,6 +16004,10 @@ version 2005/12/01 or later.
       } 
 %    \end{macrocode}
 %
+% \bigskip
+% Now, we deal with the key |code| of |\SubMatrix|. That key should contain a
+% TikZ instruction and the nodes in that instruction will be relative to the
+% current |\SubMatrix|. That's why we need a redefinition of |\pgfpointanchor|.
 %    \begin{macrocode}
     \cs_set_eq:NN \pgfpointanchor \@@_pgfpointanchor:n
     \flag_clear_new:N \l_@@_code_flag
@@ -16009,7 +16016,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% In the key |code| of the command |\SubMatrix| there may be Tikz instructions.
+% In the key |code| of the command |\SubMatrix| there may be TikZ instructions.
 % We want that, in these instructions, the $i$ and $j$ in specifications of
 % nodes of the forms $i$|-|$j$, |row-|$i$, |col-|$j$ and $i$\verb+-|+$j$ refer
 % to the number of row and columm \emph{relative} of the current |\SubMatrix|.
@@ -16027,21 +16034,47 @@ version 2005/12/01 or later.
 % We have to act in an expandable way because the command |\pgfpointanchor| is
 % used in names of Tikz nodes which are computed in an expandable way.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_pgfpointanchor:n #1 
+\cs_new:Npn \@@_pgfpointanchor:n #1 
   { 
     \use:e 
-      { \exp_not:N \@@_old_pgfpointanchor { \@@_pgfpointanchor_i:nn #1 } }
+      { \exp_not:N \@@_old_pgfpointanchor { \@@_pgfpointanchor_i:n { #1 } } }
   } 
 %    \end{macrocode}
 %
 % \bigskip
-% In fact, the argument of |\pgfpointanchor| is always of the form 
-% |\a_command { name_of_node }| where ``|name_of_node|'' is the name of the Tikz
-% node without the potential prefix and suffix. That's why we catch two
-% arguments and work only on the second by trying (first) to extract an hyphen |-|.
+% First, we must try to detect whether the argument contains an hyphen (|-|). We
+% use a classical construction with a quark (recall that we have to be expandable).
+%    \begin{macrocode}
+\cs_new:Npn \@@_pgfpointanchor_i:n #1 { \@@_pgfpointanchor_i:w #1-\q_stop }
+%    \end{macrocode}
+% 
+% \bigskip
+%    \begin{macrocode}
+\cs_new:Npn \@@_pgfpointanchor_i:w #1-#2\q_stop
+  {
+%    \end{macrocode}
+% The command |\str_if_empty:nTF| is ``fully expandable''.
+%    \begin{macrocode}
+    \str_if_empty:nTF { #2 }
+%    \end{macrocode}
+% First the case where the argument does \emph{not} contain a hyphen.
+%    \begin{macrocode}
+      { \@@_pgfpointanchor_i:nn #1 }
+%    \end{macrocode}
+% And now the case the argument contains a hyphen. In that case, we have a weird
+% construction because we must retreive the extra hyphen we have added.
+%    \begin{macrocode}
+      { \@@_pgfpointanchor_iii:w { #1 } #2 }
+  }
+%    \end{macrocode}
+% 
+% \bigskip
+% If there is an hyphen, if fact, the argument of |\pgfpointanchor| is of the
+% form |\name_of_command { ... }| because the command |\name_of_command| will
+% deal with the potential prefix and suffix.
 %    \begin{macrocode}
 \cs_new:Npn \@@_pgfpointanchor_i:nn #1 #2 
-  { #1 { \@@_pgfpointanchor_ii:w #2 - \q_stop } } 
+  { #1 { \@@_pgfpointanchor_ii:n { #2 } } }
 %    \end{macrocode}
 %
 % \bigskip
@@ -16060,54 +16093,45 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
-\cs_new:Npn \@@_pgfpointanchor_ii:w #1-#2\q_stop
+\cs_new:Npn \@@_pgfpointanchor_ii:n #1
   { 
 %    \end{macrocode}
 % If there is no hyphen, that means that the node is of the form of a single
 % number (ex.: |5| or |11|). In that case, we are in an analysis which result
-% from a specification of node of the form $i$\verb+-|+$j$. In that case, the
-% $i$ of the number of row arrives first (and alone) in a |\pgfpointanchor| and,
-% the, the $j$ arrives (alone) in the following |\pgfpointanchor|. In order to
-% know whether we have a number of row or a number of column, we keep track of
-% the number of such treatments by the expandable flag called |nicematrix|.
+% from a specification of node of the form $i$\verb+-|+$j$. That special form is
+% the reason of the special form of the argument of |\pgfpointanchor| which
+% arises witht its command |\name_of_command| (see above).
+%
+% In that case, the $i$ of the number of row arrives first (and alone) in a
+% |\pgfpointanchor| and, the, the $j$ arrives (alone) in the following
+% |\pgfpointanchor|. In order to know whether we have a number of row or a
+% number of column, we keep track of the number of such treatments by the
+% expandable flag called |nicematrix|.
 %    \begin{macrocode}
-    \tl_if_empty:nTF { #2 }
-      { 
-        \str_case:nVTF { #1 } \c_@@_integers_alist_tl
-          {
-            \flag_raise:N \l_@@_code_flag
-            \int_if_even:nTF { \flag_height:N \l_@@_code_flag } 
-              { \int_eval:n { #1 + \l_@@_first_i_tl - 1 } }
-              { \int_eval:n { #1 + \l_@@_first_j_tl - 1 } }
-         }
-         { #1 }
+    \str_case:nVTF { #1 } \c_@@_integers_alist_tl
+      {
+        \flag_raise:N \l_@@_code_flag
+        \int_if_even:nTF { \flag_height:N \l_@@_code_flag } 
+          { \int_eval:n { #1 + \l_@@_first_i_tl - 1 } }
+          { \int_eval:n { #1 + \l_@@_first_j_tl - 1 } }
       }
-%    \end{macrocode}
-% If there is an hyphen, we have to see whether we have a node of the form
-% $i$|-|$j$, |row-|$i$ or |col-|$j$.
-%    \begin{macrocode}
-      { \@@_pgfpointanchor_iii:w { #1 } #2 }
+      { #1 }
   }
 %    \end{macrocode}
 %
 % \bigskip
-% There was an hyphen in the name of the node and that's why we have to retrieve
-% the extra hyphen we have put (cf. |\@@_pgfpointanchor_i:nn|).
+% If there is an hyphen in the name of the node we have to retrieve the extra
+% hyphen we have put. 
 %    \begin{macrocode}
 \cs_new:Npn \@@_pgfpointanchor_iii:w #1 #2 - 
   {
-    \str_case:nnF { #1 }
-      { 
-        { row } { row - \int_eval:n { #2 + \l_@@_first_i_tl - 1 } } 
-        { col } { col - \int_eval:n { #2 + \l_@@_first_j_tl - 1 } } 
-      }
 %    \end{macrocode}
-% Now the case of a node of the form $i$|-|$j$.
+% We have to add the prefix ``by hand'' because, in this case, there is not the
+% command |\name_of_command| (see above).
 %    \begin{macrocode}
-      { 
-        \int_eval:n { #1 + \l_@@_first_i_tl - 1 } 
-        - \int_eval:n { #2 + \l_@@_first_j_tl - 1 } 
-      }
+    \@@_env:
+    - \int_eval:n { #1 + \l_@@_first_i_tl - 1 } 
+    - \int_eval:n { #2 + \l_@@_first_j_tl - 1 } 
   }
 %    \end{macrocode}
 % 
@@ -17058,10 +17082,11 @@ version 2005/12/01 or later.
     In~the~row~\int_eval:n { \c@iRow },~
     ~you~try~to~use~more~columns~than~allowed~by~your~
     \@@_full_name_env:.\@@_message_hdotsfor:\ The~maximal~number~of~columns~is~ 
-    \int_use:N \g_@@_static_num_of_col_int 
+    \int_use:N \g_@@_static_num_of_col_int\
     \bool_if:nT
       { \int_compare_p:nNn \l_@@_first_col_int = 0 || \g_@@_last_col_found_bool }
-      { ~(plus~the~exterior~ones) }.~
+      { ~(plus~the~exterior~ones) }
+    since~the~preamble~is~'\g_@@_user_preamble_tl'.\\
     This~error~is~fatal.
   }
 %    \end{macrocode}

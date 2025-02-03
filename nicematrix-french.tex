@@ -215,10 +215,10 @@ pour être utilisées à la compilation suivante. C'est pourquoi l'utilisation d
   automatiquement un nombre de compilations suffisant (en utilisant |latexmk|).}. L'utilisateur ne doit
 pas utiliser la commande |\nofiles| (qui bloque l'écriture du fichier |aux|). 
 
-% \medskip
-% La plupart des fonctionnalités de \pkg{nicematrix} sont accessibles sans avoir à
-% utiliser explicitement \textsc{pgf} ou TikZ (ce dernier n'est d'ailleurs pas
-% chargé par défaut).
+\medskip
+La plupart des fonctionnalités de \pkg{nicematrix} sont accessibles sans avoir à
+utiliser explicitement \textsc{pgf} ou TikZ (ce dernier n'est d'ailleurs pas
+chargé par défaut).
 
 \medskip
 \indexcommand{NiceMatrixOptions}
@@ -227,9 +227,6 @@ des options fixées par cette commande est le groupe TeX courant : elles sont
 semi-globales).
 
 
-\medskip
-\colorbox{yellow!50}{\bfseries Nouveau 7.0}\enskip \pkg{nicematrix} est
-compatible avec le \emph{Tagging Project} : cf. p.~\pageref{Tagging Project}.
 
 \newpage
 
@@ -977,7 +974,7 @@ manière justifiée.
 
 \bigskip
 On peut mettre un environnement |{itemize}| ou |{enumerate}| dans un bloc qui
-utilise la clé |p| ou la clé |j| (dans les autres cas, on a une erreur 
+utilise la clé |p| ou la clé |j| (dans les autres cas, on aura une erreur: 
 |Not allowed in LR mode|). Dans l'exemple suivant, on a chargé l'extension
 \pkg{enumitem} (pour pouvoir utiliser la clé |left| de l'environnement
 |{itemize}|).
@@ -4574,7 +4571,7 @@ Part A              & the first part \\
                     & a second sub-part \\
 \bottomrule
 \CodeAfter
-  \emph{\SubMatrix{\{}{2-2}{3-2}{.}}
+  \emph{\SubMatrix{\lbrace}{2-2}{3-2}{.}}
 \end{NiceTabular}
 \end{Code}
 \hspace{2cm}
@@ -4585,7 +4582,7 @@ Part A              & the first part \\
                     & a second sub-part \\
 \bottomrule
 \CodeAfter
-  \SubMatrix{\{}{2-2}{3-2}{.}
+  \SubMatrix{\lbrace}{2-2}{3-2}{.}
 \end{NiceTabular} 
 
 

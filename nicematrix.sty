@@ -2877,7 +2877,7 @@
                 { \int_use:N \c@iRow }
             }
             { \int_eval:n { \c@jCol + #1 } }
-            { } % for the name of the block
+            { }
           }
       }
     \RenewDocumentCommand \cellcolor { O { } m }
@@ -7709,11 +7709,11 @@
       }
     \bool_if:NF \l__nicematrix_transparent_bool
       {
-        \bool_lazy_and:nnF \l__nicematrix_vlines_block_bool \l__nicematrix_hlines_block_bool
-          {
+         \bool_lazy_and:nnF \l__nicematrix_vlines_block_bool \l__nicematrix_hlines_block_bool
+           {
             \seq_gput_left:Ne \g__nicematrix_pos_of_blocks_seq
               { { #1 } { #2 } { #3 } { #4 } { \l__nicematrix_block_name_str } }
-          }
+           }
       }
     \tl_if_empty:NF \l__nicematrix_draw_tl
       {
@@ -8918,13 +8918,20 @@
     \l__nicematrix_code_tl
   }
 \cs_set_eq:NN \__nicematrix_old_pgfpointanchor \pgfpointanchor
-\cs_new_protected:Npn \__nicematrix_pgfpointanchor:n #1
+\cs_new:Npn \__nicematrix_pgfpointanchor:n #1
   {
     \use:e
-      { \exp_not:N \__nicematrix_old_pgfpointanchor { \__nicematrix_pgfpointanchor_i:nn #1 } }
+      { \exp_not:N \__nicematrix_old_pgfpointanchor { \__nicematrix_pgfpointanchor_i:n { #1 } } }
+  }
+\cs_new:Npn \__nicematrix_pgfpointanchor_i:n #1 { \__nicematrix_pgfpointanchor_i:w #1-\q_stop }
+\cs_new:Npn \__nicematrix_pgfpointanchor_i:w #1-#2\q_stop
+  {
+    \str_if_empty:nTF { #2 }
+      { \__nicematrix_pgfpointanchor_i:nn #1 }
+      { \__nicematrix_pgfpointanchor_iii:w { #1 } #2 }
   }
 \cs_new:Npn \__nicematrix_pgfpointanchor_i:nn #1 #2
-  { #1 { \__nicematrix_pgfpointanchor_ii:w #2 - \q_stop } }
+  { #1 { \__nicematrix_pgfpointanchor_ii:n { #2 } } }
 \tl_const:Nn \c__nicematrix_integers_alist_tl
   {
     { 1 } { } { 2 } { } { 3 } { } { 4 } { } { 5 } { }
@@ -8932,32 +8939,22 @@
     { 11 } { } { 12 } { } { 13 } { } { 14 } { } { 15 } { }
     { 16 } { } { 17 } { } { 18 } { } { 19 } { } { 20 } { }
   }
-\cs_new:Npn \__nicematrix_pgfpointanchor_ii:w #1-#2\q_stop
+\cs_new:Npn \__nicematrix_pgfpointanchor_ii:n #1
   {
-    \tl_if_empty:nTF { #2 }
+    \str_case:nVTF { #1 } \c__nicematrix_integers_alist_tl
       {
-        \str_case:nVTF { #1 } \c__nicematrix_integers_alist_tl
-          {
-            \flag_raise:N \l__nicematrix_code_flag
-            \int_if_even:nTF { \flag_height:N \l__nicematrix_code_flag }
-              { \int_eval:n { #1 + \l__nicematrix_first_i_tl - 1 } }
-              { \int_eval:n { #1 + \l__nicematrix_first_j_tl - 1 } }
-         }
-         { #1 }
+        \flag_raise:N \l__nicematrix_code_flag
+        \int_if_even:nTF { \flag_height:N \l__nicematrix_code_flag }
+          { \int_eval:n { #1 + \l__nicematrix_first_i_tl - 1 } }
+          { \int_eval:n { #1 + \l__nicematrix_first_j_tl - 1 } }
       }
-      { \__nicematrix_pgfpointanchor_iii:w { #1 } #2 }
+      { #1 }
   }
 \cs_new:Npn \__nicematrix_pgfpointanchor_iii:w #1 #2 -
   {
-    \str_case:nnF { #1 }
-      {
-        { row } { row - \int_eval:n { #2 + \l__nicematrix_first_i_tl - 1 } }
-        { col } { col - \int_eval:n { #2 + \l__nicematrix_first_j_tl - 1 } }
-      }
-      {
-        \int_eval:n { #1 + \l__nicematrix_first_i_tl - 1 }
-        - \int_eval:n { #2 + \l__nicematrix_first_j_tl - 1 }
-      }
+    \__nicematrix_env:
+    - \int_eval:n { #1 + \l__nicematrix_first_i_tl - 1 }
+    - \int_eval:n { #2 + \l__nicematrix_first_j_tl - 1 }
   }
 \cs_new_protected:Npn \__nicematrix_node_left:nn #1 #2
   {
@@ -9674,10 +9671,11 @@
     In~the~row~\int_eval:n { \c@iRow },~
     ~you~try~to~use~more~columns~than~allowed~by~your~
     \__nicematrix_full_name_env:.\__nicematrix_message_hdotsfor:\ The~maximal~number~of~columns~is~
-    \int_use:N \g__nicematrix_static_num_of_col_int
+    \int_use:N \g__nicematrix_static_num_of_col_int\
     \bool_if:nT
       { \int_compare_p:nNn \l__nicematrix_first_col_int = 0 || \g__nicematrix_last_col_found_bool }
-      { ~(plus~the~exterior~ones) }.~
+      { ~(plus~the~exterior~ones) }
+    since~the~preamble~is~'\g__nicematrix_user_preamble_tl'.\\
     This~error~is~fatal.
   }
 \__nicematrix_msg_new:nn { columns~not~used }
