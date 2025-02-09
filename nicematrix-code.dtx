@@ -16033,21 +16033,58 @@ version 2005/12/01 or later.
 % |\@@_pgfpointanchor_i:nn| before passing it to the original |\pgfpointanchor|.
 % We have to act in an expandable way because the command |\pgfpointanchor| is
 % used in names of Tikz nodes which are computed in an expandable way.
+%
+% The original command |\pgfpointanchor| takes in two arguments: the name of the
+% name and the name of the anchor. However, you don't have to modify the anchor,
+% and that's why we do a redefinition of |\pgfpointanchor| by curryfication.
 %    \begin{macrocode}
 \cs_new:Npn \@@_pgfpointanchor:n #1 
-  { 
-    \use:e 
-      { \exp_not:N \@@_old_pgfpointanchor { \@@_pgfpointanchor_i:n { #1 } } }
-  } 
+  { \exp_args:Ne \@@_old_pgfpointanchor { \@@_pgfpointanchor_i:n { #1 } } } 
 %    \end{macrocode}
 %
-% \bigskip
-% First, we must try to detect whether the argument contains an hyphen (|-|). We
-% use a classical construction with a quark (recall that we have to be expandable).
+% \medskip
+% First, we must detect whether the argument is of the form |\tikz@pp@name{...}|
+% (the command |\tikz@pp@name| is a command of TikZ that adds the prefix and the
+% suffix of the name. If the name refers to a TikZ node which does not exist,
+% there isn't the wrapper |\tikz@pp@name|.
 %    \begin{macrocode}
-\cs_new:Npn \@@_pgfpointanchor_i:n #1 { \@@_pgfpointanchor_i:w #1-\q_stop }
+\cs_new:Npn \@@_pgfpointanchor_i:n #1 
+  { \@@_pgfpointanchor_ii:w #1 \tikz@pp@name \q_stop }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new:Npn \@@_pgfpointanchor_ii:w #1 \tikz@pp@name #2 \q_stop 
+  {
+%    \end{macrocode}
+% The command |\str_if_empty:nTF| is ``fully expandable''.
+%    \begin{macrocode}
+    \str_if_empty:nTF { #1 }
+%    \end{macrocode}
+% First, when the name of the name begins with |\tikz@pp@name|.
+%    \begin{macrocode}
+      { \@@_pgfpointanchor_iv:w #2 }
+%    \end{macrocode}
+% And now, when there is no |\tikz@pp@name|.
+%    \begin{macrocode}
+      { \@@_pgfpointanchor_ii:n { #1 } }
+  }
+%    \end{macrocode}
+%
+% In the case where the name begins with |\tikz@pp@name|, we have to retrieve
+% the second |\tikz@pp@name|, that is to say to marker that we have added at the
+% end (cf. |\@@_pgfpointanchor_i:n|).
+%    \begin{macrocode}
+\cs_new:Npn \@@_pgfpointanchor_iv:w #1 \tikz@pp@name 
+  { \@@_pgfpointanchor_ii:n { #1 } }
 %    \end{macrocode}
 % 
+% \bigskip
+% With |\@@_pgfpointanchor_ii:n|, we deal with the actual name of the node
+% (without the |\tikz@pp@name|). First, we have to detect whether it is of the
+% form |i| of the form |i-j| (with an hyphen).
+%    \begin{macrocode}
+\cs_new:Npn \@@_pgfpointanchor_ii:n #1 { \@@_pgfpointanchor_i:w #1-\q_stop }
+%    \end{macrocode}
 % \bigskip
 %    \begin{macrocode}
 \cs_new:Npn \@@_pgfpointanchor_i:w #1-#2\q_stop
@@ -16057,25 +16094,33 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \str_if_empty:nTF { #2 }
 %    \end{macrocode}
-% First the case where the argument does \emph{not} contain a hyphen.
+% First the case where the argument does \emph{not} contain an hyphen.
 %    \begin{macrocode}
-      { \@@_pgfpointanchor_i:nn #1 }
+      { \@@_pgfpointanchor_iii:n { #1 } }
 %    \end{macrocode}
 % And now the case the argument contains a hyphen. In that case, we have a weird
-% construction because we must retreive the extra hyphen we have added.
+% construction because we must retreive the extra hyphen we have added as marker
+% (cf. |\@@_pgfpointanchor_ii:n|).
 %    \begin{macrocode}
       { \@@_pgfpointanchor_iii:w { #1 } #2 }
   }
 %    \end{macrocode}
+%
 % 
-% \bigskip
-% If there is an hyphen, if fact, the argument of |\pgfpointanchor| is of the
-% form |\name_of_command { ... }| because the command |\name_of_command| will
-% deal with the potential prefix and suffix.
+% The following function is for the case when the name contains an hyphen.
 %    \begin{macrocode}
-\cs_new:Npn \@@_pgfpointanchor_i:nn #1 #2 
-  { #1 { \@@_pgfpointanchor_ii:n { #2 } } }
+\cs_new:Npn \@@_pgfpointanchor_iii:w #1 #2 - 
+  {
 %    \end{macrocode}
+% We have to add the prefix |\@@_env:| ``by hand'' since we have retreived the
+% potential |\tikz@pp@name|.
+%    \begin{macrocode}
+    \@@_env:
+    - \int_eval:n { #1 + \l_@@_first_i_tl - 1 } 
+    - \int_eval:n { #2 + \l_@@_first_j_tl - 1 } 
+  }
+%    \end{macrocode}
+% 
 %
 % \bigskip
 % Since |\seq_if_in:NnTF| and |\clist_if_in:NnTF| are not expandable, we will
@@ -16093,7 +16138,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
-\cs_new:Npn \@@_pgfpointanchor_ii:n #1
+\cs_new:Npn \@@_pgfpointanchor_iii:n #1
   { 
 %    \end{macrocode}
 % If there is no hyphen, that means that the node is of the form of a single
@@ -16111,31 +16156,31 @@ version 2005/12/01 or later.
     \str_case:nVTF { #1 } \c_@@_integers_alist_tl
       {
         \flag_raise:N \l_@@_code_flag
+%    \end{macrocode}
+% We have to add the prefix |\@@_env:| ``by hand'' since we have retreived the
+% potential |\tikz@pp@name|.
+%    \begin{macrocode}
+        \@@_env: - 
         \int_if_even:nTF { \flag_height:N \l_@@_code_flag } 
           { \int_eval:n { #1 + \l_@@_first_i_tl - 1 } }
           { \int_eval:n { #1 + \l_@@_first_j_tl - 1 } }
       }
-      { #1 }
+      { 
+        \str_if_eq:eeTF { #1 } { last }
+          { 
+            \flag_raise:N \l_@@_code_flag
+            \@@_env: - 
+            \int_if_even:nTF { \flag_height:N \l_@@_code_flag } 
+              { \int_eval:n { \l_@@_last_i_tl + 1 } }
+              { \int_eval:n { \l_@@_last_j_tl + 1 } }
+          }
+          { #1 }
+      }
   }
 %    \end{macrocode}
 %
-% \bigskip
-% If there is an hyphen in the name of the node we have to retrieve the extra
-% hyphen we have put. 
-%    \begin{macrocode}
-\cs_new:Npn \@@_pgfpointanchor_iii:w #1 #2 - 
-  {
-%    \end{macrocode}
-% We have to add the prefix ``by hand'' because, in this case, there is not the
-% command |\name_of_command| (see above).
-%    \begin{macrocode}
-    \@@_env:
-    - \int_eval:n { #1 + \l_@@_first_i_tl - 1 } 
-    - \int_eval:n { #2 + \l_@@_first_j_tl - 1 } 
-  }
-%    \end{macrocode}
 % 
-% \medskip
+% \bigskip
 % The command |\@@_node_left:nn| puts the left delimiter with the correct size.
 % The argument |#1| is the delimiter to put. The argument |#2| is the name we
 % will give to this PGF node (if the key |name| has been used in |\SubMatrix|).
@@ -17096,10 +17141,11 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { columns~not~used }
   {
     Columns~not~used.\\
-    The~preamble~of~your~\@@_full_name_env:\ announces~\int_use:N
-    \g_@@_static_num_of_col_int\ columns~but~you~use~only~\int_use:N \c@jCol.\\ 
+    The~preamble~of~your~\@@_full_name_env:\ is~'\g_@@_user_preamble_tl'.~
+    It~announces~\int_use:N
+    \g_@@_static_num_of_col_int\ columns~but~you~only~used~\int_use:N \c@jCol.\\ 
     The~columns~you~did~not~used~won't~be~created.\\
-    You~won't~have~similar~error~message~till~the~end~of~the~document.
+    You~won't~have~similar~warning~till~the~end~of~the~document.
   }
 %    \end{macrocode}
 %
@@ -17509,7 +17555,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nnn { width~without~X~columns }
   {
-    You~have~used~the~key~'width'~but~you~have~put~no~'X'~column.~
+    You~have~used~the~key~'width'~but~you~have~put~no~'X'~column~in~
+   the~preamble~('\g_@@_user_preamble_tl')~of~your~\@@_full_name_env:.\\
     That~key~will~be~ignored.
   }
   {
@@ -17555,8 +17602,9 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Forbidden~letter }
   {
     Forbidden~letter.\\
-    You~can't~use~the~letter~'#1'~for~a~customized~line.\\
-    It~will~be~ignored.
+    You~can't~use~the~letter~'#1'~for~a~customized~line.~
+    It~will~be~ignored.\\
+    The~forbidden~letters~are:~\c_@@_forbidden_letters_str
   }
 %    \end{macrocode}
 %
@@ -17862,7 +17910,8 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { One~letter~allowed }
   { 
     Bad~name.\\
-    The~value~of~key~'\l_keys_key_str'~must~be~of~length~1.\\
+    The~value~of~key~'\l_keys_key_str'~must~be~of~length~1~and~
+    you~have~used~'\l_keys_value_tl'.\\
     It~will~be~ignored. 
   }
 %    \end{macrocode}
@@ -18349,7 +18398,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Invalid~col~number }
   {
     Invalid~column~number.\\
-    A~color~instruction~the~\token_to_str:N \CodeBefore\ 
+    A~color~instruction~in~the~\token_to_str:N \CodeBefore\ 
     specifies~a~column~which~is~outside~the~array.~It~will~be~ignored. 
   }
 %    \end{macrocode}
@@ -18358,7 +18407,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Invalid~row~number }
   {
     Invalid~row~number.\\
-    A~color~instruction~the~\token_to_str:N \CodeBefore\ 
+    A~color~instruction~in~the~\token_to_str:N \CodeBefore\ 
     specifies~a~row~which~is~outside~the~array.~It~will~be~ignored. 
   }
 %    \end{macrocode}

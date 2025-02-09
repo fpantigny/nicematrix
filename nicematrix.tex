@@ -2659,7 +2659,7 @@ the user).
 It's also possible, in the |\CodeBefore|, to use the commands
 \DefinitionCommand{EmptyColumn} and \DefinitionCommand{EmptyRow}. The command
 |\EmptyColumn| takes in as argument a (comma-separated) list of numbers of
-columns and requires that no rules nor backbround colors will be drawn in the
+columns and requires that no rules nor background colors will be drawn in the
 corresponding columns. The command |\EmptyRow| is similar for the rows.
 
 \medskip
@@ -2711,14 +2711,14 @@ colorizes the end of the row;\footnote{If you want a commande to color the
   p.~\pageref{RowStyle}} 
 \item \DefinitionCommand{columncolor} which must be used in the preamble of the
 environment with the same syntax as the corresponding command of \pkg{colortbl}
-(however, unlike the command columncolor of \pkg{colortbl}, this command
+(however, unlike the command |\columncolor| of \pkg{colortbl}, this command
 |\columncolor| can appear within another command, itself used in the preamble of
 the array);
 \item \DefinitionCommand{rowcolors} which takes in as arguments two colors and
 color the rest of the tabular with those colors;
 \item \DefinitionCommand{rowlistcolors} which takes in as argument a color and
 color the rest of the tabular with the colors of that list of
-colors.\footnote{When the command |\rowlistcolors| (or the command |\rowcolors|
+colors.\footnote{When the command |\rowlistcolors| (or the command |\rowcolors|)
   is used in a cell of the column~$j$ of the array, the command applies only on
   the columns above~$j$ (by design).}
 \end{itemize}
@@ -2799,7 +2799,7 @@ seven \\
 
 The extension \pkg{nicematrix} provides the special color \Definition{nocolor}
 which may be used in all the coloring commands provided by \pkg{nicematrix} (in
-the |\CodeBefore| or the array itself).
+the |\CodeBefore| or in the array itself).
 
 The cells marked by this color won't be colored, whatever the other instructions
 of coloring which may apply to these cells.
@@ -2836,8 +2836,10 @@ corresponding global keys (cf. p.~\pageref{cell-space}).
 The key \Definition{rowcolor} (alias: \Definition{fill}) sets the color of the
 background and \Definition{opacity}\footnote{Caution: that feature creates instructions of
   transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
-  support such instructions.} sets its opacity. If the key
-\Definition{rounded-corners} is used, that background will have rounded-corners.
+  support such instructions.} sets its opacity. 
+
+\item If the key \Definition{rounded-corners} is used, that background will have
+rounded-corners.
 
 \item 
 \index{color!key of \texttt{\textbackslash RowStyle}}
@@ -4464,20 +4466,16 @@ The command |\SubMatrix| is, in fact, also available in the |\CodeBefore|. By
 using |\SubMatrix| in the |\CodeBefore|, the delimiters drawn by those
 commands |\SubMatrix| are taken into account to limit the continuous dotted
 lines (drawn by |\Cdots|, |\Vdots|, etc.) which have an open extremity.
-
 For an example, see voir \ref{submatrix-in-codebefore} 
 p.~\pageref{submatrix-in-codebefore}.
 
 
 \vspace{1cm}
-\emph{Caution} : The following functionnality is fragile and does not work with
-|latex|--|dvips|--|ps2pdf|.\par\nobreak
-
 The key \Definition{code} of the command |\SubMatrix| allows the insertion of
 code after the construction of the submatrix. It's meant to be used to insert TikZ
 instructions because, in the TikZ instructions inserted by that code, the
-nodes of the form \verb+i-|j+ are interpreted with |i| and |j| as
-numbers of row and columns \emph{relative to the submatrix}.\footnote{Be
+nodes of the form |i-j| or \verb+i-|j+ are interpreted with |i| and |j| as
+numbers of row and column \emph{relative to the submatrix}.\footnote{Be
 careful: the syntax \verb+j|-i+ is \emph{not} allowed.}
 
 \medskip

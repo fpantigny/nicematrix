@@ -4586,16 +4586,14 @@ Part A              & the first part \\
 \end{NiceTabular} 
 
 
-\vspace{1cm}
-\emph{Attention} : La fonctionnalité suivante est fragile et ne fonctionne pas
-avec |latex|--|dvips|--|ps2pdf|.\par\nobreak
+\vspace{1cm} 
 
 La clé \Definition{code} de la commande |\SubMatrix| permet d'insérer du code
 après la création de la matrice. Elle a surtout pour vocation d'être utilisée
 pour insérer des instructions TikZ, sachant que, dans les instructions TikZ
-insérées dans cette clé, les nœuds de la forme \verb+i-|j+ sont interprétés avec
-|i| et |j| étant des numéros de ligne et colonne \emph{relatifs à la
-  sous-matrice}.\footnote{Attention : la syntaxe \texttt{j\string|-i} n'est
+insérées dans cette clé, les nœuds de la forme |i-j| ou \verb+i-|j+ sont
+interprétés avec |i| et |j| étant des numéros de ligne et colonne \emph{relatifs
+  à la sous-matrice}.\footnote{Attention : la syntaxe \texttt{j\string|-i} n'est
   \emph{pas} autorisée.}
 
 \medskip
