@@ -2713,7 +2713,8 @@ colorizes the end of the row;\footnote{If you want a commande to color the
 environment with the same syntax as the corresponding command of \pkg{colortbl}
 (however, unlike the command |\columncolor| of \pkg{colortbl}, this command
 |\columncolor| can appear within another command, itself used in the preamble of
-the array);
+the array; on the other hand, the two final optional arguments for fixing offset
+are not supported);
 \item \DefinitionCommand{rowcolors} which takes in as arguments two colors and
 color the rest of the tabular with those colors;
 \item \DefinitionCommand{rowlistcolors} which takes in as argument a color and
@@ -3893,6 +3894,8 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 
 \indexcommand{Hbrace}
 \indexcommand{Vbrace}
+\index{brace (nicematrix/brace is a TikZ style\newline used by \textbackslash
+  Hbrace et \textbackslash Vbrace)}
 \index{tikz-braces (key at load-tome of \texttt{nicematrix)}}
 \label{Hbrace}
 
@@ -3968,6 +3971,18 @@ $\begin{NiceArray}{ccccc}%
 & 1 & 1 & 134 & 1 & 1 \\
 & \Hbrace{3}{p} & \Hbrace[color=blue]{2}{q} \\
 \end{NiceArray}$
+
+\medskip
+The TikZ style used by \pkg{nicematrix} to draw those braces is called
+\Definition{nicematrix/brace}. Here is the initial value of that style:
+
+\begin{Code}
+\emph{decoration = { brace , raise = -0.15 em } , }
+\emph{decorate }
+\end{Code}
+
+The final user can change that style TikZ as he wishes (respecting the structure
+with the keys |decorate| and |decoration|).
 
 
 \medskip
@@ -4471,11 +4486,15 @@ p.~\pageref{submatrix-in-codebefore}.
 
 
 \vspace{1cm}
+\emph{Caution} : The following functionnality is fragile and does not work with
+|latex|--|dvips|--|ps2pdf|.\par\nobreak
+
+\smallskip
 The key \Definition{code} of the command |\SubMatrix| allows the insertion of
 code after the construction of the submatrix. It's meant to be used to insert TikZ
 instructions because, in the TikZ instructions inserted by that code, the
-nodes of the form |i-j| or \verb+i-|j+ are interpreted with |i| and |j| as
-numbers of row and column \emph{relative to the submatrix}.\footnote{Be
+nodes of the form \texttt{i-j.\textsl{anchor}} or \verb+i-|j+ are interpreted
+with |i| and |j| as numbers of row and column \emph{relative to the submatrix}.\footnote{Be
 careful: the syntax \verb+j|-i+ is \emph{not} allowed.}
 
 \medskip
@@ -7113,8 +7132,10 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \interitem
 If one prefers the braces of the library \pkg{decorations.pathreplacing} of TikZ, the
 best way is to use the commands |\Hbrace| and |\Vbrace| provided by
-\pkg{nicematrix} (cf. p.~\pageref{Hbrace}).\footnote{Those commands are
-available only if TikZ has been loaded with the library \pkg{decorations.pathreplacing}.}
+\pkg{nicematrix} (cf. p.~\pageref{Hbrace}).\footnote{Remark that those commands are
+available only if TikZ has been loaded with the library
+\pkg{decorations.pathreplacing}: |\usepackage{TikZ}|
+|\usetikzlibrary{decorations.pathreplacing}|.}
 
 \medskip
 \begin{Code}[width=11cm]

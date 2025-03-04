@@ -7,6 +7,8 @@
 \usepackage{geometry}
 \geometry{left=2.8cm,right=2.8cm,top=2.5cm,bottom=2.5cm,papersize={21cm,29.7cm}}
 
+
+\usepackage{array}%[=v2.5]
 \usepackage{nicematrix}
 
 \usepackage{tikz}
@@ -2791,7 +2793,9 @@ reste de la rangée;\footnote{Si vous souhaitez une commande pour colorier les
 de la même manière que la commande éponyme de \pkg{colortbl} (néanmoins,
 contrairement à la commande |\columncolor| de \pkg{colortbl}, celle de
 \pkg{nicematrix} peut apparaître à l'intérieur d'une autre commande, elle-même
-utilisée dans le préambule) ;
+utilisée dans le préambule; en revanche, elle ne prend pas les deux arguments
+optionnels à la fin entre crochets pour du débord comme la commande de
+\pkg{colortbl}) ;
 \item \DefinitionCommande{rowcolors} qui prend pour arguments deux couleurs et
 colorie la suite du tableau avec ces deux couleurs ;
 \item \DefinitionCommande{rowlistcolors} qui prend pour argument une liste de
@@ -4008,6 +4012,9 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 \label{Hbrace}
 \indexcommand{Hbrace}
 \indexcommand{Vbrace}
+\index{brace (nicematrix/brace est un style TikZ\newline utilisé par \textbackslash
+  Hbrace et \textbackslash Vbrace)}
+
 
 \smallskip
 Puisque, comme dit dans la partie précédente, il est possible d'utiliser, avec
@@ -4083,6 +4090,20 @@ $\begin{NiceArray}{ccccc}%
 & 1 & 1 & 134 & 1 & 1 \\
 & \Hbrace{3}{p} & \Hbrace[color=blue]{2}{q} \\
 \end{NiceArray}$
+
+
+\medskip
+Le style TikZ utilisé par \pkg{nicematrix} pour tracer ces accolades est appelé 
+\Definition{nicematrix/brace}. Voici la valeur initiale de ce style :
+
+\begin{Code}
+\emph{decoration = { brace , raise = -0.15 em } , }
+\emph{decorate }
+\end{Code}
+
+L'utilisateur final peut changer ce style TikZ à sa guise (en respectant la
+structure avec les clés |decorate| et |decoration|).
+
 
 \medskip
 Pour un autre exemple d'utilisation de |\Hbrace| et |\Vbrace|, voir la partie
@@ -4586,15 +4607,19 @@ Part A              & the first part \\
 \end{NiceTabular} 
 
 
-\vspace{1cm} 
 
+\vspace{1cm}
+\emph{Attention} : La fonctionnalité suivante est fragile et ne fonctionne pas
+avec |latex|--|dvips|--|ps2pdf|.\par\nobreak
+
+\smallskip
 La clé \Definition{code} de la commande |\SubMatrix| permet d'insérer du code
 après la création de la matrice. Elle a surtout pour vocation d'être utilisée
 pour insérer des instructions TikZ, sachant que, dans les instructions TikZ
-insérées dans cette clé, les nœuds de la forme |i-j| ou \verb+i-|j+ sont
-interprétés avec |i| et |j| étant des numéros de ligne et colonne \emph{relatifs
-  à la sous-matrice}.\footnote{Attention : la syntaxe \texttt{j\string|-i} n'est
-  \emph{pas} autorisée.}
+insérées dans cette clé, les nœuds de la forme \texttt{i-j.\textsl{anchor}} ou
+\verb+i-|j+ sont interprétés avec |i| et |j| étant des numéros de ligne et
+colonne \emph{relatifs à la sous-matrice}.\footnote{Attention : la syntaxe
+  \texttt{j\string|-i} n'est \emph{pas} autorisée.}
 
 \medskip
 \begin{Code}
@@ -7290,7 +7315,8 @@ Si on préfère des accolades comme celles proposées par la bibliothèque
 \pkg{decorations.pathreplacing} de TikZ, le mieux est d'utiliser les commandes
 |\Hbrace| et |\Vbrace| proposées par \pkg{nicematrix} (cf.
 p.~\pageref{Hbrace}).\footnote{Ces commandes ne sont disponibles que si TikZ a
-  été chargée ainsi que la bibliothèque \pkg{decorations.pathreplacing} de TikZ.}
+  été chargée ainsi que la bibliothèque \pkg{decorations.pathreplacing} de TikZ
+  : |\usepackage{TikZ}| |\usetikzlibrary{decorations.pathreplacing}|.}
 
 
 \medskip

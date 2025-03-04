@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.1}
-\def\myfiledate{2025/02/01}
+\def\myfileversion{7.1a}
+\def\myfiledate{2025/03/04}
 %
 %
 %<*batchfile>  
@@ -16070,7 +16070,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-% In the case where the name begins with |\tikz@pp@name|, we have to retrieve
+% In the case where the name begins with |\tikz@pp@name|, we must retrieve
 % the second |\tikz@pp@name|, that is to say to marker that we have added at the
 % end (cf. |\@@_pgfpointanchor_i:n|).
 %    \begin{macrocode}
@@ -16079,9 +16079,13 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% With |\@@_pgfpointanchor_ii:n|, we deal with the actual name of the node
-% (without the |\tikz@pp@name|). First, we have to detect whether it is of the
-% form |i| of the form |i-j| (with an hyphen).
+% With the command |\@@_pgfpointanchor_ii:n|, we deal with the actual name of
+% the node (without the |\tikz@pp@name|). First, we have to detect whether it is
+% of the form |i| of the form |i-j| (with an hyphen).
+%
+% Remark: It would be possible to test the presence of the hyphen in an
+% expandable way to using |\etl_if_in:nnTF| of the package \pkg{etl} but, as of
+% now, we do not load \pkg{etl}.
 %    \begin{macrocode}
 \cs_new:Npn \@@_pgfpointanchor_ii:n #1 { \@@_pgfpointanchor_i:w #1-\q_stop }
 %    \end{macrocode}
@@ -16475,17 +16479,19 @@ version 2005/12/01 or later.
       {
         \tikzset
           {
-            nicematrix~normal~brace / .style = 
+            nicematrix / brace / .style = 
               { 
-                decoration = brace , 
+                decoration = { brace , raise = -0.15 em } , 
                 decorate , 
-                outer~sep = 0.25 em 
               } ,
-            nicematrix~mirrored~brace / .style = 
+%    \end{macrocode}
+% Unlike the previous one, the following set of keys is internal. It won't be
+% provided by the final user.
+%    \begin{macrocode}
+            nicematrix / mirrored-brace / .style = 
               {
-                decoration = { brace , mirror } , 
-                decorate , 
-                outer~sep = 0.25 em 
+                nicematrix / brace ,
+                decoration = mirror , 
               }
           }    
      }
@@ -16533,7 +16539,7 @@ version 2005/12/01 or later.
             \NiceMatrixOptions{nullify-dots}
             \Ldots 
               [ 
-                line-style = nicematrix~normal~brace ,  
+                line-style = nicematrix / brace ,  
                 #1 , 
                 up = 
                   \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
@@ -16542,7 +16548,7 @@ version 2005/12/01 or later.
           { 
             \Hdotsfor 
               [ 
-                line-style = nicematrix~normal~brace , 
+                line-style = nicematrix / brace , 
                 #1 , 
                 up = 
                   \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
@@ -16556,7 +16562,7 @@ version 2005/12/01 or later.
             \NiceMatrixOptions{nullify-dots}
             \Ldots 
               [ 
-                line-style = nicematrix~mirrored~brace , 
+                line-style = nicematrix / mirrored-brace , 
                 #1 , 
                 down = 
                   \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
@@ -16565,7 +16571,7 @@ version 2005/12/01 or later.
           { 
             \Hdotsfor 
               [ 
-                line-style = nicematrix~mirrored~brace , 
+                line-style = nicematrix / mirrored-brace , 
                 #1 , 
                 down = 
                   \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
@@ -16600,7 +16606,7 @@ version 2005/12/01 or later.
             \NiceMatrixOptions{nullify-dots}
             \Vdots 
               [ 
-                line-style = nicematrix~mirrored~brace , 
+                line-style = nicematrix / mirrored-brace , 
                 #1 , 
                 down = 
                   \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
@@ -16609,7 +16615,7 @@ version 2005/12/01 or later.
           { 
             \Vdotsfor 
               [ 
-                line-style = nicematrix~mirrored~brace , 
+                line-style = nicematrix / mirrored-brace , 
                 #1 , 
                 down = 
                   \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
@@ -16623,7 +16629,7 @@ version 2005/12/01 or later.
             \NiceMatrixOptions{nullify-dots}
             \Vdots 
               [ 
-                line-style =  nicematrix~normal~brace , 
+                line-style =  nicematrix / brace , 
                 #1 , 
                 up = 
                   \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
@@ -16632,7 +16638,7 @@ version 2005/12/01 or later.
           { 
             \Vdotsfor 
               [ 
-                line-style = nicematrix~normal~brace , 
+                line-style = nicematrix / brace , 
                 #1 , 
                 up = 
                   \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } } 
