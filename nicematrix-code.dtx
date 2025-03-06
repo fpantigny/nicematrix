@@ -138,6 +138,24 @@ version 2005/12/01 or later.
   {Enhanced arrays with the help of PGF/TikZ}
 %    \end{macrocode}
 %
+%
+%    \begin{macrocode}
+\msg_new:nnn { nicematrix } { latex-too-old }
+  { 
+    Your~LaTeX~release~is~too~old. \\
+    You~need~at~least~a~the~version~of~2023-11-01 
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\IfFormatAtLeastTF
+  { 2023-11-01 } 
+  { } 
+  { \msg_fatal:nn { nicematrix } { latex-too-old } }
+%    \end{macrocode}
+% 
+
+% 
 %    \begin{macrocode}
 \ProvideDocumentCommand{\IfPackageLoadedT}{mm}
   {\IfPackageLoadedTF{#1}{#2}{}}

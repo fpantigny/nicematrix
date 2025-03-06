@@ -28,6 +28,16 @@
   {\myfiledate}
   {\myfileversion}
   {Enhanced arrays with the help of PGF/TikZ}
+\msg_new:nnn { nicematrix } { latex-too-old }
+  {
+    Your~LaTeX~release~is~too~old. \\
+    You~need~at~least~a~the~version~of~2023-11-01
+  }
+\IfFormatAtLeastTF
+  { 2023-11-01 }
+  { }
+  { \msg_fatal:nn { nicematrix } { latex-too-old } }
+
 \ProvideDocumentCommand{\IfPackageLoadedT}{mm}
   {\IfPackageLoadedTF{#1}{#2}{}}
 
