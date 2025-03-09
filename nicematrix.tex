@@ -14,7 +14,8 @@
     fit,
     patterns,
     arrows.meta,
-    decorations.pathreplacing
+    decorations.pathreplacing,
+    calligraphy
   }
 
 \usepackage{enumitem}
@@ -6329,6 +6330,7 @@ using the public variable |\g_nicematrix_code_before_tl|.
           { \int_use:c { c@jCol } }
           { \exp_not:n { #1 } }
       }
+    \ignorespaces 
   }
 \ExplSyntaxOff
 \end{Code}%
@@ -6353,6 +6355,7 @@ using the public variable |\g_nicematrix_code_before_tl|.
           { \int_use:c { c@jCol } }
           { \exp_not:n { #1 } }
       }
+    \ignorespaces 
   }
 \ExplSyntaxOff
 
@@ -7163,6 +7166,73 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 
 \pagebreak
+It's possible to change the TikZ style of those braces by changing the TikZ
+style |nicematrix/brace|. In the following example, we assume that the TikZ
+extension \pkg{calligraphy} has been loaded:
+
+\smallskip
+\begin{Verbatim}
+\usetikzlibrary{calligraphy}
+\end{Verbatim}
+
+\medskip
+\begin{Code}
+\NiceMatrixOptions{xdots/horizontal-labels}
+\tikzset
+  {
+    nicematrix/brace/.style = 
+      { 
+        decoration = 
+          { 
+            calligraphic brace , 
+            amplitude = 0.4 em , 
+            raise = -0.25 em 
+          } , 
+        line width = 0.1 em ,
+        decorate , 
+      } 
+  }
+\end{Code}
+\begin{Code}[width=11cm]
+$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
+\emph{\Hbrace{3}{3}} & \emph{\Hbrace{2}{2}} \\
+2 & 1 & 1 & 1 & 1 & \emph{\Vbrace{3}{3}} \\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \emph{\Vbrace{2}{2}} \\
+1 & 1 & 1 & 1 & 1 \\
+\end{pNiceArray}$
+\end{Code}
+{\NiceMatrixOptions{xdots/horizontal-labels}
+\tikzset
+  {
+    nicematrix/brace/.style = 
+      { 
+        decoration = 
+          { 
+            calligraphic brace , 
+            amplitude = 0.4 em , 
+            raise = -0.25 em 
+          } , 
+        line width = 0.1 em ,
+        decorate , 
+      } 
+  }
+$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
+\Hbrace{3}{3} & \Hbrace{2}{2} \\
+2 & 1 & 1 & 1 & 1 & \Vbrace{3}{3}\\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \Vbrace{2}{2}\\
+1 & 1 & 1 & 1 & 1 \\
+\end{pNiceArray}$}
+
+
+
+\interitem
+
 If one prefers the curly braces of the current mathematical font of LaTeX, one
 should use the commands |\SubMatrix|, |\OverBrace| and |\UnderBrace| in the
 |\CodeAfter|.
@@ -7200,7 +7270,7 @@ $\begin{pNiceArray}{ccc|cc}[margin,last-col]
 \medskip
 Or course, the output may seem disappointing. That's why, for this type of use,
 we recommend the use of the commands |\Hbrace| and |\Vbrace| (provided by
-\pkg{nicematrix}), as shown in the previous example.
+\pkg{nicematrix}), as shown in the previous examples.
 
 
 \subsection{Dashed rules}

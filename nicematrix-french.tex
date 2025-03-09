@@ -18,7 +18,8 @@
     patterns,
     arrows.meta,
     decorations.pathreplacing,
-    babel
+    babel,
+    calligraphy
   }
 
 \usepackage{enumitem}
@@ -6495,6 +6496,7 @@ utilise explicitement la variable publique |\g_nicematrix_code_before_tl|.
           { \arabic { jCol } }
           { \exp_not:n { #1 } }
       }
+    \ignorespaces 
   }
 \ExplSyntaxOff
 \end{Code}%
@@ -6519,6 +6521,7 @@ utilise explicitement la variable publique |\g_nicematrix_code_before_tl|.
           { \arabic { jCol } }
           { \exp_not:n { #1 } }
       }
+    \ignorespaces 
   }
 \ExplSyntaxOff
 
@@ -7347,6 +7350,73 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 
 \pagebreak
+Il est possible de changer le style TikZ des accolades en changeant le style
+|nicematrix/brace|. Dans l'exemple suivant, on suppose que l'extension
+\pkg{calligraphy} de TikZ a été chargée:
+
+\smallskip
+\begin{Verbatim}
+\usetikzlibrary{calligraphy}
+\end{Verbatim}
+
+
+\medskip
+\begin{Code}
+\NiceMatrixOptions{xdots/horizontal-labels}
+\tikzset
+  {
+    nicematrix/brace/.style = 
+      { 
+        decoration = 
+          { 
+            calligraphic brace , 
+            amplitude = 0.4 em , 
+            raise = -0.25 em 
+          } , 
+        line width = 0.1 em ,
+        decorate , 
+      } 
+  }
+\end{Code}
+\begin{Code}[width=11cm]
+$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
+\emph{\Hbrace{3}{3}} & \emph{\Hbrace{2}{2}} \\
+2 & 1 & 1 & 1 & 1 & \emph{\Vbrace{3}{3}} \\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \emph{\Vbrace{2}{2}} \\
+1 & 1 & 1 & 1 & 1 \\
+\end{pNiceArray}$
+\end{Code}
+{\NiceMatrixOptions{xdots/horizontal-labels}
+\tikzset
+  {
+    nicematrix/brace/.style = 
+      { 
+        decoration = 
+          { 
+            calligraphic brace , 
+            amplitude = 0.4 em , 
+            raise = -0.25 em 
+          } , 
+        line width = 0.1 em ,
+        decorate , 
+      } 
+  }
+$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
+\Hbrace{3}{3} & \Hbrace{2}{2} \\
+2 & 1 & 1 & 1 & 1 & \Vbrace{3}{3}\\
+1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 \\
+\Hline
+1 & 1 & 1 & 1 & 1 & \Vbrace{2}{2}\\
+1 & 1 & 1 & 1 & 1 \\
+\end{pNiceArray}$}
+
+
+
+\interitem
 Si on préfère les accolades de la fonte mathématique courante, il convient
 d'utiliser les commandes |\SubMatrix|, |\OverBrace| et |\UnderBrace| dans le
 |\CodeAfter|.
@@ -7381,11 +7451,6 @@ $\begin{pNiceArray}{ccc|cc}[margin,last-col]
   \SubMatrix{.}{4-1}{5-5}{\}}[xshift=3.5mm]
 \end{pNiceArray}$
 
-
-\medskip
-Le résultat peut sembler décevant. C'est pourquoi, pour ce type d'usage, on
-recommande plutôt l'utilisation des commandes |\Hbrace| et |\Vbrace| (fournies par
-\pkg{nicematrix}), comme dans l'exemple précédent.
 
 \subsection{Lignes en tiretés}
 

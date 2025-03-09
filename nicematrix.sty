@@ -22,7 +22,9 @@
 \def\myfiledate{2025/03/04}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
-\RequirePackage{l3keys2e}
+\ExplSyntaxOn
+\def \c__nicematrix_sys_output_str { \c_sys_output_str }
+\ExplSyntaxOff
 \ProvidesExplPackage
   {nicematrix}
   {\myfiledate}
@@ -33,6 +35,7 @@
     Your~LaTeX~release~is~too~old. \\
     You~need~at~least~a~the~version~of~2023-11-01
   }
+\providecommand { \IfFormatAtLeastTF } { \@ifl@t@r \fmtversion }
 \IfFormatAtLeastTF
   { 2023-11-01 }
   { }
@@ -1425,7 +1428,10 @@
           }
       }
   }
-\bool_lazy_or:nnTF \sys_if_engine_xetex_p: \sys_if_output_dvi_p:
+\bool_set_false:N \l_tmpa_bool
+\sys_if_engine_xetex:T { \bool_set_true:N \l_tmpa_bool }
+\str_if_eq:VnT \c__nicematrix_sys_output_str { dvi } { \bool_set_true:N \l_tmpa_bool }
+\bool_if:NTF \l_tmpa_bool
   {
     \__nicematrix_patch_node_for_cell:n
       { \skip_horizontal:n { 0.5 \box_wd:N \l__nicematrix_cell_box } }
@@ -9561,7 +9567,7 @@
     footnotehyper .bool_set:N = \g__nicematrix_footnotehyper_bool ,
     unknown .code:n = \__nicematrix_error:n { Unknown~key~for~package }
   }
-\ProcessKeysOptions { nicematrix / Package }
+\ProcessKeyOptions [ nicematrix / Package ]
 \__nicematrix_msg_new:nn { footnote~with~footnotehyper~package }
   {
     You~can't~use~the~option~'footnote'~because~the~package~
