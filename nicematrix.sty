@@ -22,9 +22,6 @@
 \def\myfiledate{2025/03/04}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
-\ExplSyntaxOn
-\def \c__nicematrix_sys_output_str { \c_sys_output_str }
-\ExplSyntaxOff
 \ProvidesExplPackage
   {nicematrix}
   {\myfiledate}
@@ -382,6 +379,7 @@
       { command \space \c_backslash_str \g__nicematrix_name_env_str }
       { environment \space \{ \g__nicematrix_name_env_str \} }
   }
+\tl_new:N \g__nicematrix_cell_after_hook_tl % 2025/03/22
 \tl_new:N \l__nicematrix_code_tl
 \tl_new:N \l__nicematrix_pgf_node_code_tl
 \tl_new:N \g__nicematrix_pre_code_before_tl
@@ -1428,10 +1426,7 @@
           }
       }
   }
-\bool_set_false:N \l_tmpa_bool
-\sys_if_engine_xetex:T { \bool_set_true:N \l_tmpa_bool }
-\str_if_eq:VnT \c__nicematrix_sys_output_str { dvi } { \bool_set_true:N \l_tmpa_bool }
-\bool_if:NTF \l_tmpa_bool
+\bool_if:nTF { \sys_if_engine_xetex_p: || \cs_if_free_p:N \pdfoutput }
   {
     \__nicematrix_patch_node_for_cell:n
       { \skip_horizontal:n { 0.5 \box_wd:N \l__nicematrix_cell_box } }
@@ -9544,8 +9539,9 @@
 \bool_new:N \g__nicematrix_footnote_bool
 \msg_new:nnnn { nicematrix } { Unknown~key~for~package }
   {
-    The~key~'\l_keys_key_str'~is~unknown. \\
-    That~key~will~be~ignored. \\
+    You~have~used~the~key~'\l_keys_key_str'~when~loading~nicematrix~
+    but~that~key~is~unknown. \\
+    It~will~be~ignored. \\
     For~a~list~of~the~available~keys,~type~H~<return>.
   }
   {
@@ -9553,10 +9549,10 @@
     footnote,~
     footnotehyper,~
     messages-for-Overleaf,~
-    renew-dots,~and~
+    renew-dots~and~
     renew-matrix.
   }
-\keys_define:nn { nicematrix / Package }
+\keys_define:nn { nicematrix }
   {
     renew-dots .bool_set:N = \l__nicematrix_renew_dots_bool ,
     renew-dots .value_forbidden:n = true ,
@@ -9567,7 +9563,7 @@
     footnotehyper .bool_set:N = \g__nicematrix_footnotehyper_bool ,
     unknown .code:n = \__nicematrix_error:n { Unknown~key~for~package }
   }
-\ProcessKeyOptions [ nicematrix / Package ]
+\ProcessKeyOptions
 \__nicematrix_msg_new:nn { footnote~with~footnotehyper~package }
   {
     You~can't~use~the~option~'footnote'~because~the~package~
