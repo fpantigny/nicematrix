@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.1a}
-\def\myfiledate{2025/03/04}
+\def\myfileversion{7.1b}
+\def\myfiledate{2025/03/30}
 %
 %
 %<*batchfile>  
@@ -1075,7 +1075,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 % 
-% \bigkip
+% \bigskip
 %    \begin{macrocode}
 \tl_new:N \g_@@_cell_after_hook_tl % 2025/03/22
 %    \end{macrocode}
@@ -3437,9 +3437,11 @@ version 2005/12/01 or later.
                 \pgfsys@markposition 
                   { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol - NW } 
 %    \end{macrocode}
-% I don't know why the following adjustement is needed when the compilation is
-% done with XeLaTeX or with the classical way |latex|, |dvips|, |ps2pdf| (or
-% Adobe Distiller). However, it seems to work.
+% In the |#1|, we will put an adjustment which is needed when the compilation is
+% done with XeLaTeX or with the classical way |latex|, |dvips|, |ps2pdf| or
+% Adobe Distiller (I don't known why this adjustement is mandatory...). See the
+% use of that command |\@@_patch_node_for_cell:n| in a |\AtBeginDocument| just
+% below. 
 %    \begin{macrocode}
                 #1 
               }
@@ -3458,13 +3460,20 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % We have no explanation for the different behaviour between the TeX engines...
+% We put the following instructions in a |\AtBeginDocument| because you use
+% |\sys_if_output_div_p:| and that test is available only when a backend is
+% loaded (and we don't want to force the loading of a backend with
+% |\sys_ensure_backend:|). 
 %    \begin{macrocode}
-\bool_if:nTF { \sys_if_engine_xetex_p: || \cs_if_free_p:N \pdfoutput }
+\AtBeginDocument
   {
-    \@@_patch_node_for_cell:n 
-      { \skip_horizontal:n { 0.5 \box_wd:N \l_@@_cell_box } }
+    \bool_lazy_or:nnTF \sys_if_engine_xetex_p: \sys_if_output_dvi_p:
+      {
+        \@@_patch_node_for_cell:n 
+          { \skip_horizontal:n { 0.5 \box_wd:N \l_@@_cell_box } }
+      }
+      { \@@_patch_node_for_cell:n { } }
   }
-  { \@@_patch_node_for_cell:n { } }
 %    \end{macrocode}
 % 
 % 
@@ -4359,7 +4368,7 @@ version 2005/12/01 or later.
     \bool_if:NT \g_@@_aux_found_bool
       { 
         \@@_pre_code_before: 
-        #1 
+        \legacy_if:nF { measuring@ } { #1 } 
       } 
   }
 %    \end{macrocode}
@@ -7971,7 +7980,11 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \ShowCellNames \@@_ShowCellNames
     \cs_set_eq:NN \TikzEveryCell \@@_TikzEveryCell
     \cs_set_eq:NN \line \@@_line
-    \g_@@_pre_code_after_tl
+%    \end{macrocode}
+% The LaTeX-style boolean |\ifmeasuring@| is used by \pkg{amsmath} during the
+% phase of measure in environments such as |{align}|, etc. 
+%    \begin{macrocode}
+    \legacy_if:nF { measuring@ } { \g_@@_pre_code_after_tl }
     \tl_gclear:N \g_@@_pre_code_after_tl
 %    \end{macrocode}
 % When |light-syntax| is used, we insert systematically a |\CodeAfter| in the
@@ -13585,7 +13598,7 @@ version 2005/12/01 or later.
 % the preamble of the array, we want to fix that color in the box we construct.
 % We do that with |\set@color| and not |\color_ensure_current:| (in order to use
 % |\color_ensure_current:| safely, you should load \pkg{l3backend} before the
-% |\documentclass| with |\RequirePackage{expl3}|).
+% |\documentclass|).
 %    \begin{macrocode}
         \tl_if_empty:NTF \l_@@_color_tl
           { \int_compare:nNnT { #2 } = \c_one_int \set@color }

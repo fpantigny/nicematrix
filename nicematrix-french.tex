@@ -988,7 +988,7 @@ utilise la clé |p| ou la clé |j| (dans les autres cas, on aura une erreur:
 un & deux deux & trois trois \\
 un & 
 \Block\emph{[p,l]}{*-2}{%
-\begin{itemize}[left=0pt]
+\begin{itemize}[\emph{left=0pt}]
 \item un deux trois quatre cinq 
 \item deux 
 \item trois
@@ -7296,7 +7296,8 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 1 & 1 & 1 & 1 & 1 \\
 1 & 1 & 1 & 1 & 1 \\
 \Hline
-1 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{2}:{2}} \\
+1 & 1 & 1 & 1 & 1 & 
+\emph{\Vdotsfor{2}:{2 \rlap{ \smash{lignes}}}} \\
 1 & 1 & 1 & 1 & 1 \\
 \end{pNiceArray}$
 \end{Code}
@@ -7307,7 +7308,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 1 & 1 & 1 & 1 & 1 \\
 1 & 1 & 1 & 1 & 1 \\
 \Hline
-1 & 1 & 1 & 1 & 1 & \Vdotsfor{2}:{2}\\
+1 & 1 & 1 & 1 & 1 & \Vdotsfor{2}:{2 \rlap{ \smash{lignes}}}\\
 1 & 1 & 1 & 1 & 1 \\
 \end{pNiceArray}$}
 

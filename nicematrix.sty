@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.1a}
-\def\myfiledate{2025/03/04}
+\def\myfileversion{7.1b}
+\def\myfiledate{2025/03/30}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -1426,12 +1426,15 @@
           }
       }
   }
-\bool_if:nTF { \sys_if_engine_xetex_p: || \cs_if_free_p:N \pdfoutput }
+\AtBeginDocument
   {
-    \__nicematrix_patch_node_for_cell:n
-      { \skip_horizontal:n { 0.5 \box_wd:N \l__nicematrix_cell_box } }
+    \bool_lazy_or:nnTF \sys_if_engine_xetex_p: \sys_if_output_dvi_p:
+      {
+        \__nicematrix_patch_node_for_cell:n
+          { \skip_horizontal:n { 0.5 \box_wd:N \l__nicematrix_cell_box } }
+      }
+      { \__nicematrix_patch_node_for_cell:n { } }
   }
-  { \__nicematrix_patch_node_for_cell:n { } }
 \cs_new_protected:Npn \__nicematrix_instruction_of_type:nnn #1 #2 #3
   {
     \bool_if:nTF { #1 } \tl_gput_left:ce \tl_gput_right:ce
@@ -1843,7 +1846,7 @@
     \bool_if:NT \g__nicematrix_aux_found_bool
       {
         \__nicematrix_pre_code_before:
-        #1
+        \legacy_if:nF { measuring@ } { #1 }
       }
   }
 \cs_new_protected:Npn \__nicematrix_recreate_cell_nodes:
@@ -3962,7 +3965,7 @@
     \cs_set_eq:NN \ShowCellNames \__nicematrix_ShowCellNames
     \cs_set_eq:NN \TikzEveryCell \__nicematrix_TikzEveryCell
     \cs_set_eq:NN \line \__nicematrix_line
-    \g__nicematrix_pre_code_after_tl
+    \legacy_if:nF { measuring@ } { \g__nicematrix_pre_code_after_tl }
     \tl_gclear:N \g__nicematrix_pre_code_after_tl
     \cs_set_eq:NN \CodeAfter \prg_do_nothing:
     \seq_gclear:N \g__nicematrix_submatrix_names_seq
