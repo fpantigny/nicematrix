@@ -4406,6 +4406,15 @@ version 2005/12/01 or later.
               }
           }
       }
+    \@@_create_extra_nodes:
+    \@@_create_aliases_last:
+  }
+%    \end{macrocode}
+%
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_create_aliases_last:
+  {
     \int_step_inline:nn \c@iRow
       { 
         \pgfnodealias 
@@ -4418,10 +4427,12 @@ version 2005/12/01 or later.
           { \@@_env: - last - ##1 } 
           { \@@_env: - \int_use:N \c@iRow - ##1 } 
       }
-    \@@_create_extra_nodes:
+    \pgfnodealias % added 2025-04-05
+      { \@@_env: - last - last } 
+      { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol } 
   }
 %    \end{macrocode}
-%
+% 
 % \bigskip
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_create_blocks_nodes:
@@ -7836,33 +7847,8 @@ version 2005/12/01 or later.
 % and the last column.
 %    \begin{macrocode}
     \pgfpicture
-    \int_step_inline:nn \c@iRow
-      { 
-        \pgfnodealias 
-          { \@@_env: - ##1 - last } 
-          { \@@_env: - ##1 - \int_use:N \c@jCol } 
-      }
-    \int_step_inline:nn \c@jCol
-      { 
-        \pgfnodealias 
-          { \@@_env: - last - ##1 } 
-          { \@@_env: - \int_use:N \c@iRow - ##1 } 
-      }
-    \str_if_empty:NF \l_@@_name_str
-      {
-        \int_step_inline:nn \c@iRow
-          { 
-            \pgfnodealias 
-              { \l_@@_name_str - ##1 - last } 
-              { \@@_env: - ##1 - \int_use:N \c@jCol } 
-          }
-        \int_step_inline:nn \c@jCol
-          { 
-            \pgfnodealias 
-              { \l_@@_name_str - last - ##1 } 
-              { \@@_env: - \int_use:N \c@iRow - ##1 } 
-          }
-      }
+    \@@_create_aliases_last:
+    \str_if_empty:NF \l_@@_name_str \@@_create_alias_nodes:
     \endpgfpicture
 %    \end{macrocode}
 % 
@@ -8076,6 +8062,27 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_create_alias_nodes: 
+  {
+    \int_step_inline:nn \c@iRow
+      { 
+        \pgfnodealias 
+          { \l_@@_name_str - ##1 - last } 
+          { \@@_env: - ##1 - \int_use:N \c@jCol } 
+      }
+    \int_step_inline:nn \c@jCol
+      { 
+        \pgfnodealias 
+          { \l_@@_name_str - last - ##1 } 
+          { \@@_env: - \int_use:N \c@iRow - ##1 } 
+      }
+    \pgfnodealias  % added 2025-04-05
+      { \l_@@_name_str - last - last } 
+      { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol } 
+  }
+%    \end{macrocode}
 % 
 % \bigskip
 % We remind that the first mandatory argument of the command |\Block| is the
