@@ -13303,6 +13303,21 @@ version 2005/12/01 or later.
               }
           }
       }
+    \int_step_inline:nn \c@iRow
+      { 
+        \pgfnodealias 
+          { \@@_env: - ##1 - last \l_@@_suffix_tl } 
+          { \@@_env: - ##1 - \int_use:N \c@jCol \l_@@_suffix_tl } 
+      }
+    \int_step_inline:nn \c@jCol
+      { 
+        \pgfnodealias 
+          { \@@_env: - last - ##1 \l_@@_suffix_tl } 
+          { \@@_env: - \int_use:N \c@iRow - ##1 \l_@@_suffix_tl } 
+      }
+    \pgfnodealias % added 2025-04-05
+      { \@@_env: - last - last \l_@@_suffix_tl } 
+      { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol \l_@@_suffix_tl } 
 %    \end{macrocode}
 % Now, we create the nodes for the cells of the |\multicolumn|. We recall that
 % we have stored in |\g_@@_multicolumn_cells_seq| the list of the cells where a
