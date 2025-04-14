@@ -398,7 +398,7 @@ version 2005/12/01 or later.
 % 
 % We test whether the current class is \cls{revtex4-1} (deprecated) or
 % \cls{revtex4-2} because these classes redefines |\array| (of \pkg{array}) in a
-% way incompatible with our programmation. At the date April 2024, the current
+% way incompatible with our programmation. At the date April 2025, the current
 % version \cls{revtex4-2} is 4.2f (compatible with \pkg{booktabs}).
 %
 %    \begin{macrocode}
@@ -505,14 +505,51 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \hook_gput_code:nnn { begindocument } { . } 
   { 
-    \IfPackageLoadedF { colortbl }
+   \cs_set_protected:Npe \@@_everycr:
+      {
+        \IfPackageLoadedTF { colortbl } { \CT@everycr } { \everycr }
+          { \noalign { \@@_in_everycr: } }
+      }
+    \IfPackageLoadedTF { colortbl }
+      {
+        \cs_set_eq:NN \@@_old_cellcolor: \cellcolor
+        \cs_set_eq:NN \@@_old_rowcolor: \rowcolor
+        \cs_new_protected:Npn \@@_revert_colortbl:
+          {
+            \hook_gput_code:nnn { env / tabular / begin } { nicematrix }
+              { 
+                \cs_set_eq:NN \cellcolor \@@_old_cellcolor: 
+                \cs_set_eq:NN \rowcolor \@@_old_rowcolor: 
+              }
+          }    
+%    \end{macrocode}
+% When \pkg{colortbl} is used, we have to catch the tokens |\columncolor| in the
+% preamble because, otherwise, \pkg{colortbl} will catch them and the colored
+% panels won't be drawn by \pkg{nicematrix} but by \pkg{colortbl} (with an
+% output which is not perfect).
+%    \begin{macrocode}
+        \cs_new_protected:Npn \@@_replace_columncolor:
+          {
+            \tl_replace_all:Nnn \g_@@_array_preamble_tl 
+              { \columncolor } 
+              { \@@_columncolor_preamble }
+%    \end{macrocode}
+% |\@@_column_preamble|, despite its name, will be defined with
+% |\NewDocumentCommand| because it takes in an optional argument between square
+% brackets in first position for the colorimetric space.
+%    \begin{macrocode}
+          }  
+      }
       { 
+        \cs_new_protected:Npn \@@_revert_colortbl: { } 
+        \cs_new_protected:Npn \@@_replace_columncolor: 
+          { \cs_set_eq:NN \columncolor \@@_columncolor_preamble }
 %    \end{macrocode}
 % The command |\CT@arc@| is a command of \pkg{colortbl} which sets the color of
 % the rules in the array. We will use it to store the instruction of color for
 % the rules even if \pkg{colortbl} is not loaded. 
 %    \begin{macrocode}
-        \cs_set_protected:Npn \CT@arc@ { }
+        \def \CT@arc@ { }
         \def \arrayrulecolor #1 # { \CT@arc { #1 } }
         \def \CT@arc #1 #2
           {
@@ -572,7 +609,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \everycr { }
     \cr
-    \noalign { \skip_vertical:N -\arrayrulewidth } 
+    \noalign { \skip_vertical:n { - \arrayrulewidth } } 
   }
 %    \end{macrocode}
 %
@@ -3576,6 +3613,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \bool_if:nTF 
   { \c_@@_recent_array_bool && ! \c_@@_revtex_bool }
+%    \end{macrocode}
+% We use here a |\cs_set_eq:cN| instead of a |\cs_set_eq:NN| in order to avoid a
+% message when |explcheck| is used on |nicematrix.sty|.
+%    \begin{macrocode}
   { \cs_set_eq:cN { @@_old_ar@ialign: } \ar@ialign }
   { \cs_set_eq:NN \@@_old_ialign: \ialign }
 %    \end{macrocode}
@@ -3693,23 +3734,6 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % 
-% \bigskip
-% The following code has been simplified in the version 6.29a. 
-%    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
-  {
-    \IfPackageLoadedTF { colortbl }
-      {
-        \cs_set_protected:Npn \@@_everycr:
-          { \CT@everycr { \noalign { \@@_in_everycr: } } }
-      }
-      {
-        \cs_new_protected:Npn \@@_everycr: 
-          { \everycr { \noalign { \@@_in_everycr: } } } 
-      }
-  }
-%    \end{macrocode}
-% 
 % If \pkg{booktabs} is loaded, we have to patch the macro |\@BTnormal| which is
 % a macro of \pkg{booktabs}. The macro |\@BTnormal| draws an horizontal rule but
 % it occurs after a vertical skip done by a low level TeX command. When this
@@ -3729,6 +3753,8 @@ version 2005/12/01 or later.
           { \tl_put_left:Nn \@BTnormal \@@_create_row_node_i: }
       }
       { \cs_new_protected:Npn \@@_patch_booktabs: { } }
+%    \end{macrocode}
+%    \begin{macrocode}
   }
 %    \end{macrocode}
 %
@@ -3825,7 +3851,9 @@ version 2005/12/01 or later.
 %
 % After its first use, the definition of |\ar@ialign| will revert
 % automatically to its default definition. With this programmation, we will
-% have, in the cells of the array, a clean version of |\ar@ialign|.
+% have, in the cells of the array, a clean version of |\ar@ialign|. We use
+% |\cs_set_eq:Nc| instead of |\cs_set_eq:NN| in order to avoid a message when
+% |explcheck| is used on |nicematrix.sty|.
 %    \begin{macrocode}
             \cs_set_eq:Nc \ar@ialign { @@_old_ar@ialign: }
             \halign 
@@ -5000,33 +5028,6 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-% \bigskip
-%    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
-  {
-    \IfPackageLoadedTF { colortbl } 
-      {
-%    \end{macrocode}
-% When \pkg{colortbl} is used, we have to catch the tokens |\columncolor| in the
-% preamble because, otherwise, \pkg{colortbl} will catch them and the colored
-% panels won't be drawn by \pkg{nicematrix} but by \pkg{colortbl} (with an
-% output which is not perfect).
-%    \begin{macrocode}
-        \regex_const:Nn \c_@@_columncolor_regex { \c { columncolor } } 
-        \cs_new_protected:Npn \@@_replace_columncolor:
-          {
-            \regex_replace_all:NnN 
-              \c_@@_columncolor_regex
-              { \c { @@_columncolor_preamble } }  
-              \g_@@_array_preamble_tl
-          }  
-      }
-      { 
-        \cs_new_protected:Npn \@@_replace_columncolor: 
-          { \cs_set_eq:NN \columncolor \@@_columncolor_preamble }
-      }
-  }
-%    \end{macrocode}
 % 
 % \bigskip
 %    \begin{macrocode}
@@ -5135,9 +5136,6 @@ version 2005/12/01 or later.
             \exp_last_unbraced:No \@@_rec_preamble:n \l_tmpb_tl
           }
           { 
-%    \end{macrocode}
-%
-%    \begin{macrocode}
             \str_if_eq:nnTF { #1 } { S }
               { \@@_fatal:n { unknown~column~type~S } }
               { \@@_fatal:nn { unknown~column~type } { #1 } }
@@ -11429,27 +11427,6 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-% 
-% \bigskip
-%    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . } 
-  { 
-    \IfPackageLoadedTF { colortbl }
-      { 
-        \cs_set_eq:NN \@@_old_cellcolor: \cellcolor
-        \cs_set_eq:NN \@@_old_rowcolor: \rowcolor
-        \cs_new_protected:Npn \@@_revert_colortbl:
-          {
-            \hook_gput_code:nnn { env / tabular / begin } { nicematrix }
-              { 
-                \cs_set_eq:NN \cellcolor \@@_old_cellcolor: 
-                \cs_set_eq:NN \rowcolor \@@_old_rowcolor: 
-              }
-          }    
-      }
-      { \cs_new_protected:Npn \@@_revert_colortbl: { } }
-  }
-%    \end{macrocode}
 %
 % \bigskip
 %    \begin{macrocode}
@@ -17165,7 +17142,7 @@ version 2005/12/01 or later.
 \cs_new:Npn \@@_message_hdotsfor:
   {
     \tl_if_empty:oF \g_@@_HVdotsfor_lines_tl
-      { ~Maybe~your~use~of~\token_to_str:N \Hdotsfor \ is~incorrect.}
+      { ~Maybe~your~use~of~ \token_to_str:N \Hdotsfor \ is~incorrect. }
   }
 %    \end{macrocode}
 %
@@ -17204,7 +17181,8 @@ version 2005/12/01 or later.
   {
     Column~not~used.\\
     The~key~'last-col'~is~in~force~but~you~have~not~used~that~last~column~
-    in~your~\@@_full_name_env: .~However,~you~can~go~on.
+    in~your~\@@_full_name_env: .~
+    However,~you~can~go~on.
   }
 %    \end{macrocode}
 % 
@@ -17212,10 +17190,11 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { too~much~cols~for~matrix~with~last~col }
   { 
     Too~much~columns.\\
-    In~the~row~\int_eval:n { \c@iRow },~
+    In~the~row~ \int_eval:n { \c@iRow },~
     you~try~to~use~more~columns~
-    than~allowed~by~your~\@@_full_name_env:.\@@_message_hdotsfor:\ 
-    The~maximal~number~of~columns~is~\int_eval:n { \l_@@_last_col_int - 1 }~
+    than~allowed~by~your~ \@@_full_name_env: .
+    \@@_message_hdotsfor: \ 
+    The~maximal~number~of~columns~is~ \int_eval:n { \l_@@_last_col_int - 1 }~
     (plus~the~exterior~columns).~This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -17225,13 +17204,14 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { too~much~cols~for~matrix }
   { 
     Too~much~columns.\\
-    In~the~row~\int_eval:n { \c@iRow },~
-    you~try~to~use~more~columns~than~allowed~by~your~
-    \@@_full_name_env:.\@@_message_hdotsfor:\ Recall~that~the~maximal~
-    number~of~columns~for~a~matrix~(excepted~the~potential~exterior~
-    columns)~is~fixed~by~the~LaTeX~counter~'MaxMatrixCols'.~
-    Its~current~value~is~\int_use:N \c@MaxMatrixCols\ (use~
-    \token_to_str:N \setcounter\ to~change~that~value).~
+    In~the~row~ \int_eval:n { \c@iRow } ,~
+    you~try~to~use~more~columns~than~allowed~by~your~ \@@_full_name_env: . 
+    \@@_message_hdotsfor: \ 
+    Recall~that~the~maximal~number~of~columns~for~a~matrix~
+    (excepted~the~potential~exterior~columns)~is~fixed~by~the~
+    LaTeX~counter~'MaxMatrixCols'.~
+    Its~current~value~is~ \int_use:N \c@MaxMatrixCols \ 
+    (use~ \token_to_str:N \setcounter \ to~change~that~value).~
     This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -17241,14 +17221,14 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { too~much~cols~for~array }
   { 
     Too~much~columns.\\
-    In~the~row~\int_eval:n { \c@iRow },~
+    In~the~row~ \int_eval:n { \c@iRow } ,~
     ~you~try~to~use~more~columns~than~allowed~by~your~
-    \@@_full_name_env:.\@@_message_hdotsfor:\ The~maximal~number~of~columns~is~ 
-    \int_use:N \g_@@_static_num_of_col_int\
+    \@@_full_name_env: . \@@_message_hdotsfor: \ The~maximal~number~of~columns~is~ 
+    \int_use:N \g_@@_static_num_of_col_int \
     \bool_if:nT
       { \int_compare_p:n { \l_@@_first_col_int = 0 } || \g_@@_last_col_found_bool }
       { ~(plus~the~exterior~ones) }
-    since~the~preamble~is~'\g_@@_user_preamble_tl'.\\
+    since~the~preamble~is~' \g_@@_user_preamble_tl '.\\
     This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -17258,9 +17238,9 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { columns~not~used }
   {
     Columns~not~used.\\
-    The~preamble~of~your~\@@_full_name_env:\ is~'\g_@@_user_preamble_tl'.~
-    It~announces~\int_use:N
-    \g_@@_static_num_of_col_int\ columns~but~you~only~used~\int_use:N \c@jCol.\\ 
+    The~preamble~of~your~ \@@_full_name_env: \ is~' \g_@@_user_preamble_tl '.~
+    It~announces~ \int_use:N \g_@@_static_num_of_col_int \ 
+    columns~but~you~only~used~ \int_use:N \c@jCol .\\ 
     The~columns~you~did~not~used~won't~be~created.\\
     You~won't~have~similar~warning~till~the~end~of~the~document.
   }
@@ -17270,7 +17250,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { empty~preamble }
   {
     Empty~preamble.\\
-    The~preamble~of~your~\@@_full_name_env:\ is~empty.\\
+    The~preamble~of~your~ \@@_full_name_env: \ is~empty.\\
     This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -17399,7 +17379,7 @@ version 2005/12/01 or later.
   {
     Identical~tabular~notes.\\
     You~can't~put~several~notes~with~the~same~content~in~
-    \token_to_str:N \caption\ (but~you~can~in~the~main~tabular).\\
+    \token_to_str:N \caption \ (but~you~can~in~the~main~tabular).\\
     If~you~go~on,~the~output~will~probably~be~erroneous.
   }
 %    \end{macrocode}
@@ -17407,12 +17387,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { tabularnote~below~the~tabular }
   { 
-    \token_to_str:N \tabularnote\ forbidden\\
-    You~can't~use~\token_to_str:N \tabularnote\ in~the~caption~
+    \token_to_str:N \tabularnote \ forbidden\\
+    You~can't~use~ \token_to_str:N \tabularnote \ in~the~caption~
     of~your~tabular~because~the~caption~will~be~composed~below~
     the~tabular.~If~you~want~the~caption~above~the~tabular~use~the~
-    key~'caption-above'~in~\token_to_str:N \NiceMatrixOptions.\\
-    Your~\token_to_str:N \tabularnote\ will~be~discarded~and~
+    key~'caption-above'~in~ \token_to_str:N \NiceMatrixOptions .\\
+    Your~ \token_to_str:N \tabularnote \ will~be~discarded~and~
     no~similar~error~will~raised~in~this~document.
   }
 %    \end{macrocode}
@@ -17431,8 +17411,8 @@ version 2005/12/01 or later.
   {
     Unknown~key.\\
     You~have~used~the~key~' \l_keys_key_str '~but~the~only~
-    keys~allowed~for~the~commands~\token_to_str:N \Hbrace\
-    and~\token_to_str:N \Vbrace\ are:~'color',~
+    keys~allowed~for~the~commands~ \token_to_str:N \Hbrace \
+    and~ \token_to_str:N \Vbrace \ are:~'color',~
     'horizontal-labels',~'shorten'~'shorten-end'~
     and~'shorten-start'.
   }
@@ -17511,7 +17491,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { label~without~caption }
   {
-    You~can't~use~the~key~'label'~in~your~'{NiceTabular}'~because~
+    You~can't~use~the~key~'label'~in~your~\{NiceTabular\}~because~
     you~have~not~used~the~key~'caption'.~The~key~'label'~will~be~ignored.
   }
 %    \end{macrocode}
@@ -17520,8 +17500,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { W~warning }
   { 
-    Line~\msg_line_number:.~The~cell~is~too~wide~for~your~column~'W'~
-    (row~\int_use:N \c@iRow). 
+    Line~ \msg_line_number: .~The~cell~is~too~wide~for~your~column~'W'~
+    (row~ \int_use:N \c@iRow ). 
   }
 %    \end{macrocode}
 %
@@ -17529,7 +17509,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Construct~too~large }
   {
     Construct~too~large.\\
-    Your~command~\token_to_str:N #1
+    Your~command~ \token_to_str:N #1
     can't~be~drawn~because~your~matrix~is~too~small.\\
     That~command~will~be~ignored. 
   }
@@ -17541,7 +17521,8 @@ version 2005/12/01 or later.
     Problem~with~'underscore'.\\
     The~package~'underscore'~should~be~loaded~before~'nicematrix'.~
     You~can~go~on~but~you~won't~be~able~to~write~something~such~as:\\
-    '\token_to_str:N \Cdots\token_to_str:N _{n~\token_to_str:N \text{~times}}'.
+    ' \token_to_str:N \Cdots \token_to_str:N _ 
+    \{ n \token_to_str:N \text \{ ~times \} \}'.
   }
 %    \end{macrocode}
 % 
@@ -17550,7 +17531,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { ampersand~in~light-syntax }
   {
     Ampersand~forbidden.\\
-    You~can't~use~an~ampersand~(\token_to_str:N &)~to~separate~columns~because~
+    You~can't~use~an~ampersand~( \token_to_str:N &)~to~separate~columns~because~ 
     ~the~key~'light-syntax'~is~in~force.~This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -17559,9 +17540,9 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { double-backslash~in~light-syntax }
   {
     Double~backslash~forbidden.\\
-    You~can't~use~\token_to_str:N
-    \\~to~separate~rows~because~the~key~'light-syntax'~
-    is~in~force.~You~must~use~the~character~'\l_@@_end_of_row_tl'~
+    You~can't~use~ \token_to_str:N \\ 
+    ~to~separate~rows~because~the~key~'light-syntax'~
+    is~in~force.~You~must~use~the~character~' \l_@@_end_of_row_tl '~
     (set~by~the~key~'end-of-row').~This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -17571,8 +17552,8 @@ version 2005/12/01 or later.
   {
     Incompatible~keys.\\
     You~can't~use~the~keys~'hlines',~'vlines'~or~'hvlines'~for~a~
-    '\token_to_str:N \Block'~when~the~key~'color'~or~'draw'~is~used.\\
-    However,~you~can~put~several~commands~\token_to_str:N \Block.\\
+    \token_to_str:N \Block \ when~the~key~'color'~or~'draw'~is~used.\\
+    However,~you~can~put~several~commands~ \token_to_str:N \Block.\\
     Your~key~will~be~discarded.
   }
 %    \end{macrocode}
@@ -17581,9 +17562,9 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { bad~value~for~baseline }
   {
     Bad~value~for~baseline.\\
-    The~value~given~to~'baseline'~(\int_use:N \l_tmpa_int)~is~not~
+    The~value~given~to~'baseline'~( \int_use:N \l_tmpa_int )~is~not~
     valid.~The~value~must~be~between~\int_use:N \l_@@_first_row_int\ and~
-    \int_use:N \g_@@_row_total_int\ or~equal~to~'t',~'c'~or~'b'~or~of~
+    \int_use:N \g_@@_row_total_int \ or~equal~to~'t',~'c'~or~'b'~or~of~
     the~form~'line-i'.\\
     A~value~of~1~will~be~used.
   }
@@ -17594,7 +17575,7 @@ version 2005/12/01 or later.
   {
     Problem~with~'not-empty'\\
     For~technical~reasons,~you~must~activate~
-    'create-cell-nodes'~in~\token_to_str:N \CodeBefore\ 
+    'create-cell-nodes'~in~ \token_to_str:N \CodeBefore \ 
     in~order~to~use~the~key~' \l_keys_key_str '.\\
     That~key~will~be~ignored.
   }
@@ -17613,8 +17594,8 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Invalid~name }
   {
     Invalid~name.\\
-    You~can't~give~the~name~'\l_keys_value_tl'~to~a~\token_to_str:N
-    \SubMatrix\ of~your~\@@_full_name_env:.\\ 
+    You~can't~give~the~name~' \l_keys_value_tl '~to~a~ \token_to_str:N
+    \SubMatrix \ of~your~ \@@_full_name_env: .\\ 
     A~name~must~be~accepted~by~the~regular~expression~[A-Za-z][A-Za-z0-9]*.\\
     This~key~will~be~ignored.
   }
@@ -17624,11 +17605,11 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Hbrace~not~allowed }
   {
     Command~not~allowed.\\
-    You~can't~use~the~command~\token_to_str:N \Hbrace\ 
+    You~can't~use~the~command~ \token_to_str:N \Hbrace \ 
     because~you~have~not~loaded~TikZ~
     and~the~TikZ~library~'decorations.pathreplacing'.\\
-    Use:~\token_to_str:N \usepackage\{tikz\}~
-    \token_to_str:N \usetikzlibrary \{ decorations.pathreplacing \} \\
+    Use:~ \token_to_str:N \usepackage \{tikz\}~
+    \token_to_str:N \usetikzlibrary \{decorations.pathreplacing\} \\
     That~command~will~be~ignored. 
   }
 %    \end{macrocode}
@@ -17637,11 +17618,11 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Vbrace~not~allowed }
   {
     Command~not~allowed.\\
-    You~can't~use~the~command~\token_to_str:N \Vbrace\ 
+    You~can't~use~the~command~ \token_to_str:N \Vbrace \ 
     because~you~have~not~loaded~TikZ~
     and~the~TikZ~library~'decorations.pathreplacing'.\\
-    Use:~\token_to_str:N \usepackage\{tikz\}~
-    \token_to_str:N \usetikzlibrary \{ decorations.pathreplacing \} \\
+    Use: ~\token_to_str:N \usepackage \{tikz\}~
+    \token_to_str:N \usetikzlibrary \{decorations.pathreplacing\} \\
     That~command~will~be~ignored. 
   }
 %    \end{macrocode}
@@ -17651,7 +17632,7 @@ version 2005/12/01 or later.
   { 
     Wrong~line.\\
     You~try~to~draw~a~#1~line~of~number~'#2'~in~a~
-    \token_to_str:N \SubMatrix\ of~your~\@@_full_name_env:\ but~that~  
+    \token_to_str:N \SubMatrix \ of~your~ \@@_full_name_env: \ but~that~  
     number~is~not~valid.~It~will~be~ignored.
   }
 %    \end{macrocode}
@@ -17661,11 +17642,11 @@ version 2005/12/01 or later.
   {
     Impossible~delimiter.\\
     It's~impossible~to~draw~the~#1~delimiter~of~your~
-    \token_to_str:N \SubMatrix\ because~all~the~cells~are~empty~
+    \token_to_str:N \SubMatrix \ because~all~the~cells~are~empty~
     in~that~column.
     \bool_if:NT \l_@@_submatrix_slim_bool
       { ~Maybe~you~should~try~without~the~key~'slim'. } \\
-    This~\token_to_str:N \SubMatrix\ will~be~ignored.
+    This~ \token_to_str:N \SubMatrix \ will~be~ignored.
   }
 %    \end{macrocode}
 % 
@@ -17673,14 +17654,14 @@ version 2005/12/01 or later.
 \@@_msg_new:nnn { width~without~X~columns }
   {
     You~have~used~the~key~'width'~but~you~have~put~no~'X'~column~in~
-   the~preamble~('\g_@@_user_preamble_tl')~of~your~\@@_full_name_env:.\\
+   the~preamble~(' \g_@@_user_preamble_tl ')~of~your~ \@@_full_name_env: .\\
     That~key~will~be~ignored.
   }
   {
     This~message~is~the~message~'width~without~X~columns'~
     of~the~module~'nicematrix'.~
     The~experimented~users~can~disable~that~message~with~
-    \token_to_str:N \msg_redirect_name:nnn.\\
+    \token_to_str:N \msg_redirect_name:nnn .\\
   }
 
 %    \end{macrocode}
@@ -17699,7 +17680,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { empty~environment }
   { 
     Empty~environment.\\
-    Your~\@@_full_name_env:\ is~empty.~This~error~is~fatal. 
+    Your~ \@@_full_name_env: \ is~empty.~This~error~is~fatal. 
   }
 %    \end{macrocode}
 % 
@@ -17730,7 +17711,7 @@ version 2005/12/01 or later.
   {
     Wrong~name.\\
     You~must~use~only~one~letter~as~value~for~the~key~'letter'~(and~you~
-    have~used~'\l_@@_letter_str').\\
+    have~used~' \l_@@_letter_str ').\\
     It~will~be~ignored.
   }
 %    \end{macrocode}
@@ -17739,7 +17720,8 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Delimiter~with~small }
   { 
     Delimiter~forbidden.\\
-    You~can't~put~a~delimiter~in~the~preamble~of~your~\@@_full_name_env:\ 
+    You~can't~put~a~delimiter~in~the~preamble~of~your~
+    \@@_full_name_env: \ 
     because~the~key~'small'~is~in~force.\\
     This~error~is~fatal.
   }
@@ -17749,10 +17731,10 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { unknown~cell~for~line~in~CodeAfter }
   {
     Unknown~cell.\\
-    Your~command~\token_to_str:N\line\{#1\}\{#2\}~in~
-    the~\token_to_str:N \CodeAfter\ of~your~\@@_full_name_env:\ 
+    Your~command~ \token_to_str:N \line \{ #1 \} \{ #2 \}~in~
+    the~ \token_to_str:N \CodeAfter \ of~your~ \@@_full_name_env: \ 
     can't~be~executed~because~a~cell~doesn't~exist.\\
-    This~command~\token_to_str:N \line\ will~be~ignored.
+    This~command~ \token_to_str:N \line \ will~be~ignored.
   }
 %    \end{macrocode}
 %
@@ -17761,15 +17743,15 @@ version 2005/12/01 or later.
 \@@_msg_new:nnn { Duplicate~name~for~SubMatrix }
   {
     Duplicate~name.\\
-    The~name~'#1'~is~already~used~for~a~\token_to_str:N \SubMatrix\ 
-    in~this~\@@_full_name_env:.\\
+    The~name~'#1'~is~already~used~for~a~ \token_to_str:N \SubMatrix \ 
+    in~this~ \@@_full_name_env: .\\
     This~key~will~be~ignored.\\
     \bool_if:NF \g_@@_messages_for_Overleaf_bool
       { For~a~list~of~the~names~already~used,~type~H~<return>. }
   }
   {
-    The~names~already~defined~in~this~\@@_full_name_env:\ are:~
-    \seq_use:Nnnn \g_@@_submatrix_names_seq { ~and~ } { ,~ } { ~and~ }.
+    The~names~already~defined~in~this~ \@@_full_name_env: \ are:~
+    \seq_use:Nnnn \g_@@_submatrix_names_seq { ~and~ } { ,~ } { ~and~ } .
   }
 %    \end{macrocode}
 %
@@ -17777,9 +17759,9 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { r~or~l~with~preamble }
   {
     Erroneous~use.\\
-    You~can't~use~the~key~' \l_keys_key_str '~in~your~\@@_full_name_env:.~
+    You~can't~use~the~key~' \l_keys_key_str '~in~your~ \@@_full_name_env: .~
     You~must~specify~the~alignment~of~your~columns~with~the~preamble~of~
-    your~\@@_full_name_env:.\\
+    your~ \@@_full_name_env: .\\
     This~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -17788,7 +17770,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Hdotsfor~in~col~0 }
   {
     Erroneous~use.\\
-    You~can't~use~\token_to_str:N \Hdotsfor\ in~an~exterior~column~of~
+    You~can't~use~ \token_to_str:N \Hdotsfor \ in~an~exterior~column~of~
     the~array.~This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -17807,12 +17789,12 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { bad~border }
   {
     Bad~border.\\
-    \l_keys_key_str\space~is~an~incorrect~specification~for~a~border~
-    (in~the~key~'borders'~of~the~command~\token_to_str:N \Block).~
+    \l_keys_key_str \space ~is~an~incorrect~specification~for~a~border~
+    (in~the~key~'borders'~of~the~command~ \token_to_str:N \Block ).~
     The~available~values~are:~left,~right,~top~and~bottom~(and~you~can~
     also~use~the~key~'tikz' 
     \IfPackageLoadedF { tikz }
-      {~if~you~load~the~LaTeX~package~'tikz'}).\\ 
+      { ~if~you~load~the~LaTeX~package~'tikz' } ).\\ 
     This~specification~of~border~will~be~ignored.
   }
 %    \end{macrocode}
@@ -17821,7 +17803,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { TikzEveryCell~without~tikz }
   {
     TikZ~not~loaded.\\
-    You~can't~use~\token_to_str:N \TikzEveryCell\
+    You~can't~use~ \token_to_str:N \TikzEveryCell \
     because~you~have~not~loaded~tikz.~
     This~command~will~be~ignored.
   }
@@ -17831,8 +17813,8 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { tikz~key~without~tikz }
   {
     TikZ~not~loaded.\\
-    You~can't~use~the~key~'tikz'~for~the~command~'\token_to_str:N
-    \Block'~because~you~have~not~loaded~tikz.~
+    You~can't~use~the~key~'tikz'~for~the~command~' \token_to_str:N
+    \Block '~because~you~have~not~loaded~tikz.~
     This~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -17841,7 +17823,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { last-col~non~empty~for~NiceArray }
   {
     Erroneous~use.\\
-    In~the~\@@_full_name_env:,~you~must~use~the~key~
+    In~the~ \@@_full_name_env: ,~you~must~use~the~key~
     'last-col'~without~value.\\
     However,~you~can~go~on~for~this~time~
     (the~value~' \l_keys_value_tl '~will~be~ignored). 
@@ -17852,9 +17834,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { last-col~non~empty~for~NiceMatrixOptions }
   {
-    Erroneous~use.\\
-    In~\token_to_str:N \NiceMatrixOptions,~you~must~use~the~key~ 
-    'last-col'~without~value.\\
+    Erroneous~use. \\
+    In~\token_to_str:N \NiceMatrixOptions ,~you~must~use~the~key~ 
+    'last-col'~without~value. \\
     However,~you~can~go~on~for~this~time~
     (the~value~' \l_keys_value_tl '~will~be~ignored). 
   }
@@ -17864,7 +17846,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { Block~too~large~1 }
   {
-    Block~too~large.\\
+    Block~too~large. \\
     You~try~to~draw~a~block~in~the~cell~#1-#2~of~your~matrix~but~the~matrix~is~
     too~small~for~that~block. \\
     This~block~and~maybe~others~will~be~ignored.
@@ -17874,12 +17856,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { Block~too~large~2 }
   {
-    Block~too~large.\\
-    The~preamble~of~your~\@@_full_name_env:\ announces~\int_use:N
-    \g_@@_static_num_of_col_int\
-    columns~but~you~use~only~\int_use:N \c@jCol\ and~that's~why~a~block~
+    Block~too~large. \\
+    The~preamble~of~your~ \@@_full_name_env: \ announces~ \int_use:N
+    \g_@@_static_num_of_col_int \
+    columns~but~you~use~only~ \int_use:N \c@jCol \ and~that's~why~a~block~
     specified~in~the~cell~#1-#2~can't~be~drawn.~You~should~add~some~ampersands~
-    (&)~at~the~end~of~the~first~row~of~your~\@@_full_name_env:.\\
+    (&)~at~the~end~of~the~first~row~of~your~ \@@_full_name_env: . \\
     This~block~and~maybe~others~will~be~ignored.
   }
 %    \end{macrocode}
@@ -17888,8 +17870,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { unknown~column~type }
   {
-    Bad~column~type.\\
-    The~column~type~'#1'~in~your~\@@_full_name_env:\ 
+    Bad~column~type. \\
+    The~column~type~'#1'~in~your~ \@@_full_name_env: \ 
     is~unknown. \\
     This~error~is~fatal.
   }
@@ -17898,8 +17880,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { unknown~column~type~S }
   {
-    Bad~column~type.\\
-    The~column~type~'S'~in~your~\@@_full_name_env:\ is~unknown. \\
+    Bad~column~type. \\
+    The~column~type~'S'~in~your~ \@@_full_name_env: \ is~unknown. \\
     If~you~want~to~use~the~column~type~'S'~of~siunitx,~you~should~
     load~that~package. \\
     This~error~is~fatal.
@@ -17909,12 +17891,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { tabularnote~forbidden }
   {
-    Forbidden~command.\\
-    You~can't~use~the~command~\token_to_str:N\tabularnote\ 
+    Forbidden~command. \\
+    You~can't~use~the~command~ \token_to_str:N \tabularnote \ 
     ~here.~This~command~is~available~only~in~
     \{NiceTabular\},~\{NiceTabular*\}~and~\{NiceTabularX\}~or~in~
-    the~argument~of~a~command~\token_to_str:N \caption\ included~
-    in~an~environment~{table}. \\
+    the~argument~of~a~command~\token_to_str:N \caption \ included~
+    in~an~environment~\{table\}. \\
     This~command~will~be~ignored.
   }
 %    \end{macrocode}
@@ -17923,7 +17905,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { borders~forbidden }
   {
     Forbidden~key.\\
-    You~can't~use~the~key~'borders'~of~the~command~\token_to_str:N \Block\ 
+    You~can't~use~the~key~'borders'~of~the~command~ \token_to_str:N \Block \ 
     because~the~option~'rounded-corners'~
     is~in~force~with~a~non-zero~value.\\
     This~key~will~be~ignored.
@@ -17943,10 +17925,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { enumitem~not~loaded }
   {
-    enumitem~not~loaded.\\
-    You~can't~use~the~command~\token_to_str:N\tabularnote\ 
-    ~because~you~haven't~loaded~'enumitem'.\\
-    All~the~commands~\token_to_str:N\tabularnote\ will~be~
+    enumitem~not~loaded. \\
+    You~can't~use~the~command~ \token_to_str:N \tabularnote \ 
+    ~because~you~haven't~loaded~'enumitem'. \\
+    All~the~commands~ \token_to_str:N \tabularnote \ will~be~
     ignored~in~the~document.
   }
 %    \end{macrocode}
@@ -17954,7 +17936,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { tikz~without~tikz } 
   {
-    Tikz~not~loaded.\\
+    Tikz~not~loaded. \\
     You~can't~use~the~key~'tikz'~here~because~Tikz~is~not~
     loaded.~If~you~go~on,~that~key~will~be~ignored.
   }
@@ -17963,7 +17945,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { tikz~in~custom-line~without~tikz } 
   {
-    Tikz~not~loaded.\\
+    Tikz~not~loaded. \\
     You~have~used~the~key~'tikz'~in~the~definition~of~a~
     customized~line~(with~'custom-line')~but~tikz~is~not~loaded.~
     You~can~go~on~but~you~will~have~another~error~if~you~actually~
@@ -17974,9 +17956,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { tikz~in~borders~without~tikz }
   {
-    Tikz~not~loaded.\\
+    Tikz~not~loaded. \\
     You~have~used~the~key~'tikz'~in~a~key~'borders'~(of~a~
-    command~'\token_to_str:N\Block')~but~tikz~is~not~loaded.~
+    command~' \token_to_str:N \Block ')~but~tikz~is~not~loaded.~
     That~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -17995,9 +17977,9 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Wrong~last~row }
   { 
     Wrong~number.\\
-    You~have~used~'last-row=\int_use:N \l_@@_last_row_int'~but~your~
-    \@@_full_name_env:\ seems~to~have~\int_use:N \c@iRow \ rows.~
-    If~you~go~on,~the~value~of~\int_use:N \c@iRow \ will~be~used~for~
+    You~have~used~'last-row= \int_use:N \l_@@_last_row_int '~but~your~
+    \@@_full_name_env: \ seems~to~have~ \int_use:N \c@iRow \ rows.~
+    If~you~go~on,~the~value~of~ \int_use:N \c@iRow \ will~be~used~for~
     last~row.~You~can~avoid~this~problem~by~using~'last-row'~  
     without~value~(more~compilations~might~be~necessary).
   }
@@ -18017,8 +17999,8 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Outside~math~mode }
   {
     Outside~math~mode.\\
-    The~\@@_full_name_env:\ can~be~used~only~in~math~mode~
-    (and~not~in~\token_to_str:N \vcenter).\\
+    The~\@@_full_name_env: \ can~be~used~only~in~math~mode~
+    (and~not~in~ \token_to_str:N \vcenter ).\\
     This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -18028,7 +18010,7 @@ version 2005/12/01 or later.
   { 
     Bad~name.\\
     The~value~of~key~' \l_keys_key_str '~must~be~of~length~1~and~
-    you~have~used~'\l_keys_value_tl'.\\
+    you~have~used~' \l_keys_value_tl '.\\
     It~will~be~ignored. 
   }
 %    \end{macrocode}
@@ -18036,10 +18018,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { TabularNote~in~CodeAfter }
   {
-    Environment~{TabularNote}~forbidden.\\
-    You~must~use~{TabularNote}~at~the~end~of~your~{NiceTabular}~
-    but~*before*~the~\token_to_str:N \CodeAfter.\\
-    This~environment~{TabularNote}~will~be~ignored.
+    Environment~\{TabularNote\}~forbidden.\\
+    You~must~use~\{TabularNote\}~at~the~end~of~your~\{NiceTabular\}~
+    but~*before*~the~ \token_to_str:N \CodeAfter . \\
+    This~environment~\{TabularNote\}~will~be~ignored.
   }
 %    \end{macrocode}
 % 
@@ -18074,9 +18056,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nnn { Unknown~key~for~Block } 
   {
-    Unknown~key.\\
-    The~key~' \l_keys_key_str '~is~unknown~for~the~command~\token_to_str:N
-    \Block.\\ It~will~be~ignored. \\
+    Unknown~key. \\
+    The~key~' \l_keys_key_str '~is~unknown~for~the~command~ 
+    \token_to_str:N \Block . \\ 
+    It~will~be~ignored. \\
     \c_@@_available_keys_str
   }
   {
@@ -18092,8 +18075,8 @@ version 2005/12/01 or later.
 \@@_msg_new:nnn { Unknown~key~for~Brace }
   {
     Unknown~key.\\
-    The~key~' \l_keys_key_str '~is~unknown~for~the~commands~\token_to_str:N
-    \UnderBrace\ and~\token_to_str:N \OverBrace.\\
+    The~key~' \l_keys_key_str '~is~unknown~for~the~commands~ 
+    \token_to_str:N \UnderBrace \ and~ \token_to_str:N \OverBrace . \\
     It~will~be~ignored. \\ 
     \c_@@_available_keys_str
   }
@@ -18118,7 +18101,7 @@ version 2005/12/01 or later.
     rules~(with~the~subkeys~'color'~and~'width'),~
     sub-matrix~(several~subkeys)~
     and~xdots~(several~subkeys).~
-    The~latter~is~for~the~command~\token_to_str:N \line.
+    The~latter~is~for~the~command~ \token_to_str:N \line .
   }
 %    \end{macrocode}
 %
@@ -18190,7 +18173,7 @@ version 2005/12/01 or later.
   {
     Unknown~key.\\
     The~key~' \l_keys_key_str '~is~unknown~for~the~command~
-    \token_to_str:N \RowStyle. \\
+    \token_to_str:N \RowStyle . \\
     That~key~will~be~ignored. \\
     \c_@@_available_keys_str
   }
@@ -18213,7 +18196,7 @@ version 2005/12/01 or later.
   {
     Unknown~key.\\
     The~key~' \l_keys_key_str '~is~unknown~for~the~command~
-    \token_to_str:N \NiceMatrixOptions. \\
+    \token_to_str:N \NiceMatrixOptions . \\
     That~key~will~be~ignored. \\
     \c_@@_available_keys_str
   }
@@ -18338,7 +18321,7 @@ version 2005/12/01 or later.
   { 
     Unknown~key.\\
     The~key~' \l_keys_key_str '~is~unknown~for~the~
-    \@@_full_name_env:. \\
+    \@@_full_name_env: . \\
     That~key~will~be~ignored. \\
     \c_@@_available_keys_str
   }
@@ -18468,18 +18451,18 @@ version 2005/12/01 or later.
 \@@_msg_new:nnn { Duplicate~name }
   { 
     Duplicate~name.\\
-    The~name~'\l_keys_value_tl'~is~already~used~and~you~shouldn't~use~
+    The~name~' \l_keys_value_tl '~is~already~used~and~you~shouldn't~use~
     the~same~environment~name~twice.~You~can~go~on,~but,~
     maybe,~you~will~have~incorrect~results~especially~ 
     if~you~use~'columns-width=auto'.~If~you~don't~want~to~see~this~
     message~again,~use~the~key~'allow-duplicate-names'~in~
-    '\token_to_str:N \NiceMatrixOptions'.\\
+    ' \token_to_str:N \NiceMatrixOptions '.\\
     \bool_if:NF \g_@@_messages_for_Overleaf_bool
       { For~a~list~of~the~names~already~used,~type~H~<return>. }
   }
   {
     The~names~already~defined~in~this~document~are:~
-    \seq_use:Nnnn \g_@@_names_seq { ~and~ } { ,~ } { ~and~ }.
+    \seq_use:Nnnn \g_@@_names_seq { ~and~ } { ,~ } { ~and~ } .
   }
 %    \end{macrocode}
 %
@@ -18496,7 +18479,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { NiceTabularX~without~X }
   {
     NiceTabularX~without~X.\\
-    You~should~not~use~{NiceTabularX}~without~X~columns.\\
+    You~should~not~use~\{NiceTabularX\}~without~X~columns.\\
     However,~you~can~go~on.
   }
 %    \end{macrocode}
@@ -18506,7 +18489,7 @@ version 2005/12/01 or later.
   {
     Preamble~forgotten.\\
     You~have~probably~forgotten~the~preamble~of~your~
-    \@@_full_name_env:. \\
+    \@@_full_name_env: . \\
     This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -18515,7 +18498,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Invalid~col~number }
   {
     Invalid~column~number.\\
-    A~color~instruction~in~the~\token_to_str:N \CodeBefore\ 
+    A~color~instruction~in~the~ \token_to_str:N \CodeBefore \ 
     specifies~a~column~which~is~outside~the~array.~It~will~be~ignored. 
   }
 %    \end{macrocode}
@@ -18524,7 +18507,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Invalid~row~number }
   {
     Invalid~row~number.\\
-    A~color~instruction~in~the~\token_to_str:N \CodeBefore\ 
+    A~color~instruction~in~the~ \token_to_str:N \CodeBefore \ 
     specifies~a~row~which~is~outside~the~array.~It~will~be~ignored. 
   }
 %    \end{macrocode}
