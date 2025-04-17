@@ -367,8 +367,8 @@ $\begin{pNiceMatrix}[no-cell-nodes]
 \end{scope}
 
 \bigskip
-Il est également possible de changer ces paramètres pour certaines lignes
-seulement grâce à la commande |\RowStyle| (cf.~p.~\pageref{RowStyle}).
+Il est également possible de changer ces paramètres pour certaines rangées du
+tableau seulement grâce à la commande |\RowStyle| (cf.~p.~\pageref{RowStyle}).
 
 
 \medskip
@@ -815,7 +815,7 @@ fait, il y a plusieurs situations où leur utilisation peut présenter des avant
 
 \begin{itemize}
 \item Un bloc mono-case permet d'utiliser la commande |\\| pour composer le
-bloc sur plusieurs lignes.
+bloc sur plusieurs lignes de texte.
 
 \item On peut utiliser l'option d'alignement horizontal du bloc pour déroger à
 la consigne générale donnée dans le préambule pour cette colonne (cf.~\ref{horizontal-bloc} p.~\pageref{horizontal-bloc}).
@@ -1045,8 +1045,8 @@ ligne de base de la première rangée concernée par le bloc.
 
 \item Avec la clé \Definition{b}, la ligne de base de la dernière rangée du
 contenu du bloc (rappelons que le contenu du bloc peut comporter plusieurs
-rangées séparées par |\\|) est alignée avec la ligne de base de la dernière des
-rangées du tableau impliquées dans le bloc.
+lignes de texte séparées par |\\|) est alignée avec la ligne de base de la
+dernière des rangées du tableau impliquées dans le bloc.
 
 \item Avec la clé \Definition{T}, le contenu du bloc est calé vers le haut.
 
@@ -1073,7 +1073,7 @@ les blocs mono-rangée).
 
 \begin{Code}[width=10cm]
 \begin{NiceTabular}{ccc}
-\Block[fill=red!10,\emph{t},l]{4-2}{two\\lines}
+\Block[fill=red!10,\emph{t},L]{4-2}{two\\lines}
  & & \Huge Un\\
  & & deux  \\
  & & trois  \\
@@ -1082,7 +1082,7 @@ text & text \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}
-\Block[fill=red!10,t,l]{4-2}{two\\lines}
+\Block[fill=red!10,t,L]{4-2}{two\\lines}
  & & \Huge Un\\
  & & deux  \\
  & & trois  \\
@@ -1114,7 +1114,7 @@ text & text \\
 \bigskip
 \begin{Code}[width=10cm]
 \begin{NiceTabular}{ccc}
-\Block[fill=red!10,\emph{T},l]{4-2}{two\\lines}
+\Block[fill=red!10,\emph{T},\emph{L}]{4-2}{two\\lines}
  & & \Huge Un\\
  & & deux  \\
  & & trois  \\
@@ -1123,7 +1123,7 @@ text & text \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}
-\Block[fill=red!10,T,l]{4-2}{two\\lines}
+\Block[fill=red!10,T,L]{4-2}{two\\lines}
  & & \Huge Un\\
  & & deux  \\
  & & trois  \\
@@ -1135,7 +1135,7 @@ text & text \\
 \bigskip
 \begin{Code}[width=10cm]
 \begin{NiceTabular}{ccc}
-\Block[fill=red!10,\emph{B},r]{4-2}{two\\lines}
+\Block[fill=red!10,\emph{B},\emph{R}]{4-2}{two\\lines}
  & & \Huge Un\\
  & & deux  \\
  & & trois  \\
@@ -1144,7 +1144,7 @@ text & text \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}
-\Block[fill=red!10,B,r]{4-2}{two\\lines}
+\Block[fill=red!10,B,R]{4-2}{two\\lines}
  & & \Huge Un\\
  & & deux  \\
  & & trois  \\
@@ -1256,7 +1256,7 @@ classiques.
 
 Dans les environnements de \pkg{nicematrix}, les filets verticaux spécifiés par
 \verb+|+ dans le préambule des environnements ne sont jamais coupés, même en cas
-de ligne incomplète ou de double filet horizontal spécifié par |\hline\hline|
+de rangée incomplète ou de double filet horizontal spécifié par |\hline\hline|
 (il n'y a pas besoin d'utiliser l'extension \pkg{hhline}).
 
 \medskip
@@ -1587,7 +1587,7 @@ arum      & iris & jacinthe & muguet
 \begin{center}
 \begin{NiceTabular}{cccc}[hvlines,rules/color=blue,rules/width=1pt]
 rose      & tulipe & marguerite & dahlia \\
-violette  & \Block[draw=red]{2-2}{\LARGE fleurs}  & & souci \\
+violette  & \Block[C,draw=red]{2-2}{\LARGE fleurs}  & & souci \\
 pervenche & & & lys \\
 arum      & iris & jacinthe & muguet
 \end{NiceTabular}
@@ -1828,7 +1828,7 @@ commande qui sera créée par \pkg{nicematrix} et que l'utilisateur pourra
 utiliser pour tracer des filets horizontaux partiels (de manière similaire à
 |\cline|, d'où le nom |ccommand|) : l'argument de cette commande est une liste
 d'intervalles de colonnes spécifiés par la syntaxe $i$ ou $i$-$j$ ;\footnote{Il
-  est recommandé de n'utiliser ces commandes qu'une seule fois par ligne car
+  est recommandé de n'utiliser ces commandes qu'une seule fois par rangée car
   chaque utilisation crée un espace vertical entre les rangées correspondant à
   la largeur totale du trait qui sera tracé.}
 
@@ -1893,7 +1893,7 @@ Produit C & 5 & 4 & 1 \\
 \begin{center}
 \begin{NiceTabular}{lcIcIc}[custom-line = {letter=I, color=blue}]
 \hline
-          & \Block{1-3}{dimensions} \\
+          & \Block[C]{1-3}{dimensions} \\
           & L & l & H \\
 \hline
 Produit A & 3 & 1 & 2 \\
@@ -2110,7 +2110,7 @@ Il y a néanmoins deux inconvénients :
 \item L'extension \pkg{colortbl} patche \pkg{array}, ce qui entraîne des
 incompatibilités (par exemple avec la commande |\hdotsfor|).
 
-\item L'extension \pkg{colortbl} construit le tableau ligne par ligne, en
+\item L'extension \pkg{colortbl} construit le tableau rangée par rangée, en
 alternant rectangles colorés, filets et contenu des cases. Le \textsc{pdf}
 résultant déroute certains lecteurs de \textsc{pdf} et on a parfois des artefacts
 d'affichage.
@@ -2143,13 +2143,13 @@ inconvénients.
 \index{CodeBefore@\texttt{\textbackslash CodeBefore}...\texttt{\textbackslash Body}}
 \index{Body@\texttt{\textbackslash Body}|see{\texttt{\textbackslash CodeBefore}}}
 
-L'extension \pkg{nicematrix} propose des outils (indépendants de \pkg{colortbl})
-pour tracer d'abord les rectangles colorés, puis le contenu des cases et les
-filets. Cette manière de faire est plus dans l'esprit du «modèle du peintre» des
-formats PostScript et \textsc{pdf} et convient donc mieux aux lecteurs de
-\textsc{pdf}. L'inconvénient est qu'elle nécessite plusieurs compilations
-successives.\footnote{Si vous utilisez Overleaf, Overleaf effectue
-  automatiquement un nombre de compilations suffisant (en utilisant |latexmk|).}
+L'extension \pkg{nicematrix} propose des outils pour tracer d'abord les
+rectangles colorés, puis le contenu des cases et les filets. Cette manière de
+faire est plus dans l'esprit du «modèle du peintre» des formats PostScript et
+\textsc{pdf} et convient donc mieux aux lecteurs de \textsc{pdf}. L'inconvénient
+est qu'elle nécessite plusieurs compilations successives.\footnote{Si vous
+  utilisez Overleaf, Overleaf effectue automatiquement un nombre de compilations
+  suffisant (en utilisant |latexmk|).}
 
 \medskip
 L'extension \pkg{nicematrix} fournit une clé |code-before| pour du code qui sera
@@ -2237,8 +2237,8 @@ On détaille maintenant ces différentes commandes.
 commande |\cellcolor| de \pkg{colortbl}.
 
 Elle prend en arguments obligatoires une couleur et une liste de cases sous le
-format $i$-$j$ où $i$ est le numéro de ligne et $j$ le numéro de colonne. Malgré
-son nom, elle peut aussi colorier une ligne avec la syntaxe $i$- ou bien une
+format $i$-$j$ où $i$ est le numéro de rangée et $j$ le numéro de colonne. Malgré
+son nom, elle peut aussi colorier une rangée avec la syntaxe $i$- ou bien une
 colonne avec la syntaxe~-$j$.
 
 \medskip
@@ -2744,7 +2744,7 @@ commande |\EmptyRow| est similaire.
 
 \medskip
 \begin{Code}[width=10cm]
-\begin{NiceTabular}{ccccc}[hvlines]
+\begin{NiceTabular}{ccccc}[hvlines,no-cell-nodes]
 \CodeBefore
   \rowcolor{blue!15}{1}
   \emph{\EmptyColumn{3}}
@@ -2753,7 +2753,7 @@ commande |\EmptyRow| est similaire.
   un & \Block{}{deux\\ lignes} && trois & quatre \\
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{ccccc}[hvlines]
+\begin{NiceTabular}{ccccc}[hvlines,no-cell-nodes]
 \CodeBefore
   \rowcolor{blue!15}{1}
   \EmptyColumn{3}
@@ -2774,24 +2774,24 @@ commande |\EmptyRow| est similaire.
 \index{columncolor@\texttt{\textbackslash columncolor}!commande dans le
   préambule d'un environnement} 
 
-On peut accéder aux outils de coloriage précédents avec une syntaxe proche de
-celle proposée par \pkg{colortbl} (même si \pkg{colortbl} n'est pas chargé).
+L'extension \pkg{nicematrix} propose aussi des commandes de coloriage à utiliser
+directement dans le tableau (comme celles de l'extension \pkg{colortbl}).
 
-On a alors accès aux commandes suivantes (les trois premières sont inspirées par
-\pkg{colortbl} mais sont indépendantes de \pkg{colortbl}) :
+Les commandes sont les suivantes (les trois premières sont inspirées par les
+commandes similaires de \pkg{colortbl}).
 \begin{itemize}
 \item \DefinitionCommande{cellcolor} qui colorie la case courante\footnote{Cette
-  commande |\cellcolor| supprimera les espaces qui la suivent, ce que ne fait
-  pas la commande |\cellcolor| de \pkg{colortbl}. De plus, si on définit une
+  commande |\cellcolor| supprimera les espaces qui la suivent (ce que ne fait
+  pas la commande |\cellcolor| de \pkg{colortbl}). De plus, si on définit une
   fonction au-dessus de |\cellcolor|, il faudra une fonction protégée au sens de
 TeX (alors que si c'était la commande |\cellcolor| de \pkg{colortbl}, il
-faudrait une fonction \emph{fully expandable}).} ;
+faudrait au contaire une fonction \emph{fully expandable}).} ;
 \item \DefinitionCommande{rowcolor} à utiliser dans une case et qui colorie le
 reste de la rangée;\footnote{Si vous souhaitez une commande pour colorier les
   $n$~rangées suivantes, considérez la commande |\RowStyle| et sa clé
-  |rowcolor|, p.~\pageref{RowStyle}.} 
+  |fill|, p.~\pageref{RowStyle}.} 
 \item \DefinitionCommande{columncolor} à utiliser dans le préambule du tableau
-de la même manière que la commande éponyme de \pkg{colortbl} (néanmoins,
+de la même manière que la commande homonyme de \pkg{colortbl} (néanmoins,
 contrairement à la commande |\columncolor| de \pkg{colortbl}, celle de
 \pkg{nicematrix} peut apparaître à l'intérieur d'une autre commande, elle-même
 utilisée dans le préambule; en revanche, elle ne prend pas les deux arguments
@@ -2923,7 +2923,7 @@ clés globales de même nom (cf. p.~\pageref{cell-space}).
 \index{fill!clé de \texttt{\textbackslash RowStyle}} 
 \index{opacity!clé de \texttt{\textbackslash RowStyle}} 
 \index{rounded-corners!clé de \texttt{\textbackslash RowStyle}}
-La clé \Definition{rowcolor} (alias : \Definition{fill}) fixe la couleur de fond
+La clé \Definition{fill} (alias : \Definition{rowcolor}) fixe la couleur de fond
 et la clé \Definition{opacity}\footnote{Attention : cette clé génère des
   instructions de transparence dans le \textsc{pdf} résultant et certains
   lecteurs de \textsc{pdf} n'acceptent pas la transparence.} l'opacité de cette
@@ -2951,7 +2951,7 @@ soient en mode texte ou bien en mode mathématique.
 \hline
 \emph{\RowStyle[cell-space-limits=3pt]{\rotate}}
 premier & deuxième & troisième & quatrième \\
-\emph{\RowStyle[nb-rows=2,color=white,rowcolor=blue!50]{\sffamily}}
+\emph{\RowStyle[nb-rows=2,color=white,fill=blue!50]{\sffamily}}
 1 & 2 & 3 & 4 \\
 I & II & III & IV 
 \end{NiceTabular}
@@ -2961,7 +2961,7 @@ I & II & III & IV
 \hline
 \RowStyle[cell-space-limits=3pt]{\rotate}
 premier & deuxième & troisième & quatrième \\
-\RowStyle[nb-rows=2,color=white,rowcolor=blue!50]{\sffamily}
+\RowStyle[nb-rows=2,color=white,fill=blue!50]{\sffamily}
 1 & 2 & 3 & 4 \\
 I & II & III & IV \\
 \end{NiceTabular}
@@ -3152,7 +3152,7 @@ ce sont les commandes |\RaggedRight|, |\Centering| et |\RaggedLeft| de
 \pkg{ragged2e} qui sont utilisées, pour un meilleur résultat.}
 \item On peut spécifier l'alignement vertical avec l'une des lettres |t| (alias
 |p|), |m| et |b| (qui construisent respectivement des colonnes de types |p|, |m|
-et |b|). La valeur par défaut est |t|.
+et |b|). La valeur initiale est |t|.
 \end{itemize}
 
 \begin{Code}
@@ -3300,7 +3300,7 @@ L_4    & a_{41} & a_{42} & a_{43} & a_{44} & L_4    \\
 \end{pNiceMatrix}$
 \end{Code}
 %
-\[\begin{pNiceMatrix}[first-row,last-row,first-col,last-col,nullify-dots]
+\[\begin{pNiceMatrix}[first-row,last-row=5,first-col,last-col=5,nullify-dots]
        & C_1    & \Cdots &        & C_4    &        \\
 L_1    & a_{11} & a_{12} & a_{13} & a_{14} & L_1    \\
 \Vdots & a_{21} & a_{22} & a_{23} & a_{24} & \Vdots \\
@@ -3515,10 +3515,10 @@ colonne. Il est possible d'utiliser la même méthode avec \pkg{nicematrix}
 \end{bNiceMatrix}
 \end{Code}
 $\begin{bNiceMatrix}
-0      & \Cdots & \Cdots & 0      \\
-\Vdots &        &        & \Vdots \\
-\Vdots &        &        & \Vdots \\
-0      & \Cdots & \Cdots & 0
+0      & \Cdots &        & 0      \\
+\Vdots &        &        &        \\
+       &        &        & \Vdots \\
+0      &        & \Cdots & 0
 \end{bNiceMatrix}$
 
 \medskip
@@ -3710,12 +3710,10 @@ $\begin{pNiceMatrix}
 \emph{Remarque} : Contrairement à la commande |\hdotsfor| de \pkg{amsmath}, la
 commande |\Hdotsfor| est utilisable même lorsque l'extension
 \pkg{colortbl}\footnote{On rappelle que lorsque l'extension \pkg{xcolor} est
-  chargée avec l'option |table|, l'extension \pkg{colortbl} est chargée.}
-est chargée (mais vous risquez d'avoir des problèmes si vous utilisez
-|\rowcolor| sur la même rangée que |\Hdotsfor|). Néanmoins, dans le cadre de
-\pkg{nicematrix}, on conseille de ne pas utiliser \pkg{colortbl} mais d'utiliser
-les outils de nicematrix pour le coloriage des tableaux (cf.
-p.~\pageref{color-in-code-before}). 
+  chargée avec l'option |table|, l'extension \pkg{colortbl} est chargée.} est
+chargée (néanmoins, dans le cadre de \pkg{nicematrix}, le chargement de
+\pkg{colortbl} est déconseillé puisque nicematrix propose ses propres commandes
+pour le coloriage des tableaux: cf. p.~\pageref{color-in-code-before}).
 
 \medskip
 L'extension \pkg{nicematrix} propose aussi une commande
@@ -4204,13 +4202,13 @@ Voici un exemple avec un délimiteur |\{| à gauche dans un |{NiceTabular}| (on
 remarquera la compatibilité avec la clé |t|).
 
 \smallskip
-\begin{Code}
+\begin{Verbatim}
 On définit $f$ par\quad
 \begin{NiceTabular}[t]{\{ll}
 $f(x) = 0$ & si $x$ est négatif \\
 $f(x) = 1-e^x$ & si $x$ est positif 
 \end{NiceTabular}
-\end{Code}
+\end{Verbatim}
 
 \smallskip
 \begin{center}
@@ -4297,7 +4295,7 @@ pointillés entre les cases. Elle prend deux arguments correspondant aux cases o
 blocs à relier. Chacun de ces deux arguments peut être :
 \begin{itemize}
 \item une spécification de case de la forme $i$-$j$ où $i$ est le numéro de
-ligne et $j$ est le numéro de colonne ; 
+rangée et $j$ est le numéro de colonne ; 
 \item le nom d'un bloc (créé avec la commande |\Block| en utilisant la clé
 |name| de cette commande).
 \end{itemize}
@@ -4618,7 +4616,7 @@ La clé \Definition{code} de la commande |\SubMatrix| permet d'insérer du code
 après la création de la matrice. Elle a surtout pour vocation d'être utilisée
 pour insérer des instructions TikZ, sachant que, dans les instructions TikZ
 insérées dans cette clé, les nœuds de la forme \texttt{i-j.\textsl{anchor}} ou
-\verb+i-|j+ sont interprétés avec |i| et |j| étant des numéros de ligne et
+\verb+i-|j+ sont interprétés avec |i| et |j| étant des numéros de rangée et
 colonne \emph{relatifs à la sous-matrice}.\footnote{Attention : la syntaxe
   \texttt{j\string|-i} n'est \emph{pas} autorisée.}
 
@@ -4687,7 +4685,7 @@ numéro de rangée et $j$ le numéro de colonne ;
 |\OverBrace|) ou au-dessous (pour |\UnderBrace|).
 
 Il est possible de mettre des commandes |\\| dans ce dernier argument pour
-fomater le label sur plusieurs lignes.
+formater le label sur plusieurs lignes de texte.
 \end{itemize}
 
 \bigskip
@@ -4948,11 +4946,11 @@ l'extension \pkg{xcolor} et elle n'est pas parfaitement compatible avec
 
 L'extension \pkg{nicematrix} propose aussi une commande
 \DefinitionCommande{tabularnote} qui permet de spécifier des notes qui seront
-composées à la fin du tableau avec une longueur de ligne égale à la largeur du
-tableau (hors éventuelles colonnes extérieures spécifiées par |first-col| et
-|last-col|: cf.~\ref{exterior}, p.~\pageref{exterior}). Sans surprise, cette
-commande n'est disponible que dans |{NiceTabular}|, |{NiceTabular*}| et
-|{NiceTabularX}|.
+composées à la fin du tableau avec une longueur pour les lignes de texte égale à
+la largeur du tableau (hors éventuelles colonnes extérieures spécifiées par
+|first-col| et |last-col|: cf.~\ref{exterior}, p.~\pageref{exterior}). Sans
+surprise, cette commande n'est disponible que dans |{NiceTabular}|,
+|{NiceTabular*}| et |{NiceTabularX}|.
 
 
 \index{enumitem@\pkg{enumitem} (extension requise pour utiliser\newline \texttt{\textbackslash tabularnote})}
@@ -5730,7 +5728,7 @@ dans les cases du tableau.\footnote{La raison en est que lorsque l'option |light
 La clé \Definition{light-syntax-expanded} a le même comportement que la clé
 |light-syntax| mais avec cette différence que le corps de l'environnement est
 complètement développé (au sens de TeX\footnote{Plus précisément, il s'agit
-  d'une expansion de type |e| de L3.}) avant découpe en lignes (mais après
+  d'une expansion de type |e| de L3.}) avant découpe en rangées (mais après
 l'extraction de l'éventuel |\CodeAfter|).
 
 
@@ -5921,7 +5919,7 @@ $\begin{pNiceMatrix}
 Les nœuds de la dernière colonne (hors éventuelle «colonne extérieure» spécifiée
 par |last-col|\footnote{Pour les colonnes extérieures, cf.
   partie~\ref{exterior}, p.~\pageref{exterior}.}) peuvent aussi être désignés
-par $i$-|last|. De même, les nœuds de la dernière ligne peuvent être désignés
+par $i$-|last|. De même, les nœuds de la dernière rangée peuvent être désignés
 par |last|-$j$.
 
 
@@ -6368,7 +6366,7 @@ horizontal~$i$ et du filet vertical~$j$ avec la syntaxe |(|$i$\verb+-|+$j$|)|.
 
 \medskip
 Les nœuds «décimaux» (comme $i$|.4|) peuvent être utilisés par exemple pour
-barrer une ligne (si on a chargé TikZ).
+barrer une rangée (si on a chargé TikZ).
 
 \smallskip
 \begin{Code}[width=11cm]
@@ -6557,7 +6555,7 @@ mante & raie & poule
 \section{Remarques techniques}
 
 Première remarque : l'extension \pkg{nicematrix} doit être chargée après
-l'extension \pkg{underscore}. Si elle est chargée après, une erreur sera levée.
+l'extension \pkg{underscore}. Si elle est chargée avant, une erreur sera levée.
 
 \subsection{Lignes diagonales}
 
@@ -6759,7 +6757,7 @@ parade simple qui consiste à écrire:\footnote{Voir
 % l'information suivante est toujours d'actualité le 23 avril 2024
 Pour pouvoir utiliser \pkg{nicematrix} avec la classe \cls{aastex631} (de
 l'\emph{American Astronomical Society}), on doit ajouter dans le préambule du
-fichier les lignes suivantes :
+fichier les instructions suivantes :
 
 \begin{Code}
 \BeforeBegin{NiceTabular}{\let\begin\BeginEnvironment\let\end\EndEnvironment}
@@ -6888,11 +6886,13 @@ Pour l'exemple suivant, la bibliothèque \pkg{patterns} de TikZ doit aussi être
 
 \bigskip
 
-Dans l'exemple suivant, on utilise la clé |tikz| pour hachurer une ligne du
+Dans l'exemple suivant, on utilise la clé |tikz| pour hachurer une rangée du
 tableau. On remarquera que l'on utilise la clé |transparent| de la commande
 |\Block| pour que les filets soient tracés dans le bloc.\footnote{Par défaut,
   les filets ne sont pas tracés dans les blocs créés avec la commande
-  \texttt{\textbackslash Block} : cf.~section~\ref{rules} p.~\pageref{rules}}
+  \texttt{\textbackslash Block} (cf.~section~\ref{rules} p.~\pageref{rules}) :
+  la clé |transparent| permet qu'ils le soient (le block devient ainsi
+  \emph{transparent} aux filets extérieurs).}
 
 \index{transparent (clé de \texttt{\textbackslash Block})|textit}
 \index{columncolor@\texttt{\textbackslash columncolor}!commande du
@@ -6908,6 +6908,7 @@ un & deux & trois \\
 \Block[\emph{transparent, tikz={pattern = north west lines, pattern color = gray}}]{1-*}{}
 quatre & cinq & six \\
 sept & huit & neuf
+\end{NiceTabular}
 \end{Code}
 
 \begin{center}
@@ -7168,7 +7169,7 @@ Un exemple avec un système linéaire:
 \index{code-for-last-col|textit}
 
 \begin{Verbatim}
-$\begin{pNiceArray}{*6c|c}[nullify-dots,last-col,code-for-last-col=\scriptstyle]
+$\begin{pNiceArray}{*6{c}|c}[nullify-dots,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
@@ -7179,7 +7180,7 @@ $\begin{pNiceArray}{*6c|c}[nullify-dots,last-col,code-for-last-col=\scriptstyle]
 \end{Verbatim}
 
 
-\[\begin{pNiceArray}{*6c|c}[nullify-dots,last-col,code-for-last-col=\scriptstyle]
+\[\begin{pNiceArray}{*6{c}|c}[nullify-dots,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
@@ -7203,7 +7204,6 @@ pointillées (TikZ doit être chargé).
 \begin{scope}
 \small
 \begin{Verbatim}
-\NiceMatrixOptions{code-for-first-row = \scriptstyle,code-for-first-col = \scriptstyle }
 \setcounter{MaxMatrixCols}{12}
 \newcommand{\blue}{\color{blue}}
 \[\begin{pNiceMatrix}[last-row,last-col,nullify-dots,xdots/line-style={dashed,blue}]
@@ -7227,7 +7227,6 @@ pointillées (TikZ doit être chargé).
 \index{code-for-last-col|textit}
 
 \begin{scope}
-\NiceMatrixOptions{code-for-first-row = \scriptstyle,code-for-first-col = \scriptstyle }
 \setcounter{MaxMatrixCols}{12}
 \newcommand{\blue}{\color{blue}}
 \[\begin{pNiceMatrix}[last-row,last-col,nullify-dots,xdots/line-style={dashed,blue}]
@@ -7920,7 +7919,7 @@ faut utiliser la clé |create-cell-nodes| du |\CodeBefore| pour demander leur cr
 
 $\begin{bNiceMatrix}
 \emph{\CodeBefore [create-cell-nodes] 
-  \tikz \node [highlight = (2-1) (2-3)] {} ; 
+  \tikz \node [highlight = (2-1) (2-last)] {} ; 
 \Body }
 0 & \Cdots & 0 \\
 1 & \Cdots & 1 \\
@@ -7933,7 +7932,7 @@ $\begin{bNiceMatrix}
 
 \[\begin{bNiceMatrix}
 \CodeBefore [create-cell-nodes]
-  \tikz \node [highlight = (2-1) (2-3)] {} ;
+  \tikz \node [highlight = (2-1) (2-last)] {} ;
 \Body
 0 & \Cdots & 0 \\
 1 & \Cdots & 1 \\
@@ -7951,9 +7950,9 @@ de la matrice, on peut utiliser la technique précédente trois fois.
 \[\begin{pNiceArray}{ccc}[last-col, margin = 2pt]
 \CodeBefore [create-cell-nodes]
   \begin{tikzpicture}
-  \emph{\node [highlight = (1-1) (1-3)] {} ;
-  \node [highlight = (2-1) (2-3)] {} ;
-  \node [highlight = (3-1) (3-3)] {} ;}
+  \emph{\node [highlight = (1-1) (1-last)] {} ;
+  \node [highlight = (2-1) (2-last)] {} ;
+  \node [highlight = (3-1) (3-last)] {} ;}
   \end{tikzpicture}
 \Body
 a & a + b & a + b + c & L_1 \\
@@ -7965,9 +7964,9 @@ a & a     & a         & L_3
 \[\begin{pNiceArray}{ccc}[last-col, margin = 2pt]
 \CodeBefore [create-cell-nodes]
   \begin{tikzpicture}
-  \node [highlight = (1-1) (1-3)] {} ;
-  \node [highlight = (2-1) (2-3)] {} ;
-  \node [highlight = (3-1) (3-3)] {} ;
+  \node [highlight = (1-1) (1-last)] {} ;
+  \node [highlight = (2-1) (2-last)] {} ;
+  \node [highlight = (3-1) (3-last)] {} ;
   \end{tikzpicture}
 \Body
 a & a + b & a + b + c & L_1 \\
@@ -7986,9 +7985,9 @@ moyens» au lieu des «nœuds normaux».
 \[\begin{pNiceArray}{ccc}[last-col, margin = 2pt, create-medium-nodes]
 \CodeBefore [create-cell-nodes]
   \begin{tikzpicture} \emph{[name suffix = -medium]}
-  \node [highlight = (1-1) (1-3)] {} ;
-  \node [highlight = (2-1) (2-3)] {} ;
-  \node [highlight = (3-1) (3-3)] {} ;
+  \node [highlight = (1-1) (1-last)] {} ;
+  \node [highlight = (2-1) (2-last)] {} ;
+  \node [highlight = (3-1) (3-last)] {} ;
   \end{tikzpicture}
 \Body
 a & a + b & a + b + c & L_1 \\
@@ -8001,9 +8000,9 @@ a & a     & a         & L_3
 \[\begin{pNiceArray}{ccc}[last-col, margin = 2pt, create-medium-nodes]
 \CodeBefore [create-cell-nodes]
   \begin{tikzpicture} [name suffix = -medium]
-  \node [highlight = (1-1) (1-3)] {} ;
-  \node [highlight = (2-1) (2-3)] {} ;
-  \node [highlight = (3-1) (3-3)] {} ;
+  \node [highlight = (1-1) (1-last)] {} ;
+  \node [highlight = (2-1) (2-last)] {} ;
+  \node [highlight = (3-1) (3-last)] {} ;
   \end{tikzpicture}
 \Body
 a & a + b & a + b + c & L_1 \\
@@ -8187,8 +8186,15 @@ Le document |nicematrix-code.pdf| (fourni également avec l'extension \pkg{nicem
 contient le code LaTeX commenté (à partir du fichier |nicematrix-code.dtx|).
 
 \medskip
+Le développement de l'extension \pkg{nicematrix} se fait sur le dépôt GitHub
+suivant :
+
+\nolinkurl{https://github.com/fpantigny/nicematrix}
+
+
+\medskip
 Les versions successives du fichier |nicematrix.sty| fournies par
-TeXLive sont disponibles sur le serveur \textsc{svn} de TeXLive :
+TeXLive sont également disponibles sur le serveur \textsc{svn} de TeXLive :
 
 \smallskip
 {

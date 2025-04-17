@@ -2742,9 +2742,9 @@ version 2005/12/01 or later.
       \legacy_if:nF { measuring@ }
         {
           \str_set:Ne \l_@@_name_str { #1 }
-          \clist_if_in:NoTF \g_@@_names_clist \l_@@_name_str 
+          \clist_if_in:NoTF \g_@@_names_clist { \l_@@_name_str }
             { \@@_error:nn { Duplicate~name } { #1 } }
-            { \clist_gpush:No \g_@@_names_clist \l_@@_name_str }
+            { \clist_gpush:No \g_@@_names_clist { \l_@@_name_str } }
         } ,
     name .value_required:n = true ,
     code-after .tl_gset:N = \g_nicematrix_code_after_tl ,
@@ -4240,7 +4240,7 @@ version 2005/12/01 or later.
     \tl_set:Nn \l_tmpa_tl { #1 }
     \int_compare:nNnT { \char_value_catcode:n { 60 } } = { 13 }
       { \@@_rescan_for_spanish:N \l_tmpa_tl }
-    \tl_gput_left:No \g_@@_pre_code_before_tl \l_tmpa_tl 
+    \tl_gput_left:No \g_@@_pre_code_before_tl { \l_tmpa_tl }
     \bool_set_true:N \l_@@_code_before_bool
 %    \end{macrocode}
 % We go on with |\@@_pre_array:| which will (among other) execute the
@@ -4656,7 +4656,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % 
-% The sequence |\g_@@_blocks_seq| will contain the charateristics of the blocks
+% The sequence |\g_@@_blocks_seq| will contain the carateristics of the blocks
 % (specified by |\Block|) of the array. The sequence |\g_@@_pos_of_blocks_seq|
 % will contain only the position of the blocks.
 %    \begin{macrocode}
@@ -4694,7 +4694,7 @@ version 2005/12/01 or later.
     \tl_if_empty:NF \g_@@_code_before_tl 
       { 
         \bool_set_true:N \l_@@_code_before_bool
-        \tl_put_right:No \l_@@_code_before_tl \g_@@_code_before_tl 
+        \tl_put_right:No \l_@@_code_before_tl { \g_@@_code_before_tl }
       }
     \tl_if_empty:NF \g_@@_pre_code_before_tl
       { \bool_set_true:N \l_@@_code_before_bool }
@@ -4712,7 +4712,7 @@ version 2005/12/01 or later.
 %
 % \bigskip 
 %    \begin{macrocode}
-    \@@_set_CTarc:o \l_@@_rules_color_tl 
+    \@@_set_CTarc:o { \l_@@_rules_color_tl }
 %    \end{macrocode}
 %
 % \bigskip
@@ -4875,7 +4875,7 @@ version 2005/12/01 or later.
           {
             \m@th 
             \c_math_toggle_token
-            \@@_color:o \l_@@_delimiters_color_tl 
+            \@@_color:o { \l_@@_delimiters_color_tl }
             \exp_after:wN \left \g_@@_left_delim_tl
             \vcenter 
               { 
@@ -5062,7 +5062,7 @@ version 2005/12/01 or later.
 % Now, we actually make the preamble (which will be given to |{array}|). It will
 % be stored in |\g_@@_array_preamble_tl|.
 %    \begin{macrocode}
-    \exp_last_unbraced:No \@@_rec_preamble:n \g_@@_user_preamble_tl \s_stop
+    \exp_last_unbraced:No \@@_rec_preamble:n \g_@@_user_preamble_tl \@@_stop
     \int_gset_eq:NN \g_@@_static_num_of_col_int \c@jCol
 %    \end{macrocode}
 %
@@ -5310,7 +5310,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
       }
     \int_zero:N \l_tmpa_int
-    \str_if_eq:nnT { #1 } { \s_stop } { \bool_gset_true:N \g_tmpb_bool } 
+    \str_if_eq:nnT { #1 } { \@@_stop } { \bool_gset_true:N \g_tmpb_bool } 
     \@@_rec_preamble:n #1 
   }
 %    \end{macrocode}
@@ -5438,7 +5438,7 @@ version 2005/12/01 or later.
               }
             \IfPackageLoadedTF { ragged2e } 
               {
-                \str_case:on \l_@@_hpos_col_str 
+                \str_case:on { \l_@@_hpos_col_str }
                   {
                     c { \Centering }
                     l { \RaggedRight }
@@ -5446,7 +5446,7 @@ version 2005/12/01 or later.
                   }
               }
               {
-                \str_case:on \l_@@_hpos_col_str 
+                \str_case:on { \l_@@_hpos_col_str }
                   {
                     c { \exp_not:N \centering }
                     l { \exp_not:N \raggedright }
@@ -5460,7 +5460,7 @@ version 2005/12/01 or later.
           { \str_if_eq:eeT \l_@@_hpos_col_str { si } \siunitx_cell_end: }
           { #2 }
           {         
-            \str_case:onF \l_@@_hpos_col_str 
+            \str_case:onF { \l_@@_hpos_col_str }
               { 
                 { j } { c } 
                 { si } { c }
@@ -5930,7 +5930,7 @@ version 2005/12/01 or later.
     \tl_if_in:nnTF { ) ] \} } { #2 }
       { \@@_make_preamble_v:nnn #1 #2 }
       { 
-        \str_if_eq:nnTF { \s_stop } { #2 }
+        \str_if_eq:nnTF { \@@_stop } { #2 }
           {
             \tl_if_eq:NNTF \g_@@_right_delim_tl \c_@@_dot_tl
               { \tl_gset:Nn \g_@@_right_delim_tl { #1 } }
@@ -5957,7 +5957,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_v:nnn #1 #2 #3
   {
-    \str_if_eq:nnTF { \s_stop } { #3 }
+    \str_if_eq:nnTF { \@@_stop } { #3 }
       {
         \tl_if_eq:NNTF \g_@@_right_delim_tl \c_@@_dot_tl
           {
@@ -6207,10 +6207,10 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %  \medskip
-% The token |\s_stop| is a marker that we have inserted to mark the end of the
+% The token |\@@_stop| is a marker that we have inserted to mark the end of the
 % preamble (as provided by the final user) that we have inserted in the TeX flow.
 %    \begin{macrocode}
-\cs_set_eq:cN { @@ _ \token_to_str:N \s_stop : } \use_none:n 
+\cs_set_eq:cN { @@ _ \token_to_str:N \@@_stop : } \use_none:n 
 %    \end{macrocode}
 %
 %  \medskip
@@ -6318,7 +6318,7 @@ version 2005/12/01 or later.
               { \int_use:N \c@iRow - \int_use:N \c@jCol } 
               { \int_use:N \c@iRow - \int_eval:n { \c@jCol + #1 } }
           }   
-        \ignorespaces
+         \ignorespaces
       }   
 %    \end{macrocode}
 % 
@@ -6545,7 +6545,7 @@ version 2005/12/01 or later.
               \str_range:Nnn 
                 \l_@@_baseline_tl 
                 6 
-                { \tl_count:o \l_@@_baseline_tl } 
+                { \tl_count:o { \l_@@_baseline_tl } }
             }
           \@@_qpoint:n { row - \int_use:N \l_tmpa_int }
         }
@@ -6553,7 +6553,7 @@ version 2005/12/01 or later.
           \str_if_eq:eeTF \l_@@_baseline_tl { t }
             { \int_set_eq:NN \l_tmpa_int \c_one_int }
             {  
-              \str_if_eq:onTF \l_@@_baseline_tl  { b }
+              \str_if_eq:onTF { \l_@@_baseline_tl } { b }
                 { \int_set_eq:NN \l_tmpa_int \c@iRow }
                 { \int_set:Nn \l_tmpa_int \l_@@_baseline_tl }
             }
@@ -6659,7 +6659,7 @@ version 2005/12/01 or later.
       {
         { ! \seq_if_empty_p:N \g_@@_notes_seq }
         { ! \seq_if_empty_p:N \g_@@_notes_in_caption_seq }
-        { ! \tl_if_empty_p:o \g_@@_tabularnote_tl } 
+        { ! \tl_if_empty_p:o { \g_@@_tabularnote_tl } }
       }
       \@@_insert_tabularnotes:
     \cs_set_eq:NN \tabularnote \@@_tabularnote_error:n
@@ -6865,7 +6865,7 @@ version 2005/12/01 or later.
             \str_range:Nnn 
               \l_@@_baseline_tl 
               { 6 }
-              { \tl_count:o \l_@@_baseline_tl } 
+              { \tl_count:o { \l_@@_baseline_tl } }
           }
         \@@_qpoint:n { row - \int_use:N \l_tmpa_int }
       }
@@ -6959,7 +6959,7 @@ version 2005/12/01 or later.
 % First, we test whether the environment is empty. If it is empty, we raise a
 % fatal error (it's only a security). In order to detect whether it is empty, we
 % test whether the next token is |\end| and, if it's the case, we test if this
-% is the end of the environment (if it is not, a standard error will be raised
+% is the end of the environment (if it is not, an standard error will be raised
 % by LaTeX for incorrect nested environments).
 %    \begin{macrocode}
   { 
@@ -6973,7 +6973,7 @@ version 2005/12/01 or later.
 % Here is the call to |\array| (we have a dedicated macro |\@@_array:n| because
 % of compatibility with the classes \cls{revtex4-1} and \cls{revtex4-2}).
 %    \begin{macrocode}
-            \@@_array:o \g_@@_array_preamble_tl 
+            \@@_array:o { \g_@@_array_preamble_tl }
           }
       }
   }
@@ -7075,7 +7075,7 @@ version 2005/12/01 or later.
 % First, we treat the first row.
 %    \begin{macrocode}
     \seq_pop_left:NN \l_@@_rows_seq \l_tmpa_tl
-    \@@_line_with_light_syntax:o \l_tmpa_tl 
+    \@@_line_with_light_syntax:o { \l_tmpa_tl }
 %    \end{macrocode}
 % Now, the other rows (with the same treatment, excepted that we have to insert
 % |\\| between the rows).
@@ -7108,7 +7108,7 @@ version 2005/12/01 or later.
 % |\@@_array:| because of compatibility with the classes \cls{revtex4-1} and
 % \cls{revtex4-2}). 
 %    \begin{macrocode}
-    \@@_array:o \g_@@_array_preamble_tl \l_@@_new_body_tl
+    \@@_array:o { \g_@@_array_preamble_tl } \l_@@_new_body_tl
   }
 %    \end{macrocode}
 %
@@ -8778,7 +8778,7 @@ version 2005/12/01 or later.
                 { \color { nicematrix-last-row } }
             }
           \keys_set:nn { nicematrix / xdots } { #3 }
-          \@@_color:o \l_@@_xdots_color_tl
+          \@@_color:o { \l_@@_xdots_color_tl }
           \@@_actually_draw_Ldots:
         \group_end:
       }
@@ -10155,9 +10155,11 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \NewDocumentCommand \@@_rotate: { O { } }
   { 
-    \bool_gset_true:N \g_@@_rotate_bool 
-    \keys_set:nn { nicematrix / rotate } { #1 }
-    \ignorespaces
+    \peek_remove_spaces:n
+      {
+        \bool_gset_true:N \g_@@_rotate_bool 
+        \keys_set:nn { nicematrix / rotate } { #1 }
+      }
   }
 %    \end{macrocode}
 %
@@ -10895,7 +10897,6 @@ version 2005/12/01 or later.
 \NewDocumentCommand \@@_rowlistcolors { O { } m m O { } }
   {
 %    \end{macrocode}
-%
 % The group is for the options. |\l_@@_colors_seq| will be the list of colors.
 %    \begin{macrocode}
     \group_begin:
@@ -11103,7 +11104,7 @@ version 2005/12/01 or later.
         \def \l_tmpa_tl { ##1 }
         \tl_if_in:NnTF \l_tmpa_tl { - } 
           { \@@_cut_on_hyphen:w ##1 \q_stop }  
-          { \def \l_tmpb_tl { ##1 } } % 2025-04-16
+          { \@@_cut_on_hyphen:w ##1 - ##1 \q_stop }  
         \tl_if_empty:NTF \l_tmpa_tl 
           { \def \l_tmpa_tl { 1 } }  
           {
@@ -11336,6 +11337,15 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \NewDocumentCommand { \@@_rowlistcolors_tabular } { O { } m O { } }
   {
+    \peek_remove_spaces:n 
+      { \@@_rowlistcolors_tabular:nnn { #1 } { #2 } { #3 } }
+  }
+%    \end{macrocode}
+%
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_rowlistcolors_tabular:nnn #1 #2 #3 
+  {
 %    \end{macrocode}
 % A use of |\rowlistcolors| in the tabular erases the instructions
 % |\rowlistcolors| which are in force. However, it's possible to put \emph{several}
@@ -11349,7 +11359,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \seq_gclear:N \g_tmpa_seq
     \seq_map_inline:Nn \g_@@_rowlistcolors_seq
-      { \@@_rowlistcolors_tabular:nnnn ##1 }
+      { \@@_rowlistcolors_tabular_i:nnnn ##1 }
     \seq_gset_eq:NN \g_@@_rowlistcolors_seq \g_tmpa_seq 
 %    \end{macrocode}
 % Now, we add to the sequence |\g_@@_rowlistcolors_seq| (which is the list of
@@ -11363,7 +11373,6 @@ version 2005/12/01 or later.
         { \exp_not:n { #2 } }
         { restart , cols = \int_use:N \c@jCol - , \exp_not:n { #3 } }
       }
-    \ignorespaces
   }
 %    \end{macrocode}
 %
@@ -11384,7 +11393,7 @@ version 2005/12/01 or later.
 % |\rowlistcolors|). 
 % 
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_rowlistcolors_tabular:nnnn #1 #2 #3 #4
+\cs_new_protected:Npn \@@_rowlistcolors_tabular_i:nnnn #1 #2 #3 #4
   {
     \int_compare:nNnTF { #1 } = { \c@iRow }
 %    \end{macrocode}
@@ -12432,7 +12441,7 @@ version 2005/12/01 or later.
         { \str_if_empty_p:N \l_@@_ccommand_str }
       }
       { \@@_error:n { No~letter~and~no~command } }
-      { \@@_custom_line_i:o \l_@@_other_keys_tl } 
+      { \@@_custom_line_i:o { \l_@@_other_keys_tl } }
   }
 %    \end{macrocode}
 % 
@@ -13479,15 +13488,17 @@ version 2005/12/01 or later.
 % with the syntax $i$|-|$j$) has not been provided by the user, you use |1-1|
 % (that is to say a block of only one cell).
 %    \begin{macrocode}
-    \tl_if_blank:nTF { #2 } 
-      { \@@_Block_ii:nnnnn \c_one_int \c_one_int } 
-      { 
-        \int_compare:nNnTF { \char_value_catcode:n { 45 } } = { 13 }
-        \@@_Block_i_czech:w \@@_Block_i:w 
-        #2 \q_stop  
+    \peek_remove_spaces:n
+      {
+        \tl_if_blank:nTF { #2 } 
+          { \@@_Block_ii:nnnnn \c_one_int \c_one_int } 
+          { 
+            \int_compare:nNnTF { \char_value_catcode:n { 45 } } = { 13 }
+            \@@_Block_i_czech:w \@@_Block_i:w 
+            #2 \q_stop  
+          }
+        { #1 } { #3 } { #4 } 
       }
-    { #1 } { #3 } { #4 } 
-    \ignorespaces
   }
 %    \end{macrocode}
 % 
@@ -15760,22 +15771,24 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \NewDocumentCommand \@@_SubMatrix_in_code_before { m m m m ! O { } }
   {
-    \tl_gput_right:Ne \g_@@_pre_code_after_tl
+    \peek_remove_spaces:n
       { 
-        \SubMatrix { #1 } { #2 } { #3 } { #4 } 
-          [ 
-            delimiters / color = \l_@@_delimiters_color_tl , 
-            hlines = \l_@@_submatrix_hlines_clist ,
-            vlines = \l_@@_submatrix_vlines_clist ,
-            extra-height = \dim_use:N \l_@@_submatrix_extra_height_dim ,
-            left-xshift = \dim_use:N \l_@@_submatrix_left_xshift_dim ,
-            right-xshift = \dim_use:N \l_@@_submatrix_right_xshift_dim ,
-            slim = \bool_to_str:N \l_@@_submatrix_slim_bool ,
-            #5 
-          ] 
+        \tl_gput_right:Ne \g_@@_pre_code_after_tl
+          { 
+            \SubMatrix { #1 } { #2 } { #3 } { #4 } 
+              [ 
+                delimiters / color = \l_@@_delimiters_color_tl , 
+                hlines = \l_@@_submatrix_hlines_clist ,
+                vlines = \l_@@_submatrix_vlines_clist ,
+                extra-height = \dim_use:N \l_@@_submatrix_extra_height_dim ,
+                left-xshift = \dim_use:N \l_@@_submatrix_left_xshift_dim ,
+                right-xshift = \dim_use:N \l_@@_submatrix_right_xshift_dim ,
+                slim = \bool_to_str:N \l_@@_submatrix_slim_bool ,
+                #5 
+              ] 
+          }
+        \@@_SubMatrix_in_code_before_i { #2 } { #3 }
       }
-    \@@_SubMatrix_in_code_before_i { #2 } { #3 }
-    \ignorespaces
   }
 %    \end{macrocode}
 %    
@@ -15822,10 +15835,43 @@ version 2005/12/01 or later.
   {
     \tl_set_rescan:Nnn \l_tmpa_tl { } { m m m m O { } E { _ ^ } { { } { } } }
     \exp_args:NNo \NewDocumentCommand \@@_SubMatrix \l_tmpa_tl 
-      { \@@_sub_matrix:nnnnnnn { #1 } { #2 } { #3 } { #4 } { #5 } { #6 } { #7 } }
+      {
+        \peek_remove_spaces:n
+          { 
+            \@@_sub_matrix:nnnnnnn
+              { #1 } { #2 } { #3 } { #4 } { #5 } { #6 } { #7 } 
+          }
+      }
   }
 %    \end{macrocode}
 %
+% \medskip
+% The following macro will compute |\l_@@_first_i_tl|, |\l_@@_first_j_tl|,
+% |\l_@@_last_i_tl| and |\l_@@_last_j_tl| from the arguments of the command as
+% provided by the user (for example |2-3| and |5-last|).
+%    \begin{macrocode}
+\NewDocumentCommand \@@_compute_i_j:nn 
+  { > { \SplitArgument { 1 } { - } } m > { \SplitArgument { 1 } { - } } m }
+  { \@@_compute_i_j:nnnn #1 #2 }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_compute_i_j:nnnn #1 #2 #3 #4 
+  {
+    \def \l_@@_first_i_tl { #1 }
+    \def \l_@@_first_j_tl { #2 }
+    \def \l_@@_last_i_tl { #3 }
+    \def \l_@@_last_j_tl { #4 }
+    \tl_if_eq:NnT \l_@@_first_i_tl { last }
+      { \tl_set:NV \l_@@_first_i_tl \c@iRow }
+    \tl_if_eq:NnT \l_@@_first_j_tl { last }
+      { \tl_set:NV \l_@@_first_j_tl \c@jCol }
+    \tl_if_eq:NnT \l_@@_last_i_tl { last }
+      { \tl_set:NV \l_@@_last_i_tl \c@iRow }
+    \tl_if_eq:NnT \l_@@_last_j_tl { last }
+      { \tl_set:NV \l_@@_last_j_tl \c@jCol }
+  }
+%    \end{macrocode}
 % 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_sub_matrix:nnnnnnn #1 #2 #3 #4 #5 #6 #7
@@ -15882,7 +15928,6 @@ version 2005/12/01 or later.
         \endpgfpicture
       }
     \group_end:
-    \ignorespaces
   }
 %    \end{macrocode}
 % 
@@ -15927,35 +15972,6 @@ version 2005/12/01 or later.
         \l_@@_submatrix_extra_height_dim - \arrayrulewidth 
       }
     \dim_zero:N \nulldelimiterspace 
-%    \end{macrocode}
-%
-% \medskip
-% The following macro will compute |\l_@@_first_i_tl|, |\l_@@_first_j_tl|,
-% |\l_@@_last_i_tl| and |\l_@@_last_j_tl| from the arguments of the command as
-% provided by the user (for example |2-3| and |5-last|).
-%    \begin{macrocode}
-\NewDocumentCommand \@@_compute_i_j:nn 
-  { > { \SplitArgument { 1 } { - } } m > { \SplitArgument { 1 } { - } } m }
-  { \@@_compute_i_j:nnnn #1 #2 }
-%    \end{macrocode}
-%
-% \bigskip 
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_compute_i_j:nnnn #1 #2 #3 #4 
-  {
-    \def \l_@@_first_i_tl { #1 }
-    \def \l_@@_first_j_tl { #2 }
-    \def \l_@@_last_i_tl { #3 }
-    \def \l_@@_last_j_tl { #4 }
-    \tl_if_eq:NnT \l_@@_first_i_tl { last }
-      { \tl_set:NV \l_@@_first_i_tl \c@iRow }
-    \tl_if_eq:NnT \l_@@_first_j_tl { last }
-      { \tl_set:NV \l_@@_first_j_tl \c@jCol }
-    \tl_if_eq:NnT \l_@@_last_i_tl { last }
-      { \tl_set:NV \l_@@_last_i_tl \c@iRow }
-    \tl_if_eq:NnT \l_@@_last_j_tl { last }
-      { \tl_set:NV \l_@@_last_j_tl \c@jCol }
-  }
 %    \end{macrocode}
 %
 % \bigskip
@@ -16369,16 +16385,16 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \NewDocumentCommand \@@_UnderBrace { O { } m m m O { } }
   { 
-    \@@_brace:nnnnn { #2 } { #3 } { #4 } { #1 , #5 } { under } 
-    \ignorespaces
+    \peek_remove_spaces:n 
+      { \@@_brace:nnnnn { #2 } { #3 } { #4 } { #1 , #5 } { under } } 
   } 
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \NewDocumentCommand \@@_OverBrace { O { } m m m O { } }
   { 
-    \@@_brace:nnnnn { #2 } { #3 } { #4 } { #1 , #5 } { over } 
-    \ignorespaces
+    \peek_remove_spaces:n 
+      { \@@_brace:nnnnn { #2 } { #3 } { #4 } { #1 , #5 } { over } } 
   } 
 %    \end{macrocode}
 %
@@ -16630,7 +16646,7 @@ version 2005/12/01 or later.
   {
     \cs_if_exist:cTF { tikz@library@decorations.pathreplacing@loaded }
       { \@@_hbrace:nnn { #1 } { #2 } { #3 } }
-      { \@@_error:nn { Hbrace~not~allowed } { \Hbrace } }
+      { \@@_error:n { Hbrace~not~allowed } }
   }
 %    \end{macrocode}
 % 
@@ -16700,7 +16716,7 @@ version 2005/12/01 or later.
   {
     \cs_if_exist:cTF { tikz@library@decorations.pathreplacing@loaded }
       { \@@_vbrace:nnn { #1 } { #2 } { #3 } }
-      { \@@_error:nn { Hbrace~not~allowed } { \Vbrace } }
+      { \@@_error:n { Vbrace~not~allowed } }
   }
 %    \end{macrocode}
 % 
@@ -17628,12 +17644,11 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Hbrace~not~allowed }
   {
     Command~not~allowed.\\
-    You~can't~use~the~command~ \token_to_str:N #1 
-    because~you~have~not~loaded~
-    \IfPackageLoadedTF { tikz }
-      { the~TikZ~library~'decorations.pathreplacing'.~Use~ }
-      { TikZ.~ Use:~ \token_to_str:N \usepackage \{tikz\}~and~ } 
-    \token_to_str:N \usetikzlibrary \{decorations.pathreplacing\}. \\
+    You~can't~use~the~command~ \token_to_str:N \Hbrace \ 
+    because~you~have~not~loaded~TikZ~
+    and~the~TikZ~library~'decorations.pathreplacing'.\\
+    Use:~ \token_to_str:N \usepackage \{tikz\}~
+    \token_to_str:N \usetikzlibrary \{decorations.pathreplacing\} \\
     That~command~will~be~ignored. 
   }
 %    \end{macrocode}
