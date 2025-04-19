@@ -837,6 +837,8 @@
     shorten .value_required:n = true ,
     horizontal-labels .bool_set:N = \l__nicematrix_xdots_h_labels_bool ,
     horizontal-labels .default:n = true ,
+    horizontal-label .bool_set:N = \l__nicematrix_xdots_h_labels_bool ,
+    horizontal-label .default:n = true ,
     line-style .code:n =
       {
         \bool_lazy_or:nnTF
@@ -2927,7 +2929,7 @@
               { \int_use:N \c@iRow - \int_use:N \c@jCol }
               { \int_use:N \c@iRow - \int_eval:n { \c@jCol + #1 } }
           }
-         \ignorespaces
+        \ignorespaces
       }
     \def \@sharp { #3 }
     \@arstrut
@@ -8728,15 +8730,6 @@
         { \str_if_eq:eeTF { #4 } { last } { \int_use:N \c@jCol } { #4 } }
       }
   }
-\hook_gput_code:nnn { begindocument } { . }
-  {
-    \tl_set_rescan:Nnn \l_tmpa_tl { } { m m m m O { } E { _ ^ } { { } { } } }
-    \exp_args:NNo \NewDocumentCommand \__nicematrix_SubMatrix \l_tmpa_tl
-      {
-        \__nicematrix_sub_matrix:nnnnnnn { #1 } { #2 } { #3 } { #4 } { #5 } { #6 } { #7 }
-        \ignorespaces
-      }
-  }
 \NewDocumentCommand \__nicematrix_compute_i_j:nn
   { > { \SplitArgument { 1 } { - } } m > { \SplitArgument { 1 } { - } } m }
   { \__nicematrix_compute_i_j:nnnn #1 #2 }
@@ -8755,6 +8748,13 @@
     \tl_if_eq:NnT \l__nicematrix_last_j_tl { last }
       { \tl_set:NV \l__nicematrix_last_j_tl \c@jCol }
   }
+\hook_gput_code:nnn { begindocument } { . }
+  {
+    \tl_set_rescan:Nnn \l_tmpa_tl { } { m m m m O { } E { _ ^ } { { } { } } }
+    \exp_args:NNo \NewDocumentCommand \__nicematrix_SubMatrix \l_tmpa_tl
+      { \__nicematrix_sub_matrix:nnnnnnn { #1 } { #2 } { #3 } { #4 } { #5 } { #6 } { #7 } }
+  }
+
 \cs_new_protected:Npn \__nicematrix_sub_matrix:nnnnnnn #1 #2 #3 #4 #5 #6 #7
   {
     \group_begin:
@@ -8803,6 +8803,7 @@
         \endpgfpicture
       }
     \group_end:
+    \ignorespaces
   }
 \cs_new_protected:Npn \__nicematrix_sub_matrix_i:nnnn #1 #2 #3 #4
   {
@@ -9248,7 +9249,7 @@
 \keys_define:nn { nicematrix / Hbrace }
   {
     color .code:n = ,
-    horizontal-labels .code:n = ,
+    horizontal-label .code:n = ,
     shorten .code:n = ,
     shorten-start .code:n = ,
     shorten-end .code:n = ,
@@ -9847,7 +9848,7 @@
     You~have~used~the~key~' \l_keys_key_str '~but~the~only~
     keys~allowed~for~the~commands~ \token_to_str:N \Hbrace \
     and~ \token_to_str:N \Vbrace \ are:~'color',~
-    'horizontal-labels',~'shorten'~'shorten-end'~
+    'horizontal(s)-labels',~'shorten'~'shorten-end'~
     and~'shorten-start'.
   }
 \__nicematrix_msg_new:nn { Unknown~key~for~TikzEveryCell }
@@ -9890,7 +9891,7 @@
   {
     The~available~keys~are~(in~alphabetic~order):~
     'color',~
-    'horizontal-labels',~
+    'horizontal(s)-labels',~
     'inter',~
     'line-style',~
     'radius',~

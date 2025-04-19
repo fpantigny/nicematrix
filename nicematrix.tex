@@ -3708,6 +3708,8 @@ $\begin{pmatrix}
 
 \subsection{The labels of the dotted lines}
 
+
+
 The commands |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|, |\Iddots|, |\Hdotsfor| and
 |\Vdotsfor| (and the command |\line| in the |\CodeAfter| which is described
 p.~\pageref{line-in-code-after}) accept two optional arguments specified by the
@@ -3735,42 +3737,43 @@ $\begin{bNiceMatrix}
 
 
 \bigskip
-With the key \Definition{xdots/horizontal-labels}, the labels stay
+With the key \Definition{horizontal-label}, the labels stay
 horizontal.\par\nobreak 
 %
 \medskip
 \begin{Code}[width=10cm]
-$\begin{bNiceMatrix}[xdots/horizontal-labels]
+$\begin{bNiceMatrix}
 1 & \hspace*{1cm}            & 0 \\[8mm]
-  & \emph{\Ddots^{n \text{ times}}} &   \\
+  & \emph{\Ddots[horizontal-label]^{n \text{ times}}} &   \\
 0 &                          & 1 
 \end{bNiceMatrix}$
 \end{Code}
-$\begin{bNiceMatrix}[xdots/horizontal-labels]
+$\begin{bNiceMatrix}
 1 & \hspace*{1cm}            & 0 \\[8mm]
-  & \Ddots^{n \text{ times}} &   \\
+  & \Ddots[horizontal-label]^{n \text{ times}} &   \\
 0 &                          & 1 
 \end{bNiceMatrix}$
+
 
 
 \subsection{Customisation of the dotted lines}
 
 \label{customisation} 
-\index{color!key for the dotted rules}
-\index{radius (key for the dotted rules)}
-\index{inter (key for the dotted rules)}
-\index{line-style (key for the dotted rules)}
-\index{shorten (key for the dotted rules)}
-\index{shorten-end (key for the dotted rules)}
-\index{shorten-start (key for the dotted rules)}
-\index{horizontal-labels (key for the dotted rules)}
+\index{color!key for dotted rules}
+\index{radius (key for dotted rules)}
+\index{inter (key for dotted rules)}
+\index{line-style (key for dotted rules)}
+\index{shorten (key for dotted rules)}
+\index{shorten-end (key for dotted rules)}
+\index{shorten-start (key for dotted rules)}
+\index{horizontal-label(s) (key for dotted rules)}
 
 The dotted lines drawn by |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|, |\Iddots|,
 |\Hdotsfor| and |\Vdotsfor| (and by the command |\line| in the |\CodeAfter|
 which is described p.~\pageref{line-in-code-after}) may be customized by the following
 options (specified between square brackets after the command):
 \begin{itemize}
-\item |horizontal-labels|;
+\item |horizontal-label(s)|;
 \item |color|;
 \item |radius|;
 \item |shorten-start|, |shorten-end| and |shorten|;
@@ -3778,6 +3781,11 @@ options (specified between square brackets after the command):
 \item |line-style|.
 \end{itemize}
 
+\smallskip
+For an individual command, it's possible to write |horizontal-label| (in the
+singular). 
+
+\smallskip
 These options may also be fixed with |\NiceMatrixOptions|, as options of
 |\CodeAfter| or at the level of a given environment but, in those cases, they
 must be prefixed by |xdots| (\textsl{xdots} to remind that it works for

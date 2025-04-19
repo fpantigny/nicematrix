@@ -2520,6 +2520,8 @@ version 2005/12/01 or later.
     shorten .value_required:n = true ,
     horizontal-labels .bool_set:N = \l_@@_xdots_h_labels_bool , 
     horizontal-labels .default:n = true , 
+    horizontal-label .bool_set:N = \l_@@_xdots_h_labels_bool , 
+    horizontal-label .default:n = true , 
     line-style .code:n = 
       { 
         \bool_lazy_or:nnTF 
@@ -15801,6 +15803,35 @@ version 2005/12/01 or later.
       }
   }
 %    \end{macrocode}
+%
+% \medskip
+% The following macro will compute |\l_@@_first_i_tl|, |\l_@@_first_j_tl|,
+% |\l_@@_last_i_tl| and |\l_@@_last_j_tl| from the arguments of the command as
+% provided by the user (for example |2-3| and |5-last|).
+%    \begin{macrocode}
+\NewDocumentCommand \@@_compute_i_j:nn 
+  { > { \SplitArgument { 1 } { - } } m > { \SplitArgument { 1 } { - } } m }
+  { \@@_compute_i_j:nnnn #1 #2 }
+%    \end{macrocode}
+%
+% \bigskip 
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_compute_i_j:nnnn #1 #2 #3 #4 
+  {
+    \def \l_@@_first_i_tl { #1 }
+    \def \l_@@_first_j_tl { #2 }
+    \def \l_@@_last_i_tl { #3 }
+    \def \l_@@_last_j_tl { #4 }
+    \tl_if_eq:NnT \l_@@_first_i_tl { last }
+      { \tl_set:NV \l_@@_first_i_tl \c@iRow }
+    \tl_if_eq:NnT \l_@@_first_j_tl { last }
+      { \tl_set:NV \l_@@_first_j_tl \c@jCol }
+    \tl_if_eq:NnT \l_@@_last_i_tl { last }
+      { \tl_set:NV \l_@@_last_i_tl \c@iRow }
+    \tl_if_eq:NnT \l_@@_last_j_tl { last }
+      { \tl_set:NV \l_@@_last_j_tl \c@jCol }
+  }
+%    \end{macrocode}
 % 
 %
 % \bigskip
@@ -15825,6 +15856,7 @@ version 2005/12/01 or later.
       { \@@_sub_matrix:nnnnnnn { #1 } { #2 } { #3 } { #4 } { #5 } { #6 } { #7 } }
   }
 %    \end{macrocode}
+
 %
 % 
 %    \begin{macrocode}
@@ -15929,34 +15961,6 @@ version 2005/12/01 or later.
     \dim_zero:N \nulldelimiterspace 
 %    \end{macrocode}
 %
-% \medskip
-% The following macro will compute |\l_@@_first_i_tl|, |\l_@@_first_j_tl|,
-% |\l_@@_last_i_tl| and |\l_@@_last_j_tl| from the arguments of the command as
-% provided by the user (for example |2-3| and |5-last|).
-%    \begin{macrocode}
-\NewDocumentCommand \@@_compute_i_j:nn 
-  { > { \SplitArgument { 1 } { - } } m > { \SplitArgument { 1 } { - } } m }
-  { \@@_compute_i_j:nnnn #1 #2 }
-%    \end{macrocode}
-%
-% \bigskip 
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_compute_i_j:nnnn #1 #2 #3 #4 
-  {
-    \def \l_@@_first_i_tl { #1 }
-    \def \l_@@_first_j_tl { #2 }
-    \def \l_@@_last_i_tl { #3 }
-    \def \l_@@_last_j_tl { #4 }
-    \tl_if_eq:NnT \l_@@_first_i_tl { last }
-      { \tl_set:NV \l_@@_first_i_tl \c@iRow }
-    \tl_if_eq:NnT \l_@@_first_j_tl { last }
-      { \tl_set:NV \l_@@_first_j_tl \c@jCol }
-    \tl_if_eq:NnT \l_@@_last_i_tl { last }
-      { \tl_set:NV \l_@@_last_i_tl \c@iRow }
-    \tl_if_eq:NnT \l_@@_last_j_tl { last }
-      { \tl_set:NV \l_@@_last_j_tl \c@jCol }
-  }
-%    \end{macrocode}
 %
 % \bigskip
 % We will draw the rules in the |\SubMatrix|.
@@ -16615,6 +16619,7 @@ version 2005/12/01 or later.
 \keys_define:nn { nicematrix / Hbrace }
   {
     color .code:n = ,
+    horizontal-label .code:n = ,
     horizontal-labels .code:n = ,
     shorten .code:n = ,
     shorten-start .code:n = , 
@@ -17436,7 +17441,7 @@ version 2005/12/01 or later.
     You~have~used~the~key~' \l_keys_key_str '~but~the~only~
     keys~allowed~for~the~commands~ \token_to_str:N \Hbrace \
     and~ \token_to_str:N \Vbrace \ are:~'color',~
-    'horizontal-labels',~'shorten'~'shorten-end'~
+    'horizontal(s)-labels',~'shorten'~'shorten-end'~
     and~'shorten-start'.
   }
 %    \end{macrocode}
@@ -17491,7 +17496,7 @@ version 2005/12/01 or later.
   {
     The~available~keys~are~(in~alphabetic~order):~
     'color',~
-    'horizontal-labels',~
+    'horizontal(s)-labels',~
     'inter',~
     'line-style',~
     'radius',~

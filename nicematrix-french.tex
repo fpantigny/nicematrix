@@ -1,8 +1,10 @@
 % -*- coding: utf-8 ; -*- 
 % Ce fichier doit être compilé avec LuaLaTeX uniquement.
 \documentclass[dvipsnames]{article}% dvipsnames is for xcolor (loaded by TikZ, loaded by nicematrix)
-\usepackage[french]{babel}
-\frenchsetup{og = « , fg = »}
+\usepackage{polyglossia}
+\setmainlanguage{french}
+
+
 
 \usepackage{geometry}
 \geometry{left=2.8cm,right=2.8cm,top=2.5cm,bottom=2.5cm,papersize={21cm,29.7cm}}
@@ -3847,20 +3849,20 @@ $\begin{bNiceMatrix}
 
 
 \bigskip
-Avec la clé \Definition{xdots/horizontal-labels}, les labels restent
-horizontaux.\par\nobreak 
+Avec la clé \Definition{horizontal-label}, le label reste
+horizontal.\par\nobreak 
 
 \smallskip
 \begin{Code}[width=10cm]
-$\begin{bNiceMatrix}[\emph{xdots/horizontal-labels}]
+$\begin{bNiceMatrix}
 1 & \hspace*{1cm}           & 0 \\[8mm]
-  & \emph{\Ddots^{n \text{ fois}}} &    \\
+  & \emph{\Ddots[horizontal-label]^{n \text{ fois}}} & \\
 0 &                         & 1
 \end{bNiceMatrix}$
 \end{Code}
-$\begin{bNiceMatrix}[xdots/horizontal-labels]
+$\begin{bNiceMatrix}
 1 & \hspace*{1cm}           & 0 \\[8mm]
-  & \Ddots^{n \text{ fois}} &   \\
+  & \Ddots[horizontal-label]^{n \text{ fois}} & \\
 0 &                         & 1
 \end{bNiceMatrix}$
 
@@ -3869,14 +3871,14 @@ $\begin{bNiceMatrix}[xdots/horizontal-labels]
 \subsection{Personnalisation des lignes en pointillés}
 
 \label{customization}
-\index{color!clé pour les lignes pointillées}
-\index{radius (clé pour les lignes pointillées)}
-\index{inter (clé pour les lignes pointillées)}
-\index{line-style (clé pour les lignes pointillées)}
-\index{shorten (clé pour les lignes pointillées)}
-\index{shorten-end (clé pour les lignes pointillées)}
-\index{shorten-start (clé pour les lignes pointillées)}
-\index{horizontal-labels (clé pour les lignes pointillées)}
+\index{color!clé des lignes pointillées}
+\index{radius (clé des lignes pointillées)}
+\index{inter (clé des lignes pointillées)}
+\index{line-style (clé des lignes pointillées)}
+\index{shorten (clé des lignes pointillées)}
+\index{shorten-end (clé des lignes pointillées)}
+\index{shorten-start (clé des lignes pointillées)}
+\index{horizontal-label(s) (clé des lignes pointillées)}
 
 
 Les lignes pointillées tracées par |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|,
@@ -3885,7 +3887,7 @@ Les lignes pointillées tracées par |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|,
 par les options suivantes (que l'on met entre crochets après la commande) :
 %
 \begin{itemize}
-\item |horizontal-labels| ;
+\item |horizontal-label(s)| ;
 \item |color| ;
 \item |radius| ; 
 \item |shorten-start|, |shorten-end| et |shorten| ;
@@ -3893,6 +3895,11 @@ par les options suivantes (que l'on met entre crochets après la commande) :
 \item |line-style|.
 \end{itemize}
 
+\smallskip
+Pour une commande individuelle, on peut utiliser \Definition{horizontal-label}
+au singulier.
+
+\smallskip
 Ces options peuvent aussi être fixées avec |\NiceMatrixOptions| ou bien au
 niveau d'un environnement mais elles doivent alors être préfixées par |xdots|
 (\textsl{xdots} pour rappeler que cela s'applique à |\Cdots|, |\Ldots|,
@@ -4040,7 +4047,7 @@ arguments:
 
 \begin{itemize}
 \item un premier argument optionnel (entre crochets) pour une liste de couples
-\textsl{clé=valeur} : les clés autorisées sont |color|, |horizontal-labels|,
+\textsl{clé=valeur} : les clés autorisées sont |color|, |horizontal-label|,
 |shorten|, |shorten-start| et |shorten-end|.
 
 \item un deuxième argument, obligatoire, qui est le nombre de colonnes (pour
