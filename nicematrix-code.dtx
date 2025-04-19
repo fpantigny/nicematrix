@@ -1215,36 +1215,33 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% The integer |\l_@@_weight_int| will be the weight of the |X| column (the
-% initial value is $1$). The user may specify a different value (such as $2$,
-% $3$, etc.) by putting that value in the optional argument of the specifier.
+% The floating |\l_@@_weight_fp| will be the weight of the |X| column (the
+% initial value is $1.0$). The user may specify a different value (such as $2$,
+% $0.5$, etc.) by putting that value in the optional argument of the specifier.
 % The weights of the |X| columns are used in the computation of the actual width
 % of those columns as in \pkg{tabu} (now obsolete) or \pkg{tabularray}.
 %    \begin{macrocode}
-\int_new:N \l_@@_weight_int 
-\int_set_eq:NN \l_@@_weight_int \c_one_int
+\fp_new:N \l_@@_weight_fp 
+\fp_set:Nn \l_@@_weight_fp { 1.0 }
 %    \end{macrocode}
 %
 % \bigskip
-% The sum of the weights of all the |X|-columns in the preamble. The weight of a
-% |X|-column is given as an optional argument between square brackets. The
-% default value, of course, is $1$.
+% The sum of the weights of all the |X|-columns in the preamble. 
 %    \begin{macrocode}
-\int_new:N \g_@@_total_X_weight_int
+\fp_new:N \g_@@_total_X_weight_fp
 %    \end{macrocode}
 %
-% \bigskip
+% \bigskip 
 % If there is at least one |X|-column in the preamble of the array, the
 % following flag will be raised via the |aux| file. The length
-% |l_@@_x_columns_dim| will be the width of |X|-columns of weight $1$ (the width
-% of a column of weigth $n$ will be that dimension multiplied by~$n$). That
-% value is computed after the construction of the array during the first
+% |l_@@_x_columns_dim| will be the width of |X|-columns of weight $1.0$ (the
+% width of a column of weight $x$ will be that dimension multiplied by~$x$).
+% That value is computed after the construction of the array during the first
 % compilation in order to be used in the following run.
 %    \begin{macrocode}
 \bool_new:N \l_@@_X_columns_aux_bool
 \dim_new:N \l_@@_X_columns_dim
 %    \end{macrocode}
-% 
 % 
 % \bigskip
 % This boolean will be used only to detect in an expandable way whether we are
@@ -3837,9 +3834,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% The number of letters |X| in the preamble of the array.
+% The total weight of the letters |X| in the preamble of the array.
 %    \begin{macrocode}
-    \int_gzero:N \g_@@_total_X_weight_int
+    \fp_gzero:N \g_@@_total_X_weight_fp
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -4762,7 +4759,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \bool_if:NT \l_@@_width_used_bool
       {
-        \int_if_zero:nT { \g_@@_total_X_weight_int }
+        \fp_compare:nNnT { \g_@@_total_X_weight_fp } = { \c_zero_fp }
           { \@@_error_or_warning:n { width~without~X~columns } }
       }
 %    \end{macrocode}
@@ -4770,11 +4767,12 @@ version 2005/12/01 or later.
 % \bigskip
 % Now, if there is at least one |X|-column in the environment, we compute the
 % width that those columns will have (in the next compilation). In fact,
-% |l_@@_X_columns_dim| will be the width of a column of weight $1$. For a
-% |X|-column of weight~$n$, the width will be |\l_@@_X_columns_dim| multiplied
-% by~$n$. 
+% |l_@@_X_columns_dim| will be the width of a column of weight $1.0$. For a
+% |X|-column of weight~$x$, the width will be |\l_@@_X_columns_dim| multiplied
+% by~$x$. 
 %    \begin{macrocode}
-    \int_if_zero:nF { \g_@@_total_X_weight_int } { \@@_compute_width_X: }
+    \fp_compare:nNnT { \g_@@_total_X_weight_fp } > { \c_zero_fp }
+      { \@@_compute_width_X: }
 %    \end{macrocode}
 % 
 % \bigskip
@@ -4969,9 +4967,9 @@ version 2005/12/01 or later.
 % The following command will be used only once. We have written that command for
 % legibility. If there is at least one |X|-column in the environment, we compute
 % the width that those columns will have (in the next compilation). In fact,
-% |l_@@_X_columns_dim| will be the width of a column of weight $1$. For a
-% |X|-column of weight~$n$, the width will be |\l_@@_X_columns_dim| multiplied
-% by~$n$.
+% |l_@@_X_columns_dim| will be the width of a column of weight $1.0$. For a
+% |X|-column of weight~$x$, the width will be |\l_@@_X_columns_dim| multiplied
+% by~$x$.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_compute_width_X:
   { 
@@ -4991,8 +4989,14 @@ version 2005/12/01 or later.
               {
                 \dim_eval:n 
                   {
-                    ( \l_@@_width_dim - \box_wd:N \l_@@_the_array_box ) 
-                    / \int_use:N \g_@@_total_X_weight_int 
+                    \fp_to_dim:n
+                      { 
+                        (
+                          \dim_eval:n 
+                            { \l_@@_width_dim - \box_wd:N \l_@@_the_array_box } 
+                        ) 
+                        / \fp_use:N \g_@@_total_X_weight_fp 
+                      }
                     + \l_@@_X_columns_dim 
                   }
               }
@@ -5442,9 +5446,12 @@ version 2005/12/01 or later.
               {
                 \str_case:on \l_@@_hpos_col_str 
                   {
-                    c { \Centering }
-                    l { \RaggedRight }
-                    r { \RaggedLeft }
+%    \end{macrocode}
+% The following |\exp_not:N| are mandatory.
+%    \begin{macrocode}
+                    c { \exp_not:N \Centering }
+                    l { \exp_not:N \RaggedRight }
+                    r { \exp_not:N \RaggedLeft }
                   }
               }
               {
@@ -6096,11 +6103,11 @@ version 2005/12/01 or later.
 % \medskip
 % The following set of keys is for the specifier |X| in the preamble of the
 % array. Such specifier may have as keys all the keys of 
-% |{ nicematrix / p-column }| but also a key as 1, 2, 3, etc. The following set
-% of keys will be used to retrieve that value (in the counter |\l_@@_weight_int|).
+% |{ nicematrix / p-column }| but also a key as 1, 2, 0.5, etc. The following set
+% of keys will be used to retrieve that value (in |\l_@@_weight_fp|).
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / X-column }
-  { unknown .code:n = \int_set:Nn \l_@@_weight_int { \l_keys_key_str } }
+  { unknown .code:n = \fp_set:Nn \l_@@_weight_fp { \l_keys_key_str } }
 %    \end{macrocode}
 % 
 % 
@@ -6129,13 +6136,14 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % The unknown keys are put in |\l_tmpa_tl|
 %    \begin{macrocode}
+    \fp_set:Nn \l_@@_weight_fp { 1.0 }
     \keys_set:no { nicematrix / X-column } \l_tmpa_tl
-    \int_compare:nNnT { \l_@@_weight_int } < { \c_zero_int }
+    \fp_compare:nNnT { \l_@@_weight_fp } < { \c_zero_fp }
       { 
         \@@_error_or_warning:n { negative~weight } 
-        \int_set:Nn \l_@@_weight_int { - \l_@@_weight_int }
+        \fp_set:Nn \l_@@_weight_fp { - \l_@@_weight_fp }
       }
-    \int_gadd:Nn \g_@@_total_X_weight_int \l_@@_weight_int
+    \fp_gadd:Nn \g_@@_total_X_weight_fp \l_@@_weight_fp
 %    \end{macrocode}
 %
 % We test whether we know the width of the |X|-columns by reading the |aux| file
@@ -6145,7 +6153,7 @@ version 2005/12/01 or later.
     \bool_if:NTF \l_@@_X_columns_aux_bool
       { 
         \@@_make_preamble_ii_iv:nnn 
-          { \l_@@_weight_int \l_@@_X_columns_dim } 
+          { \fp_use:N \l_@@_weight_fp \l_@@_X_columns_dim } 
           { minipage }
           { \@@_no_update_width: }
       }
@@ -7748,7 +7756,7 @@ version 2005/12/01 or later.
   }
   { 
     \endNiceArray 
-    \int_if_zero:nT { \g_@@_total_X_weight_int }
+    \fp_compare:nNnT { \g_@@_total_X_weight_fp } = { \c_zero_fp }
       { \@@_error:n { NiceTabularX~without~X } }
   }
 %    \end{macrocode}
@@ -17199,7 +17207,7 @@ version 2005/12/01 or later.
   {
     Negative~weight.\\
     The~weight~of~the~'X'~columns~must~be~positive~and~you~have~used~
-    the~value~' \int_use:N \l_@@_weight_int '.\\
+    the~value~' \fp_use:N \l_@@_weight_fp '.\\
     The~absolute~value~will~be~used.
   }  
 %    \end{macrocode}
