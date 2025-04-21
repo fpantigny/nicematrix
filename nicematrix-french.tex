@@ -3142,7 +3142,7 @@ Comme avec les extensions \pkg{tabu}\footnote{L'extension \pkg{tabu} est
 accepte entre crochets un argument optionnel qui est une liste de clés.
 \begin{itemize}
 \item On peut spécifier un poids pour la colonne en mettant directement un
-entier positif comme argument du spécificateur |X|. Par exemple, une colonne
+nombre positif comme argument du spécificateur |X|. Par exemple, une colonne
 |X[2]| aura une largeur double de celle d'une colonne |X| (qui a un poids de
 1).\footnote{Les valeurs négatives pour les poids, comme proposées par
   \pkg{tabu} (maintenant obsolète), ne sont \emph{pas} prises en charge par
@@ -3158,7 +3158,7 @@ et |b|). La valeur initiale est |t|.
 \end{itemize}
 
 \begin{Code}
-\begin{NiceTabular}\emph{[width=9cm]{X[2,l]X[l]}}[hvlines]
+\begin{NiceTabular}\emph{[width=9cm]{X[c,m]X[0.5,c,m]}}[hvlines]
 Un texte relativement long qui tient sur plusieurs lignes. &
 Un texte relativement long qui tient sur plusieurs lignes. \\
 Un texte plus court. & Un texte plus court.
@@ -3167,7 +3167,7 @@ Un texte plus court. & Un texte plus court.
 
 
 \begin{center}
-\begin{NiceTabular}[width=9cm]{X[2,l]X[l]}[hvlines]
+\begin{NiceTabular}[width=9cm]{X[c,m]X[0.5,c,m]}[hvlines]
 Un texte relativement long qui tient sur plusieurs lignes. &
 Un texte relativement long qui tient sur plusieurs lignes. \\
 Un texte plus court. & Un texte plus court.
@@ -6248,7 +6248,8 @@ On peut rendre ces nœuds accessibles dans le |\CodeBefore| en utilisant la clé
 \Definition{create-cell-nodes} du mot-clé |\CodeBefore| (dans ce cas-là, les
 nœuds sont créés une première fois avant la construction du tableau en utilisant
 des informations écrites dans le fichier |aux| puis recréés lors de la composition
-du tableau proprement dit).
+du tableau proprement dit ; ce mécanisme n'est pas actif par défaut pour des
+questions d'efficacité).
 
 \bigskip
 Voici un exemple d'utilisation de ces nœuds dans le |\CodeAfter|.

@@ -427,9 +427,7 @@
 \int_new:N \l__nicematrix_old_jCol_int
 \seq_new:N \l__nicematrix_custom_line_commands_seq
 \tl_new:N \l__nicematrix_rules_color_tl
-\int_new:N \l__nicematrix_weight_int
-\int_set_eq:NN \l__nicematrix_weight_int \c_one_int
-\int_new:N \g__nicematrix_total_X_weight_int
+\fp_new:N \g__nicematrix_total_X_weight_fp
 \bool_new:N \l__nicematrix_X_columns_aux_bool
 \dim_new:N \l__nicematrix_X_columns_dim
 \bool_new:N \g__nicematrix_after_col_zero_bool
@@ -804,7 +802,7 @@
 \bool_new:N \l__nicematrix_nullify_dots_bool
 \cs_new_protected:Npn \__nicematrix_reset_arraystretch: { \def \arraystretch { 1 } }
 \bool_new:N \l__nicematrix_auto_columns_width_bool
-\bool_new:N \g__nicematrix_recreate_cell_nodes_bool
+\bool_new:N \g__nicematrix_create_cell_nodes_bool
 \str_new:N \l__nicematrix_name_str
 \bool_new:N \l__nicematrix_medium_nodes_bool
 \bool_new:N \l__nicematrix_large_nodes_bool
@@ -883,7 +881,7 @@
     &-in-blocks .meta:n = ampersand-in-blocks ,
     no-cell-nodes .code:n =
       \bool_set_true:N \l__nicematrix_no_cell_nodes_bool
-      \cs_set_protected:Npn \__nicematrix_node_for_cell:
+      \cs_set_protected:Npn \__nicematrix_node_cell:
         { \set@color \box_use_drop:N \l__nicematrix_cell_box } ,
     no-cell-nodes .value_forbidden:n = true ,
     rounded-corners .dim_set:N = \l__nicematrix_tab_rounded_corners_dim ,
@@ -1423,9 +1421,29 @@
       }
       { #1 }
   }
+\socket_new:nn { nicematrix / create-cell-nodes } { 1 }
+\socket_new_plug:nnn { nicematrix / create-cell-nodes } { active }
+  {
+    \box_move_up:nn { \box_ht:N \l__nicematrix_cell_box }
+      \hbox:n
+        {
+          \pgfsys@markposition
+            { \__nicematrix_env: - \int_use:N \c@iRow - \int_use:N \c@jCol - NW }
+        }
+    #1
+    \box_move_down:nn { \box_dp:N \l__nicematrix_cell_box }
+      \hbox:n
+        {
+          \pgfsys@markposition
+            { \__nicematrix_env: - \int_use:N \c@iRow - \int_use:N \c@jCol - SE }
+        }
+  }
 \cs_new_protected:Npn \__nicematrix_print_node_cell:
-  { \socket_use:nn { nicematrix / siunitx-wrap } { \__nicematrix_node_for_cell: } }
-\cs_new_protected:Npn \__nicematrix_node_for_cell:
+  {
+    \socket_use:nn { nicematrix / siunitx-wrap }
+      { \socket_use:nn { nicematrix / create-cell-nodes } \__nicematrix_node_cell: }
+  }
+\cs_new_protected:Npn \__nicematrix_node_cell:
   {
     \pgfpicture
     \pgfsetbaseline \c_zero_dim
@@ -1436,7 +1454,7 @@
       { base }
       {
         \set@color
-        \box_use_drop:N \l__nicematrix_cell_box
+        \box_use:N \l__nicematrix_cell_box
       }
       { \__nicematrix_env: - \int_use:N \c@iRow - \int_use:N \c@jCol }
       { \l__nicematrix_pgf_node_code_tl }
@@ -1447,39 +1465,6 @@
           { \__nicematrix_env: - \int_use:N \c@iRow - \int_use:N \c@jCol }
       }
     \endpgfpicture
-  }
-\cs_new_protected:Npn \__nicematrix_patch_node_for_cell:n #1
-  {
-    \cs_new_protected:Npn \__nicematrix_patch_node_for_cell:
-      {
-        \hbox_set:Nn \l__nicematrix_cell_box
-          {
-            \box_move_up:nn { \box_ht:N \l__nicematrix_cell_box }
-            \hbox_overlap_left:n
-              {
-                \pgfsys@markposition
-                  { \__nicematrix_env: - \int_use:N \c@iRow - \int_use:N \c@jCol - NW }
-                #1
-              }
-            \box_use:N \l__nicematrix_cell_box
-            \box_move_down:nn { \box_dp:N \l__nicematrix_cell_box }
-            \hbox_overlap_left:n
-              {
-                \pgfsys@markposition
-                  { \__nicematrix_env: - \int_use:N \c@iRow - \int_use:N \c@jCol - SE }
-                #1
-              }
-          }
-      }
-  }
-\AtBeginDocument
-  {
-    \bool_lazy_or:nnTF { \sys_if_engine_xetex_p: } { \sys_if_output_dvi_p: }
-      {
-        \__nicematrix_patch_node_for_cell:n
-          { \skip_horizontal:n { 0.5 \box_wd:N \l__nicematrix_cell_box } }
-      }
-      { \__nicematrix_patch_node_for_cell:n { } }
   }
 \cs_new_protected:Npn \__nicematrix_instruction_of_type:nnn #1 #2 #3
   {
@@ -1603,7 +1588,7 @@
   }
 \cs_new_protected:Npn \__nicematrix_pre_array_ii:
   {
-    \int_gzero:N \g__nicematrix_total_X_weight_int
+    \fp_gzero:N \g__nicematrix_total_X_weight_fp
     \__nicematrix_expand_clist:N \l__nicematrix_hlines_clist
     \__nicematrix_expand_clist:N \l__nicematrix_vlines_clist
     \__nicematrix_patch_booktabs:
@@ -1615,13 +1600,14 @@
         \dim_set:Nn \arraycolsep { 1.45 pt }
         \cs_set_eq:NN \__nicematrix_tuning_key_small: \scriptstyle
       }
-    \bool_if:NT \g__nicematrix_recreate_cell_nodes_bool
+    \bool_if:NT \g__nicematrix_create_cell_nodes_bool
       {
         \tl_put_right:Nn \__nicematrix_begin_of_row:
           {
             \pgfsys@markposition
               { \__nicematrix_env: - row - \int_use:N \c@iRow - base }
           }
+        \socket_assign_plug:nn { nicematrix / create-cell-nodes } { active }
       }
     \bool_if:nTF
       { \c__nicematrix_recent_array_bool && ! \c__nicematrix_revtex_bool }
@@ -1813,7 +1799,7 @@
           { \pgfpointdiff \__nicematrix_picture_position: \__nicematrix_node_position: }
       }
     \__nicematrix_create_diag_nodes:
-    \bool_if:NT \g__nicematrix_recreate_cell_nodes_bool { \__nicematrix_recreate_cell_nodes: }
+    \bool_if:NT \g__nicematrix_create_cell_nodes_bool { \__nicematrix_recreate_cell_nodes: }
     \endpgfpicture
     \__nicematrix_create_blocks_nodes:
     \IfPackageLoadedT { tikz }
@@ -1845,7 +1831,7 @@
       { \cs_set_nopar:cpn { __nicematrix _ corner _ ##1 } { } }
     \seq_gclear_new:N \g__nicematrix_colors_seq
     \__nicematrix_add_to_colors_seq:nn { { nocolor } } { }
-    \bool_gset_false:N \g__nicematrix_recreate_cell_nodes_bool
+    \bool_gset_false:N \g__nicematrix_create_cell_nodes_bool
     \group_begin:
     \bool_if:NT \l__nicematrix_tabular_bool { \c_math_toggle_token }
       \int_compare:nNnT { \char_value_catcode:n { 60 } } = { 13 }
@@ -1857,12 +1843,10 @@
       \q_stop
     \bool_if:NT \l__nicematrix_tabular_bool { \c_math_toggle_token }
     \group_end:
-    \bool_if:NT \g__nicematrix_recreate_cell_nodes_bool
-      { \tl_put_left:Nn \__nicematrix_node_for_cell: \__nicematrix_patch_node_for_cell: }
   }
 \keys_define:nn { nicematrix / CodeBefore }
   {
-    create-cell-nodes .bool_gset:N = \g__nicematrix_recreate_cell_nodes_bool ,
+    create-cell-nodes .bool_gset:N = \g__nicematrix_create_cell_nodes_bool ,
     create-cell-nodes .default:n = true ,
     sub-matrix .code:n = \keys_set:nn { nicematrix / sub-matrix } { #1 } ,
     sub-matrix .value_required:n = true ,
@@ -2057,10 +2041,11 @@
       { \UseTaggingSocket { tbl / hmode / end } }
     \bool_if:NT \l__nicematrix_width_used_bool
       {
-        \int_if_zero:nT { \g__nicematrix_total_X_weight_int }
+        \fp_compare:nNnT { \g__nicematrix_total_X_weight_fp } = { \c_zero_fp }
           { \__nicematrix_error_or_warning:n { width~without~X~columns } }
       }
-    \int_if_zero:nF { \g__nicematrix_total_X_weight_int } { \__nicematrix_compute_width_X: }
+    \fp_compare:nNnT { \g__nicematrix_total_X_weight_fp } > { \c_zero_fp }
+      { \__nicematrix_compute_width_X: }
     \int_compare:nNnT { \l__nicematrix_last_row_int } > { -2 }
       {
         \bool_if:NF \l__nicematrix_last_row_without_value_bool
@@ -2177,8 +2162,14 @@
               {
                 \dim_eval:n
                   {
-                    ( \l__nicematrix_width_dim - \box_wd:N \l__nicematrix_the_array_box )
-                    / \int_use:N \g__nicematrix_total_X_weight_int
+                    \fp_to_dim:n
+                      {
+                        (
+                          \dim_eval:n
+                            { \l__nicematrix_width_dim - \box_wd:N \l__nicematrix_the_array_box }
+                        )
+                        / \fp_use:N \g__nicematrix_total_X_weight_fp
+                      }
                     + \l__nicematrix_X_columns_dim
                   }
               }
@@ -2425,9 +2416,9 @@
               {
                 \str_case:on \l__nicematrix_hpos_col_str
                   {
-                    c { \Centering }
-                    l { \RaggedRight }
-                    r { \RaggedLeft }
+                    c { \exp_not:N \Centering }
+                    l { \exp_not:N \RaggedRight }
+                    r { \exp_not:N \RaggedLeft }
                   }
               }
               {
@@ -2815,23 +2806,24 @@
 \cs_new_protected:Npn \__nicematrix_make_preamble_X:w [ #1 ]
   { \__nicematrix_make_preamble_X_i:n { #1 } }
 \keys_define:nn { nicematrix / X-column }
-  { unknown .code:n = \int_set:Nn \l__nicematrix_weight_int { \l_keys_key_str } }
+  {
+    unknown .code:n =
+     \regex_match:nVTF { \A[0-9]*\.?[0-9]*\Z } \l_keys_key_str
+       { \fp_set:Nn \l_tmpa_fp { \l_keys_key_str } }
+       { \__nicematrix_error_or_warning:n { invalid~weight } }
+  }
 \cs_new_protected:Npn \__nicematrix_make_preamble_X_i:n #1
   {
     \str_set:Nn \l__nicematrix_hpos_col_str { j }
     \str_set:Nn \l__nicematrix_vpos_col_str { p }
+    \fp_set:Nn \l_tmpa_fp { 1.0 }
     \__nicematrix_keys_p_column:n { #1 }
     \keys_set:no { nicematrix / X-column } \l_tmpa_tl
-    \int_compare:nNnT { \l__nicematrix_weight_int } < { \c_zero_int }
-      {
-        \__nicematrix_error_or_warning:n { negative~weight }
-        \int_set:Nn \l__nicematrix_weight_int { - \l__nicematrix_weight_int }
-      }
-    \int_gadd:Nn \g__nicematrix_total_X_weight_int \l__nicematrix_weight_int
+    \fp_gadd:Nn \g__nicematrix_total_X_weight_fp \l_tmpa_fp
     \bool_if:NTF \l__nicematrix_X_columns_aux_bool
       {
         \__nicematrix_make_preamble_ii_iv:nnn
-          { \l__nicematrix_weight_int \l__nicematrix_X_columns_dim }
+          { \fp_use:N \l_tmpa_fp \l__nicematrix_X_columns_dim }
           { minipage }
           { \__nicematrix_no_update_width: }
       }
@@ -3635,7 +3627,7 @@
         \hbox_overlap_left:n
           {
             \dim_compare:nNnTF { \box_wd:N \l__nicematrix_cell_box } > { \c_zero_dim }
-              { \__nicematrix_node_for_cell: }
+              { \__nicematrix_node_cell: }
               { \box_use_drop:N \l__nicematrix_cell_box }
             \skip_horizontal:N \l__nicematrix_left_delim_dim
             \skip_horizontal:N \l__nicematrix_left_margin_dim
@@ -3686,7 +3678,7 @@
                 \skip_horizontal:N \l__nicematrix_right_delim_dim
                 \skip_horizontal:N \l__nicematrix_right_margin_dim
                 \skip_horizontal:N \l__nicematrix_extra_right_margin_dim
-                \__nicematrix_node_for_cell:
+                \__nicematrix_node_cell:
               }
           }
         \bool_gset_false:N \g__nicematrix_empty_cell_bool
@@ -3825,7 +3817,7 @@
   }
   {
     \endNiceArray
-    \int_if_zero:nT { \g__nicematrix_total_X_weight_int }
+    \fp_compare:nNnT { \g__nicematrix_total_X_weight_fp } = { \c_zero_fp }
       { \__nicematrix_error:n { NiceTabularX~without~X } }
   }
 \NewDocumentEnvironment { NiceTabular* } { m O { } m ! O { } }
@@ -9250,6 +9242,7 @@
   {
     color .code:n = ,
     horizontal-label .code:n = ,
+    horizontal-labels .code:n = ,
     shorten .code:n = ,
     shorten-start .code:n = ,
     shorten-end .code:n = ,
@@ -9377,14 +9370,14 @@
     not-empty .code:n =
       \bool_lazy_or:nnTF
         { \l__nicematrix_in_code_after_bool }
-        { \g__nicematrix_recreate_cell_nodes_bool }
+        { \g__nicematrix_create_cell_nodes_bool }
         { \bool_set_true:N \l__nicematrix_not_empty_bool }
         { \__nicematrix_error:n { detection~of~empty~cells } } ,
     not-empty .value_forbidden:n = true ,
     empty .code:n =
       \bool_lazy_or:nnTF
         { \l__nicematrix_in_code_after_bool }
-        { \g__nicematrix_recreate_cell_nodes_bool }
+        { \g__nicematrix_create_cell_nodes_bool }
         { \bool_set_true:N \l__nicematrix_empty_bool }
         { \__nicematrix_error:n { detection~of~empty~cells } } ,
     empty .value_forbidden:n = true ,
@@ -9675,12 +9668,10 @@
     and~have~been~deprecated.\\
     You~won't~have~similar~message~till~the~end~of~the~document.
   }
-\__nicematrix_msg_new:nn { negative~weight }
+\__nicematrix_msg_new:nn { invalid~weight }
   {
-    Negative~weight.\\
-    The~weight~of~the~'X'~columns~must~be~positive~and~you~have~used~
-    the~value~' \int_use:N \l__nicematrix_weight_int '.\\
-    The~absolute~value~will~be~used.
+    Unknown~key.\\
+    The~key~' \l_keys_key_str '~of~your~column~X~is~unknown~and~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { last~col~not~used }
   {

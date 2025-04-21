@@ -2029,7 +2029,7 @@ $\left(\begin{NiceArray}{cccc:c}[no-cell-nodes]
 \index{Rules@\textbf{Rules in the tabulars}|)}
 
 
-\section{The color of the background of the rows and columns}
+\subsection{The color of the background of the rows and columns}
 
 \index{Colour!of the cells}
 
@@ -3043,7 +3043,7 @@ considered as deprecated.} and \pkg{tabularray}, the specifier |X| takes
 in an optional argument (between square brackets) which is a list of keys.
 \begin{itemize}
 \item It's possible to give a weight for the column by providing a positive
-integer directly as argument of the specifier |X|. For example, a column
+number directly as argument of the specifier |X|. For example, a column
 |X[2]| will have a width double of the width of a column~|X| (which has a
 weight equal to $1$).\footnote{The negative values of the weight, as provided
 by \pkg{tabu} (which is now obsolete), are \emph{not} supported by \pkg{nicematrix}.
@@ -3060,7 +3060,7 @@ commands |\raggedright|, |\centering| and |\raggedleft|. That ensures a better o
 \end{itemize}
 
 \begin{Code}
-\emph{\begin{NiceTabular}[width=9cm]{X[2,l]X[l]}[hvlines]}
+\emph{\begin{NiceTabular}\emph{[width=9cm]{X[c,m]X[0.5,c,m]}}[hvlines]}
 a rather long text which fits on several lines 
 & a rather long text which fits on several lines \\
 a shorter text & a shorter text
@@ -3068,7 +3068,7 @@ a shorter text & a shorter text
 \end{Code}
 
 \begin{center}
-\begin{NiceTabular}[width=9cm]{X[2,l]X[l]}[hvlines]
+\begin{NiceTabular}[width=9cm]{X[c,m]X[0.5,c,m]}[hvlines]
 a rather long text which fits on several lines 
 & a rather long text which fits on several lines \\
 a shorter text & a shorter text
@@ -5690,7 +5690,7 @@ lines (cf. p.~\pageref{Cdots}) and the computation of the ``corners''
 \medskip
 The creation of those nodes needs time and memory. It's possible to desactive
 ponctually the creation of those nodes with the key \Definition{no-cell-nodes}
-in order to speed up the compilations. But e careful: those nodes are used
+in order to speed up the compilations. But be careful: those nodes are used
 internally but \pkg{nicematrix} for several features. One should use the key
 |no-cell-nodes| only when those feateures are not used. Among these are the key
 |corners| and the commands for the continuous dotted lines (|\Cdots|, etc.).
@@ -6090,7 +6090,8 @@ It's possible to have these nodes available in the |\CodeBefore| by using the
 key \Definition{create-cell-nodes} of the keyword |\CodeBefore| (in that case,
 the nodes are created first before the construction of the array by using
 informations written on the |aux| file and created a second time during the
-contruction of the array itself).
+contruction of the array itself; this mechanism is not activated by default for
+efficiency reasons).
 
 \bigskip
 Here is an example which uses these nodes in the |\CodeAfter|.

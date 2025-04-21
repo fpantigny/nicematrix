@@ -2396,11 +2396,9 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % The following boolean corresponds to the key |create-cell-nodes| of the
-% keyword |\CodeBefore|. When that key is used the ``cell nodes'' will be created
-% before the |\CodeBefore| but, of course, they are \emph{always} available in
-% the main tabular and after!
+% keyword |\CodeBefore|.
 %    \begin{macrocode}
-\bool_new:N \g_@@_create_cell_nodes_bool 
+\bool_new:N \g_@@_recreate_cell_nodes_bool 
 %    \end{macrocode}
 % 
 % \bigskip
@@ -2578,7 +2576,7 @@ version 2005/12/01 or later.
     &-in-blocks .meta:n = ampersand-in-blocks ,
     no-cell-nodes .code:n = 
       \bool_set_true:N \l_@@_no_cell_nodes_bool 
-      \cs_set_protected:Npn \@@_node_cell: 
+      \cs_set_protected:Npn \@@_node_for_cell: 
         { \set@color \box_use_drop:N \l_@@_cell_box } ,
     no-cell-nodes .value_forbidden:n = true ,
     rounded-corners .dim_set:N = \l_@@_tab_rounded_corners_dim ,
@@ -3224,7 +3222,7 @@ version 2005/12/01 or later.
     \endpgfpicture
   }
 %    \end{macrocode}
-% Remark: If the key |create-cell-nodes| of the |\CodeBefore| is used, then we
+% Remark: If the key |recreate-cell-nodes| of the |\CodeBefore| is used, then we
 % will add some lines to that command.
 % 
 %
@@ -3444,7 +3442,7 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % In the cells of a column of type |S| (of \pkg{siunitx}), we have to wrap the
-% command |\@@_node_cell:| inside a command of \pkg{siunitx} to inforce the
+% command |\@@_node_for_cell:| inside a command of \pkg{siunitx} to inforce the
 % correct horizontal alignment. In the cells of the columns with other columns
 % type, we don't have to do that job. That's why we create a socket with its
 % default plug (|identity|) and a plug when we have to do the wrapping.
@@ -3462,47 +3460,15 @@ version 2005/12/01 or later.
       } 
       { #1 }
   }
-%    \end{macrocode}
-%
-% \bigskip
-% Now, a socket which deal with |create-cell-nodes| of the keyword
-% |\CodeBefore|. When that key is used the ``cell nodes'' will be created before
-% the |\CodeBefore| but, of course, they are \emph{always} available in the main
-% tabular and after!
-%    \begin{macrocode}
-\socket_new:nn { nicematrix / create-cell-nodes } { 1 }
-\socket_new_plug:nnn { nicematrix / create-cell-nodes } { active }
-  {
-    \box_move_up:nn { \box_ht:N \l_@@_cell_box } 
-      \hbox:n
-        { 
-          \pgfsys@markposition 
-            { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol - NW } 
-        }
-    #1
-    \box_move_down:nn { \box_dp:N \l_@@_cell_box } 
-      \hbox:n
-        { 
-          \pgfsys@markposition 
-            { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol - SE }
-        }
-  }
-%    \end{macrocode}
-%
-% \bigskip
-%    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_node_cell:
-  {
-    \socket_use:nn { nicematrix / siunitx-wrap } 
-      { \socket_use:nn { nicematrix / create-cell-nodes } \@@_node_cell: } 
-  }
+  { \socket_use:nn { nicematrix / siunitx-wrap } { \@@_node_for_cell: } }
 %    \end{macrocode}
 %
 % \bigskip
 % The following command creates the \textsc{pgf} name of the node with, of
 % course, |\l_@@_cell_box| as the content. 
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_node_cell:
+\cs_new_protected:Npn \@@_node_for_cell:
   {
     \pgfpicture 
     \pgfsetbaseline \c_zero_dim
@@ -3517,7 +3483,7 @@ version 2005/12/01 or later.
 % necessary only with XeLaTeX and not with the other engines (we don't know why).
 %    \begin{macrocode}
         \set@color 
-        \box_use:N \l_@@_cell_box 
+        \box_use_drop:N \l_@@_cell_box 
       }
       { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol }
       { \l_@@_pgf_node_code_tl }
@@ -3531,6 +3497,62 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% \medskip
+% As its name says, the following command is a patch for the command
+% |\@@_node_for_cell:|. This patch will be appended on the left of 
+% |\@@_node_for_the_cell:| when the construction of the cell nodes (of the form
+% |(i-j)|) in the |\CodeBefore| is required.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_patch_node_for_cell:n #1
+  {
+    \cs_new_protected:Npn \@@_patch_node_for_cell:
+      {
+        \hbox_set:Nn \l_@@_cell_box 
+          { 
+            \box_move_up:nn { \box_ht:N \l_@@_cell_box } 
+            \hbox_overlap_left:n 
+              { 
+                \pgfsys@markposition 
+                  { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol - NW } 
+%    \end{macrocode}
+% In the |#1|, we will put an adjustment which is needed when the compilation is
+% done with XeLaTeX or with the classical way |latex|, |dvips|, |ps2pdf| or
+% Adobe Distiller (I don't known why this adjustement is mandatory...). See the
+% use of that command |\@@_patch_node_for_cell:n| in a |\AtBeginDocument| just
+% below. 
+%    \begin{macrocode}
+                #1 
+              }
+            \box_use:N \l_@@_cell_box 
+            \box_move_down:nn { \box_dp:N \l_@@_cell_box }
+            \hbox_overlap_left:n 
+              { 
+                \pgfsys@markposition 
+                  { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol - SE } 
+                #1 
+              }
+          }
+      }
+  } 
+%    \end{macrocode}
+%
+% \bigskip
+% We have no explanation for the different behaviour between the TeX engines...
+% We put the following instructions in a |\AtBeginDocument| because you use
+% |\sys_if_output_div_p:| and that test is available only when a backend is
+% loaded (and we don't want to force the loading of a backend with
+% |\sys_ensure_backend:|). 
+%    \begin{macrocode}
+\AtBeginDocument
+  {
+    \bool_lazy_or:nnTF { \sys_if_engine_xetex_p: } { \sys_if_output_dvi_p: }
+      {
+        \@@_patch_node_for_cell:n 
+          { \skip_horizontal:n { 0.5 \box_wd:N \l_@@_cell_box } }
+      }
+      { \@@_patch_node_for_cell:n { } }
+  }
+%    \end{macrocode}
 % 
 % 
 % \interitem
@@ -3831,19 +3853,14 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% The boolean |\g_@@_create_cell_nodes_bool| corresponds to the key
-% |create-cell-nodes| of the keyword |\CodeBefore|. When that key is used the
-% ``cell nodes'' will be created before the |\CodeBefore| but, of course, they
-% are \emph{always} available in the main tabular and after!
 %    \begin{macrocode}
-    \bool_if:NT \g_@@_create_cell_nodes_bool
+    \bool_if:NT \g_@@_recreate_cell_nodes_bool
       {
         \tl_put_right:Nn \@@_begin_of_row:
           {
             \pgfsys@markposition 
               { \@@_env: - row - \int_use:N \c@iRow - base } 
           }
-        \socket_assign_plug:nn { nicematrix / create-cell-nodes } { active }
       }
 %    \end{macrocode}
 % 
@@ -4285,7 +4302,7 @@ version 2005/12/01 or later.
 % Now, the creation of the cell nodes |(i-j)|, and, maybe also the ``medium
 % nodes'' and the ``large nodes''.
 %    \begin{macrocode}
-    \bool_if:NT \g_@@_create_cell_nodes_bool { \@@_recreate_cell_nodes: }
+    \bool_if:NT \g_@@_recreate_cell_nodes_bool { \@@_recreate_cell_nodes: }
     \endpgfpicture
 %    \end{macrocode}
 %
@@ -4342,7 +4359,7 @@ version 2005/12/01 or later.
 % the corresponding cells by the other coloring commands of \pkg{nicematrix}.
 %    \begin{macrocode}
     \@@_add_to_colors_seq:nn { { nocolor } } { } 
-    \bool_gset_false:N \g_@@_create_cell_nodes_bool
+    \bool_gset_false:N \g_@@_recreate_cell_nodes_bool
     \group_begin:
 %    \end{macrocode}
 %
@@ -4382,6 +4399,8 @@ version 2005/12/01 or later.
       \q_stop 
     \bool_if:NT \l_@@_tabular_bool { \c_math_toggle_token }
     \group_end:
+    \bool_if:NT \g_@@_recreate_cell_nodes_bool
+      { \tl_put_left:Nn \@@_node_for_cell: \@@_patch_node_for_cell: } 
   } 
 %    \end{macrocode}
 %
@@ -4389,7 +4408,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / CodeBefore }
   {
-    create-cell-nodes .bool_gset:N = \g_@@_create_cell_nodes_bool ,
+    create-cell-nodes .bool_gset:N = \g_@@_recreate_cell_nodes_bool ,
     create-cell-nodes .default:n = true ,
     sub-matrix .code:n = \keys_set:nn { nicematrix / sub-matrix } { #1 } , 
     sub-matrix .value_required:n = true ,
@@ -5801,7 +5820,7 @@ version 2005/12/01 or later.
         > { 
 %    \end{macrocode}
 % In the cells of a column of type |S|, we have to wrap the command
-% |\@@_node_cell:| for the horizontal alignment of the content of the cell
+% |\@@_node_for_cell:| for the horizontal alignment of the content of the cell
 % (\pkg{siunitx} has done a job but it's without effect since we have to put the
 % content in a box for the PGF/TikZ node and that's why we have to do the job of
 % horizontal alignement once again). 
@@ -6078,12 +6097,7 @@ version 2005/12/01 or later.
 % will be used to retrieve that value and store it in |\l_tmpa_fp|.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / X-column }
-  { 
-    unknown .code:n = 
-     \regex_match:nVTF { \A[0-9]*\.?[0-9]*\Z } \l_keys_key_str 
-       { \fp_set:Nn \l_tmpa_fp { \l_keys_key_str } }
-       { \@@_error_or_warning:n { invalid~weight } }
-  }
+  { unknown .code:n = \fp_set:Nn \l_tmpa_fp { \l_keys_key_str } }
 %    \end{macrocode}
 % 
 % 
@@ -6107,7 +6121,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % We will store in |\l_tmpa_fp| the weight of the column (|\l_tmpa_fp| also
-% appears in |{nicematrix/X-column|| and the error message |invalid~weight|.
+% appears in |{nicematrix/X-column|| and the error message |negative~weight|.
 %    \begin{macrocode}
     \fp_set:Nn \l_tmpa_fp { 1.0 }
 %    \end{macrocode}
@@ -6124,6 +6138,11 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % Now, the weight of the column is stored in |\l_tmpa_tl|.
 %    \begin{macrocode}
+    \fp_compare:nNnT { \l_tmpa_fp } < { \c_zero_fp }
+      { 
+        \@@_error_or_warning:n { negative~weight } 
+        \fp_set:Nn \l_tmpa_fp { - \l_tmpa_fp }
+      }
     \fp_gadd:Nn \g_@@_total_X_weight_fp \l_tmpa_fp
 %    \end{macrocode}
 %
@@ -7463,7 +7482,7 @@ version 2005/12/01 or later.
         \hbox_overlap_left:n
           { 
             \dim_compare:nNnTF { \box_wd:N \l_@@_cell_box } > { \c_zero_dim }
-              { \@@_node_cell: }
+              { \@@_node_for_cell: }
               { \box_use_drop:N \l_@@_cell_box } 
             \skip_horizontal:N \l_@@_left_delim_dim
             \skip_horizontal:N \l_@@_left_margin_dim 
@@ -7541,7 +7560,7 @@ version 2005/12/01 or later.
                 \skip_horizontal:N \l_@@_right_delim_dim 
                 \skip_horizontal:N \l_@@_right_margin_dim 
                 \skip_horizontal:N \l_@@_extra_right_margin_dim
-                \@@_node_cell:
+                \@@_node_for_cell:
               }
           } 
         \bool_gset_false:N \g_@@_empty_cell_bool
@@ -10312,7 +10331,7 @@ version 2005/12/01 or later.
 %
 % |#1| is the first row \emph{after} the scope of the instructions in |#2|
 %
-% However, both arguments are implicit because they are taken by curryfication.
+% However, both arguments are implicit because they are taken by currification.
 %    \begin{macrocode}
 \cs_new:Npn \@@_if_row_less_than:nn { \int_compare:nNnT { \c@iRow } < }  
 \cs_new:Npn \@@_if_col_greater_than:nn { \int_compare:nNnF { \c@jCol } < }
@@ -10395,7 +10414,7 @@ version 2005/12/01 or later.
     \dim_zero:N \l_tmpb_dim 
     \keys_set:nn { nicematrix / RowStyle } { #1 }
 %    \end{macrocode}
-% If the key |fill| (or its alias |rowcolor|) has been used.
+% If the key |rowcolor| (of its alias |fill|) has been used.
 %    \begin{macrocode}
     \tl_if_empty:NF \l_@@_fill_tl
       { 
@@ -10403,15 +10422,33 @@ version 2005/12/01 or later.
         \tl_gput_right:Ne \g_@@_pre_code_before_tl
           { 
 %    \end{macrocode}
-% The command |\@@_exp_color_arg:No| is \emph{fully expandable}. 
+% First, the case when the command |\RowStyle| is \emph{not} issued in the first
+% column of the array. In that case, the commande applies to the end of the row
+% in the row where the command |\RowStyle| is issued, but in the other whole
+% rows, if the key |nb-rows| is used.
 %    \begin{macrocode}
-            \@@_exp_color_arg:No \@@_roundedrectanglecolor \l_@@_fill_tl 
-              { \int_use:N \c@iRow - \int_use:N \c@jCol }
+            \int_compare:nNnTF { \c@jCol } > { \c_one_int }
               {
-                \int_eval:n { \c@iRow + \l_@@_key_nb_rows_int - 1 } 
-                - *
+%    \end{macrocode}
+% First, the end of the current row (we remind that |\RowStyle| applies to the
+% \emph{end} of the current row). The command |\@@_exp_color_arg:No| is
+% \emph{fully expandable}. 
+%    \begin{macrocode}
+                \@@_exp_color_arg:No \@@_roundedrectanglecolor \l_@@_fill_tl 
+                  { \int_use:N \c@iRow - \int_use:N \c@jCol }
+                  { \int_use:N \c@iRow - * }
+                  { \dim_use:N \l_@@_rounded_corners_dim }
+%    \end{macrocode}
+% Then, the other rows (if there are several rows).
+%    \begin{macrocode}
+                \int_compare:nNnT { \l_@@_key_nb_rows_int } > { \c_one_int }
+                  { \@@_rounded_from_row:n { \c@iRow + 1 } }
               }
-              { \dim_use:N \l_@@_rounded_corners_dim }
+%    \end{macrocode}
+% Now, directly all the rows in the case of a command |\RowStyle| issued in the
+% first column of the array.
+%    \begin{macrocode}
+              { \@@_rounded_from_row:n { \c@iRow } }   
           }
       }
     \@@_put_in_row_style:n { \exp_not:n { #2 } }
@@ -16757,14 +16794,14 @@ version 2005/12/01 or later.
     not-empty .code:n = 
       \bool_lazy_or:nnTF 
         { \l_@@_in_code_after_bool }
-        { \g_@@_create_cell_nodes_bool }
+        { \g_@@_recreate_cell_nodes_bool }
         { \bool_set_true:N \l_@@_not_empty_bool }
         { \@@_error:n { detection~of~empty~cells } } ,
     not-empty .value_forbidden:n = true ,
     empty .code:n = 
       \bool_lazy_or:nnTF 
         { \l_@@_in_code_after_bool }
-        { \g_@@_create_cell_nodes_bool }
+        { \g_@@_recreate_cell_nodes_bool }
         { \bool_set_true:N \l_@@_empty_bool }
         { \@@_error:n { detection~of~empty~cells } } ,
     empty .value_forbidden:n = true ,
@@ -17175,10 +17212,12 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\@@_msg_new:nn { invalid~weight }
+\@@_msg_new:nn { negative~weight }
   {
-    Unknown~key.\\
-    The~key~' \l_keys_key_str '~of~your~column~X~is~unknown~and~will~be~ignored. 
+    Negative~weight.\\
+    The~weight~of~the~'X'~columns~must~be~positive~and~you~have~used~
+    the~value~' \fp_use:N \l_tmpa_fp '.\\
+    The~absolute~value~will~be~used.
   }  
 %    \end{macrocode}
 %
