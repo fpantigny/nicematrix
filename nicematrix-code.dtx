@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.1b}
-\def\myfiledate{2025/03/30}
+\def\myfileversion{7.1c}
+\def\myfiledate{2025/04/28}
 %
 %
 %<*batchfile>  
@@ -27,6 +27,7 @@
 \keepsilent
 \usedir{tex/latex/nicematrix}
 \preamble
+
 
 
 Copyright (C) 2018-2025 by F. Pantigny
@@ -1369,7 +1370,6 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \seq_new:N \g_@@_pos_of_stroken_blocks_seq
 %    \end{macrocode}
-%
 % 
 % \medskip
 % If the user has used the key |corners|, all the cells which are in an (empty)
@@ -6072,10 +6072,10 @@ version 2005/12/01 or later.
 %
 % \medskip
 % The following set of keys is for the specifier |X| in the preamble of the
-% array. Such specifier may have as keys all the keys of |{ nicematrix /
-% p-column }| but also a key which corresponds to a positive number (1, 2, 0.5,
-% etc.) which is the \emph{weight} of the columns. The following set of keys
-% will be used to retrieve that value and store it in |\l_tmpa_fp|.
+% array. Such specifier may have as keys all the keys of 
+% |{ nicematrix / % p-column }| but also a key which corresponds to a positive
+% number (1, 2, 0.5, etc.) which is the \emph{weight} of the columns. The
+% following set of keys will be used to retrieve that value and store it in |\l_tmpa_fp|.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / X-column }
   { 
@@ -6107,7 +6107,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % We will store in |\l_tmpa_fp| the weight of the column (|\l_tmpa_fp| also
-% appears in |{nicematrix/X-column|| and the error message |invalid~weight|.
+% appears in |{nicematrix/X-column}| and the error message |invalid~weight|.
 %    \begin{macrocode}
     \fp_set:Nn \l_tmpa_fp { 1.0 }
 %    \end{macrocode}
@@ -14962,6 +14962,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_vlines_block:nnn #1 #2 #3
   {
     \group_begin:
+    \dim_set_eq:NN \l_@@_line_width_dim \arrayrulewidth
     \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
     \dim_set_eq:NN \arrayrulewidth \l_@@_line_width_dim 
     \@@_cut_on_hyphen:w #2 \q_stop
@@ -14991,6 +14992,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_hlines_block:nnn #1 #2 #3
   {
     \group_begin:
+    \dim_set_eq:NN \l_@@_line_width_dim \arrayrulewidth
     \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
     \dim_set_eq:NN \arrayrulewidth \l_@@_line_width_dim 
     \@@_cut_on_hyphen:w #2 \q_stop
@@ -15335,13 +15337,6 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-%    \begin{macrocode}
-\@@_define_com:NNN p  (  ) 
-\@@_define_com:NNN b  [  ] 
-\@@_define_com:NNN v  |  | 
-\@@_define_com:NNN V  \|  \| 
-\@@_define_com:NNN B  \{  \} 
-%    \end{macrocode}
 %
 % \bigskip
 % We define also a command |\AutoNiceMatrix| similar to the environment |{NiceMatrix}|.
@@ -17158,7 +17153,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { hvlines,~rounded-corners~and~corners }
   {
     Incompatible~options.\\
-    You~should~not~use~'hvlines',~'rounded-corners'~and~'corners'~at~this~time.\\
+    You~should~not~use~'hvlines',~'rounded-corners'~and~'corners'~at~the~same~time.\\
     The~output~will~not~be~reliable.
   }
 %    \end{macrocode}
@@ -17419,7 +17414,7 @@ version 2005/12/01 or later.
     You~have~used~the~key~' \l_keys_key_str '~but~the~only~
     keys~allowed~for~the~commands~ \token_to_str:N \Hbrace \
     and~ \token_to_str:N \Vbrace \ are:~'color',~
-    'horizontal(s)-labels',~'shorten'~'shorten-end'~
+    'horizontal-label(s)',~'shorten'~'shorten-end'~
     and~'shorten-start'.
   }
 %    \end{macrocode}
@@ -18519,13 +18514,19 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\@@_define_com:NNN p  (  ) 
+\@@_define_com:NNN b  [  ] 
+\@@_define_com:NNN v  |  |
+\@@_define_com:NNN V  \|  \| 
+\@@_define_com:NNN B  \{  \} 
+%    \end{macrocode}
+%
 % \newpage
 % \tableofcontents
 %
 % \endinput
 % Local Variables:
-% TeX-fold-mode: t
-% TeX-fold-preserve-comments: nil
 % fill-column: 80
 % End:
 

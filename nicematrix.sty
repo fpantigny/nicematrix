@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.1b}
-\def\myfiledate{2025/03/30}
+\def\myfileversion{7.1c}
+\def\myfiledate{2025/04/28}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -5432,16 +5432,13 @@
         \__nicematrix_add_opacity_to_fill:
         \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
           {
-            \int_compare:nNnTF { \c@jCol } > { \c_one_int }
+            \__nicematrix_exp_color_arg:No \__nicematrix_roundedrectanglecolor \l__nicematrix_fill_tl
+              { \int_use:N \c@iRow - \int_use:N \c@jCol }
               {
-                \__nicematrix_exp_color_arg:No \__nicematrix_roundedrectanglecolor \l__nicematrix_fill_tl
-                  { \int_use:N \c@iRow - \int_use:N \c@jCol }
-                  { \int_use:N \c@iRow - * }
-                  { \dim_use:N \l__nicematrix_rounded_corners_dim }
-                \int_compare:nNnT { \l__nicematrix_key_nb_rows_int } > { \c_one_int }
-                  { \__nicematrix_rounded_from_row:n { \c@iRow + 1 } }
+                \int_eval:n { \c@iRow + \l__nicematrix_key_nb_rows_int - 1 }
+                - *
               }
-              { \__nicematrix_rounded_from_row:n { \c@iRow } }
+              { \dim_use:N \l__nicematrix_rounded_corners_dim }
           }
       }
     \__nicematrix_put_in_row_style:n { \exp_not:n { #2 } }
@@ -8203,6 +8200,7 @@
 \cs_new_protected:Npn \__nicematrix_vlines_block:nnn #1 #2 #3
   {
     \group_begin:
+    \dim_set_eq:NN \l__nicematrix_line_width_dim \arrayrulewidth
     \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
     \dim_set_eq:NN \arrayrulewidth \l__nicematrix_line_width_dim
     \__nicematrix_cut_on_hyphen:w #2 \q_stop
@@ -8229,6 +8227,7 @@
 \cs_new_protected:Npn \__nicematrix_hlines_block:nnn #1 #2 #3
   {
     \group_begin:
+    \dim_set_eq:NN \l__nicematrix_line_width_dim \arrayrulewidth
     \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
     \dim_set_eq:NN \arrayrulewidth \l__nicematrix_line_width_dim
     \__nicematrix_cut_on_hyphen:w #2 \q_stop
@@ -8465,11 +8464,6 @@
         \AutoNiceMatrixWithDelims { #2 } { #3 }
       }
   }
-\__nicematrix_define_com:NNN p  (  )
-\__nicematrix_define_com:NNN b  [  ]
-\__nicematrix_define_com:NNN v  |  |
-\__nicematrix_define_com:NNN V  \|  \|
-\__nicematrix_define_com:NNN B  \{  \}
 \NewDocumentCommand \AutoNiceMatrix { O { } m O { } m ! O { } }
   {
     \group_begin:
@@ -9658,7 +9652,7 @@
 \__nicematrix_msg_new:nn { hvlines,~rounded-corners~and~corners }
   {
     Incompatible~options.\\
-    You~should~not~use~'hvlines',~'rounded-corners'~and~'corners'~at~this~time.\\
+    You~should~not~use~'hvlines',~'rounded-corners'~and~'corners'~at~the~same~time.\\
     The~output~will~not~be~reliable.
   }
 \__nicematrix_msg_new:nn { key~color-inside }
@@ -9839,7 +9833,7 @@
     You~have~used~the~key~' \l_keys_key_str '~but~the~only~
     keys~allowed~for~the~commands~ \token_to_str:N \Hbrace \
     and~ \token_to_str:N \Vbrace \ are:~'color',~
-    'horizontal(s)-labels',~'shorten'~'shorten-end'~
+    'horizontal-label(s)',~'shorten'~'shorten-end'~
     and~'shorten-start'.
   }
 \__nicematrix_msg_new:nn { Unknown~key~for~TikzEveryCell }
@@ -10701,6 +10695,11 @@
     A~color~instruction~in~the~ \token_to_str:N \CodeBefore \
     specifies~a~row~which~is~outside~the~array.~It~will~be~ignored.
   }
+\__nicematrix_define_com:NNN p  (  )
+\__nicematrix_define_com:NNN b  [  ]
+\__nicematrix_define_com:NNN v  |  |
+\__nicematrix_define_com:NNN V  \|  \|
+\__nicematrix_define_com:NNN B  \{  \}
 
 \endinput
 %%

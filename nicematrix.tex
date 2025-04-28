@@ -3,6 +3,7 @@
 \documentclass[dvipsnames]{article}% dvipsnames is for xcolor (loaded by TikZ,
                                    % loaded by nicematrix) 
 
+
 \usepackage{geometry}
 \geometry{left=2.8cm,right=2.8cm,top=2.5cm,bottom=2.5cm,papersize={21cm,29.7cm}}
 
@@ -121,7 +122,7 @@
 
 \begin{document}
 
-\VerbatimFootnotes
+\UseName{VerbatimFootnotes}
 
 
 \title{The package \pkg{nicematrix}\thanks{This document corresponds to the
@@ -158,8 +159,8 @@ L_n    & a_{n1}  & a_{n2}  & \Cdots & a_{nn}
   \rowcolors{3}{blue!15}{}
 \Body
 \toprule
-\Block{2-1}{Product} & \multicolumn{3}{c}{dimensions (cm)} 
-       & \Block{2-1}{\rotate Price} \\
+\Block[C]{2-1}{Product} & \multicolumn{3}{c}{dimensions (cm)} 
+       & \Block[C]{2-1}{\rotate Price} \\
 \cmidrule(rl){2-4} 
  & L & l & h \\
 \midrule
@@ -521,7 +522,7 @@ $\begin{bNiceArray}{cw{c}{1cm}c|c}[margin]
 \end{bNiceArray}$
 \end{Code}
 $\begin{bNiceArray}{cw{c}{1cm}c|c}[margin]
-\Block{3-3}{A} & & & 0 \\
+\Block[C]{3-3}{A} & & & 0 \\
 & & & \Vdots \\
 & & & 0 \\
 \hline
@@ -552,7 +553,7 @@ $\begin{bNiceArray}{cw{c}{1cm}c|c}[margin]
 \end{Code}
 \begin{scope}
 $\begin{bNiceArray}{cw{c}{1cm}c|c}[margin]
-\Block{3-3}<\Large>{A} & & & 0 \\
+\Block[C]{3-3}<\Large>{A} & & & 0 \\
 & & & \Vdots \\
 & & & 0 \\
 \hline
@@ -691,7 +692,7 @@ arum & periwinkle & forget-me-not &  hyacinth
 \begin{center}
 \begin{NiceTabular}{cw{c}{2cm}w{c}{3cm}c}
 rose      & tulip & daisy & dahlia \\
-violet  & \Block[draw=red,fill=[RGB]{204,204,255},rounded-corners]{2-2}
+violet  & \Block[C,draw=red,fill=[RGB]{204,204,255},rounded-corners]{2-2}
   {\LARGE Some beautiful flowers} & & marigold \\
  iris & & & lis \\
  arum      & periwinkle & forget-me-not & hyacinth 
@@ -756,6 +757,7 @@ Henry                & 14 \\ \hline
                      & 19 \\ \hline
 \end{NiceTabular}
 \end{scope}
+
 
 
 \subsection{The mono-row blocks}
@@ -887,7 +889,9 @@ Rank & \Block{1-3}{First group} & & & \Block{1-3}{Second group} \\
 In order to have an horizontal positionning of the content of the block computed
 with the limits of the columns of the LaTeX array (and not with the contents of
 those columns), one may use the key \Definition{L}, \Definition{R} and
-\Definition{C} of the command |\Block|.
+\Definition{C} of the command |\Block|.\footnote{Remark: The keys |L|, |C| and
+  |R| require less computations than the keys |l|, |c| and |r|. If you are
+  concernend about efficiency, you should use by default |\Block[C]|.}
 
 \medskip
 Here is the same example with the key |C| for the first block.
@@ -1519,20 +1523,20 @@ and |vlines|.
 \begin{Code}
 \setlength{\arrayrulewidth}{1pt}
 \begin{NiceTabular}{cccc}[\emph{hvlines},rules/color=blue]
-rose      & tulipe & marguerite & dahlia \\
-violette  & \Block[draw=red]{2-2}{\LARGE fleurs}  & & souci \\
-pervenche & & & lys \\
-arum      & iris & jacinthe & muguet 
+rose      & tulip & sunflower & lily \\
+violet    & \Block[draw=red]{2-2}{\LARGE flowers} & & orchid \\
+carnation & & & lys \\
+daisy     & peony & jasmine & magnolia 
 \end{NiceTabular}
 \end{Code}
 
 \begin{center}
 \setlength{\arrayrulewidth}{1pt}
 \begin{NiceTabular}{cccc}[hvlines,rules/color=blue]
-rose      & tulipe & marguerite & dahlia \\
-violette  & \Block[C,draw=red]{2-2}{\LARGE fleurs}  & & souci \\
-pervenche & & & lys \\
-arum      & iris & jacinthe & muguet 
+rose      & tulip & sunflower & lily \\
+violet  & \Block[C,draw=red]{2-2}{\LARGE flowers}  & & orchid \\
+carnation & & & lys \\
+daisy      & peony & jasmine & magnolia 
 \end{NiceTabular}
 \end{center}
 
@@ -2029,7 +2033,7 @@ $\left(\begin{NiceArray}{cccc:c}[no-cell-nodes]
 \index{Rules@\textbf{Rules in the tabulars}|)}
 
 
-\subsection{The color of the background of the rows and columns}
+\section{The color of the background of the rows and columns}
 
 \index{Colour!of the cells}
 
@@ -2063,7 +2067,9 @@ phenomenon occurs when each cell is colored with its own instruction |fill|
 \pkg{colortbl}: each cell is colored on its own, even when |\columncolor| or
 |\rowcolor| is used.
 
-As for this phenomenon, Adobe Reader gives better results than MuPDF.
+As for this phenomenon, Adobe Reader gives better results than MuPDF
+(however, it seems, that, in recent versions of MuPDF, the problem has
+been solved...).
 \end{itemize}
 
 The package \pkg{nicematrix} provides tools to avoid both problems.
@@ -2654,8 +2660,9 @@ the user).
 \index{EmptyRow@\texttt{\textbackslash EmptyRow} (command of \texttt{\textbackslash CodeBefore})}
 \index{EmptyColumn@\texttt{\textbackslash EmptyColumn} (command of \texttt{\textbackslash CodeBefore})}
 
-\colorbox{yellow!50}{\textbf{New 7.1}}\par\nobreak
+\colorbox{yellow!50}{\textbf{New 7.1}}
 
+\nobreak
 \smallskip
 It's also possible, in the |\CodeBefore|, to use the commands
 \DefinitionCommand{EmptyColumn} and \DefinitionCommand{EmptyRow}. The command
@@ -3470,6 +3477,8 @@ $\begin{bNiceMatrix}
 0      & \Cdots &               & 0    
 \end{bNiceMatrix}$
 
+
+
 \subsection{The option nullify-dots}
 
 \index{nullify-dots}
@@ -4133,6 +4142,8 @@ For more complex constructions, in particular with delimiters spanning only a
 \emph{subset} of the rows of the array, one should consider the command
 |\SubMatrix| available in the |\CodeAfter| (and the |\CodeBefore|). See the
 section~\ref{sub-matrix}, p.~\pageref{sub-matrix}.  
+
+
 
 \section{The \textbackslash CodeAfter}
 
@@ -5164,6 +5175,7 @@ provided by \pkg{nicematrix} (see the key |caption| in the section
 \ref{s:caption}, p.~\pageref{s:caption}).
 
 
+
 \section{Other features}
 
 \subsection{The key rounded-corners}
@@ -5573,7 +5585,7 @@ option |end-of-row|. As said before, the initial value is a semicolon.
 
 \medskip
 When the option |light-syntax| is used, it is not possible to put verbatim
-material (for example with the command |\verb|) in the cells of the
+material (for example with the command \texttt{\textbackslash verb}) in the cells of the
 array.\footnote{The reason is that, when the option |light-syntax| is used,
 the whole content of the environment is loaded as a TeX argument to be
 analyzed. The environment doesn't behave in that case as a standard
@@ -6599,11 +6611,18 @@ In order to use \pkg{nicematrix} with the class \cls{aastex631}
 (of the \emph{American Astronomical Society}), you have to
 add the following instructions in the preamble of your document :
 
-\begin{Verbatim}
-\BeforeBegin{NiceTabular}{\let\begin\BeginEnvironment\let\end\EndEnvironment}
-\BeforeBegin{NiceArray}{\let\begin\BeginEnvironment}
-\BeforeBegin{NiceMatrix}{\let\begin\BeginEnvironment}
-\end{Verbatim}
+% With the following construction, we avoid problem of fontification with Emacs
+\begin{scope}\ttfamily \color{gray}
+\textbackslash BeforeBegin\{NiceTabular\}\{\textbackslash
+let\textbackslash begin\textbackslash BeginEnvironment\textbackslash
+let\textbackslash end\textbackslash EndEnvironment\}
+
+\textbackslash BeforeBegin\{NiceArray\}\{\textbackslash
+let\textbackslash begin\textbackslash BeginEnvironment\}
+
+\textbackslash BeforeBegin\{NiceMatrix\}\{\textbackslash
+let\textbackslash begin\textbackslash BeginEnvironment\}
+\end{scope}
 
 
 \medskip
@@ -8228,14 +8247,15 @@ Key |\color| for the command |\RowStyle|.
 
 
 \newpage
+
 \tableofcontents
+
 
 \end{document}
 
 % \endinput
 % Local Variables:
-% TeX-fold-mode: t
-% TeX-fold-preserve-comments: nil
+% LaTeX-verbatim-environments-local: ("Code")
 % fill-column: 80
 % End:
 
