@@ -237,28 +237,6 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 % 
-% \bigskip 
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_msg_redirect_name:nn 
-  { \msg_redirect_name:nnn { nicematrix } }
-\cs_new_protected:Npn \@@_gredirect_none:n #1 
-  {
-    \group_begin:
-    \globaldefs = 1
-    \@@_msg_redirect_name:nn { #1 } { none }
-    \group_end:
-  }
-\cs_new_protected:Npn \@@_err_gredirect_none:n #1 
-  {
-    \@@_error:n { #1 }
-    \@@_gredirect_none:n { #1 }
-  }
-\cs_new_protected:Npn \@@_warning_gredirect_none:n #1 
-  {
-    \@@_warning:n { #1 }
-    \@@_gredirect_none:n { #1 }
-  }
-%    \end{macrocode}
 %
 % 
 % \bigskip
@@ -1960,14 +1938,20 @@ version 2005/12/01 or later.
       }
       { 
         \NewDocumentCommand \tabularnote { o m }
-          { 
-            \@@_error_or_warning:n { enumitem~not~loaded } 
-            \@@_gredirect_none:n { enumitem~not~loaded } 
-          }
+          { \@@_err_enumitem_not_loaded: }
       }
   }    
 %    \end{macrocode}
 %
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_err_enumitem_not_loaded:
+  {
+    \@@_error_or_warning:n { enumitem~not~loaded } 
+    \cs_gset:Npn \@@_err_enumitem_not_loaded: { }
+  }
+%    \end{macrocode}
+% 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_first_novalue:nnn #1 #2 #3
   { \tl_if_novalue:nT { #1 } { #3 } }
@@ -2562,6 +2546,14 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_err_key_color_inside:
+  {
+    \@@_warning:n { key~color-inside } 
+    \cs_gset:Npn \@@_err_key_color_inside: { }
+  }
+%    \end{macrocode}
+%
 % \bigskip 
 % First, we define a set of keys ``|nicematrix / Global|'' which will be used
 % (with the mechanism of |.inherit:n|) by other sets of keys.
@@ -2569,10 +2561,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Global }
   {
-    color-inside .code:n = 
-      \@@_warning_gredirect_none:n { key~color-inside } ,
-    colortbl-like .code:n = 
-      \@@_warning_gredirect_none:n { key~color-inside } ,
+    color-inside .code:n = \@@_err_key_color_inside: ,
+    colortbl-like .code:n = \@@_err_key_color_inside: ,
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
     ampersand-in-blocks .default:n = true , 
     &-in-blocks .meta:n = ampersand-in-blocks ,
@@ -2733,7 +2723,7 @@ version 2005/12/01 or later.
         {
           \str_set:Ne \l_@@_name_str { #1 }
           \clist_if_in:NoTF \g_@@_names_clist \l_@@_name_str 
-            { \@@_error:nn { Duplicate~name } { #1 } }
+            { \@@_err_duplicate_names:n { #1 } }
             { \clist_gpush:No \g_@@_names_clist \l_@@_name_str }
         } ,
     name .value_required:n = true ,
@@ -2742,6 +2732,11 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\cs_set:Npn \@@_err_duplicate_names:n #1 
+  { \@@_error:nn { Duplicate~name } { #1 } }
+%    \end{macrocode}
+% 
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / notes }
   {
@@ -2903,7 +2898,7 @@ version 2005/12/01 or later.
 % disables this feature. 
 %    \begin{macrocode}
     allow-duplicate-names .code:n = 
-      \@@_msg_redirect_name:nn { Duplicate~name } { none } ,
+      \cs_set:Nn \@@_err_duplicate_names:n { } ,
     allow-duplicate-names .value_forbidden:n = true ,
     notes .code:n = \keys_set:nn { nicematrix / notes } { #1 } ,
     notes .value_required:n = true ,
@@ -2917,8 +2912,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-%
-%       
+% 
 % \bigskip
 % |\NiceMatrixOptions| is the command of the \pkg{nicematrix} package to fix
 % options at the document level. The scope of these specifications is the
@@ -4899,7 +4893,7 @@ version 2005/12/01 or later.
     \bool_if:NT \l_@@_preamble_bool
       {
         \int_compare:nNnT { \c@jCol } < { \g_@@_static_num_of_col_int }
-          { \@@_warning_gredirect_none:n { columns~not~used } }
+          { \@@_err_columns_not_used: }
       }
     \@@_after_array:
 %    \end{macrocode}
@@ -4933,6 +4927,15 @@ version 2005/12/01 or later.
 % This is the end of the environment |{NiceArrayWithDelims}|.
 %
 %
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_err_columns_not_used:
+  {
+    \@@_warning:n { columns~not~used }
+    \cs_gset:Npn \@@_err_columns_not_used: { }
+  }
+%    \end{macrocode}
+% 
 % \bigskip
 % The following command will be used only once. We have written that command for
 % legibility. If there is at least one |X|-column in the environment, we compute
@@ -6652,7 +6655,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % We don't do the following test with |\c@tabularnote| because the value of that
 % counter is not reliable when the command |\ttabbox| of \pkg{floatrow} is used
-% (because |\ttabbox| de-activate |\stepcounter| because if compiles several
+% (because |\ttabbox| de-activate |\stepcounter| because it compiles 
 % twice its tabular).
 %    \begin{macrocode}
     \bool_lazy_any:nT
@@ -6727,8 +6730,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_tabularnote_error:n #1
   { 
-    \@@_error_or_warning:n { tabularnote~below~the~tabular } 
-    \@@_gredirect_none:n { tabularnote~below~the~tabular } 
+    \@@_error_or_warning:n { tabularnote~below~the~tabular }
+    \cs_gset:Npn \@@_tabularnote_error:n ##1 { }
   }
 %    \end{macrocode}
 % 
