@@ -1,7 +1,6 @@
 % -*- coding: utf-8 ; -*- This file should be compiled with LuaLaTeX only
 
-\documentclass[dvipsnames]{article}% dvipsnames is for xcolor (loaded by TikZ,
-                                   % loaded by nicematrix) 
+\documentclass[dvipsnames]{article}
 
 
 \usepackage{geometry}
@@ -3231,7 +3230,8 @@ the potential first column and the potential last column: they will
 automatically (and necessarily) be of type |r| for the first column and |l|
 for the last one.\footnote{The users wishing exterior columns with another
 type of alignment should consider the command |\SubMatrix| available in the
-|\CodeAfter| and in the |\CodeBefore| (cf.~p.~\pageref{sub-matrix}).}
+|\CodeAfter| and in the |\CodeBefore| (cf.~p.~\pageref{sub-matrix}) or try to put
+delimiter directly in the preamble of the array (cf.~p.~\pageref{delimiters-in-preamble}).} 
 \item One may wonder how \pkg{nicematrix} determines the number of rows and
 columns which are needed for the composition of the ``last row'' and ``last
 column''.
