@@ -1,6 +1,6 @@
 % -*- coding: utf-8 ; -*- 
 % Ce fichier doit être compilé avec LuaLaTeX uniquement.
-\documentclass[dvipsnames]{article}% dvipsnames is for xcolor (loaded by TikZ, loaded by nicematrix)
+\documentclass[dvipsnames]{article}
 \usepackage{polyglossia}
 \setmainlanguage{french}
 
@@ -3316,7 +3316,7 @@ colonnes «extérieures» grâce aux options \Definition{first-row},
 particulièrement intéressant pour les matrices (mathématiques).
 \label{exterior}
 
-Si elle est présente, la «première rangée» (extérieure) est numérotée par $0$
+Si elle est présente, la «première rangée» (extérieure) est numérotée par~$0$
 (et non $1$). Il en est de même pour la «première colonne».
 
 \begin{Code}
@@ -3354,7 +3354,8 @@ colonne : ce sera automatiquement (et nécessairement) une colonne |r| pour la
 première colonne et une colonne |l| pour la dernière.\footnote{Si on souhaite
   une colonne extérieure avec un autre type d'alignement, on aura intérêt à
   considérer la commande |\SubMatrix| disponible dans le |\CodeAfter| et le
-  |\CodeBefore| (cf. p.~\pageref{sub-matrix}).}
+  |\CodeBefore| (cf. p.~\pageref{sub-matrix}) ou bien voir à insérer des délimiteurs
+  directement dans le préambule du tableau (cf. p.~\pageref{delimiters-in-preamble}).}
 
 \item On peut se demander comment \pkg{nicematrix} détermine le nombre de
 rangées et de colonnes nécessaires à la composition de la «dernière rangée» et
@@ -4193,6 +4194,8 @@ $\begin{bNiceMatrix}[margin,hvlines]
 
 
 \section{Délimiteurs dans le préambule de l'environnement}
+
+
 
 \index{blkarray@\pkg{blkarray} (extension)}
 \index{delimiteurs@délimiteurs dans les préambules}

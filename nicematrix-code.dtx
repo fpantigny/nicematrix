@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.1c}
-\def\myfiledate{2025/04/28}
+\def\myfileversion{7.1d}
+\def\myfiledate{2025/06/21}
 %
 %
 %<*batchfile>  
@@ -4337,13 +4337,21 @@ version 2005/12/01 or later.
     \@@_add_to_colors_seq:nn { { nocolor } } { } 
     \bool_gset_false:N \g_@@_create_cell_nodes_bool
     \group_begin:
-%    \end{macrocode}
-%
+%    \end{macrocode}    
 % We compose the |\CodeBefore| in math mode in order to nullify the spaces put
 % by the user between instructions in the |\CodeBefore|.
 %    \begin{macrocode}
-    \bool_if:NT \l_@@_tabular_bool { \c_math_toggle_token }
+    \if_mode_math:
+      \@@_exec_code_before_i:
+    \else:
+      \c_math_toggle_token
+      \@@_exec_code_before_i:
+      \c_math_toggle_token
+    \fi: 
+    \group_end:
+  }
 %    \end{macrocode}
+%
 %
 % \bigskip
 % The following code is a security for the case the user has used \pkg{babel}
@@ -4351,8 +4359,10 @@ version 2005/12/01 or later.
 % \textsc{ascci} 60) and |>| are activated and Tikz is not able to solve the
 % problem (even with the Tikz library \pkg{babel}).
 %    \begin{macrocode}
-      \int_compare:nNnT { \char_value_catcode:n { 60 } } = { 13 }
-        { \@@_rescan_for_spanish:N \l_@@_code_before_tl }
+\cs_new_protected:Npn \@@_exec_code_before_i:
+  {
+    \int_compare:nNnT { \char_value_catcode:n { 60 } } = { 13 }
+      { \@@_rescan_for_spanish:N \l_@@_code_before_tl }
 %    \end{macrocode}
 % 
 % Here is the |\CodeBefore|. The construction is a bit complicated because
@@ -4363,7 +4373,7 @@ version 2005/12/01 or later.
 % will be used to discard the rest of |\g_@@_pre_code_before_tl|.
 %    \begin{macrocode}
     \exp_last_unbraced:No \@@_CodeBefore_keys: 
-      \g_@@_pre_code_before_tl 
+      \g_@@_pre_code_before_tl
 %    \end{macrocode}
 % Now, all the cells which are specified to be colored by instructions in the
 % |\CodeBefore| will actually be colored. It's a two-stages mechanism because we
@@ -4373,8 +4383,6 @@ version 2005/12/01 or later.
       \@@_actually_color:
       \l_@@_code_before_tl 
       \q_stop 
-    \bool_if:NT \l_@@_tabular_bool { \c_math_toggle_token }
-    \group_end:
   } 
 %    \end{macrocode}
 %
@@ -10764,7 +10772,7 @@ version 2005/12/01 or later.
 \NewDocumentCommand \@@_rectanglecolor { O { } m m m }
   {
     \tl_if_blank:nF { #2 }
-      { 
+      {
         \@@_add_to_colors_seq:en 
           { \tl_if_blank:nF { #1 } { [ #1 ] } { #2 } }
           { \@@_rectanglecolor:nnn { #3 } { #4 } { \c_zero_dim } } 
@@ -13742,7 +13750,10 @@ version 2005/12/01 or later.
                 \use:e
                   {
 %    \end{macrocode}
-% The |\exp_not:N| is mandatory before |\begin|.
+% The |\exp_not:N| is mandatory before |\begin|. 
+% It will be possible to delete the |\exp_not:N| in TeXLive 2025
+% because |\begin| is now protected by |\protected| (and not by |\protect|).
+% There is several other occurrences in that document.
 %    \begin{macrocode}
                     \exp_not:N \begin { minipage }
                       [ \str_lowercase:f \l_@@_vpos_block_str ] 
@@ -13760,7 +13771,7 @@ version 2005/12/01 or later.
                 \bool_if:NT \c_@@_testphase_table_bool
                   { \tagpdfsetup { table / tagging = presentation } }
                 \use:e 
-                  { 
+                  {
                     \exp_not:N \begin { tabular }
                       [ \str_lowercase:f \l_@@_vpos_block_str ] 
                       { @ { } \l_@@_hpos_block_str @ { } }

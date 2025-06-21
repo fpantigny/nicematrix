@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.1c}
-\def\myfiledate{2025/04/28}
+\def\myfileversion{7.1d}
+\def\myfiledate{2025/06/21}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -73,25 +73,6 @@
   {
        \str_if_eq_p:on \c_sys_jobname_str { _region_ }  % for Emacs
     || \str_if_eq_p:ee \c_sys_jobname_str { output }   % for Overleaf
-  }
-\cs_new_protected:Npn \__nicematrix_msg_redirect_name:nn
-  { \msg_redirect_name:nnn { nicematrix } }
-\cs_new_protected:Npn \__nicematrix_gredirect_none:n #1
-  {
-    \group_begin:
-    \globaldefs = 1
-    \__nicematrix_msg_redirect_name:nn { #1 } { none }
-    \group_end:
-  }
-\cs_new_protected:Npn \__nicematrix_err_gredirect_none:n #1
-  {
-    \__nicematrix_error:n { #1 }
-    \__nicematrix_gredirect_none:n { #1 }
-  }
-\cs_new_protected:Npn \__nicematrix_warning_gredirect_none:n #1
-  {
-    \__nicematrix_warning:n { #1 }
-    \__nicematrix_gredirect_none:n { #1 }
   }
 \__nicematrix_msg_new:nn { mdwtab~loaded }
   {
@@ -609,11 +590,13 @@
       }
       {
         \NewDocumentCommand \tabularnote { o m }
-          {
-            \__nicematrix_error_or_warning:n { enumitem~not~loaded }
-            \__nicematrix_gredirect_none:n { enumitem~not~loaded }
-          }
+          { \__nicematrix_err_enumitem_not_loaded: }
       }
+  }
+\cs_new_protected:Npn \__nicematrix_err_enumitem_not_loaded:
+  {
+    \__nicematrix_error_or_warning:n { enumitem~not~loaded }
+    \cs_gset:Npn \__nicematrix_err_enumitem_not_loaded: { }
   }
 \cs_new_protected:Npn \__nicematrix_test_first_novalue:nnn #1 #2 #3
   { \tl_if_novalue:nT { #1 } { #3 } }
@@ -870,12 +853,15 @@
     width .value_required:n = true ,
     unknown .code:n = \__nicematrix_error:n { Unknown~key~for~rules }
   }
+\cs_new_protected:Npn \__nicematrix_err_key_color_inside:
+  {
+    \__nicematrix_warning:n { key~color-inside }
+    \cs_gset:Npn \__nicematrix_err_key_color_inside: { }
+  }
 \keys_define:nn { nicematrix / Global }
   {
-    color-inside .code:n =
-      \__nicematrix_warning_gredirect_none:n { key~color-inside } ,
-    colortbl-like .code:n =
-      \__nicematrix_warning_gredirect_none:n { key~color-inside } ,
+    color-inside .code:n = \__nicematrix_err_key_color_inside: ,
+    colortbl-like .code:n = \__nicematrix_err_key_color_inside: ,
     ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
     ampersand-in-blocks .default:n = true ,
     &-in-blocks .meta:n = ampersand-in-blocks ,
@@ -1005,13 +991,15 @@
         {
           \str_set:Ne \l__nicematrix_name_str { #1 }
           \clist_if_in:NoTF \g__nicematrix_names_clist \l__nicematrix_name_str
-            { \__nicematrix_error:nn { Duplicate~name } { #1 } }
+            { \__nicematrix_err_duplicate_names:n { #1 } }
             { \clist_gpush:No \g__nicematrix_names_clist \l__nicematrix_name_str }
         } ,
     name .value_required:n = true ,
     code-after .tl_gset:N = \g_nicematrix_code_after_tl ,
     code-after .value_required:n = true ,
   }
+\cs_set:Npn \__nicematrix_err_duplicate_names:n #1
+  { \__nicematrix_error:nn { Duplicate~name } { #1 } }
 \keys_define:nn { nicematrix / notes }
   {
     para .bool_set:N = \l__nicematrix_notes_para_bool ,
@@ -1123,7 +1111,7 @@
         { \__nicematrix_error:n { Option~auto~for~columns-width } }
         { \dim_set:Nn \l__nicematrix_columns_width_dim { #1 } } ,
     allow-duplicate-names .code:n =
-      \__nicematrix_msg_redirect_name:nn { Duplicate~name } { none } ,
+      \cs_set:Nn \__nicematrix_err_duplicate_names:n { } ,
     allow-duplicate-names .value_forbidden:n = true ,
     notes .code:n = \keys_set:nn { nicematrix / notes } { #1 } ,
     notes .value_required:n = true ,
@@ -1833,16 +1821,24 @@
     \__nicematrix_add_to_colors_seq:nn { { nocolor } } { }
     \bool_gset_false:N \g__nicematrix_create_cell_nodes_bool
     \group_begin:
-    \bool_if:NT \l__nicematrix_tabular_bool { \c_math_toggle_token }
-      \int_compare:nNnT { \char_value_catcode:n { 60 } } = { 13 }
-        { \__nicematrix_rescan_for_spanish:N \l__nicematrix_code_before_tl }
+    \if_mode_math:
+      \__nicematrix_exec_code_before_i:
+    \else:
+      \c_math_toggle_token
+      \__nicematrix_exec_code_before_i:
+      \c_math_toggle_token
+    \fi:
+    \group_end:
+  }
+\cs_new_protected:Npn \__nicematrix_exec_code_before_i:
+  {
+    \int_compare:nNnT { \char_value_catcode:n { 60 } } = { 13 }
+      { \__nicematrix_rescan_for_spanish:N \l__nicematrix_code_before_tl }
     \exp_last_unbraced:No \__nicematrix_CodeBefore_keys:
       \g__nicematrix_pre_code_before_tl
       \__nicematrix_actually_color:
       \l__nicematrix_code_before_tl
       \q_stop
-    \bool_if:NT \l__nicematrix_tabular_bool { \c_math_toggle_token }
-    \group_end:
   }
 \keys_define:nn { nicematrix / CodeBefore }
   {
@@ -2129,7 +2125,7 @@
     \bool_if:NT \l__nicematrix_preamble_bool
       {
         \int_compare:nNnT { \c@jCol } < { \g__nicematrix_static_num_of_col_int }
-          { \__nicematrix_warning_gredirect_none:n { columns~not~used } }
+          { \__nicematrix_err_columns_not_used: }
       }
     \__nicematrix_after_array:
     \egroup
@@ -2143,6 +2139,11 @@
       }
     \iow_now:Nn \@mainaux { \ExplSyntaxOff }
     \bool_if:NT \g__nicematrix_footnote_bool { \endsavenotes }
+  }
+\cs_new_protected:Npn \__nicematrix_err_columns_not_used:
+  {
+    \__nicematrix_warning:n { columns~not~used }
+    \cs_gset:Npn \__nicematrix_err_columns_not_used: { }
   }
 \cs_new_protected:Npn \__nicematrix_compute_width_X:
   {
@@ -3163,7 +3164,7 @@
 \cs_new_protected:Npn \__nicematrix_tabularnote_error:n #1
   {
     \__nicematrix_error_or_warning:n { tabularnote~below~the~tabular }
-    \__nicematrix_gredirect_none:n { tabularnote~below~the~tabular }
+    \cs_gset:Npn \__nicematrix_tabularnote_error:n ##1 { }
   }
 \cs_new_protected:Npn \__nicematrix_insert_tabularnotes:
   {
@@ -3704,11 +3705,11 @@
       }
       { \endNiceArrayWithDelims }
   }
-\__nicematrix_def_env:NNN p  (  )
-\__nicematrix_def_env:NNN b  [  ]
-\__nicematrix_def_env:NNN B  \{  \}
-\__nicematrix_def_env:NNN v  |  |
-\__nicematrix_def_env:NNN V  \|  \|
+\__nicematrix_def_env:NNN p (     )
+\__nicematrix_def_env:NNN b [     ]
+\__nicematrix_def_env:NNN B \{    \}
+\__nicematrix_def_env:NNN v \vert \vert
+\__nicematrix_def_env:NNN V \Vert \Vert
 \cs_new_protected:Npn \__nicematrix_begin_of_NiceMatrix:nn #1 #2
   {
     \bool_set_false:N \l__nicematrix_preamble_bool
@@ -6185,7 +6186,7 @@
     total-width .dim_set:N = \l__nicematrix_rule_width_dim ,
     total-width .value_required:n = true ,
     width .meta:n = { total-width = #1 } ,
-    unknown .code:n = \__nicematrix_error:n { Unknow~key~for~RulesBis }
+    unknown .code:n = \__nicematrix_error:n { Unknown~key~for~RulesBis }
   }
 \cs_new_protected:Npn \__nicematrix_vline:n #1
   {
@@ -10280,7 +10281,7 @@
     loaded.\\
     Your~column~will~behave~like~'p'.
   }
-\__nicematrix_msg_new:nnn { Unknow~key~for~RulesBis }
+\__nicematrix_msg_new:nnn { Unknown~key~for~RulesBis }
   {
     Unknown~key.\\
     Your~key~' \l_keys_key_str '~is~unknown~for~a~rule.\\
