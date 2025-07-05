@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.1d}
-\def\myfiledate{2025/06/21}
+\def\myfileversion{7.1x}
+\def\myfiledate{2025/07/05}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -198,6 +198,7 @@
                 \cs_set_eq:NN \rowcolor \__nicematrix_old_rowcolor:
               }
           }
+
         \cs_new_protected:Npn \__nicematrix_replace_columncolor:
           {
             \tl_replace_all:Nnn \g__nicematrix_array_preamble_tl
@@ -2022,7 +2023,7 @@
     \skip_horizontal:N \l__nicematrix_extra_right_margin_dim
 
     % awful workaround
-    \int_if_zero:nT { \g__nicematrix_col_total_int }
+    \int_compare:nNnT { \g__nicematrix_col_total_int } = { 1 }
       {
         \dim_compare:nNnT { \l__nicematrix_columns_width_dim } > { \c_zero_dim }
           {

@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.1d}
-\def\myfiledate{2025/06/21}
+\def\myfileversion{7.1x}
+\def\myfiledate{2025/07/05}
 %
 %
 %<*batchfile>  
@@ -504,7 +504,7 @@ version 2005/12/01 or later.
 % When \pkg{colortbl} is used, we have to catch the tokens |\columncolor| in the
 % preamble because, otherwise, \pkg{colortbl} will catch them and the colored
 % panels won't be drawn by \pkg{nicematrix} but by \pkg{colortbl} (with an
-% output which is not perfect).
+% output which is not perfect).
 %    \begin{macrocode}
         \cs_new_protected:Npn \@@_replace_columncolor:
           {
@@ -4709,8 +4709,8 @@ version 2005/12/01 or later.
     \skip_horizontal:N \l_@@_extra_right_margin_dim 
  
     % awful workaround
-    \int_if_zero:nT { \g_@@_col_total_int }
-      {
+    \int_compare:nNnT { \g_@@_col_total_int } = { 1 }
+      { 
         \dim_compare:nNnT { \l_@@_columns_width_dim } > { \c_zero_dim }
           { 
             \skip_horizontal:n { - \l_@@_columns_width_dim }
@@ -4994,7 +4994,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % The preamble given by the final user is stored in |\g_@@_user_preamble_tl|.
-% The modified version will be stored in |\g_@@_array_preamble_tl| also.
+% The modified version will be stored in |\g_@@_array_preamble_tl|.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_transform_preamble:
   {
@@ -7213,7 +7213,7 @@ version 2005/12/01 or later.
           { \pgfnodealias { \l_@@_name_str - col - 1 } { \@@_env: - col - 1 } }  
         \endpgfpicture
       }
-      {
+      { 
         \bool_if:NT \l_@@_code_before_bool
           { 
             \hbox
@@ -7283,7 +7283,7 @@ version 2005/12/01 or later.
       { \prg_replicate:nn { \int_max:nn { \g_@@_col_total_int - 2 } { 0 } } }
       { 
         & 
-        \omit
+        \omit 
         \int_gincr:N \g_tmpa_int 
 %    \end{macrocode}
 % The incrementation of the counter |\g_tmpa_int| must be done after the |\omit|
@@ -7320,7 +7320,7 @@ version 2005/12/01 or later.
 % \bigskip
 %    \begin{macrocode}
         & 
-        \omit
+        \omit 
 %    \end{macrocode}
 % The two following lines have been added on 2021-12-15 to solve a bug
 % mentioned by Joao Luis Soares by mail.
@@ -7382,7 +7382,7 @@ version 2005/12/01 or later.
 % \bigskip
 %    \begin{macrocode}
     \bool_if:NT \g_@@_last_col_found_bool
-      {
+      { 
         \hbox_overlap_right:n
           {
             \skip_horizontal:N \g_@@_width_last_col_dim 
