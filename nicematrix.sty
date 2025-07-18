@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.1x}
-\def\myfiledate{2025/07/05}
+\def\myfileversion{7.1e}
+\def\myfiledate{2025/07/18}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -355,6 +355,7 @@
 \bool_set_true:N \l__nicematrix_notes_detect_duplicates_bool
 \bool_new:N \l__nicematrix_initial_open_bool
 \bool_new:N \l__nicematrix_final_open_bool
+\bool_new:N \l__nicematrix_Vbrace_bool
 \dim_new:N \l__nicematrix_tabular_width_dim
 \dim_new:N \l__nicematrix_rule_width_dim
 \tl_new:N \l__nicematrix_rule_color_tl
@@ -531,7 +532,6 @@
 \hook_gput_code:nnn { begindocument } { . }
   {
     \dim_const:Nn \c__nicematrix_shift_Ldots_last_row_dim { 0.5 em }
-    \dim_const:Nn \c__nicematrix_shift_exterior_Vdots_dim { 0.6 em }
     \dim_const:Nn \c__nicematrix_innersep_middle_dim { 0.17 em }
   }
 \newcounter { tabularnote }
@@ -802,6 +802,7 @@
 \bool_new:N \l__nicematrix_delimiters_max_width_bool
 \keys_define:nn { nicematrix / xdots }
   {
+    Vbrace .bool_set:N = \l__nicematrix_Vbrace_bool ,
     shorten-start .code:n =
       \hook_gput_code:nnn { begindocument } { . }
         { \dim_set:Nn \l__nicematrix_xdots_shorten_start_dim { #1 } } ,
@@ -2021,18 +2022,6 @@
     \c_math_toggle_token
     \skip_horizontal:N \l__nicematrix_right_margin_dim
     \skip_horizontal:N \l__nicematrix_extra_right_margin_dim
-
-    % awful workaround
-    \int_compare:nNnT { \g__nicematrix_col_total_int } = { 1 }
-      {
-        \dim_compare:nNnT { \l__nicematrix_columns_width_dim } > { \c_zero_dim }
-          {
-            \skip_horizontal:n { - \l__nicematrix_columns_width_dim }
-            \bool_if:NTF \l__nicematrix_tabular_bool
-              { \skip_horizontal:n { - 2 \tabcolsep } }
-              { \skip_horizontal:n { - 2 \arraycolsep } }
-          }
-      }
     \hbox_set_end:
     \bool_if:NT \c__nicematrix_recent_array_bool
       { \UseTaggingSocket { tbl / hmode / end } }
@@ -3420,15 +3409,7 @@
     \bool_gset_true:N \g__nicematrix_row_of_col_done_bool
     \int_if_zero:nTF { \l__nicematrix_first_col_int }
       {
-        \bool_if:NT \l__nicematrix_code_before_bool
-          {
-            \hbox
-              {
-                \skip_horizontal:n { -0.5 \arrayrulewidth }
-                \pgfsys@markposition { \__nicematrix_env: - col - 1 }
-                \skip_horizontal:n { 0.5 \arrayrulewidth }
-              }
-          }
+        \__nicematrix_mark_position:n { 1 }
         \pgfpicture
         \pgfrememberpicturepositiononpagetrue
         \pgfcoordinate { \__nicematrix_env: - col - 1 }
@@ -3451,8 +3432,7 @@
         \pgfrememberpicturepositiononpagetrue
         \pgfcoordinate { \__nicematrix_env: - col - 1 }
           { \pgfpoint { 0.5 \arrayrulewidth } \c_zero_dim }
-        \str_if_empty:NF \l__nicematrix_name_str
-          { \pgfnodealias { \l__nicematrix_name_str - col - 1 } { \__nicematrix_env: - col - 1 } }
+        \__nicematrix_node_alias:n { 1 }
         \endpgfpicture
       }
     \skip_gset:Nn \g_tmpa_skip { 0 pt~plus 1 fill }
@@ -3469,21 +3449,12 @@
     \skip_horizontal:N \g_tmpa_skip
     \hbox
       {
-        \bool_if:NT \l__nicematrix_code_before_bool
-          {
-            \hbox
-              {
-                \skip_horizontal:n { -0.5 \arrayrulewidth }
-                \pgfsys@markposition { \__nicematrix_env: - col - 2 }
-                \skip_horizontal:n { 0.5 \arrayrulewidth }
-              }
-          }
+        \__nicematrix_mark_position:n { 2 }
         \pgfpicture
         \pgfrememberpicturepositiononpagetrue
         \pgfcoordinate { \__nicematrix_env: - col - 2 }
           { \pgfpoint { - 0.5 \arrayrulewidth } \c_zero_dim }
-        \str_if_empty:NF \l__nicematrix_name_str
-          { \pgfnodealias { \l__nicematrix_name_str - col - 2 } { \__nicematrix_env: - col - 2 } }
+        \__nicematrix_node_alias:n { 2 }
         \endpgfpicture
       }
     \int_gset_eq:NN \g_tmpa_int \c_one_int
@@ -3495,76 +3466,60 @@
         \omit
         \int_gincr:N \g_tmpa_int
         \skip_horizontal:N \g_tmpa_skip
-        \bool_if:NT \l__nicematrix_code_before_bool
-          {
-            \hbox
-              {
-                \skip_horizontal:n { -0.5 \arrayrulewidth }
-                \pgfsys@markposition
-                  { \__nicematrix_env: - col - \int_eval:n { \g_tmpa_int + 1 } }
-                \skip_horizontal:n { 0.5 \arrayrulewidth }
-              }
-          }
+        \__nicematrix_mark_position:n { \int_eval:n { \g_tmpa_int + 1 } }
         \pgfpicture
           \pgfrememberpicturepositiononpagetrue
           \pgfcoordinate { \__nicematrix_env: - col - \int_eval:n { \g_tmpa_int + 1 } }
             { \pgfpoint { - 0.5 \arrayrulewidth } \c_zero_dim }
-          \str_if_empty:NF \l__nicematrix_name_str
-            {
-              \pgfnodealias
-                { \l__nicematrix_name_str - col - \int_eval:n { \g_tmpa_int + 1 } }
-                { \__nicematrix_env: - col - \int_eval:n { \g_tmpa_int + 1 } }
-            }
+          \__nicematrix_node_alias:n { \int_eval:n { \g_tmpa_int + 1 } }
         \endpgfpicture
       }
         &
         \omit
-        \int_if_zero:nT { \g__nicematrix_col_total_int }
-          { \skip_gset:Nn \g_tmpa_skip { 0 pt~plus 1 fill } }
-        \skip_horizontal:N \g_tmpa_skip
-        \int_gincr:N \g_tmpa_int
-        \bool_lazy_any:nF
+        \bool_lazy_or:nnF
+          { \int_compare_p:nNn \g__nicematrix_col_total_int = 1 }
+          { \int_compare_p:nNn \g__nicematrix_col_total_int = 2 && \g__nicematrix_last_col_found_bool }
           {
-            \g__nicematrix_delims_bool
-            \l__nicematrix_tabular_bool
-            { ! \clist_if_empty_p:N \l__nicematrix_vlines_clist }
-            \l__nicematrix_exterior_arraycolsep_bool
-            \l__nicematrix_bar_at_end_of_pream_bool
-          }
-          { \skip_horizontal:n { - \col@sep } }
-        \bool_if:NT \l__nicematrix_code_before_bool
-          {
-            \hbox
+            \skip_horizontal:N \g_tmpa_skip
+            \int_gincr:N \g_tmpa_int
+            \bool_lazy_any:nF
               {
-                \skip_horizontal:n { -0.5 \arrayrulewidth }
-                \bool_if:NT \l__nicematrix_NiceMatrix_without_vlines_bool
-                  { \skip_horizontal:n { - \arraycolsep } }
-                \pgfsys@markposition
-                  { \__nicematrix_env: - col - \int_eval:n { \g_tmpa_int + 1 } }
-                \skip_horizontal:n { 0.5 \arrayrulewidth }
-                \bool_if:NT \l__nicematrix_NiceMatrix_without_vlines_bool
-                  { \skip_horizontal:N \arraycolsep }
+                \g__nicematrix_delims_bool
+                \l__nicematrix_tabular_bool
+                { ! \clist_if_empty_p:N \l__nicematrix_vlines_clist }
+                \l__nicematrix_exterior_arraycolsep_bool
+                \l__nicematrix_bar_at_end_of_pream_bool
               }
-          }
-        \pgfpicture
-          \pgfrememberpicturepositiononpagetrue
-          \pgfcoordinate { \__nicematrix_env: - col - \int_eval:n { \g_tmpa_int + 1 } }
-            {
-              \bool_if:NT \l__nicematrix_NiceMatrix_without_vlines_bool
+              { \skip_horizontal:n { - \col@sep } }
+            \bool_if:NT \l__nicematrix_code_before_bool
+              {
+                \hbox
+                  {
+                    \skip_horizontal:n { -0.5 \arrayrulewidth }
+                    \bool_if:NT \l__nicematrix_NiceMatrix_without_vlines_bool
+                      { \skip_horizontal:n { - \arraycolsep } }
+                    \pgfsys@markposition
+                      { \__nicematrix_env: - col - \int_eval:n { \g_tmpa_int + 1 } }
+                    \skip_horizontal:n { 0.5 \arrayrulewidth }
+                    \bool_if:NT \l__nicematrix_NiceMatrix_without_vlines_bool
+                      { \skip_horizontal:N \arraycolsep }
+                  }
+              }
+            \pgfpicture
+              \pgfrememberpicturepositiononpagetrue
+              \pgfcoordinate { \__nicematrix_env: - col - \int_eval:n { \g_tmpa_int + 1 } }
                 {
-                  \pgfpoint
-                    { - 0.5 \arrayrulewidth - \arraycolsep }
-                    \c_zero_dim
+                  \bool_if:NT \l__nicematrix_NiceMatrix_without_vlines_bool
+                    {
+                      \pgfpoint
+                        { - 0.5 \arrayrulewidth - \arraycolsep }
+                        \c_zero_dim
+                    }
+                    { \pgfpoint { - 0.5 \arrayrulewidth } \c_zero_dim }
                 }
-                { \pgfpoint { - 0.5 \arrayrulewidth } \c_zero_dim }
-            }
-          \str_if_empty:NF \l__nicematrix_name_str
-            {
-              \pgfnodealias
-                { \l__nicematrix_name_str - col - \int_eval:n { \g_tmpa_int + 1 } }
-                { \__nicematrix_env: - col - \int_eval:n { \g_tmpa_int + 1 } }
-            }
-        \endpgfpicture
+              \__nicematrix_node_alias:n { \int_eval:n { \g_tmpa_int + 1 } }
+            \endpgfpicture
+          }
     \bool_if:NT \g__nicematrix_last_col_found_bool
       {
         \hbox_overlap_right:n
@@ -3581,19 +3536,28 @@
             \pgfcoordinate
               { \__nicematrix_env: - col - \int_eval:n { \g__nicematrix_col_total_int + 1 } }
               \pgfpointorigin
-            \str_if_empty:NF \l__nicematrix_name_str
-              {
-                \pgfnodealias
-                  {
-                     \l__nicematrix_name_str - col
-                     - \int_eval:n { \g__nicematrix_col_total_int + 1 }
-                  }
-                  { \__nicematrix_env: - col - \int_eval:n { \g__nicematrix_col_total_int + 1 } }
-              }
+            \__nicematrix_node_alias:n { \int_eval:n { \g__nicematrix_col_total_int + 1 } }
             \endpgfpicture
           }
       }
   % \cr
+  }
+\cs_new_protected:Npn \__nicematrix_mark_position:n #1
+  {
+    \bool_if:NT \l__nicematrix_code_before_bool
+      {
+        \hbox
+          {
+            \skip_horizontal:n { -0.5 \arrayrulewidth }
+            \pgfsys@markposition { \__nicematrix_env: - col - #1 }
+            \skip_horizontal:n { 0.5 \arrayrulewidth }
+          }
+      }
+  }
+\cs_new_protected:Npn \__nicematrix_node_alias:n #1
+  {
+    \str_if_empty:NF \l__nicematrix_name_str
+      { \pgfnodealias { \l__nicematrix_name_str - col - #1 } { \__nicematrix_env: - col - #1 } }
   }
 \tl_const:Nn \c__nicematrix_preamble_first_col_tl
   {
@@ -4541,87 +4505,117 @@
             }
           \keys_set:nn { nicematrix / xdots } { #3 }
           \__nicematrix_color:o \l__nicematrix_xdots_color_tl
-          \__nicematrix_actually_draw_Vdots:
+          \bool_if:NTF \l__nicematrix_Vbrace_bool
+            { \__nicematrix_actually_draw_Vbrace: }
+            { \__nicematrix_actually_draw_Vdots: }
         \group_end:
       }
   }
 \cs_new_protected:Npn \__nicematrix_actually_draw_Vdots:
   {
     \bool_lazy_and:nnTF { \l__nicematrix_initial_open_bool } { \l__nicematrix_final_open_bool }
+      { \__nicematrix_actually_draw_Vdots_i: }
+      { \__nicematrix_actually_draw_Vdots_ii: }
+    \dim_set_eq:NN \l__nicematrix_x_final_dim \l__nicematrix_x_initial_dim
+    \__nicematrix_draw_line:
+  }
+\cs_new_protected:Npn \__nicematrix_actually_draw_Vdots_i:
+  {
+    \__nicematrix_open_y_initial_dim:
+    \__nicematrix_open_y_final_dim:
+    \int_if_zero:nTF { \l__nicematrix_initial_j_int }
       {
-        \__nicematrix_open_y_initial_dim:
-        \__nicematrix_open_y_final_dim:
-        \int_if_zero:nTF { \l__nicematrix_initial_j_int }
+        \__nicematrix_qpoint:n { col - 1 }
+        \dim_set_eq:NN \l__nicematrix_x_initial_dim \pgf@x
+        \dim_sub:Nn \l__nicematrix_x_initial_dim
+          { \__nicematrix_colsep: + \l__nicematrix_left_margin_dim + \l__nicematrix_extra_left_margin_dim }
+      }
+      {
+        \bool_lazy_and:nnTF
+          { \int_compare_p:nNn { \l__nicematrix_last_col_int } > { -2 } }
           {
-            \__nicematrix_qpoint:n { col - 1 }
-            \dim_set_eq:NN \l__nicematrix_x_initial_dim \pgf@x
-            \dim_sub:Nn \l__nicematrix_x_initial_dim \l__nicematrix_left_margin_dim
-            \dim_sub:Nn \l__nicematrix_x_initial_dim \l__nicematrix_extra_left_margin_dim
-            \dim_sub:Nn \l__nicematrix_x_initial_dim \c__nicematrix_shift_exterior_Vdots_dim
+            \int_compare_p:nNn
+              { \l__nicematrix_initial_j_int } = { \g__nicematrix_col_total_int }
           }
           {
-            \bool_lazy_and:nnTF
-              { \int_compare_p:nNn { \l__nicematrix_last_col_int } > { -2 } }
+            \__nicematrix_qpoint:n { col - \int_use:N \l__nicematrix_initial_j_int }
+            \dim_set_eq:NN \l__nicematrix_x_initial_dim \pgf@x
+            \dim_add:Nn \l__nicematrix_x_initial_dim
+               { \__nicematrix_colsep: + \l__nicematrix_right_margin_dim + \l__nicematrix_extra_right_margin_dim }
+          }
+          {
+            \__nicematrix_qpoint:n { col - \int_use:N \l__nicematrix_initial_j_int }
+            \dim_set_eq:NN \l_tmpa_dim \pgf@x
+            \__nicematrix_qpoint:n { col - \int_eval:n { \l__nicematrix_initial_j_int + 1 } }
+            \dim_set:Nn \l__nicematrix_x_initial_dim { ( \pgf@x + \l_tmpa_dim ) / 2 }
+          }
+      }
+  }
+\cs_new_protected:Npn \__nicematrix_actually_draw_Vdots_ii:
+  {
+    \bool_set_false:N \l_tmpa_bool
+    \bool_if:NF \l__nicematrix_initial_open_bool
+      {
+        \bool_if:NF \l__nicematrix_final_open_bool
+          {
+            \__nicematrix_set_initial_coords_from_anchor:n { south~west }
+            \__nicematrix_set_final_coords_from_anchor:n { north~west }
+            \bool_set:Nn \l_tmpa_bool
               {
-                \int_compare_p:nNn
-                  { \l__nicematrix_initial_j_int } = { \g__nicematrix_col_total_int }
-              }
-              {
-                \__nicematrix_qpoint:n { col - \int_use:N \l__nicematrix_initial_j_int }
-                \dim_set_eq:NN \l__nicematrix_x_initial_dim \pgf@x
-                \dim_add:Nn \l__nicematrix_x_initial_dim \l__nicematrix_right_margin_dim
-                \dim_add:Nn \l__nicematrix_x_initial_dim \l__nicematrix_extra_right_margin_dim
-                \dim_add:Nn \l__nicematrix_x_initial_dim \c__nicematrix_shift_exterior_Vdots_dim
-              }
-              {
-                \__nicematrix_qpoint:n { col - \int_use:N \l__nicematrix_initial_j_int }
-                \dim_set_eq:NN \l_tmpa_dim \pgf@x
-                \__nicematrix_qpoint:n { col - \int_eval:n { \l__nicematrix_initial_j_int + 1 } }
-                \dim_set:Nn \l__nicematrix_x_initial_dim { ( \pgf@x + \l_tmpa_dim ) / 2 }
+                \dim_compare_p:nNn
+                  { \l__nicematrix_x_initial_dim } = { \l__nicematrix_x_final_dim }
               }
           }
       }
+    \bool_if:NTF \l__nicematrix_initial_open_bool
       {
-        \bool_set_false:N \l_tmpa_bool
-        \bool_if:NF \l__nicematrix_initial_open_bool
+        \__nicematrix_open_y_initial_dim:
+        \__nicematrix_set_final_coords_from_anchor:n { north }
+        \dim_set_eq:NN \l__nicematrix_x_initial_dim \l__nicematrix_x_final_dim
+      }
+      {
+        \__nicematrix_set_initial_coords_from_anchor:n { south }
+        \bool_if:NTF \l__nicematrix_final_open_bool
+          { \__nicematrix_open_y_final_dim: }
           {
-            \bool_if:NF \l__nicematrix_final_open_bool
-              {
-                \__nicematrix_set_initial_coords_from_anchor:n { south~west }
-                \__nicematrix_set_final_coords_from_anchor:n { north~west }
-                \bool_set:Nn \l_tmpa_bool
-                  {
-                    \dim_compare_p:nNn
-                      { \l__nicematrix_x_initial_dim } = { \l__nicematrix_x_final_dim }
-                  }
-              }
-          }
-        \bool_if:NTF \l__nicematrix_initial_open_bool
-          {
-            \__nicematrix_open_y_initial_dim:
             \__nicematrix_set_final_coords_from_anchor:n { north }
-            \dim_set_eq:NN \l__nicematrix_x_initial_dim \l__nicematrix_x_final_dim
-          }
-          {
-            \__nicematrix_set_initial_coords_from_anchor:n { south }
-            \bool_if:NTF \l__nicematrix_final_open_bool
-              { \__nicematrix_open_y_final_dim: }
+            \dim_compare:nNnF { \l__nicematrix_x_initial_dim } = { \l__nicematrix_x_final_dim }
               {
-                \__nicematrix_set_final_coords_from_anchor:n { north }
-                \dim_compare:nNnF { \l__nicematrix_x_initial_dim } = { \l__nicematrix_x_final_dim }
+                \dim_set:Nn \l__nicematrix_x_initial_dim
                   {
-                    \dim_set:Nn \l__nicematrix_x_initial_dim
-                      {
-                        \bool_if:NTF \l_tmpa_bool { \dim_min:nn } { \dim_max:nn }
-                          \l__nicematrix_x_initial_dim \l__nicematrix_x_final_dim
-                      }
+                    \bool_if:NTF \l_tmpa_bool { \dim_min:nn } { \dim_max:nn }
+                      \l__nicematrix_x_initial_dim \l__nicematrix_x_final_dim
                   }
               }
           }
+      }
+  }
+\cs_new_protected:Npn \__nicematrix_actually_draw_Vbrace:
+  {
+    \bool_if:NTF \l__nicematrix_initial_open_bool
+      { \__nicematrix_open_y_initial_dim: }
+      { \__nicematrix_set_initial_coords_from_anchor:n { south } }
+    \bool_if:NTF \l__nicematrix_final_open_bool
+      { \__nicematrix_open_y_final_dim: }
+      { \__nicematrix_set_final_coords_from_anchor:n { north } }
+    \int_if_zero:nTF { \l__nicematrix_initial_j_int }
+      {
+        \__nicematrix_qpoint:n { col - 1 }
+        \dim_set_eq:NN \l__nicematrix_x_initial_dim \pgf@x
+        \dim_sub:Nn \l__nicematrix_x_initial_dim
+          { \__nicematrix_colsep: + \l__nicematrix_left_margin_dim + \l__nicematrix_extra_left_margin_dim }
+      }
+      {
+        \__nicematrix_qpoint:n { col - \int_use:N \l__nicematrix_initial_j_int }
+        \dim_set_eq:NN \l__nicematrix_x_initial_dim \pgf@x
+        \dim_add:Nn \l__nicematrix_x_initial_dim
+          { \__nicematrix_colsep: + \l__nicematrix_right_margin_dim + \l__nicematrix_extra_right_margin_dim }
       }
     \dim_set_eq:NN \l__nicematrix_x_final_dim \l__nicematrix_x_initial_dim
     \__nicematrix_draw_line:
   }
+\cs_new:Npn \__nicematrix_colsep:
+  { \bool_if:NTF \l__nicematrix_tabular_bool { \tabcolsep } { \arraycolsep } }
 \cs_new_protected:Npn \__nicematrix_draw_Ddots:nnn #1 #2 #3
   {
     \__nicematrix_adjust_to_submatrix:nn { #1 } { #2 }
@@ -5269,7 +5263,7 @@
             \bool_set_true:N \l__nicematrix_initial_open_bool
           }
       }
-    \int_compare:nNnTF { #1 + #3 -1 } = { \c@iRow }
+    \int_compare:nNnTF { #1 + #3 - 1 } = { \c@iRow }
       {
         \int_set:Nn \l__nicematrix_final_i_int { #1 + #3 - 1 }
         \bool_set_true:N \l__nicematrix_final_open_bool
@@ -5297,7 +5291,9 @@
       }
     \keys_set:nn { nicematrix / xdots } { #4 }
     \__nicematrix_color:o \l__nicematrix_xdots_color_tl
-    \__nicematrix_actually_draw_Vdots:
+    \bool_if:NTF \l__nicematrix_Vbrace_bool
+      { \__nicematrix_actually_draw_Vbrace: }
+      { \__nicematrix_actually_draw_Vdots: }
     \group_end:
     \int_step_inline:nnn { #1 } { #1 + #3 - 1 }
       { \cs_set_nopar:cpn { __nicematrix _ dotted _ ##1 - #2 } { } }
@@ -9316,6 +9312,7 @@
             \NiceMatrixOptions { nullify-dots }
             \Vdots
               [
+                Vbrace ,
                 line-style = nicematrix / mirrored-brace ,
                 #1 ,
                 down =
@@ -9325,6 +9322,7 @@
           {
             \Vdotsfor
               [
+                Vbrace ,
                 line-style = nicematrix / mirrored-brace ,
                 #1 ,
                 down =
@@ -9339,6 +9337,7 @@
             \NiceMatrixOptions { nullify-dots }
             \Vdots
               [
+                Vbrace ,
                 line-style =  nicematrix / brace ,
                 #1 ,
                 up =
@@ -9348,6 +9347,7 @@
           {
             \Vdotsfor
               [
+                Vbrace ,
                 line-style = nicematrix / brace ,
                 #1 ,
                 up =

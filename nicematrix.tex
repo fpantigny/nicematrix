@@ -178,9 +178,10 @@ The package \pkg{nicematrix} is entirely contained in the file
 distribution such as MiKTeX, TeX Live or MacTeX.
 
 \medskip
-\emph{Remark}\par\nobreak
+\emph{Remark}
 
-If you use LaTeX via Internet with, for example, Overleaf, you
+\nobreak
+If you use LaTeX via Internet with, for example, Overleaf of TeXPage, you
 can upload the file |nicematrix.sty| in the repertory of your 
 project in order to take full advantage of the latest version de
 \pkg{nicematrix}.\footnote{The latest version of the file
@@ -411,8 +412,9 @@ u_n & 1 & 2 & 4 & 8 & 16 & 32 \\
 However, it's also possible to use the tools of
 \pkg{booktabs}\footnote{The extension \pkg{booktabs} is \emph{not} loaded
 by \pkg{nicematrix}.}: |\toprule|,
-|\bottomrule|, |\midrule|, etc.\par\nobreak
+|\bottomrule|, |\midrule|, etc.
 
+\nobreak
 \smallskip
 \begin{Code}[width=9cm]
 \begin{enumerate}
@@ -1794,8 +1796,9 @@ environment.
 There is three possibilities.
 
 \begin{itemize}
-\item \emph{First possibility}\par\nobreak
+\item \emph{First possibility}
 
+\nobreak
 It's possible to specify composite rules, with a color and a color for the
 inter-rule space (as possible with \pkg{colortbl} for instance).
 
@@ -1894,11 +1897,12 @@ four & \cellcolor{yellow} five & six \\
 
 
 \bigskip
-\item \emph{Second possibility}\par\nobreak
+\item \emph{Second possibility}
 
 \index{tikzz@tikz!key of ``custom-line''}
 \index{total-width (key of ``custom-line'')}
 
+\nobreak
 It's possible to use the key \Definition{tikz} (if TikZ is loaded). In that
 case, the rule is drawn directly with TikZ by using as parameters the value of
 the key |tikz| which must be a list of \textsl{key=value} pairs which may be
@@ -2614,7 +2618,7 @@ However, \pkg{booktabs} is \emph{not} loaded by \pkg{nicematrix}.
   \rowcolors{3}{blue!15}{}
 \Body
 \emph{\toprule}
-\Block{2-1}{Product} & 
+\Block[C]{2-1}{Product} & 
 \Block{1-3}{dimensions (cm)} & & & 
 \Block{2-1}{\rotate Price} \\
 \emph{\cmidrule(rl){2-4}}
@@ -2634,7 +2638,7 @@ special  & 12  & 12   & 0.5 & 70    \\
   \rowcolors{3}{blue!15}{}
 \Body
 \toprule
-\Block{2-1}{Product} & 
+\Block[C]{2-1}{Product} & 
 \Block{1-3}{dimensions (cm)} & & & 
 \Block{2-1}{\rotate Price} \\
 \cmidrule(rl){2-4} 
@@ -2942,8 +2946,9 @@ It's possible to give the special value \Definition{auto} to the option
 |columns-width|: all the columns of the array will have a width equal to the
 widest cell of the array.\footnote{The result is achieved with only one
   compilation (but PGF/TikZ will have written information in the |aux| file and
-  a message requiring a second compilation will appear).}\par\nobreak
+  a message requiring a second compilation will appear).}
 
+\nobreak
 \medskip
 \begin{Code}[width=10cm]
 $\begin{pNiceMatrix}[\emph{columns-width = auto}]
@@ -2961,8 +2966,9 @@ $\begin{pNiceMatrix}[columns-width = auto,no-cell-nodes]
 \bigskip
 Without surprise, it's possible to fix the minimal width of the columns of all
 the arrays of a current scope with the command
-|\NiceMatrixOptions|.\par\nobreak
+|\NiceMatrixOptions|.
 
+\nobreak
 \medskip
 \begin{Code}[width=8.5cm]
 \emph{\NiceMatrixOptions{columns-width=10mm}}
@@ -3363,8 +3369,9 @@ horizontal line; for |\Vdots|, it's a vertical line and for |\Ddots| and
 with the option |color|.\footnote{It's also possible to change the color of
 all these dotted lines with the option |xdots/color| (\textsl{xdots} to
 remind that it works for |\Cdots|, |\Ldots|, |\Vdots|, etc.): cf. p.
-\pageref{customisation}.}\par\nobreak  
+\pageref{customisation}.}
 
+\nobreak
 \bigskip
 \begin{Code}[width=10cm]
 \begin{bNiceMatrix}
@@ -3385,8 +3392,9 @@ a_1      & a_2    &        & & a_n
 
 \interitem 
 In order to represent the null matrix, one can use the following
-codage:\par\nobreak
+codage:
 
+\nobreak
 \bigskip
 \begin{Code}[width=10cm]
 \begin{bNiceMatrix}
@@ -3404,8 +3412,9 @@ $\begin{bNiceMatrix}
 \bigskip
 However, one may want a larger matrix. Usually, in such a case, the users of
 LaTeX add a new row and a new column. It's possible to use the same method
-with \pkg{nicematrix}:\par\nobreak 
+with \pkg{nicematrix}:
 
+\nobreak
 \bigskip
 \begin{Code}[width=10cm]
 \begin{bNiceMatrix}
@@ -3428,8 +3437,9 @@ of course, only one dotted line is drawn.
 
 \bigskip
 In fact, in this example, it would be possible to draw the same matrix more
-easily with the following code:\par\nobreak
+easily with the following code:
 
+\nobreak
 \bigskip
 \begin{Code}[width=10cm]
 \begin{bNiceMatrix}
@@ -3460,8 +3470,9 @@ or~|W|: see p.~\pageref{width}}
 However, a command~|\hspace*| might interfere with the construction of the
 dotted lines. That's why the package \pkg{nicematrix} provides a
 command~|\Hspace| which is a variant of |\hspace| transparent for the dotted
-lines of \pkg{nicematrix}.\par\nobreak
+lines of \pkg{nicematrix}.
 
+\nobreak
 \bigskip
 \begin{Code}[width=10cm]
 $\begin{bNiceMatrix}
@@ -3483,8 +3494,10 @@ $\begin{bNiceMatrix}
 \index{nullify-dots}
 
 Consider the following matrix composed classicaly with the environment
-|{pmatrix}| of \pkg{amsmath}.\par\nobreak 
+|{pmatrix}| of \pkg{amsmath}.
 
+
+\nobreak
 \medskip
 \begin{Code}[width=10cm]
 $A = \begin{pmatrix}
@@ -3500,8 +3513,9 @@ x   &     &     &    &     & x
 
 \bigskip
 If we add |\ldots| instructions in the second row, the geometry of the
-matrix is modified.\par\nobreak
+matrix is modified.
 
+\nobreak
 \medskip
 \begin{Code}[width=10cm]
 $B = \begin{pmatrix}
@@ -3517,8 +3531,9 @@ x   & \ldots   & \ldots  & \ldots & \ldots & x
 \bigskip
 By default, with \pkg{nicematrix}, if we replace |{pmatrix}| by
 |{pNiceMatrix}| and |\ldots| by |\Ldots|, the geometry of the matrix is not
-changed.\par\nobreak 
+changed.
 
+\nobreak
 \medskip
 \begin{Code}[width=10cm]
 $C = \begin{pNiceMatrix}
@@ -3535,8 +3550,9 @@ x & \Ldots & \Ldots  & \Ldots & \Ldots & x
 However, one may prefer the geometry of the first matrix $A$ and would like to
 have such a geometry with a dotted line in the second row. It's possible by
 using the option \Definition{nullify-dots} (and only one instruction |\Ldots| is
-necessary).\par\nobreak 
+necessary).
 
+\nobreak
 \medskip
 \begin{Code}[width=10cm]
 $D = \begin{pNiceMatrix}[\emph{nullify-dots}]
@@ -3676,24 +3692,27 @@ as options of the command |\usepackage|.}
 \smallskip
 
 \begin{itemize}
-\item The option \Definition{renew-dots}\par\nobreak
+\item The option \Definition{renew-dots}
 
+\nobreak
 With this option, the commands |\ldots|, |\cdots|, |\vdots|, |\ddots|,
 |\iddots|\footnotemark[\thefniddots] and |\hdotsfor| are redefined within the
 environments provided by \pkg{nicematrix} and behave like |\Ldots|, |\Cdots|,
 |\Vdots|, |\Ddots|, |\Iddots| and |\Hdotsfor|; the command |\dots|
 (``automatic dots'' of |amsmath|) is also redefined to behave like |\Ldots|. 
 
-\item The option \Definition{renew-matrix}\par\nobreak 
+\item The option \Definition{renew-matrix}
 
+\nobreak
 With this option, the environment |{matrix}| is redefined and behave like
 |{NiceMatrix}|, and so on for the five variants.
 \end{itemize}
 
 \bigskip 
 Therefore, with the keys |renew-dots| and |renew-matrix|, a classical code
-gives directly the output of \pkg{nicematrix}.\par\nobreak
+gives directly the output of \pkg{nicematrix}.
 
+\nobreak
 \medskip
 \begin{scope}
 \NiceMatrixOptions{renew-dots,renew-matrix}
@@ -3746,8 +3765,9 @@ $\begin{bNiceMatrix}
 
 \bigskip
 With the key \Definition{horizontal-label}, the labels stay
-horizontal.\par\nobreak 
-%
+horizontal.
+
+\nobreak
 \medskip
 \begin{Code}[width=10cm]
 $\begin{bNiceMatrix}
@@ -3843,8 +3863,9 @@ initial value is 0.45~em (it is recommended to use a unit of length dependent of
 the current font).
 
 \bigskip
-\textbf{The option \Definition{xdots/line-style}}\par\nobreak
+\textbf{The option \Definition{xdots/line-style}}
 
+\nobreak
 \smallskip
 It should be pointed that, by default, the lines drawn by TikZ with the
 parameter |dotted| are composed of square dots (and not rounded
@@ -3876,8 +3897,9 @@ the TikZ paths (with the exception of ``|color|'', ``|shorten >|'' and
 ``|shorten <|'').
 
 \medskip
-Here is for example a tridiagonal matrix with the style |loosely dotted|:\par\nobreak
+Here is for example a tridiagonal matrix with the style |loosely dotted|:
 
+\nobreak
 \medskip
 \begin{Code}
 $\begin{pNiceMatrix}[nullify-dots,\emph{xdots/line-style=loosely dotted}]
@@ -4503,8 +4525,9 @@ p.~\pageref{submatrix-in-codebefore}.
 
 \vspace{1cm}
 \emph{Caution} : The following functionality is fragile and does not work with
-|latex|--|dvips|--|ps2pdf|.\par\nobreak
+|latex|--|dvips|--|ps2pdf|.
 
+\nobreak
 \smallskip
 The key \Definition{code} of the command |\SubMatrix| allows the insertion of
 code after the construction of the submatrix. It's meant to be used to insert TikZ
@@ -6094,8 +6117,9 @@ noix & noisette & brugnon
 
 \vspace{1cm}
 The nodes we have described are not available by default in the |\CodeBefore|
-(described p.~\pageref{code-before}).\par\nobreak
+(described p.~\pageref{code-before}).
 
+\nobreak
 \index{create-cell-nodes (key of \texttt{\textbackslash CodeBefore})}
 It's possible to have these nodes available in the |\CodeBefore| by using the
 key \Definition{create-cell-nodes} of the keyword |\CodeBefore| (in that case,
@@ -6594,8 +6618,9 @@ the environment |{tabular}| is not redefined.
 The package \pkg{nicematrix} is not compatible with the class \cls{ieeeaccess}
 because that class is not compatible with PGF/TikZ. However, there is a simple
 workaround by writing:\footnote{See
- \url{https://tex.stackexchange.com/questions/528975}}\par\nobreak 
+ \url{https://tex.stackexchange.com/questions/528975}}
 
+\nobreak
 \begin{Code}
 \let\TeXyear\year
 \documentclass{IEEEaccess}
@@ -6978,8 +7003,9 @@ Dupont & Chantal & January 15, 1998 \\
 
 \index{dotted@\textbf{Dotted lines}|textit}
 
-An example with the resultant of two polynoms:\par\nobreak
+An example with the resultant of two polynoms:
 
+\nobreak
 \bigskip
 \begin{BVerbatim}
 \setlength{\extrarowheight}{1mm}

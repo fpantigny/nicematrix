@@ -189,11 +189,11 @@ une arborescence |texmf|. Le mieux reste néanmoins d'installer \pkg{nicematrix}
 avec une distribution TeX comme MiKTeX, TeX~Live ou MacTeX.
 
 \medskip
-\emph{Remarque} : Si vous utilisez un service LaTeX via Internet (ex. :
-Overleaf) vous pouvez télécharger le fichier |nicematrix.sty| dans le dossier de
-votre projet pour bénéficier de la dernière version de
-\pkg{nicematrix}.\footnote{La dernière version de |nicematrix.sty| peut
-  être téléchargée sur le dépôt Github de \pkg{nicematrix} : \newline \small
+\emph{Remarque} : Si vous utilisez un service LaTeX via Internet (ex. : Overleaf
+ou TeXPage) vous pouvez télécharger le fichier |nicematrix.sty| dans le dossier
+de votre projet pour bénéficier de la dernière version de
+\pkg{nicematrix}.\footnote{La dernière version de |nicematrix.sty| peut être
+  téléchargée sur le dépôt Github de \pkg{nicematrix} : \newline \small
   \url{https://github.com/fpantigny/nicematrix/releases}}
 
 \medskip
@@ -1091,7 +1091,7 @@ les blocs mono-rangée).
 
 \begin{Code}[width=10cm]
 \begin{NiceTabular}{ccc}
-\Block[fill=red!10,\emph{t},L]{4-2}{two\\lines}
+\Block[fill=red!10,\emph{t},l]{4-2}{two\\lines}
  & & \Huge Un\\
  & & deux  \\
  & & trois  \\
@@ -1100,7 +1100,7 @@ text & text \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}
-\Block[fill=red!10,t,L]{4-2}{two\\lines}
+\Block[fill=red!10,t,l]{4-2}{two\\lines}
  & & \Huge Un\\
  & & deux  \\
  & & trois  \\
@@ -2712,7 +2712,7 @@ l'extension \pkg{booktabs} n'est \emph{pas} chargée par \pkg{nicematrix}.
   \rowcolors{3}{blue!15}{}
 \Body
 \emph{\toprule}
-\Block{2-1}{Produit} &
+\Block[C]{2-1}{Produit} &
 \Block{1-3}{dimensions (cm)} & & &
 \Block{2-1}{\rotate Prix} \\
 \emph{\cmidrule(rl){2-4}}
@@ -2732,7 +2732,7 @@ spécial  & 12  & 12   & 0.5 & 70    \\
   \rowcolors{3}{blue!15}{}
 \Body
 \toprule
-\Block{2-1}{Produit} &
+\Block[C]{2-1}{Produit} &
 \Block{1-3}{dimensions (cm)} & & &
 \Block{2-1}{\rotate Prix} \\
 \cmidrule(rl){2-4}
@@ -7330,7 +7330,7 @@ pointillées (TikZ doit être chargé).
 \end{pNiceMatrix}\]
 \end{scope}
 
-\pagebreak
+
 
 \interitem
 On peut même tracer des lignes continues.\footnote{Dans ce document, la
@@ -7434,7 +7434,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \end{pNiceArray}$}
 
 
-\pagebreak
+
 Il est possible de changer le style TikZ des accolades en changeant le style
 |nicematrix/brace|. Dans l'exemple suivant, on suppose que l'extension
 \pkg{calligraphy} de TikZ a été chargée:

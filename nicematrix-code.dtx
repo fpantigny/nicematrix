@@ -504,7 +504,8 @@ version 2005/12/01 or later.
 % When \pkg{colortbl} is used, we have to catch the tokens |\columncolor| in the
 % preamble because, otherwise, \pkg{colortbl} will catch them and the colored
 % panels won't be drawn by \pkg{nicematrix} but by \pkg{colortbl} (with an
-% output which is not perfect).
+% output which is not perfect).
+
 %    \begin{macrocode}
         \cs_new_protected:Npn \@@_replace_columncolor:
           {
