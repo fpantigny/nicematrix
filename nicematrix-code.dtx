@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.1x}
-\def\myfiledate{2025/07/05}
+\def\myfileversion{7.1e}
+\def\myfiledate{2025/07/18}
 %
 %
 %<*batchfile>  
@@ -924,6 +924,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \bool_new:N \l_@@_initial_open_bool
 \bool_new:N \l_@@_final_open_bool
+\bool_new:N \l_@@_Vbrace_bool 
 %    \end{macrocode}
 % 
 % 
@@ -1743,8 +1744,6 @@ version 2005/12/01 or later.
 % \begin{itemize}
 % \item |\Ldots| \emph{with both extremities open} (and hence also |\Hdotsfor| in an
 % exterior row;
-% \item |\Vdots| \emph{with both extremities open} (and hence also |\Vdotsfor| in an 
-% exterior column;
 % \item when the special character ``|:|'' is used in order to put the label of
 % a so-called ``dotted line'' \emph{on the line}, a margin of
 % |\c_@@_innersep_middle_dim| will be added around the label.
@@ -1754,7 +1753,6 @@ version 2005/12/01 or later.
 \hook_gput_code:nnn { begindocument } { . }
   { 
     \dim_const:Nn \c_@@_shift_Ldots_last_row_dim { 0.5 em } 
-    \dim_const:Nn \c_@@_shift_exterior_Vdots_dim { 0.6 em } 
     \dim_const:Nn \c_@@_innersep_middle_dim { 0.17 em }
   }
 %    \end{macrocode}
@@ -2475,6 +2473,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / xdots }
   {
+    Vbrace .bool_set:N = \l_@@_Vbrace_bool ,
     shorten-start .code:n = 
       \hook_gput_code:nnn { begindocument } { . } 
         { \dim_set:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
@@ -4707,18 +4706,6 @@ version 2005/12/01 or later.
     \c_math_toggle_token
     \skip_horizontal:N \l_@@_right_margin_dim 
     \skip_horizontal:N \l_@@_extra_right_margin_dim 
- 
-    % awful workaround
-    \int_compare:nNnT { \g_@@_col_total_int } = { 1 }
-      { 
-        \dim_compare:nNnT { \l_@@_columns_width_dim } > { \c_zero_dim }
-          { 
-            \skip_horizontal:n { - \l_@@_columns_width_dim }
-            \bool_if:NTF \l_@@_tabular_bool 
-              { \skip_horizontal:n { - 2 \tabcolsep } }
-              { \skip_horizontal:n { - 2 \arraycolsep } }
-          }
-      }
     \hbox_set_end:
     \bool_if:NT \c_@@_recent_array_bool
       { \UseTaggingSocket { tbl / hmode / end } }
@@ -7196,15 +7183,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \int_if_zero:nTF { \l_@@_first_col_int }
       {
-        \bool_if:NT \l_@@_code_before_bool
-          { 
-            \hbox
-              {
-                \skip_horizontal:n { -0.5 \arrayrulewidth }
-                \pgfsys@markposition { \@@_env: - col - 1 } 
-                \skip_horizontal:n { 0.5 \arrayrulewidth }
-              }
-          } 
+        \@@_mark_position:n { 1 }
         \pgfpicture 
         \pgfrememberpicturepositiononpagetrue
         \pgfcoordinate { \@@_env: - col - 1 } 
@@ -7226,9 +7205,8 @@ version 2005/12/01 or later.
         \pgfpicture 
         \pgfrememberpicturepositiononpagetrue
         \pgfcoordinate { \@@_env: - col - 1 } 
-          { \pgfpoint { 0.5 \arrayrulewidth } \c_zero_dim }       
-        \str_if_empty:NF \l_@@_name_str
-          { \pgfnodealias { \l_@@_name_str - col - 1 } { \@@_env: - col - 1 } }  
+          { \pgfpoint { 0.5 \arrayrulewidth } \c_zero_dim }
+        \@@_node_alias:n { 1 }
         \endpgfpicture
       }
 %    \end{macrocode}
@@ -7255,22 +7233,13 @@ version 2005/12/01 or later.
       }
     \skip_horizontal:N \g_tmpa_skip 
     \hbox
-      { 
-        \bool_if:NT \l_@@_code_before_bool
-          { 
-            \hbox
-              {
-                \skip_horizontal:n { -0.5 \arrayrulewidth }
-                \pgfsys@markposition { \@@_env: - col - 2 } 
-                \skip_horizontal:n { 0.5 \arrayrulewidth }
-              }
-          }   
+      {
+        \@@_mark_position:n { 2 }
         \pgfpicture 
         \pgfrememberpicturepositiononpagetrue
         \pgfcoordinate { \@@_env: - col - 2 } 
-          { \pgfpoint { - 0.5 \arrayrulewidth } \c_zero_dim } 
-        \str_if_empty:NF \l_@@_name_str
-          { \pgfnodealias { \l_@@_name_str - col - 2 } { \@@_env: - col - 2 } } 
+          { \pgfpoint { - 0.5 \arrayrulewidth } \c_zero_dim }
+        \@@_node_alias:n { 2 }
         \endpgfpicture
       }
 %    \end{macrocode}
@@ -7290,29 +7259,15 @@ version 2005/12/01 or later.
 % of the cell.
 %    \begin{macrocode}
         \skip_horizontal:N \g_tmpa_skip 
-        \bool_if:NT \l_@@_code_before_bool
-          { 
-            \hbox
-              {
-                \skip_horizontal:n { -0.5 \arrayrulewidth }
-                \pgfsys@markposition 
-                  { \@@_env: - col - \int_eval:n { \g_tmpa_int + 1 } } 
-                \skip_horizontal:n { 0.5 \arrayrulewidth }
-              }
-          }   
+        \@@_mark_position:n { \int_eval:n { \g_tmpa_int + 1 } } 
 %    \end{macrocode}
 % We create the |col| node on the right of the current column.
 %    \begin{macrocode}
         \pgfpicture
           \pgfrememberpicturepositiononpagetrue
           \pgfcoordinate { \@@_env: - col - \int_eval:n { \g_tmpa_int + 1 } } 
-            { \pgfpoint { - 0.5 \arrayrulewidth } \c_zero_dim } 
-          \str_if_empty:NF \l_@@_name_str
-            {
-              \pgfnodealias 
-                { \l_@@_name_str - col - \int_eval:n { \g_tmpa_int + 1 } }
-                { \@@_env: - col - \int_eval:n { \g_tmpa_int + 1 } } 
-            }   
+            { \pgfpoint { - 0.5 \arrayrulewidth } \c_zero_dim }
+          \@@_node_alias:n { \int_eval:n { \g_tmpa_int + 1 } }
         \endpgfpicture  
       }
 %    \end{macrocode}
@@ -7320,63 +7275,63 @@ version 2005/12/01 or later.
 % \bigskip
 %    \begin{macrocode}
         & 
-        \omit 
-%    \end{macrocode}
-% The two following lines have been added on 2021-12-15 to solve a bug
-% mentioned by Joao Luis Soares by mail.
+        \omit
+%    \end{macrocode}        
+% 
+% If there is only one column (and a potential ``last column''), we don't have
+% to put the following code (there is only one column and we have put the
+% correct code previously).
 %    \begin{macrocode}
-        \int_if_zero:nT { \g_@@_col_total_int }
-          { \skip_gset:Nn \g_tmpa_skip { 0 pt~plus 1 fill } }
-        \skip_horizontal:N \g_tmpa_skip 
-        \int_gincr:N \g_tmpa_int 
-        \bool_lazy_any:nF 
-          { 
-            \g_@@_delims_bool 
-            \l_@@_tabular_bool 
-            { ! \clist_if_empty_p:N \l_@@_vlines_clist } 
-            \l_@@_exterior_arraycolsep_bool 
-            \l_@@_bar_at_end_of_pream_bool 
-          }
-          { \skip_horizontal:n { - \col@sep } }
-        \bool_if:NT \l_@@_code_before_bool
-          { 
-            \hbox
-              {
-                \skip_horizontal:n { -0.5 \arrayrulewidth }
+        \bool_lazy_or:nnF
+          { \int_compare_p:nNn \g_@@_col_total_int = 1 }
+          { \int_compare_p:nNn \g_@@_col_total_int = 2 && \g_@@_last_col_found_bool }
+          {
+            \skip_horizontal:N \g_tmpa_skip 
+            \int_gincr:N \g_tmpa_int 
+            \bool_lazy_any:nF 
+              { 
+                \g_@@_delims_bool 
+                \l_@@_tabular_bool 
+                { ! \clist_if_empty_p:N \l_@@_vlines_clist } 
+                \l_@@_exterior_arraycolsep_bool 
+                \l_@@_bar_at_end_of_pream_bool 
+              }
+              { \skip_horizontal:n { - \col@sep } }
+            \bool_if:NT \l_@@_code_before_bool
+              { 
+                \hbox
+                  {
+                    \skip_horizontal:n { -0.5 \arrayrulewidth }
 %    \end{macrocode}
 % With an environment |{Matrix}|, you want to remove the exterior |\arraycolsep| 
 % but we don't know the number of columns (since there is no preamble) and
 % that's why we can't put |@{}| at the end of the preamble. That's why we remove
 % a |\arraycolsep| now.
 %    \begin{macrocode}
-                \bool_if:NT \l_@@_NiceMatrix_without_vlines_bool
-                  { \skip_horizontal:n { - \arraycolsep } }
-                \pgfsys@markposition 
-                  { \@@_env: - col - \int_eval:n { \g_tmpa_int + 1 } } 
-                \skip_horizontal:n { 0.5 \arrayrulewidth }
-                \bool_if:NT \l_@@_NiceMatrix_without_vlines_bool
-                  { \skip_horizontal:N \arraycolsep }
-              }
-          }   
-        \pgfpicture
-          \pgfrememberpicturepositiononpagetrue
-          \pgfcoordinate { \@@_env: - col - \int_eval:n { \g_tmpa_int + 1 } } 
-            { 
-              \bool_if:NT \l_@@_NiceMatrix_without_vlines_bool
+                    \bool_if:NT \l_@@_NiceMatrix_without_vlines_bool
+                      { \skip_horizontal:n { - \arraycolsep } }
+                    \pgfsys@markposition 
+                      { \@@_env: - col - \int_eval:n { \g_tmpa_int + 1 } } 
+                    \skip_horizontal:n { 0.5 \arrayrulewidth }
+                    \bool_if:NT \l_@@_NiceMatrix_without_vlines_bool
+                      { \skip_horizontal:N \arraycolsep }
+                  }
+              }   
+            \pgfpicture
+              \pgfrememberpicturepositiononpagetrue
+              \pgfcoordinate { \@@_env: - col - \int_eval:n { \g_tmpa_int + 1 } } 
                 { 
-                  \pgfpoint 
-                    { - 0.5 \arrayrulewidth - \arraycolsep } 
-                    \c_zero_dim 
-                } 
-                { \pgfpoint { - 0.5 \arrayrulewidth } \c_zero_dim }
-            } 
-          \str_if_empty:NF \l_@@_name_str
-            {
-              \pgfnodealias 
-                { \l_@@_name_str - col - \int_eval:n { \g_tmpa_int + 1 } }
-                { \@@_env: - col - \int_eval:n { \g_tmpa_int + 1 } } 
-            }   
-        \endpgfpicture  
+                  \bool_if:NT \l_@@_NiceMatrix_without_vlines_bool
+                    { 
+                      \pgfpoint 
+                        { - 0.5 \arrayrulewidth - \arraycolsep } 
+                        \c_zero_dim 
+                    } 
+                    { \pgfpoint { - 0.5 \arrayrulewidth } \c_zero_dim }
+                }
+              \@@_node_alias:n { \int_eval:n { \g_tmpa_int + 1 } }
+            \endpgfpicture
+          }
 %    \end{macrocode}
 %
 % \bigskip
@@ -7396,16 +7351,8 @@ version 2005/12/01 or later.
             \pgfrememberpicturepositiononpagetrue
             \pgfcoordinate 
               { \@@_env: - col - \int_eval:n { \g_@@_col_total_int + 1 } }  
-              \pgfpointorigin 
-            \str_if_empty:NF \l_@@_name_str
-              { 
-                \pgfnodealias  
-                  { 
-                     \l_@@_name_str - col 
-                     - \int_eval:n { \g_@@_col_total_int + 1 } 
-                  }  
-                  { \@@_env: - col - \int_eval:n { \g_@@_col_total_int + 1 } } 
-              }  
+              \pgfpointorigin
+            \@@_node_alias:n { \int_eval:n { \g_@@_col_total_int + 1 } }
             \endpgfpicture
           }
       }
@@ -7413,6 +7360,30 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% \interitem
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_mark_position:n #1
+  {
+    \bool_if:NT \l_@@_code_before_bool
+      { 
+        \hbox
+          {
+            \skip_horizontal:n { -0.5 \arrayrulewidth }
+            \pgfsys@markposition { \@@_env: - col - #1 } 
+            \skip_horizontal:n { 0.5 \arrayrulewidth }
+          }
+      }   
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_node_alias:n #1
+  {
+    \str_if_empty:NF \l_@@_name_str
+      { \pgfnodealias { \l_@@_name_str - col - #1 } { \@@_env: - col - #1 } } 
+  }
+%    \end{macrocode}
+% 
 %
 % \interitem
 % Here is the preamble for the ``first column'' (if the user uses the key
@@ -9011,13 +8982,18 @@ version 2005/12/01 or later.
             }
           \keys_set:nn { nicematrix / xdots } { #3 }
           \@@_color:o \l_@@_xdots_color_tl
-          \@@_actually_draw_Vdots:
+          \bool_if:NTF \l_@@_Vbrace_bool
+            { \@@_actually_draw_Vbrace: }
+            { \@@_actually_draw_Vdots: }
         \group_end:
       }
   }
 %    \end{macrocode}
 %
 % \bigskip
+% The following function is used by regular calls of |\Vdots| or |\Vdotsfor| but
+% not by |\Vbrace|.
+%
 % The command |\@@_actually_draw_Vdots:| has the following implicit arguments: 
 % \begin{itemize}
 % \item |\l_@@_initial_i_int|
@@ -9028,120 +9004,186 @@ version 2005/12/01 or later.
 % \item |\l_@@_final_open_bool|. 
 % \end{itemize}
 %
-% The following function is also used by |\Vdotsfor|.
+%
+% 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_actually_draw_Vdots:
   {
-%    \end{macrocode}
-% 
-% First, the case of a dotted line open on both sides.
-%    \begin{macrocode}
     \bool_lazy_and:nnTF { \l_@@_initial_open_bool } { \l_@@_final_open_bool }
-%    \end{macrocode}
-%
-% We have to determine the $x$-value of the vertical rule that we will have
-% to draw. 
-%    \begin{macrocode}
-      {
-        \@@_open_y_initial_dim: 
-        \@@_open_y_final_dim: 
-        \int_if_zero:nTF { \l_@@_initial_j_int }
-%    \end{macrocode}
-% We have a dotted line open on both sides in the ``first column''.
-%    \begin{macrocode}
-          {
-            \@@_qpoint:n { col - 1 }
-            \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
-            \dim_sub:Nn \l_@@_x_initial_dim \l_@@_left_margin_dim 
-            \dim_sub:Nn \l_@@_x_initial_dim \l_@@_extra_left_margin_dim 
-            \dim_sub:Nn \l_@@_x_initial_dim \c_@@_shift_exterior_Vdots_dim 
-          } 
-          {
-            \bool_lazy_and:nnTF
-              { \int_compare_p:nNn { \l_@@_last_col_int } > { -2 } }
-              { 
-                \int_compare_p:nNn 
-                  { \l_@@_initial_j_int } = { \g_@@_col_total_int } 
-              }
-%    \end{macrocode}
-% We have a dotted line open on both sides in the ``last column''.
-%    \begin{macrocode}
-              {
-                \@@_qpoint:n { col - \int_use:N \l_@@_initial_j_int }
-                \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
-                \dim_add:Nn \l_@@_x_initial_dim \l_@@_right_margin_dim 
-                \dim_add:Nn \l_@@_x_initial_dim \l_@@_extra_right_margin_dim 
-                \dim_add:Nn \l_@@_x_initial_dim \c_@@_shift_exterior_Vdots_dim
-              }
-%    \end{macrocode}
-% We have a dotted line open on both sides which is \emph{not} in an exterior column.
-%    \begin{macrocode}
-              {
-                \@@_qpoint:n { col - \int_use:N \l_@@_initial_j_int }
-                \dim_set_eq:NN \l_tmpa_dim \pgf@x
-                \@@_qpoint:n { col - \int_eval:n { \l_@@_initial_j_int + 1 } }
-                \dim_set:Nn \l_@@_x_initial_dim { ( \pgf@x + \l_tmpa_dim ) / 2 } 
-              }            
-          }
-      }
-%    \end{macrocode}
-% 
-% Now, the dotted line is \emph{not} open on both sides (maybe open on only one side).
-%
-% The boolean |\l_tmpa_bool| will indicate whether the column is of type |l| or
-% may be considered as if.
-%    \begin{macrocode}      
-      {
-        \bool_set_false:N \l_tmpa_bool 
-        \bool_if:NF \l_@@_initial_open_bool 
-          { 
-            \bool_if:NF \l_@@_final_open_bool 
-              {
-                \@@_set_initial_coords_from_anchor:n { south~west } 
-                \@@_set_final_coords_from_anchor:n { north~west } 
-                \bool_set:Nn \l_tmpa_bool 
-                  { 
-                    \dim_compare_p:nNn 
-                      { \l_@@_x_initial_dim } = { \l_@@_x_final_dim } 
-                  }
-              }
-          }
-%    \end{macrocode}
-% Now, we try to determine whether the column is of type |c| or may be
-% considered as if.
-%    \begin{macrocode}
-        \bool_if:NTF \l_@@_initial_open_bool
-          { 
-            \@@_open_y_initial_dim: 
-            \@@_set_final_coords_from_anchor:n { north } 
-            \dim_set_eq:NN \l_@@_x_initial_dim \l_@@_x_final_dim
-          } 
-          { 
-            \@@_set_initial_coords_from_anchor:n { south } 
-            \bool_if:NTF \l_@@_final_open_bool
-              { \@@_open_y_final_dim: }
-%    \end{macrocode}
-% Now the case where both extremities are closed. The first conditional tests
-% whether the column is of type |c| or may be considered as if.
-%    \begin{macrocode}      
-              { 
-                \@@_set_final_coords_from_anchor:n { north } 
-                \dim_compare:nNnF { \l_@@_x_initial_dim } = { \l_@@_x_final_dim }
-                  { 
-                    \dim_set:Nn \l_@@_x_initial_dim
-                      { 
-                        \bool_if:NTF \l_tmpa_bool { \dim_min:nn } { \dim_max:nn }
-                          \l_@@_x_initial_dim \l_@@_x_final_dim
-                      }
-                  }
-              }     
-          }
-      }
+      { \@@_actually_draw_Vdots_i: }
+      { \@@_actually_draw_Vdots_ii: }
     \dim_set_eq:NN \l_@@_x_final_dim \l_@@_x_initial_dim 
     \@@_draw_line:
   }
 %    \end{macrocode}
 %
+%
+% \bigskip
+% First, the case of a dotted line open on both sides.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_actually_draw_Vdots_i:
+  {
+    \@@_open_y_initial_dim: 
+    \@@_open_y_final_dim: 
+    \int_if_zero:nTF { \l_@@_initial_j_int }
+%    \end{macrocode}
+% We have a dotted line open on both sides in the ``first column''.
+%    \begin{macrocode}
+      {
+        \@@_qpoint:n { col - 1 }
+        \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
+        \dim_sub:Nn \l_@@_x_initial_dim
+          { \@@_colsep: + \l_@@_left_margin_dim + \l_@@_extra_left_margin_dim }
+      } 
+      {
+        \bool_lazy_and:nnTF
+          { \int_compare_p:nNn { \l_@@_last_col_int } > { -2 } }
+          {
+            \int_compare_p:nNn 
+              { \l_@@_initial_j_int } = { \g_@@_col_total_int } 
+          }
+%    \end{macrocode}
+% We have a dotted line open on both sides and which is in the ``last column''.
+%    \begin{macrocode}
+          {
+            \@@_qpoint:n { col - \int_use:N \l_@@_initial_j_int }
+            \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
+            \dim_add:Nn \l_@@_x_initial_dim
+               { \@@_colsep: + \l_@@_right_margin_dim + \l_@@_extra_right_margin_dim }  
+          }
+%    \end{macrocode}
+% We have a dotted line open on both sides which is \emph{not} in an exterior column.
+%    \begin{macrocode}
+          {
+            \@@_qpoint:n { col - \int_use:N \l_@@_initial_j_int }
+            \dim_set_eq:NN \l_tmpa_dim \pgf@x
+            \@@_qpoint:n { col - \int_eval:n { \l_@@_initial_j_int + 1 } }
+            \dim_set:Nn \l_@@_x_initial_dim { ( \pgf@x + \l_tmpa_dim ) / 2 } 
+          }            
+      }
+  }
+%    \end{macrocode}
+% The command |\@@_draw_line:| is in |\@@_actually_draw_Vdots:|
+%
+% \bigskip
+% Now, the dotted line is \emph{not} open on both sides (maybe open on only one side).
+%
+% The main task is to determine the $x$-value of the dotted line to draw.
+%
+% The boolean |\l_tmpa_bool| will indicate whether the column is of type |l| or
+% may be considered as if.
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_actually_draw_Vdots_ii:
+  {
+    \bool_set_false:N \l_tmpa_bool 
+    \bool_if:NF \l_@@_initial_open_bool 
+      { 
+        \bool_if:NF \l_@@_final_open_bool 
+          {
+            \@@_set_initial_coords_from_anchor:n { south~west } 
+            \@@_set_final_coords_from_anchor:n { north~west } 
+            \bool_set:Nn \l_tmpa_bool 
+              { 
+                \dim_compare_p:nNn 
+                  { \l_@@_x_initial_dim } = { \l_@@_x_final_dim } 
+              }
+          }
+      }
+%    \end{macrocode}
+% Now, we try to determine whether the column is of type |c| or may be
+% considered as if.
+%    \begin{macrocode}
+    \bool_if:NTF \l_@@_initial_open_bool
+      { 
+        \@@_open_y_initial_dim: 
+        \@@_set_final_coords_from_anchor:n { north } 
+        \dim_set_eq:NN \l_@@_x_initial_dim \l_@@_x_final_dim
+      } 
+      { 
+        \@@_set_initial_coords_from_anchor:n { south } 
+        \bool_if:NTF \l_@@_final_open_bool
+          { \@@_open_y_final_dim: }
+%    \end{macrocode}
+% Now the case where both extremities are closed. The first conditional tests
+% whether the column is of type |c| or may be considered as if.
+%    \begin{macrocode}      
+          { 
+            \@@_set_final_coords_from_anchor:n { north } 
+            \dim_compare:nNnF { \l_@@_x_initial_dim } = { \l_@@_x_final_dim }
+              { 
+                \dim_set:Nn \l_@@_x_initial_dim
+                  { 
+                    \bool_if:NTF \l_tmpa_bool { \dim_min:nn } { \dim_max:nn }
+                      \l_@@_x_initial_dim \l_@@_x_final_dim
+                  }
+              }
+          }     
+      }
+  }
+%    \end{macrocode}
+%
+% \bigskip
+% The following function is used by |\Vbrace| but not by regular uses of
+% |\Vdots| or |\Vdotsfor|.
+%
+% The command |\@@_actually_draw_Vbrace:| has the following implicit arguments: 
+% \begin{itemize}
+% \item |\l_@@_initial_i_int|
+% \item |\l_@@_initial_j_int|
+% \item |\l_@@_initial_open_bool|
+% \item |\l_@@_final_i_int|
+% \item |\l_@@_final_j_int| 
+% \item |\l_@@_final_open_bool|. 
+% \end{itemize}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_actually_draw_Vbrace:
+  {
+    \bool_if:NTF \l_@@_initial_open_bool
+      { \@@_open_y_initial_dim: }
+      { \@@_set_initial_coords_from_anchor:n { south } }
+    \bool_if:NTF \l_@@_final_open_bool
+      { \@@_open_y_final_dim: }
+      { \@@_set_final_coords_from_anchor:n { north } }
+%    \end{macrocode}
+% Now, we have the correct values for the $y$-values of both extremities of the brace.
+% We have to compute the $x$-value (there is only one $x$-value since, of course,
+% the brace is vertical).
+% 
+% \medskip
+% If we are in the first (exterior) column, the brace must be drawn right flush.
+%    \begin{macrocode}
+    \int_if_zero:nTF { \l_@@_initial_j_int }
+      {
+        \@@_qpoint:n { col - 1 }
+        \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
+        \dim_sub:Nn \l_@@_x_initial_dim
+          { \@@_colsep: + \l_@@_left_margin_dim + \l_@@_extra_left_margin_dim }
+      }
+%    \end{macrocode}
+% Elsewhere, the brace must be drawn left flush.
+%    \begin{macrocode}
+      {
+        \@@_qpoint:n { col - \int_use:N \l_@@_initial_j_int }
+        \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
+        \dim_add:Nn \l_@@_x_initial_dim
+          { \@@_colsep: + \l_@@_right_margin_dim + \l_@@_extra_right_margin_dim }
+      }
+%    \end{macrocode}
+% We draw a vertical rule and that's why, of course, both $x$-values are equal.
+%    \begin{macrocode}
+    \dim_set_eq:NN \l_@@_x_final_dim \l_@@_x_initial_dim      
+    \@@_draw_line:
+  }
+%    \end{macrocode}
+%
+% \bigskip
+%    \begin{macrocode}
+\cs_new:Npn \@@_colsep:
+  { \bool_if:NTF \l_@@_tabular_bool { \tabcolsep } { \arraycolsep } }
+%    \end{macrocode}
+% 
 % \interitem
 % For the diagonal lines, the situation is a bit more complicated because, by
 % default, we parallelize the diagonals lines. The first diagonal line is drawn
@@ -10080,6 +10122,11 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
+% |#1| is the number of row;
+%
+% |#2| is the number of column;
+%
+% |#3| is the numbers of rows which are involved;
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_Vdotsfor:nnnn #1 #2 #3 #4
   { 
@@ -10094,7 +10141,7 @@ version 2005/12/01 or later.
 % For the row, it's a bit more complicated.
 %    \begin{macrocode}
     \int_compare:nNnTF { #1 } = { \c_one_int }
-      { 
+      {
         \int_set_eq:NN \l_@@_initial_i_int \c_one_int
         \bool_set_true:N \l_@@_initial_open_bool
       }
@@ -10111,8 +10158,8 @@ version 2005/12/01 or later.
             \bool_set_true:N \l_@@_initial_open_bool
           }
       }
-    \int_compare:nNnTF { #1 + #3 -1 } = { \c@iRow }
-      { 
+    \int_compare:nNnTF { #1 + #3 - 1 } = { \c@iRow }
+      {
         \int_set:Nn \l_@@_final_i_int { #1 + #3 - 1 }
         \bool_set_true:N \l_@@_final_open_bool
       }
@@ -10142,7 +10189,9 @@ version 2005/12/01 or later.
       }
     \keys_set:nn { nicematrix / xdots } { #4 }
     \@@_color:o \l_@@_xdots_color_tl
-    \@@_actually_draw_Vdots:
+    \bool_if:NTF \l_@@_Vbrace_bool
+      { \@@_actually_draw_Vbrace: }
+      { \@@_actually_draw_Vdots: }
     \group_end:
 %    \end{macrocode}
 %
@@ -16707,7 +16756,8 @@ version 2005/12/01 or later.
           { 
             \NiceMatrixOptions { nullify-dots }
             \Vdots 
-              [ 
+              [
+                Vbrace ,
                 line-style = nicematrix / mirrored-brace , 
                 #1 , 
                 down = 
@@ -16716,7 +16766,8 @@ version 2005/12/01 or later.
           }
           { 
             \Vdotsfor 
-              [ 
+              [
+                Vbrace ,
                 line-style = nicematrix / mirrored-brace , 
                 #1 , 
                 down = 
@@ -16725,21 +16776,23 @@ version 2005/12/01 or later.
             { #2 } 
           }
       }
-      { 
+      {
         \str_if_eq:nnTF { #2 } { * } 
-          { 
+          {
             \NiceMatrixOptions { nullify-dots }
             \Vdots 
-              [ 
+              [
+                Vbrace ,
                 line-style =  nicematrix / brace , 
                 #1 , 
                 up = 
                   \bool_if:NT \l_@@_tabular_bool \text { \exp_not:n { #3 } }  
               ] 
           }
-          { 
+          {
             \Vdotsfor 
-              [ 
+              [
+                Vbrace ,
                 line-style = nicematrix / brace , 
                 #1 , 
                 up = 
