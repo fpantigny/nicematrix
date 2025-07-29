@@ -198,7 +198,6 @@
                 \cs_set_eq:NN \rowcolor \__nicematrix_old_rowcolor:
               }
           }
-
         \cs_new_protected:Npn \__nicematrix_replace_columncolor:
           {
             \tl_replace_all:Nnn \g__nicematrix_array_preamble_tl
@@ -1602,8 +1601,7 @@
           }
         \socket_assign_plug:nn { nicematrix / create-cell-nodes } { active }
       }
-    \bool_if:nTF
-      { \c__nicematrix_recent_array_bool && ! \c__nicematrix_revtex_bool }
+    \bool_if:nTF { \c__nicematrix_recent_array_bool && ! \c__nicematrix_revtex_bool }
       {
         \def \ar@ialign
           {
@@ -7664,16 +7662,10 @@
   }
 \cs_new_protected:Npn \__nicematrix_draw_blocks:
   {
-    \int_set_eq:NN \l_tmpa_int \c@iRow
-    \int_set_eq:NN \l_tmpb_int \c@jCol
-    \group_begin:
-      \bool_if:NTF \c__nicematrix_recent_array_bool
-        { \cs_set_eq:NN \ar@ialign \__nicematrix_old_ar@ialign: }
-        { \cs_set_eq:NN \ialign \__nicematrix_old_ialign: }
-      \seq_map_inline:Nn \g__nicematrix_blocks_seq { \__nicematrix_Block_iv:nnnnnn ##1 }
-    \group_end:
-    \int_gset_eq:NN \c@iRow \l_tmpa_int
-    \int_gset_eq:NN \c@jCol \l_tmpb_int
+    \bool_if:nTF { \c__nicematrix_recent_array_bool && ! \c__nicematrix_revtex_bool }
+      { \cs_set_eq:NN \ar@ialign \__nicematrix_old_ar@ialign: }
+      { \cs_set_eq:NN \ialign \__nicematrix_old_ialign: }
+    \seq_map_inline:Nn \g__nicematrix_blocks_seq { \__nicematrix_Block_iv:nnnnnn ##1 }
   }
 \cs_new_protected:Npn \__nicematrix_Block_iv:nnnnnn #1 #2 #3 #4 #5 #6
   {
@@ -8006,9 +7998,7 @@
                 \end { minipage }
               }
         }
-        { % C'est la ligne suivante où \c@jCol est mis à 0 dans revtex4.2
-          \hbox_set:Nn \l__nicematrix_cell_box { \set@color #6 }
-        }
+        { \hbox_set:Nn \l__nicematrix_cell_box { \set@color #6 } }
       \bool_if:NT \g__nicematrix_rotate_bool { \__nicematrix_rotate_cell_box: }
       \pgfpicture
       \pgfrememberpicturepositiononpagetrue

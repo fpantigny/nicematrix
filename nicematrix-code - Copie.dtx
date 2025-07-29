@@ -3862,7 +3862,8 @@ version 2005/12/01 or later.
 % several reasons. In particular, |\ar@ialign| sets |\everycr| to |{ }| and we
 % \emph{need} to change the value of |\everycr|. 
 %    \begin{macrocode}
-    \bool_if:nTF { \c_@@_recent_array_bool && ! \c_@@_revtex_bool }
+    \bool_if:nTF 
+      { \c_@@_recent_array_bool && ! \c_@@_revtex_bool }
       {
         \def \ar@ialign 
           { 
@@ -14253,10 +14254,21 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_draw_blocks:
   {
-    \bool_if:nTF { \c_@@_recent_array_bool && ! \c_@@_revtex_bool }
-      { \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: }
-      { \cs_set_eq:NN \ialign \@@_old_ialign: }
-    \seq_map_inline:Nn \g_@@_blocks_seq { \@@_Block_iv:nnnnnn ##1 }
+%    \end{macrocode}
+% The protection of the values of |\c@iRow| and |\c@jCol| is an awful workaround.
+% It should be point-less, but it seems that, when the class \cls{revtex4.2} is
+% used, the values are changed...
+%    \begin{macrocode}
+    \int_set_eq:NN \l_tmpa_int \c@iRow
+    \int_set_eq:NN \l_tmpb_int \c@jCol
+    \group_begin:
+      \bool_if:NTF \c_@@_recent_array_bool
+        { \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: }
+        { \cs_set_eq:NN \ialign \@@_old_ialign: }
+      \seq_map_inline:Nn \g_@@_blocks_seq { \@@_Block_iv:nnnnnn ##1 }
+    \group_end:
+    \int_gset_eq:NN \c@iRow \l_tmpa_int
+    \int_gset_eq:NN \c@jCol \l_tmpb_int
   }
 %    \end{macrocode}
 %
