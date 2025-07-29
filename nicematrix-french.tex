@@ -3008,7 +3008,8 @@ La commande |\rotate| est présentée p.~\pageref{rotate}.
 
 Dans les environnements avec un préambule explicite (comme |{NiceTabular}|,
 |{NiceArray}|, etc.), il est possible de fixer la largeur d'une colonne avec les
-lettres classiques |w|, |W|, |p|, |b| et |m| de l'extension \pkg{array}.
+lettres classiques |w|, |W|, |p|, |b| et |m| de l'extension \pkg{array} (qui est
+chargée par \pkg{nicematrix}).
 
 \medskip
 \begin{Code}[width=9cm]
@@ -3143,65 +3144,6 @@ $\begin{array}{c}
 \end{array}$ 
 \end{NiceMatrixBlock}
 
-
-\subsection{Les colonnes X}
-
-\label{colonne-X}
-\index{tabularx@\pkg{tabularx} (extension)}
-\index{NiceTabularX@\texttt{\{NiceTabularX\}}}
-\index{X (les colonnes X)}
-\index{width!clé de \texttt{\{NiceTabular\}}}
-
-L'environnement |{NiceTabular}| propose aussi des colonnes |X| similaires à
-celles proposées par l'environnement |{tabularx}| de l'extension éponyme.
-
-La valeur requise par la largeur du tableau peut être passée en argument de la
-clé \Definition{width} (dans |{NiceTabular}| ou dans |\NiceMatrixOptions|). La
-valeur initiale de ce paramètre est |\linewidth| (et non |\textwidth|).
-
-Pour se rapprocher davantage de l'environnement |{tabularx}|, \pkg{nicematrix}
-propose aussi un environnement \Definition{\{NiceTabularX\}} avec une syntaxe
-similaire à celle de |{tabularx}|, c'est-à-dire que la largeur voulue pour le
-tableau est spécifiée en premier argument (obligatoire).
-
-
-Comme avec les extensions \pkg{tabu}\footnote{L'extension \pkg{tabu} est
-  maintenant considérée comme obsolète.} et \pkg{tabularray}, le spécificateur |X|
-accepte entre crochets un argument optionnel qui est une liste de clés.
-\begin{itemize}[beginpenalty=10000]
-\item On peut spécifier un poids pour la colonne en mettant directement un
-nombre positif comme argument du spécificateur |X|. Par exemple, une colonne
-|X[2]| aura une largeur double de celle d'une colonne |X| (qui a un poids de
-1).\footnote{Les valeurs négatives pour les poids, comme proposées par
-  \pkg{tabu} (maintenant obsolète), ne sont \emph{pas} prises en charge par
-  \pkg{nicematrix}. Si une telle valeur est utilisée, une erreur sera levée.}
-\item On peut spécifier l'alignement horizontal avec une des lettres |l|, |c| et
-|r| (qui insèrent respectivement |\raggedright|, |\centering| et |\raggedleft|
-suivi de |\arraybackslash|).\footnote{En fait, quand \pkg{ragged2e} est chargée,
-ce sont les commandes |\RaggedRight|, |\Centering| et |\RaggedLeft| de
-\pkg{ragged2e} qui sont utilisées, pour un meilleur résultat.}
-\item On peut spécifier l'alignement vertical avec l'une des lettres |t| (alias
-|p|), |m| et |b| (qui construisent respectivement des colonnes de types |p|, |m|
-et |b|). La valeur initiale est |t|.
-\end{itemize}
-
-\begin{Code}
-\begin{NiceTabular}\emph{[width=9cm]{X[c,m]X[0.5,c,m]}}[hvlines]
-Un texte relativement long qui tient sur plusieurs lignes. &
-Un texte relativement long qui tient sur plusieurs lignes. \\
-Un texte plus court. & Un texte plus court.
-\end{NiceTabular}
-\end{Code}
-
-
-\begin{center}
-\begin{NiceTabular}[width=9cm]{X[c,m]X[0.5,c,m]}[hvlines]
-Un texte relativement long qui tient sur plusieurs lignes. &
-Un texte relativement long qui tient sur plusieurs lignes. \\
-Un texte plus court. & Un texte plus court.
-\end{NiceTabular}
-\end{center}
-
 \subsection{Les colonnes V de varwidth}
 
 \label{varwidth}
@@ -3296,6 +3238,74 @@ p.~\pageref{colonne-X}.
 Remarquons que l'extension \pkg{varwidth} a quelques problèmes (au moins dans sa
 version 0.92). Par exemple, avec LuaLaTeX, elle ne fonctionne pas si le contenu
 commence par une instruction |\color|.
+
+
+\subsection{Les colonnes X}
+
+\label{colonne-X}
+\index{tabularx@\pkg{tabularx} (extension)}
+\index{NiceTabularX@\texttt{\{NiceTabularX\}}}
+\index{X (les colonnes X)}
+\index{width!clé de \texttt{\{NiceTabular\}}}
+
+L'environnement |{NiceTabular}| propose aussi des colonnes |X| similaires à
+celles proposées par l'environnement |{tabularx}| de l'extension éponyme.
+
+La valeur requise par la largeur du tableau peut être passée en argument de la
+clé \Definition{width} (dans |{NiceTabular}| ou dans |\NiceMatrixOptions|). La
+valeur initiale de ce paramètre est |\linewidth| (et non |\textwidth|).
+
+Pour se rapprocher davantage de l'environnement |{tabularx}|, \pkg{nicematrix}
+propose aussi un environnement \Definition{\{NiceTabularX\}} avec une syntaxe
+similaire à celle de |{tabularx}|, c'est-à-dire que la largeur voulue pour le
+tableau est spécifiée en premier argument (obligatoire).
+
+
+Comme avec les extensions \pkg{tabu}\footnote{L'extension \pkg{tabu} est
+  maintenant considérée comme obsolète.} et \pkg{tabularray}, le spécificateur |X|
+accepte entre crochets un argument optionnel qui est une liste de clés.
+\begin{itemize}[beginpenalty=10000]
+\item On peut spécifier un poids pour la colonne en mettant directement un
+nombre positif comme argument du spécificateur |X|. Par exemple, une colonne
+|X[2]| aura une largeur double de celle d'une colonne |X| (qui a un poids de
+1).\footnote{Les valeurs négatives pour les poids, comme proposées par
+  \pkg{tabu} (maintenant obsolète), ne sont \emph{pas} prises en charge par
+  \pkg{nicematrix}. Si une telle valeur est utilisée, une erreur sera levée.}
+\item On peut spécifier l'alignement horizontal avec une des lettres |l|, |c| et
+|r| (qui insèrent respectivement |\raggedright|, |\centering| et |\raggedleft|
+suivi de |\arraybackslash|).\footnote{En fait, quand \pkg{ragged2e} est chargée,
+ce sont les commandes |\RaggedRight|, |\Centering| et |\RaggedLeft| de
+\pkg{ragged2e} qui sont utilisées, pour un meilleur résultat.}
+\item On peut spécifier l'alignement vertical avec l'une des lettres |t| (alias
+|p|), |m| et |b| (qui construisent respectivement des colonnes de types |p|, |m|
+et |b|). La valeur initiale est |t|.
+
+\item \colorbox{yellow!50}{\textbf{Nouveau 7.2}}
+
+\nobreak
+Il est possible d'utiliser la clé |V| dans une colonne de type |X|. Quand cette clé
+est utilisée, la colonne~|X| se comporte en fait comme une colonne~|V| de l'extension
+\pkg{varwidth} (que l'utilisateur doit avoir chargée), ce qui fait que la largeur de la
+colonne calculée par le processus |X| devient la largeur \emph{maximale} de la colonne.
+\end{itemize}
+
+\begin{Code}
+\begin{NiceTabular}\emph{[width=9cm]{X[c,m]X[0.5,c,m]}}[hvlines]
+Un texte relativement long qui tient sur plusieurs lignes. &
+Un texte relativement long qui tient sur plusieurs lignes. \\
+Un texte plus court. & Un texte plus court.
+\end{NiceTabular}
+\end{Code}
+
+
+\begin{center}
+\begin{NiceTabular}[width=9cm]{X[c,m]X[0.5,c,m]}[hvlines]
+Un texte relativement long qui tient sur plusieurs lignes. &
+Un texte relativement long qui tient sur plusieurs lignes. \\
+Un texte plus court. & Un texte plus court.
+\end{NiceTabular}
+\end{center}
+
 
 \index{Largeur@\textbf{Largeur des colonnes}|)}
 

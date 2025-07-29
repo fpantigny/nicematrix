@@ -199,11 +199,11 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_msg_new:nn { \msg_new:nnn { nicematrix } }
 %    \end{macrocode}
 %
-% With Overleaf, by default, a document is compiled in non-stop mode. When there
-% is an error, there is no way to the user to use the key H in order to have
-% more information. That's why we decide to put that piece of information (for
-% the messages with such information) in the main part of the message when the
-% key |messages-for-Overleaf| is used (at load-time).
+% With Overleaf (and also in TeXPage), by default, a document is compiled in
+% non-stop mode. When there is an error, there is no way to the user to use the
+% key H in order to have more information. That's why we decide to put that
+% piece of information (for the messages with such information) in the main part
+% of the message when the key |messages-for-Overleaf| is used (at load-time).
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_msg_new:nnn #1 #2 #3
   {
@@ -969,7 +969,22 @@ version 2005/12/01 or later.
 % type |X| thanks to that flag (the |X| columns of \pkg{nicematrix} are inspired
 % by those of \pkg{tabularx}). You will use that flag for the blocks.
 %    \begin{macrocode}
-\bool_new:N \l_@@_X_bool 
+\bool_new:N \l_@@_X_bool
+%    \end{macrocode}
+%
+% \bigskip
+% |\l_@@_V_of_X_bool| during the construction of the preamble when a column of
+% type |X| uses the key |V| (whose name is inspired by the columns~|V| of the
+% extension \pkg{varwidth}).
+%    \begin{macrocode}
+\bool_new:N \l_@@_V_of_X_bool
+%    \end{macrocode}
+%
+% \bigskip
+% The flag |g_@@_V_of_X_bool| will be raised when there is at least in the tabular 
+% a column of type |X| using the key |V|.
+%    \begin{macrocode}
+\bool_new:N \g_@@_V_of_X_bool
 %    \end{macrocode}
 % 
 %    \begin{macrocode}
@@ -2549,7 +2564,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_err_key_color_inside:
   {
-    \@@_warning:n { key~color-inside } 
+    \@@_error_or_warning:n { key~color-inside } 
     \cs_gset:Npn \@@_err_key_color_inside: { }
   }
 %    \end{macrocode}
@@ -3797,6 +3812,7 @@ version 2005/12/01 or later.
 % The total weight of the letters |X| in the preamble of the array.
 %    \begin{macrocode}
     \fp_gzero:N \g_@@_total_X_weight_fp
+    \bool_gset_false:N \g_@@_V_of_X_bool
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -4946,26 +4962,38 @@ version 2005/12/01 or later.
         \bool_set_true:N \l_@@_X_columns_aux_bool
         \dim_set:Nn \l_@@_X_columns_dim 
           {
-            \dim_compare:nNnTF 
-              { 
-                \dim_abs:n 
-                  { \l_@@_width_dim - \box_wd:N \l_@@_the_array_box }  
-              } 
-              < 
-              { 0.001 pt }
+%    \end{macrocode}
+% The flag |g_@@_V_of_X_bool| is raised when there is at least in the tabular
+% a column of type |X| using the key |V|. In that case, the width of the |X| may
+% be considered as correct even though the tabular has not (of course) a width equal
+% to |\l_@@_width_dim|
+%    \begin{macrocode}
+            \bool_lazy_and:nnTF
+              { \g_@@_V_of_X_bool }
+              { \l_@@_X_columns_aux_bool }
               { \dim_use:N \l_@@_X_columns_dim }
               {
-                \dim_eval:n 
+                \dim_compare:nNnTF 
+                  { 
+                    \dim_abs:n 
+                      { \l_@@_width_dim - \box_wd:N \l_@@_the_array_box }  
+                  } 
+                  < 
+                  { 0.001 pt }
+                  { \dim_use:N \l_@@_X_columns_dim }
                   {
-                    \fp_to_dim:n
-                      { 
-                        (
-                          \dim_eval:n 
-                            { \l_@@_width_dim - \box_wd:N \l_@@_the_array_box } 
-                        ) 
-                        / \fp_use:N \g_@@_total_X_weight_fp 
+                    \dim_eval:n 
+                      {
+                        \fp_to_dim:n
+                          { 
+                            (
+                              \dim_eval:n 
+                                { \l_@@_width_dim - \box_wd:N \l_@@_the_array_box } 
+                            ) 
+                            / \fp_use:N \g_@@_total_X_weight_fp 
+                          }
+                        + \l_@@_X_columns_dim 
                       }
-                    + \l_@@_X_columns_dim 
                   }
               }
           }
@@ -6071,16 +6099,23 @@ version 2005/12/01 or later.
 % \medskip
 % The following set of keys is for the specifier |X| in the preamble of the
 % array. Such specifier may have as keys all the keys of 
-% |{ nicematrix / % p-column }| but also a key which corresponds to a positive
-% number (1, 2, 0.5, etc.) which is the \emph{weight} of the columns. The
+% |{ nicematrix / p-column }| but also a key |V| and also a key which corresponds
+% to a positive number (1, 2, 0.5, etc.) which is the \emph{weight} of the columns. The
 % following set of keys will be used to retrieve that value and store it in |\l_tmpa_fp|.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / X-column }
-  { 
+  {
+    V .code:n =
+      \IfPackageLoadedTF { varwidth }
+        {
+          \bool_set_true:N \l_@@_V_of_X_bool
+          \bool_gset_true:N \g_@@_V_of_X_bool
+        }
+        { \@@_error_or_warning:n { varwidth~not~loaded~in~X } } ,
     unknown .code:n = 
-     \regex_match:nVTF { \A[0-9]*\.?[0-9]*\Z } \l_keys_key_str 
-       { \fp_set:Nn \l_tmpa_fp { \l_keys_key_str } }
-       { \@@_error_or_warning:n { invalid~weight } }
+      \regex_match:nVTF { \A[0-9]*\.?[0-9]*\Z } \l_keys_key_str 
+        { \fp_set:Nn \l_tmpa_fp { \l_keys_key_str } }
+        { \@@_error_or_warning:n { invalid~weight } }
   }
 %    \end{macrocode}
 % 
@@ -6118,6 +6153,7 @@ version 2005/12/01 or later.
 % retrieve the potential weight explicitely provided by the final user.
 % 
 %    \begin{macrocode}
+    \bool_set_false:N \l_@@_V_of_X_bool
     \keys_set:no { nicematrix / X-column } \l_tmpa_tl
 %    \end{macrocode}
 % Now, the weight of the column is stored in |\l_tmpa_tl|.
@@ -6136,7 +6172,7 @@ version 2005/12/01 or later.
 % Of course, the weight of a column depend of its weight (in |\l_tmpa_fp|).
 %    \begin{macrocode}
           { \fp_use:N \l_tmpa_fp \l_@@_X_columns_dim } 
-          { minipage }
+          { \bool_if:NTF \l_@@_V_of_X_bool { varwidth } { minipage } }
           { \@@_no_update_width: }
       }
 %    \end{macrocode}
@@ -6307,7 +6343,7 @@ version 2005/12/01 or later.
 % We want |\cellcolor| to be available in |\multicolumn| because |\cellcolor| of
 % \pkg{colortbl} is available in |\multicolumn|.
 %    \begin{macrocode}
-    \RenewDocumentCommand \cellcolor { O { } m }
+    \RenewDocumentCommand { \cellcolor } { O { } m }
       {
         \tl_gput_right:Ne \g_@@_pre_code_before_tl
           { 
@@ -6315,7 +6351,7 @@ version 2005/12/01 or later.
               { \exp_not:n { ##2 } } 
               { \int_use:N \c@iRow - \int_use:N \c@jCol } 
               { \int_use:N \c@iRow - \int_eval:n { \c@jCol + #1 } }
-          }   
+          }
         \ignorespaces
       }   
 %    \end{macrocode}
@@ -6339,6 +6375,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% 
 % \bigskip
 % The following commands will patch the (small) preamble of the |\multicolumn|.
 % All those commands have a |m| in their name to recall that they deal with the
@@ -6373,8 +6410,8 @@ version 2005/12/01 or later.
 %
 %    \begin{macrocode}
             \str_if_eq:nnTF { #1 } { S } 
-              { \@@_fatal:n { unknown~column~type~S } }
-              { \@@_fatal:nn { unknown~column~type } { #1 } }
+              { \@@_fatal:n { unknown~column~type~S~multicolumn } }
+              { \@@_fatal:nn { unknown~column~type~multicolumn } { #1 } }
           }
       }
   }
@@ -6636,7 +6673,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \hbox
       { 
-        \box_use_drop:N \l_@@_the_array_box 
+        \box_use_drop:N \l_@@_the_array_box
 %    \end{macrocode}
 % We have to draw the blocks right now because there may be tabular notes in
 % some blocks (which are not mono-column: the blocks which are mono-column
@@ -10803,7 +10840,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% Here an example : |\@@_columncolor:nn {red!15} {1,3,5-7,10-}|
+% Here an example: |\@@_columncolor:nn {red!15} {1,3,5-7,10-}|
 %    \begin{macrocode}
 \NewDocumentCommand \@@_columncolor { O { } m m }
   { 
@@ -10817,7 +10854,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% Here is an example : |\@@_rectanglecolor{red!15}{2-3}{5-6}|
+% Here is an example: |\@@_rectanglecolor{red!15}{2-3}{5-6}|
 %    \begin{macrocode}
 \NewDocumentCommand \@@_rectanglecolor { O { } m m m }
   {
@@ -10865,7 +10902,7 @@ version 2005/12/01 or later.
 %
 % 
 % \bigskip
-% Here is an example : |\@@_cellcolor[rgb]{0.5,0.5,0}{2-3,3-4,4-5,5-6}|
+% Here is an example: |\@@_cellcolor[rgb]{0.5,0.5,0}{2-3,3-4,4-5,5-6}|
 %    \begin{macrocode}
 \NewDocumentCommand \@@_cellcolor { O { } m m }
   {
@@ -13837,7 +13874,8 @@ version 2005/12/01 or later.
           { 
             \c_math_toggle_token
             \use:e 
-              { 
+              {
+                % C'est cette utilisation de {array} qui pose problème
                 \exp_not:N \begin { array } 
                   [ \str_lowercase:f \l_@@_vpos_block_str ] 
                   { @ { } \l_@@_hpos_block_str @ { } } 
@@ -14215,11 +14253,22 @@ version 2005/12/01 or later.
 % be composed now.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_draw_blocks:
-  { 
-    \bool_if:NTF \c_@@_recent_array_bool
-      { \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: }
-      { \cs_set_eq:NN \ialign \@@_old_ialign: }
-    \seq_map_inline:Nn \g_@@_blocks_seq { \@@_Block_iv:nnnnnn ##1 } 
+  {
+%    \end{macrocode}
+% The protection of the values of |\c@iRow| and |\c@jCol| is an awful workaround.
+% It should be point-less, but it seems that, when the class \cls{revtex4.2} is
+% used, the values are changed...
+%    \begin{macrocode}
+    \int_set_eq:NN \l_tmpa_int \c@iRow
+    \int_set_eq:NN \l_tmpb_int \c@jCol
+    \group_begin:
+      \bool_if:NTF \c_@@_recent_array_bool
+        { \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: }
+        { \cs_set_eq:NN \ialign \@@_old_ialign: }
+      \seq_map_inline:Nn \g_@@_blocks_seq { \@@_Block_iv:nnnnnn ##1 }
+    \group_end:
+    \int_gset_eq:NN \c@iRow \l_tmpa_int
+    \int_gset_eq:NN \c@jCol \l_tmpb_int
   }
 %    \end{macrocode}
 %
@@ -14610,6 +14659,7 @@ version 2005/12/01 or later.
           } 
       }
     \endpgfpicture
+
 %    \end{macrocode}
 %
 % \bigskip
@@ -14698,7 +14748,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     {
       \bool_if:NTF \l_@@_p_block_bool
-        { 
+        {   
 %    \end{macrocode}
 % When the final user has used the key~|p|, we have to compute the width.
 %    \begin{macrocode}
@@ -14727,62 +14777,55 @@ version 2005/12/01 or later.
                 #6
                 \end { minipage }
               }
-          }
-          { \hbox_set:Nn \l_@@_cell_box { \set@color #6 } }
-        \bool_if:NT \g_@@_rotate_bool { \@@_rotate_cell_box: }
+        }
+        { % C'est la ligne suivante où \c@jCol est mis à 0 dans revtex4.2
+          \hbox_set:Nn \l_@@_cell_box { \set@color #6 }
+        }
+      \bool_if:NT \g_@@_rotate_bool { \@@_rotate_cell_box: }
 %    \end{macrocode}
 %
 % \bigskip
 % Now, we will put the label of the block. We recall that |\l_@@_vpos_block_str|
 % is empty when the user has not used a key for the vertical position of the block.
 %    \begin{macrocode}
-        \pgfpicture
-        \pgfrememberpicturepositiononpagetrue
-        \pgf@relevantforpicturesizefalse 
-        \bool_lazy_any:nTF
-          {
-            { \str_if_empty_p:N \l_@@_vpos_block_str } 
-            { \str_if_eq_p:ee \l_@@_vpos_block_str { c } }
-            { \str_if_eq_p:ee \l_@@_vpos_block_str { T } }
-            { \str_if_eq_p:ee \l_@@_vpos_block_str { B } }
-          }
+      \pgfpicture
+      \pgfrememberpicturepositiononpagetrue
+      \pgf@relevantforpicturesizefalse 
+      \bool_lazy_any:nTF
+        {
+          { \str_if_empty_p:N \l_@@_vpos_block_str } 
+          { \str_if_eq_p:ee \l_@@_vpos_block_str { c } }
+          { \str_if_eq_p:ee \l_@@_vpos_block_str { T } }
+          { \str_if_eq_p:ee \l_@@_vpos_block_str { B } }
+        }
 %    \end{macrocode}
 % \medskip
 %    \begin{macrocode}
-          { 
+        {  
 %    \end{macrocode}
 % If we are in the first column, we must put the block as if it was with the key~|r|.
 %    \begin{macrocode}
-            \int_if_zero:nT { #2 } { \str_set_eq:NN \l_@@_hpos_block_str \c_@@_r_str }
+          \int_if_zero:nT { #2 } { \str_set_eq:NN \l_@@_hpos_block_str \c_@@_r_str }
 %    \end{macrocode}
 % If we are in the last column, we must put the block as if it was with the key~|l|.
 %    \begin{macrocode}
-            \bool_if:nT \g_@@_last_col_found_bool 
-              {
-                \int_compare:nNnT { #2 } = { \g_@@_col_total_int }
-                  { \str_set_eq:NN \l_@@_hpos_block_str \c_@@_l_str }
-              }
+          \bool_if:nT \g_@@_last_col_found_bool 
+            {
+              \int_compare:nNnT { #2 } = { \g_@@_col_total_int }
+                { \str_set_eq:NN \l_@@_hpos_block_str \c_@@_l_str }
+            }
 %    \end{macrocode}
 % |\l_tmpa_tl| will contain the anchor of the \textsc{pgf} node which will be used.
 %    \begin{macrocode}
-            \tl_set:Ne \l_tmpa_tl 
-              {
-                \str_case:on \l_@@_vpos_block_str
-                  {
+          \tl_set:Ne \l_tmpa_tl 
+            {
+              \str_case:on \l_@@_vpos_block_str
+                {
 %    \end{macrocode}
 % We recall that |\l_@@_vpos_block_str| is empty when the user has not used a key
 % for the vertical position of the block.
 %    \begin{macrocode}
-                    { } { 
-                          \str_case:on \l_@@_hpos_block_str
-                            {
-                              c { center } 
-                              l { west } 
-                              r { east } 
-                              j { center }
-                            }
-                        } 
-                    c { 
+                  { } { 
                         \str_case:on \l_@@_hpos_block_str
                           {
                             c { center } 
@@ -14790,99 +14833,108 @@ version 2005/12/01 or later.
                             r { east } 
                             j { center }
                           }
-
                       } 
-                    T { 
-                        \str_case:on \l_@@_hpos_block_str
-                          {
-                            c { north } 
-                            l { north~west } 
-                            r { north~east } 
-                            j { north }
-                          }
+                  c { 
+                      \str_case:on \l_@@_hpos_block_str
+                        {
+                          c { center } 
+                          l { west } 
+                          r { east } 
+                          j { center }
+                        }
 
-                      } 
-                    B { 
-                        \str_case:on \l_@@_hpos_block_str
-                          {
-                            c { south } 
-                            l { south~west } 
-                            r { south~east }
-                            j { south }
-                          }
+                    } 
+                  T { 
+                      \str_case:on \l_@@_hpos_block_str
+                        {
+                          c { north } 
+                          l { north~west } 
+                          r { north~east } 
+                          j { north }
+                        }
 
-                      } 
-                  }
-              }
+                    } 
+                  B { 
+                      \str_case:on \l_@@_hpos_block_str
+                        {
+                          c { south } 
+                          l { south~west } 
+                          r { south~east }
+                          j { south }
+                        }
+
+                    } 
+                }
+            }
 %    \end{macrocode}
 %    \begin{macrocode}
-            \pgftransformshift
-              {
-                \pgfpointanchor 
-                  { 
-                    \@@_env: - #1 - #2 - block 
-                    \bool_if:NF \l_@@_hpos_of_block_cap_bool { - short }
-                  }
-                  { \l_tmpa_tl }
-              }
-            \pgfset { inner~sep = \c_zero_dim } 
-            \pgfnode 
-              { rectangle } 
-              { \l_tmpa_tl }
-              { \box_use_drop:N \l_@@_cell_box } { } { }
-          }   
+          \pgftransformshift
+            {
+              \pgfpointanchor 
+                { 
+                  \@@_env: - #1 - #2 - block 
+                  \bool_if:NF \l_@@_hpos_of_block_cap_bool { - short }
+                }
+                { \l_tmpa_tl }
+            }
+          \pgfset { inner~sep = \c_zero_dim } 
+          \pgfnode 
+            { rectangle } 
+            { \l_tmpa_tl }
+            { \box_use_drop:N \l_@@_cell_box } { } { }
+        }   
 %    \end{macrocode}
 % End of the case when |\l_@@_vpos_block_str| is equal to |c|, |T| or |B|.
 % Now, the other cases.
 %    \begin{macrocode}
-          { 
+        { 
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-            \pgfextracty \l_tmpa_dim 
-              { 
-                \@@_qpoint:n 
-                  { 
-                    row - \str_if_eq:eeTF \l_@@_vpos_block_str { b } { #3 } { #1 }  
-                    - base 
-                  } 
-              } 
-            \dim_sub:Nn \l_tmpa_dim { 0.5 \arrayrulewidth } 
+          \pgfextracty \l_tmpa_dim 
+            { 
+              \@@_qpoint:n 
+                { 
+                  row - \str_if_eq:eeTF \l_@@_vpos_block_str { b } { #3 } { #1 }  
+                  - base 
+                } 
+            } 
+          \dim_sub:Nn \l_tmpa_dim { 0.5 \arrayrulewidth } 
 %    \end{macrocode}
 % We retrieve (in |\pgf@x|) the $x$-value of the center of the block.
 %    \begin{macrocode}
-            \pgfpointanchor 
-              { 
-                \@@_env: - #1 - #2 - block 
-                \bool_if:NF \l_@@_hpos_of_block_cap_bool { - short }
-              } 
-              {
-                \str_case:on \l_@@_hpos_block_str
-                  {
-                    c { center } 
-                    l { west } 
-                    r { east } 
-                    j { center }
-                  }
-              } 
+          \pgfpointanchor 
+            { 
+              \@@_env: - #1 - #2 - block 
+              \bool_if:NF \l_@@_hpos_of_block_cap_bool { - short }
+            } 
+            {
+              \str_case:on \l_@@_hpos_block_str
+                {
+                  c { center } 
+                  l { west } 
+                  r { east } 
+                  j { center }
+                }
+            } 
 %    \end{macrocode}
 % We put the label of the block which has been composed in |\l_@@_cell_box|.
 %    \begin{macrocode}
-            \pgftransformshift { \pgfpoint \pgf@x \l_tmpa_dim }
-            \pgfset { inner~sep = \c_zero_dim }
-            \pgfnode 
-              { rectangle } 
-              {
-                 \str_case:on \l_@@_hpos_block_str
-                  {
-                    c { base } 
-                    l { base~west } 
-                    r { base~east } 
-                    j { base }
-                  } 
-              } 
-              { \box_use_drop:N \l_@@_cell_box } { } { }
-          }
+          \pgftransformshift { \pgfpoint \pgf@x \l_tmpa_dim }
+          \pgfset { inner~sep = \c_zero_dim }
+          \pgfnode 
+            { rectangle } 
+            {
+               \str_case:on \l_@@_hpos_block_str
+                {
+                  c { base } 
+                  l { base~west } 
+                  r { base~east } 
+                  j { base }
+                } 
+            } 
+            { \box_use_drop:N \l_@@_cell_box } { } { }
+        }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -16661,7 +16713,7 @@ version 2005/12/01 or later.
     shorten .code:n = ,
     shorten-start .code:n = , 
     shorten-end .code:n = , 
-    unknown .code:n = \@@_error:n { Unknown~key~for~Hbrace } 
+    unknown .code:n = \@@_fatal:n { Unknown~key~for~Hbrace } 
   }
 %    \end{macrocode}
 % 
@@ -16681,7 +16733,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new:Npn \@@_hbrace:nnn #1 #2 #3
   {
-    \int_compare:nNnTF { \c@iRow } < { \c_one_int }
+    \int_compare:nNnTF { \c@iRow } < { 2 }
       { 
 %    \end{macrocode}
 % We recall that |\str_if_eq:nnTF| is ``fully expandable''.
@@ -16751,7 +16803,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new:Npn \@@_vbrace:nnn #1 #2 #3 
   {
-    \int_if_zero:nTF { \c@jCol } 
+    \int_compare:nNnTF { \c@jCol } < { 2 }
       { 
         \str_if_eq:nnTF { #2 } { * } 
           { 
@@ -17211,7 +17263,8 @@ version 2005/12/01 or later.
 \cs_new:Npn \@@_message_hdotsfor:
   {
     \tl_if_empty:oF \g_@@_HVdotsfor_lines_tl
-      { ~Maybe~your~use~of~ \token_to_str:N \Hdotsfor \ is~incorrect. }
+      { ~Maybe~your~use~of~ \token_to_str:N \Hdotsfor \ or~
+        \token_to_str:N \Hbrace \ is~incorrect. }
   }
 %    \end{macrocode}
 %
@@ -17481,7 +17534,8 @@ version 2005/12/01 or later.
     keys~allowed~for~the~commands~ \token_to_str:N \Hbrace \
     and~ \token_to_str:N \Vbrace \ are:~'color',~
     'horizontal-label(s)',~'shorten'~'shorten-end'~
-    and~'shorten-start'.
+    and~'shorten-start'.\\
+    That~error~is~fatal.
   }
 %    \end{macrocode}
 %
@@ -17946,10 +18000,33 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
+\@@_msg_new:nn { unknown~column~type~multicolumn }
+  {
+    Bad~column~type. \\
+    The~column~type~'#1'~in~the~command~\token_to_str:N \multicolumn \
+    ~of~your~ \@@_full_name_env: \ 
+    is~unknown. \\
+    This~error~is~fatal.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
 \@@_msg_new:nn { unknown~column~type~S }
   {
     Bad~column~type. \\
     The~column~type~'S'~in~your~ \@@_full_name_env: \ is~unknown. \\
+    If~you~want~to~use~the~column~type~'S'~of~siunitx,~you~should~
+    load~that~package. \\
+    This~error~is~fatal.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { unknown~column~type~S~multicolumn }
+  {
+    Bad~column~type. \\
+    The~column~type~'S'~in~the~command~\token_to_str:N \multicolumn \
+    of~your~ \@@_full_name_env: \ is~unknown. \\
     If~you~want~to~use~the~column~type~'S'~of~siunitx,~you~should~
     load~that~package. \\
     This~error~is~fatal.
@@ -18102,6 +18179,17 @@ version 2005/12/01 or later.
     Your~column~will~behave~like~'p'.
   }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { varwidth~not~loaded~in~X }
+  {
+    varwidth~not~loaded.\\
+    You~can't~use~the~key~'V'~in~your~column~'X'~
+    because~'varwidth'~is~not~loaded.\\
+    It~will~be~ignored. \\
+  }
+%    \end{macrocode}
+%
 % 
 %    \begin{macrocode}
 \@@_msg_new:nnn { Unknown~key~for~RulesBis }

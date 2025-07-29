@@ -2898,7 +2898,8 @@ The command |\rotate| is described p.~\pageref{rotate}.
 
 In the environments with an explicit preamble (like |{NiceTabular}|,
 |{NiceArray}|, etc.), it's possible to fix the width of a given column with
-the standard letters |w|, |W|, |p|, |b| and |m| of the package \pkg{array}. 
+the standard letters |w|, |W|, |p|, |b| and |m| of the package \pkg{array}
+(which is loaded by \pkg{nicematrix}).
 
 \medskip
 \begin{Code}[width=9cm]
@@ -3029,64 +3030,6 @@ $\begin{array}{c}
 \end{array}$
 \end{NiceMatrixBlock}
 
-\subsection{The columns X}
-
-\label{X-columns}
-\index{tabularx@\pkg{tabularx} (package)}
-\index{NiceTabularX@\texttt{\{NiceTabularX\}}}
-\index{X (the columns X)}
-\index{width!key of \texttt{\{NiceTabular\}}}
-
-The environment |{NiceTabular}| provides |X| columns similar to those provided
-by the environment |{tabularx}| of the eponymous package.
-
-The required width of the tabular may be specified with the key
-\Definition{width} (in |{NiceTabular}| or in |\NiceMatrixOptions|). The initial
-value of this parameter is |\linewidth| (and not |\textwidth|).
-
-For sake of similarity with the environment |{tabularx}|, \pkg{nicematrix} also
-provides an environment \Definition{\{NiceTabularX\}} with a syntax similar to
-the syntax of |{tabularx}|, that is to say with a first mandatory argument which
-is the width of the tabular.
-
-As with the packages \pkg{tabu}\footnote{The extension \pkg{tabu} is now
-considered as deprecated.} and \pkg{tabularray}, the specifier |X| takes
-in an optional argument (between square brackets) which is a list of keys.
-\begin{itemize}
-\item It's possible to give a weight for the column by providing a positive
-number directly as argument of the specifier |X|. For example, a column
-|X[2]| will have a width double of the width of a column~|X| (which has a
-weight equal to $1$).\footnote{The negative values of the weight, as provided
-by \pkg{tabu} (which is now obsolete), are \emph{not} supported by \pkg{nicematrix}.
-If such a value is used, an error will be raised.}
-\item It's possible to specify an horizontal alignment with one of the
-letters |l|, |c| and |r| (which insert respectively |\raggedright|,
-|\centering| and |\raggedleft| followed by |\arraybackslash|).\footnote{In fact,
-when \pkg{ragged2e} is loaded, \pkg{nicematrix} uses the commands
-|\RaggedRight|, |\Centering| and |\RaggedLeft| of \pkg{ragged2e} instead of the
-commands |\raggedright|, |\centering| and |\raggedleft|. That ensures a better output.}
-\item It's possible to specify a vertical alignment with one of the keys
-|t| (alias |p|), |m| and |b| (which construct respectively columns of type
-|p|, |m| and |b|). The initial value is |t|.
-\end{itemize}
-
-\begin{Code}
-\emph{\begin{NiceTabular}\emph{[width=9cm]{X[c,m]X[0.5,c,m]}}[hvlines]}
-a rather long text which fits on several lines 
-& a rather long text which fits on several lines \\
-a shorter text & a shorter text
-\end{NiceTabular}
-\end{Code}
-
-\begin{center}
-\begin{NiceTabular}[width=9cm]{X[c,m]X[0.5,c,m]}[hvlines]
-a rather long text which fits on several lines 
-& a rather long text which fits on several lines \\
-a shorter text & a shorter text
-\end{NiceTabular}
-\end{center}
-
-
 \subsection{The columns V of varwidth}
 
 \label{varwidth}
@@ -3182,6 +3125,74 @@ section~\ref{X-columns}, p.~\pageref{X-columns}.
 One should remark that the extension \pkg{varwidth} (at least in its version
 0.92) has some problems: for instance, with LuaLaTeX, it does not work when
 the content begins with |\color|.
+
+
+\subsection{The columns X}
+
+\label{X-columns}
+\index{tabularx@\pkg{tabularx} (package)}
+\index{NiceTabularX@\texttt{\{NiceTabularX\}}}
+\index{X (the columns X)}
+\index{width!key of \texttt{\{NiceTabular\}}}
+
+The environment |{NiceTabular}| provides |X| columns similar to those provided
+by the environment |{tabularx}| of the eponymous package.
+
+The required width of the tabular may be specified with the key
+\Definition{width} (in |{NiceTabular}| or in |\NiceMatrixOptions|). The initial
+value of this parameter is |\linewidth| (and not |\textwidth|).
+
+For sake of similarity with the environment |{tabularx}|, \pkg{nicematrix} also
+provides an environment \Definition{\{NiceTabularX\}} with a syntax similar to
+the syntax of |{tabularx}|, that is to say with a first mandatory argument which
+is the width of the tabular.
+
+As with the packages \pkg{tabu}\footnote{The extension \pkg{tabu} is now
+considered as deprecated.} and \pkg{tabularray}, the specifier |X| takes
+in an optional argument (between square brackets) which is a list of keys.
+\begin{itemize}
+\item It's possible to give a weight for the column by providing a positive
+number directly as argument of the specifier |X|. For example, a column
+|X[2]| will have a width double of the width of a column~|X| (which has a
+weight equal to $1$).\footnote{The negative values of the weight, as provided
+by \pkg{tabu} (which is now obsolete), are \emph{not} supported by \pkg{nicematrix}.
+If such a value is used, an error will be raised.}
+\item It's possible to specify an horizontal alignment with one of the
+letters |l|, |c| and |r| (which insert respectively |\raggedright|,
+|\centering| and |\raggedleft| followed by |\arraybackslash|).\footnote{In fact,
+when \pkg{ragged2e} is loaded, \pkg{nicematrix} uses the commands
+|\RaggedRight|, |\Centering| and |\RaggedLeft| of \pkg{ragged2e} instead of the
+commands |\raggedright|, |\centering| and |\raggedleft|. That ensures a better output.}
+\item It's possible to specify a vertical alignment with one of the keys
+|t| (alias |p|), |m| and |b| (which construct respectively columns of type
+|p|, |m| and |b|). The initial value is |t|.
+
+\item \colorbox{yellow!50}{\textbf{New 7.2}}
+
+\nobreak
+It's possible to use the key |V| in a column of type |X|. When that key is used,
+the column~|X| behaves in fact like a column~|V| of the extension \pkg{varwidth}
+(which must have been loaded by the user). Henece, the widht of the columns, as
+computed by the |X|~process, is in fact the \emph{maximal} widht of the column.
+\end{itemize}
+
+\begin{Code}
+\emph{\begin{NiceTabular}\emph{[width=9cm]{X[c,m]X[0.5,c,m]}}[hvlines]}
+a rather long text which fits on several lines 
+& a rather long text which fits on several lines \\
+a shorter text & a shorter text
+\end{NiceTabular}
+\end{Code}
+
+\begin{center}
+\begin{NiceTabular}[width=9cm]{X[c,m]X[0.5,c,m]}[hvlines]
+a rather long text which fits on several lines 
+& a rather long text which fits on several lines \\
+a shorter text & a shorter text
+\end{NiceTabular}
+\end{center}
+
+
 
 \index{width@\textbf{Width of the columns}|)}
 
@@ -8032,21 +8043,26 @@ package, which must be loaded previously).
 \section{History}
 
 The development of the package \pkg{nicematrix} is done in the following GitHub
-depot:\par\nobreak
+depot:
 
+\nobreak
 \nolinkurl{https://github.com/fpantigny/nicematrix}
 
 \medskip
 The successive versions of the file |nicematrix.sty| provided by TeXLive are
 also available on the
-\textsc{svn} server of TeXLive:\par\nobreak
+\textsc{svn} server of TeXLive:
 
+\nobreak
 \smallskip
 {
 \small
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
 
+\subsection*{Changes between version 7.1 and 7.2}
+
+A new key |V| is available in the columns of type |X|.
 
 \subsection*{Changes between version 7.0 and 7.1}
 
