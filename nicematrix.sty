@@ -2143,9 +2143,7 @@
         \bool_set_true:N \l__nicematrix_X_columns_aux_bool
         \dim_set:Nn \l__nicematrix_X_columns_dim
           {
-            \bool_lazy_and:nnTF
-              { \g__nicematrix_V_of_X_bool }
-              { \l__nicematrix_X_columns_aux_bool }
+            \bool_if:nTF { \g__nicematrix_V_of_X_bool && \l__nicematrix_X_columns_aux_bool }
               { \dim_use:N \l__nicematrix_X_columns_dim }
               {
                 \dim_compare:nNnTF
@@ -2159,6 +2157,8 @@
                   {
                     \dim_eval:n
                       {
+                        \l__nicematrix_X_columns_dim
+                        +
                         \fp_to_dim:n
                           {
                             (
@@ -2167,7 +2167,7 @@
                             )
                             / \fp_use:N \g__nicematrix_total_X_weight_fp
                           }
-                        + \l__nicematrix_X_columns_dim
+
                       }
                   }
               }
@@ -2392,7 +2392,8 @@
   {
     \str_set:Nn \l__nicematrix_hpos_col_str { j }
     \__nicematrix_keys_p_column:n { #1 }
-    \__nicematrix_make_preamble_ii_iv:nnn { #2 } { minipage } { }
+    \setlength { \l_tmpa_dim } { #2 }
+    \__nicematrix_make_preamble_ii_iv:nnn { \l_tmpa_dim } { minipage } { }
   }
 \cs_new_protected:Npn \__nicematrix_keys_p_column:n #1
   { \keys_set_known:nnN { nicematrix / p-column } { #1 } \l_tmpa_tl }
@@ -2400,9 +2401,9 @@
   {
     \use:e
       {
-        \__nicematrix_make_preamble_ii_v:nnnnnnnn
+        \__nicematrix_make_preamble_ii_vi:nnnnnnnn
           { \str_if_eq:eeTF \l__nicematrix_vpos_col_str { p } { t } { b } }
-          { \dim_eval:n { #1 } }
+          { #1 }
           {
             \str_if_eq:eeTF \l__nicematrix_hpos_col_str { j }
               { \tl_clear:N \exp_not:N \l__nicematrix_hpos_cell_tl }
@@ -2445,7 +2446,7 @@
     \int_gincr:N \c@jCol
     \__nicematrix_rec_preamble_after_col:n
   }
-\cs_new_protected:Npn \__nicematrix_make_preamble_ii_v:nnnnnnnn #1 #2 #3 #4 #5 #6 #7 #8
+\cs_new_protected:Npn \__nicematrix_make_preamble_ii_vi:nnnnnnnn #1 #2 #3 #4 #5 #6 #7 #8
   {
     \str_if_eq:eeTF \l__nicematrix_hpos_col_str { si }
       {
@@ -2548,11 +2549,12 @@
     \str_set:Nn \l__nicematrix_vpos_col_str { p }
     \str_set:Nn \l__nicematrix_hpos_col_str { j }
     \__nicematrix_keys_p_column:n { #1 }
+    \setlength { \l_tmpa_dim } { #2 }
     \IfPackageLoadedTF { varwidth }
-      { \__nicematrix_make_preamble_ii_iv:nnn { #2 } { varwidth } { } }
+      { \__nicematrix_make_preamble_ii_iv:nnn { \l_tmpa_dim } { varwidth } { } }
       {
         \__nicematrix_error_or_warning:n { varwidth~not~loaded }
-        \__nicematrix_make_preamble_ii_iv:nnn { #2 } { minipage } { }
+        \__nicematrix_make_preamble_ii_iv:nnn { \l_tmpa_dim } { minipage } { }
       }
   }
 \cs_new_protected:Npn \__nicematrix_w: { \__nicematrix_make_preamble_w:nnnn { } }
@@ -2995,7 +2997,8 @@
       {
         > {
             \__nicematrix_cell_begin:
-            \begin { minipage } [ #1 ] { \dim_eval:n { #3 } }
+            \setlength { \l_tmpa_dim } { #3 }
+            \begin { minipage } [ #1 ] { \l_tmpa_dim }
             \mode_leave_vertical:
             \arraybackslash
             \vrule height \box_ht:N \@arstrutbox depth 0 pt width 0 pt

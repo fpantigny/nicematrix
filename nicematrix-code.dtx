@@ -4955,7 +4955,7 @@ version 2005/12/01 or later.
 % by~$x$.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_compute_width_X:
-  { 
+  {
     \tl_gput_right:Ne \g_@@_aux_tl
       {
         \bool_set_true:N \l_@@_X_columns_aux_bool
@@ -4963,13 +4963,11 @@ version 2005/12/01 or later.
           {
 %    \end{macrocode}
 % The flag |g_@@_V_of_X_bool| is raised when there is at least in the tabular
-% a column of type |X| using the key |V|. In that case, the width of the |X| may
+% a column of type |X| using the key |V|. In that case, the width of the |X| column may
 % be considered as correct even though the tabular has not (of course) a width equal
 % to |\l_@@_width_dim|
 %    \begin{macrocode}
-            \bool_lazy_and:nnTF
-              { \g_@@_V_of_X_bool }
-              { \l_@@_X_columns_aux_bool }
+            \bool_if:nTF { \g_@@_V_of_X_bool && \l_@@_X_columns_aux_bool }
               { \dim_use:N \l_@@_X_columns_dim }
               {
                 \dim_compare:nNnTF 
@@ -4983,6 +4981,8 @@ version 2005/12/01 or later.
                   {
                     \dim_eval:n 
                       {
+                        \l_@@_X_columns_dim
+                        +
                         \fp_to_dim:n
                           { 
                             (
@@ -4991,7 +4991,7 @@ version 2005/12/01 or later.
                             ) 
                             / \fp_use:N \g_@@_total_X_weight_fp 
                           }
-                        + \l_@@_X_columns_dim 
+
                       }
                   }
               }
@@ -5400,7 +5400,13 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \str_set:Nn \l_@@_hpos_col_str { j }
     \@@_keys_p_column:n { #1 }
-    \@@_make_preamble_ii_iv:nnn { #2 } { minipage } { }
+%    \end{macrocode}
+% We apply |setlength| in order to allow a width of column of the
+% form |\widthof{Some words}|. |\widthof| is a command of the package \pkg{calc}
+% (not loaded by \pkg{nicematrix}) which redefines the command |\setlength|.
+%    \begin{macrococe}
+    \setlength { \l_tmpa_dim } { #2 }
+    \@@_make_preamble_ii_iv:nnn { \l_tmpa_dim } { minipage } { }
   }
 %    \end{macrocode}
 %
@@ -5410,17 +5416,21 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \medskip
+%
+%
+% \bigskip
 % The first argument is the width of the column. The second is the type of
 % environment: |minipage| or |varwidth|. The third is some code added at the
 % beginning of the cell.
+%
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_ii_iv:nnn #1 #2 #3
   {
     \use:e 
       { 
-        \@@_make_preamble_ii_v:nnnnnnnn
+        \@@_make_preamble_ii_vi:nnnnnnnn
           { \str_if_eq:eeTF \l_@@_vpos_col_str { p } { t } { b } }
-          { \dim_eval:n { #1 } }
+          { #1 }
           {
 %    \end{macrocode}
 % The parameter |\l_@@_hpos_col_str| (as |\l_@@_vpos_col_str|) exists only
@@ -5430,7 +5440,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
             \str_if_eq:eeTF \l_@@_hpos_col_str { j }
               { \tl_clear:N \exp_not:N \l_@@_hpos_cell_tl } 
-              { 
+              {
 %    \end{macrocode}
 % Here, we use |\def| instead of |\tl_set:Nn| for efficiency only.
 %    \begin{macrocode}
@@ -5483,8 +5493,10 @@ version 2005/12/01 or later.
     \@@_rec_preamble_after_col:n
   }
 %    \end{macrocode}
+%
+%
 % 
-% \medskip
+% \bigskip
 % |#1| is the optional argument of |{minipage}| (or |{varwidth}|): |t| or |b|.
 % Indeed, for the columns of type |m|, we use the value |b| here because there
 % is a special post-action in order to center vertically the box (see |#4|).
@@ -5509,7 +5521,7 @@ version 2005/12/01 or later.
 % |#8| is the letter |c| or |r| or |l| which is the basic specifier of column
 % which is used \emph{in fine}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_make_preamble_ii_v:nnnnnnnn #1 #2 #3 #4 #5 #6 #7 #8
+\cs_new_protected:Npn \@@_make_preamble_ii_vi:nnnnnnnn #1 #2 #3 #4 #5 #6 #7 #8
   {
     \str_if_eq:eeTF \l_@@_hpos_col_str { si }
       { 
@@ -5687,11 +5699,17 @@ version 2005/12/01 or later.
     \str_set:Nn \l_@@_vpos_col_str { p }
     \str_set:Nn \l_@@_hpos_col_str { j }
     \@@_keys_p_column:n { #1 }
+%    \end{macrocode}
+% We apply |setlength| in order to allow a width of column of the
+% form |\widthof{Some words}|. |\widthof| is a command of the package \pkg{calc}
+% (not loaded by \pkg{nicematrix}) which redefines the command |\setlength|.
+%    \begin{macrococe}
+    \setlength { \l_tmpa_dim } { #2 }    
     \IfPackageLoadedTF { varwidth }
-      { \@@_make_preamble_ii_iv:nnn { #2 } { varwidth } { } }
+      { \@@_make_preamble_ii_iv:nnn { \l_tmpa_dim } { varwidth } { } }
       { 
         \@@_error_or_warning:n { varwidth~not~loaded }
-        \@@_make_preamble_ii_iv:nnn { #2 } { minipage } { } 
+        \@@_make_preamble_ii_iv:nnn { \l_tmpa_dim } { minipage } { } 
       }
   }
 %    \end{macrocode}
@@ -6165,12 +6183,12 @@ version 2005/12/01 or later.
 % computed and written in the |aux| file).
 %    \begin{macrocode}
     \bool_if:NTF \l_@@_X_columns_aux_bool
-      { 
+      {
         \@@_make_preamble_ii_iv:nnn 
 %    \end{macrocode}
-% Of course, the weight of a column depend of its weight (in |\l_tmpa_fp|).
+% Of course, the weight of a column depends of its weight (in |\l_tmpa_fp|).
 %    \begin{macrocode}
-          { \fp_use:N \l_tmpa_fp \l_@@_X_columns_dim } 
+          { \fp_use:N \l_tmpa_fp \l_@@_X_columns_dim }
           { \bool_if:NTF \l_@@_V_of_X_bool { varwidth } { minipage } }
           { \@@_no_update_width: }
       }
@@ -6464,8 +6482,14 @@ version 2005/12/01 or later.
     \tl_gput_right:Nn \g_@@_preamble_tl
       {
         > { 
-            \@@_cell_begin: 
-            \begin { minipage } [ #1 ] { \dim_eval:n { #3 } }
+            \@@_cell_begin:
+%    \end{macrocode}
+% We use |\setlenght| instead of |\dim_set:N| in order to allow a specifier
+% of column like |p{\widthof{Some words}}|. |widthof| is a command provided by
+% \pkg{calc}.
+%    \begin{macrocode}
+            \setlength { \l_tmpa_dim } { #3 }
+            \begin { minipage } [ #1 ] { \l_tmpa_dim }
             \mode_leave_vertical: 
             \arraybackslash
             \vrule height \box_ht:N \@arstrutbox depth 0 pt width 0 pt
