@@ -1778,7 +1778,8 @@ the final user to order to draw partial horizontal rules (similarly to |\cline|,
 hence the name |ccommand|): the argument of that command is a list of intervals
 of columns specified by the syntax~$i$ or $i$-$j$.\footnote{It's recommended to
   use such commands only once in a row because each use will create space
-  between the rows corresponding to the total width of the rule.}
+  between the rows corresponding to the total width of the rule. Likewise, it's
+  possible to draw several rules with only one use of the command.}
 
 \item the key \Definition{letter} takes in as argument a letter\footnote{The following
 letters are forbidden: \verb+lcrpmbVX|()[]!@<>+} that the user will use in
@@ -1793,7 +1794,7 @@ the (optional) argument of a specifier ``\verb+|+'' in the preamble of an
 environment. 
 
 \bigskip
-There is three possibilities.
+There are three possibilities.
 
 \begin{itemize}
 \item \emph{First possibility}
@@ -2031,6 +2032,38 @@ $\left(\begin{NiceArray}{cccc:c}[no-cell-nodes]
 \end{NiceArray}\right)$
 
 \end{itemize}
+
+\bigskip
+\index{start (key for the rules)}
+\index{end (key for the rules)}
+
+\colorbox{yellow!50}{\textbf{New 7.2}}
+
+\nobreak
+\smallskip
+As previously said, the previous keys may be used in the optional argument
+of an individual command |\Hline| and in the optional argument of a specifier
+``\verb+|+'' in the preamble of an environment (for instance |{NiceTabular}|).
+
+However, in that case, it's also possible to use two other keys, \Definition{start}
+and \Definition{end}, which specify the extremities of the rule.
+\begin{Code}[width=9.5cm]
+\begin{NiceTabular}{cc\emph{|[color=blue,start=2]}ccc}
+one & two & three & four 
+\emph{\Hline[start=2,end=3]}
+five & six & seven & eight \\
+nine & ten & eleven & twelve 
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{cc|[color=blue,start=2]cc}
+one & two & three & four \\
+\Hline[start=2,end=3]
+five & six & seven & eight \\
+nine & ten & eleven & twelve 
+\end{NiceTabular}
+
+
+
 
 \index{custom-line|)}
 \index{Rules@\textbf{Rules in the tabulars}|)}

@@ -1846,7 +1846,8 @@ utiliser pour tracer des filets horizontaux partiels (de manière similaire à
 d'intervalles de colonnes spécifiés par la syntaxe $i$ ou $i$-$j$ ;\footnote{Il
   est recommandé de n'utiliser ces commandes qu'une seule fois par rangée car
   chaque utilisation crée un espace vertical entre les rangées correspondant à
-  la largeur totale du trait qui sera tracé.}
+  la largeur totale du trait qui sera tracé. De toutes manières, on peut tracer plusieurs
+  filets avec une unique utilisation de la commande.}
 
 \item la clé \Definition{letter} prend en argument une lettre\footnote{Les lettres
   suivantes ne sont pas autorisées : \verb+lcrpmbVX|()[]!@<>+} qui pourra être
@@ -1966,7 +1967,7 @@ quatre & \cellcolor{yellow} cinq & six \\
 
 
 \bigskip
-\item \emph{Deuxième possibilité}\par
+\item \emph{Deuxième possibilité}
 
 \index{tikzz@tikz!clé de «custom-line»}
 \index{total-width (clé de «custom-line»)}
@@ -2025,6 +2026,7 @@ sept & huit & neuf
 
 \medskip
 \item \emph{Troisième possibilité} : la clé \Definition{dotted}
+
 \label{dotted}
 \index{dotted (clé de «custom-line»)}
 \indexcommand{hdottedline}
@@ -2106,6 +2108,40 @@ $\begin{pNiceArray}{cccc:c}[no-cell-nodes]
 11 & 12 & 13 & 14 & 15
 \end{pNiceArray}$
 \end{itemize}
+
+
+\bigskip
+\index{start (clé pour les filets)}
+\index{end (clé pour les filets)}
+
+\colorbox{yellow!50}{\textbf{Nouveau 7.2}}
+
+\nobreak
+Comme on l'a dit, les clés précédentes peuvent être utilisés dans l'argument
+optionnel d'une commande |\Hline| individuelle ou dans l'argument optionnel d'un
+spécificateur «\verb+|+» dans un préambule d'environnement (par exemple pour
+|{NiceTabular}|).
+
+Mais dans ces cas-là, il est aussi possible d'utiliser deux clés supplémentaires,
+\Definition{start} et \Definition{end}, qui indiquent les numéros de rangées ou de
+colonnes des extrémités du filet.
+
+\medskip
+\begin{Code}[width=9.5cm]
+\begin{NiceTabular}{cc\emph{|[color=blue,start=2]}ccc}
+un & deux & trois & quatre 
+\emph{\Hline[start=2,end=3]}
+cinq & six & sept & huit \\
+neuf & dix & onze & douze 
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{cc|[color=blue,start=2]cc}
+un & deux & trois & quatre \\
+\Hline[start=2,end=3]
+cinq & six & sept & huit \\
+neuf & dix & onze & douze 
+\end{NiceTabular}
+
 
 
 \index{custom-line|)}
