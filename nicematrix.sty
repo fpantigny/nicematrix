@@ -559,11 +559,11 @@
         \newlist { tabularnotes } { enumerate } { 1 }
         \setlist [ tabularnotes ]
           {
-            topsep = 0pt ,
+            topsep = \c_zero_dim ,
             noitemsep ,
             leftmargin = * ,
             align = left ,
-            labelsep = 0pt ,
+            labelsep = \c_zero_dim ,
             label =
               \__nicematrix_notes_label_in_list:n { \__nicematrix_notes_style:n { tabularnotesi } } ,
           }
@@ -1601,16 +1601,19 @@
           }
         \socket_assign_plug:nn { nicematrix / create-cell-nodes } { active }
       }
-    \bool_if:nTF { \c__nicematrix_recent_array_bool && ! \c__nicematrix_revtex_bool }
+    \bool_if:NT \c__nicematrix_recent_array_bool
       {
-        \def \ar@ialign
+        \bool_if:NF \c__nicematrix_revtex_bool
           {
-            \bool_if:NT \c__nicematrix_testphase_table_bool
-              \tbl_init_cell_data_for_table:
-            \__nicematrix_some_initialization:
-            \dim_zero:N \tabskip
-            \cs_set_eq:Nc \ar@ialign { __nicematrix_old_ar@ialign: }
-            \halign
+            \def \ar@ialign
+              {
+                \bool_if:NT \c__nicematrix_testphase_table_bool
+                  \tbl_init_cell_data_for_table:
+                \__nicematrix_some_initialization:
+                \dim_zero:N \tabskip
+                \cs_set_eq:Nc \ar@ialign { __nicematrix_old_ar@ialign: }
+                \halign
+              }
           }
       }
       {
@@ -2013,7 +2016,7 @@
       { \keys_set:nn { nicematrix / pNiceArray } }
       { \keys_set:nn { nicematrix / NiceArray } }
     { #3 , #5 }
-    \__nicematrix_set_CTarc:o \l__nicematrix_rules_color_tl
+    \__nicematrix_set_CTarc:o \l__nicematrix_rules_color_tl % noqa: w302
     \bool_if:nTF { #6 } { \__nicematrix_CodeBefore_Body:w } { \__nicematrix_pre_array: }
   }
   {
@@ -2143,7 +2146,9 @@
         \bool_set_true:N \l__nicematrix_X_columns_aux_bool
         \dim_set:Nn \l__nicematrix_X_columns_dim
           {
-            \bool_if:nTF { \g__nicematrix_V_of_X_bool && \l__nicematrix_X_columns_aux_bool }
+            \bool_lazy_and:nnTF
+              { \g__nicematrix_V_of_X_bool }
+              { \l__nicematrix_X_columns_aux_bool }
               { \dim_use:N \l__nicematrix_X_columns_dim }
               {
                 \dim_compare:nNnTF
@@ -2572,7 +2577,7 @@
     \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
       {
         > {
-            \dim_set:Nn \l__nicematrix_col_width_dim { #2 }
+            \setlength { \l__nicematrix_col_width_dim } { #2 }
             \__nicematrix_cell_begin:
             \tl_set_eq:NN \l__nicematrix_hpos_cell_tl \c__nicematrix_c_tl
           }
@@ -2594,7 +2599,7 @@
     \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
       {
         > {
-            \dim_set:Nn \l__nicematrix_col_width_dim { #4 }
+            \setlength { \l__nicematrix_col_width_dim } { #4 }
             \hbox_set:Nw \l__nicematrix_cell_box
             \__nicematrix_cell_begin:
             \tl_set:Nn \l__nicematrix_hpos_cell_tl { #3 }
@@ -2882,6 +2887,8 @@
   { __nicematrix _ \token_to_str:N \hline : }
 \cs_set_eq:cc { __nicematrix _ \token_to_str:N \diagbox : }
   { __nicematrix _ \token_to_str:N \hline : }
+\cs_set_eq:cc { __nicematrix _ \token_to_str:N & : }
+  { __nicematrix _ \token_to_str:N \hline : }
 \cs_new:Npn \__nicematrix_multicolumn:nnn #1 #2 #3
   {
     \multispan { #1 }
@@ -3001,11 +3008,11 @@
             \begin { minipage } [ #1 ] { \l_tmpa_dim }
             \mode_leave_vertical:
             \arraybackslash
-            \vrule height \box_ht:N \@arstrutbox depth 0 pt width 0 pt
+            \vrule height \box_ht:N \@arstrutbox depth \c_zero_dim width \c_zero_dim
           }
         c
         < {
-            \vrule height 0 pt depth \box_dp:N \@arstrutbox width 0 pt
+            \vrule height \c_zero_dim depth \box_dp:N \@arstrutbox width \c_zero_dim
             \end { minipage }
             \__nicematrix_cell_end:
           }
@@ -6322,8 +6329,7 @@
     \pgfpathlineto { \pgfpoint \l_tmpb_dim \l__nicematrix_tmpc_dim }
     \prg_replicate:nn { \l__nicematrix_multiplicity_int - 1 }
       {
-        \dim_sub:Nn \l_tmpb_dim \arrayrulewidth
-        \dim_sub:Nn \l_tmpb_dim \doublerulesep
+        \dim_sub:Nn \l_tmpb_dim { \arrayrulewidth + \doublerulesep }
         \pgfpathmoveto { \pgfpoint \l_tmpb_dim \l_tmpa_dim }
         \pgfpathlineto { \pgfpoint \l_tmpb_dim \l__nicematrix_tmpc_dim }
       }
@@ -6506,8 +6512,7 @@
     \pgfpathlineto { \pgfpoint \l__nicematrix_tmpc_dim \l_tmpb_dim }
     \prg_replicate:nn { \l__nicematrix_multiplicity_int - 1 }
       {
-        \dim_sub:Nn \l_tmpb_dim \arrayrulewidth
-        \dim_sub:Nn \l_tmpb_dim \doublerulesep
+        \dim_sub:Nn \l_tmpb_dim { \arrayrulewidth + \doublerulesep }
         \pgfpathmoveto { \pgfpoint \l_tmpa_dim \l_tmpb_dim }
         \pgfpathlineto { \pgfpoint \l__nicematrix_tmpc_dim \l_tmpb_dim }
       }
@@ -7401,7 +7406,6 @@
             \c_math_toggle_token
             \use:e
               {
-                % C'est cette utilisation de {array} qui pose problème
                 \exp_not:N \begin { array }
                   [ \str_lowercase:f \l__nicematrix_vpos_block_str ]
                   { @ { } \l__nicematrix_hpos_block_str @ { } }
@@ -7424,29 +7428,16 @@
               }
           }
       }
-     \bool_lazy_and:nnT
-       { \int_compare_p:nNn { #1 } = { \c_one_int } }
-       { \str_if_empty_p:N \l__nicematrix_vpos_block_str }
-       {
-         \dim_gset:Nn \g__nicematrix_blocks_ht_dim
-           {
-             \dim_max:nn
-               { \g__nicematrix_blocks_ht_dim }
-               {
-                 \box_ht:c
-                   { g__nicematrix_ block _ box _ \int_use:N \g__nicematrix_block_box_int _ box }
-               }
-           }
-         \dim_gset:Nn \g__nicematrix_blocks_dp_dim
-           {
-             \dim_max:nn
-               { \g__nicematrix_blocks_dp_dim }
-               {
-                 \box_dp:c
-                   { g__nicematrix_ block _ box _ \int_use:N \g__nicematrix_block_box_int _ box }
-               }
-           }
-       }
+    \int_compare:nNnT { #1 } = { \c_one_int }
+      {
+        \bool_lazy_any:nT
+          {
+            { \str_if_empty_p:N \l__nicematrix_vpos_block_str }
+            { \str_if_eq_p:ee \l__nicematrix_vpos_block_str { t } }
+            { \str_if_eq_p:ee \l__nicematrix_vpos_block_str { b } }
+          }
+          { \__nicematrix_adjust_blocks_ht_dp: }
+      }
     \seq_gput_right:Ne \g__nicematrix_blocks_seq
       {
         \l_tmpa_tl
@@ -7469,6 +7460,27 @@
         }
       }
     \bool_set_false:N \g__nicematrix_rotate_c_bool
+  }
+\cs_new_protected:Npn \__nicematrix_adjust_blocks_ht_dp:
+  {
+    \dim_gset:Nn \g__nicematrix_blocks_ht_dim
+      {
+        \dim_max:nn
+          { \g__nicematrix_blocks_ht_dim }
+          {
+            \box_ht:c
+              { g__nicematrix_ block _ box _ \int_use:N \g__nicematrix_block_box_int _ box }
+          }
+      }
+    \dim_gset:Nn \g__nicematrix_blocks_dp_dim
+      {
+        \dim_max:nn
+          { \g__nicematrix_blocks_dp_dim }
+          {
+            \box_dp:c
+              { g__nicematrix_ block _ box _ \int_use:N \g__nicematrix_block_box_int _ box }
+          }
+      }
   }
 \cs_new:Npn \__nicematrix_adjust_hpos_rotate:
   {

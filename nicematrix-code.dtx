@@ -69,7 +69,7 @@ version 2005/12/01 or later.
 \usepackage{titlesec}
 \titlespacing*{\section}{0pt}{6.5ex plus 1ex minus .2ex}{4.3ex plus .2ex}
 \titlespacing*{\subsection}{0pt}{4.5ex plus 1ex minus .2ex}{2ex plus .2ex}
-\parindent 0pt
+\parindent = 0pt
 \skip \footins = 2 \bigskipamount
 
 
@@ -1910,11 +1910,11 @@ version 2005/12/01 or later.
         \newlist { tabularnotes } { enumerate } { 1 }
         \setlist [ tabularnotes ]
           {
-            topsep = 0pt ,
+            topsep = \c_zero_dim ,
             noitemsep , 
             leftmargin = * , 
             align = left , 
-            labelsep = 0pt ,
+            labelsep = \c_zero_dim ,
             label = 
               \@@_notes_label_in_list:n { \@@_notes_style:n { tabularnotesi } } , 
           }
@@ -3599,7 +3599,6 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_array:n
   {
-%    \begin{macrocode}
     \dim_set:Nn \col@sep
       { \bool_if:NTF \l_@@_tabular_bool { \tabcolsep } { \arraycolsep } }
     \dim_compare:nNnTF { \l_@@_tabular_width_dim } = { \c_zero_dim }
@@ -3862,14 +3861,16 @@ version 2005/12/01 or later.
 % several reasons. In particular, |\ar@ialign| sets |\everycr| to |{ }| and we
 % \emph{need} to change the value of |\everycr|. 
 %    \begin{macrocode}
-    \bool_if:nTF { \c_@@_recent_array_bool && ! \c_@@_revtex_bool }
+    \bool_if:NT \c_@@_recent_array_bool
       {
-        \def \ar@ialign 
-          { 
-            \bool_if:NT \c_@@_testphase_table_bool
-              \tbl_init_cell_data_for_table:
-            \@@_some_initialization:
-            \dim_zero:N \tabskip 
+        \bool_if:NF \c_@@_revtex_bool 
+          {
+            \def \ar@ialign 
+              { 
+                \bool_if:NT \c_@@_testphase_table_bool
+                  \tbl_init_cell_data_for_table:
+                \@@_some_initialization:
+                \dim_zero:N \tabskip 
 %    \end{macrocode}
 %
 % After its first use, the definition of |\ar@ialign| will revert
@@ -3878,8 +3879,9 @@ version 2005/12/01 or later.
 % |\cs_set_eq:Nc| instead of |\cs_set_eq:NN| in order to avoid a message when
 % |explcheck| is used on |nicematrix.sty|.
 %    \begin{macrocode}
-            \cs_set_eq:Nc \ar@ialign { @@_old_ar@ialign: }
-            \halign 
+                \cs_set_eq:Nc \ar@ialign { @@_old_ar@ialign: }
+                \halign 
+              }
           }
       }
 %    \end{macrocode}
@@ -4697,7 +4699,7 @@ version 2005/12/01 or later.
 %
 % \bigskip 
 %    \begin{macrocode}
-    \@@_set_CTarc:o \l_@@_rules_color_tl 
+    \@@_set_CTarc:o \l_@@_rules_color_tl % noqa: w302
 %    \end{macrocode}
 %
 % \bigskip
@@ -4767,7 +4769,7 @@ version 2005/12/01 or later.
       } 
 %    \end{macrocode}
 %
-% Now, the definition of |\c@jCol| and |\g_@@_col_total_int| change: |\c@jCol|
+% Now, the definition of |\c@jCol| and |\g_@@_col_total_int| changes: |\c@jCol|
 % will be the number of columns without the ``last column'';
 % |\g_@@_col_total_int| will be the number of columns with this ``last
 % column''.\footnote{We remind that the potential ``first column'' (exterior)
@@ -4967,7 +4969,9 @@ version 2005/12/01 or later.
 % be considered as correct even though the tabular has not (of course) a width equal
 % to |\l_@@_width_dim|
 %    \begin{macrocode}
-            \bool_if:nTF { \g_@@_V_of_X_bool && \l_@@_X_columns_aux_bool }
+            \bool_lazy_and:nnTF
+              { \g_@@_V_of_X_bool }
+              { \l_@@_X_columns_aux_bool }
               { \dim_use:N \l_@@_X_columns_dim }
               {
                 \dim_compare:nNnTF 
@@ -5267,6 +5271,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_i_i:n #1
   {
+%    \end{macrocode}
+% Here, we can't use |\str_if_eq:eeTF|.
+%    \begin{macrocode}
     \str_if_eq:nnTF { #1 } { | }
       { \use:c { @@ _ | : } | }
       { \@@_make_preamble_i_ii:nn { } #1 }
@@ -5404,7 +5411,9 @@ version 2005/12/01 or later.
 % We apply |setlength| in order to allow a width of column of the
 % form |\widthof{Some words}|. |\widthof| is a command of the package \pkg{calc}
 % (not loaded by \pkg{nicematrix}) which redefines the command |\setlength|.
-%    \begin{macrococe}
+% Of course, even if \pkg{calc} is not loaded, the following code will work with
+% the standard version of |\setlength|.
+%    \begin{macrocode}
     \setlength { \l_tmpa_dim } { #2 }
     \@@_make_preamble_ii_iv:nnn { \l_tmpa_dim } { minipage } { }
   }
@@ -5703,7 +5712,9 @@ version 2005/12/01 or later.
 % We apply |setlength| in order to allow a width of column of the
 % form |\widthof{Some words}|. |\widthof| is a command of the package \pkg{calc}
 % (not loaded by \pkg{nicematrix}) which redefines the command |\setlength|.
-%    \begin{macrococe}
+% Of course, even if \pkg{calc} is not loaded, the following code will work with
+% the standard version of |\setlength|.
+%    \begin{macrocode}
     \setlength { \l_tmpa_dim } { #2 }    
     \IfPackageLoadedTF { varwidth }
       { \@@_make_preamble_ii_iv:nnn { \l_tmpa_dim } { varwidth } { } }
@@ -5753,7 +5764,11 @@ version 2005/12/01 or later.
     \tl_gput_right:Nn \g_@@_array_preamble_tl
       {
         > {
-            \dim_set:Nn \l_@@_col_width_dim { #2 }
+% We use |\setlength| in order to allow |\widthof| which is a command of \pkg{calc}
+% (when loaded \pkg{calc} redefines |\setlength|).
+% Of course, even if \pkg{calc} is not loaded, the following code will work with
+% the standard version of |\setlength|.
+            \setlength { \l_@@_col_width_dim } { #2 }
             \@@_cell_begin:
             \tl_set_eq:NN \l_@@_hpos_cell_tl \c_@@_c_tl
           }
@@ -5785,8 +5800,13 @@ version 2005/12/01 or later.
 % The parameter |\l_@@_col_width_dim|, which is the width of the current column,
 % will be available in each cell of the column. It will be used by the
 % mono-column blocks.
+%
+% We use |\setlength| in order to allow |\widthof| which is a command of \pkg{calc}
+% (when loaded \pkg{calc} redefines |\setlength|).
+% Of course, even if \pkg{calc} is not loaded, the following code will work with
+% the standard version of |\setlength|.
 %    \begin{macrocode}
-            \dim_set:Nn \l_@@_col_width_dim { #4 }
+            \setlength { \l_@@_col_width_dim } { #4 }
             \hbox_set:Nw \l_@@_cell_box
             \@@_cell_begin:
             \tl_set:Nn \l_@@_hpos_cell_tl { #3 }
@@ -6279,6 +6299,8 @@ version 2005/12/01 or later.
 \cs_set_eq:cc { @@ _ \token_to_str:N \RowStyle : } 
   { @@ _ \token_to_str:N \hline : } 
 \cs_set_eq:cc { @@ _ \token_to_str:N \diagbox : } 
+  { @@ _ \token_to_str:N \hline : }
+\cs_set_eq:cc { @@ _ \token_to_str:N & : } 
   { @@ _ \token_to_str:N \hline : } 
 %    \end{macrocode}
 % 
@@ -6487,16 +6509,18 @@ version 2005/12/01 or later.
 % We use |\setlenght| instead of |\dim_set:N| in order to allow a specifier
 % of column like |p{\widthof{Some words}}|. |widthof| is a command provided by
 % \pkg{calc}.
+% Of course, even if \pkg{calc} is not loaded, the following code will work with
+% the standard version of |\setlength|.
 %    \begin{macrocode}
             \setlength { \l_tmpa_dim } { #3 }
             \begin { minipage } [ #1 ] { \l_tmpa_dim }
             \mode_leave_vertical: 
             \arraybackslash
-            \vrule height \box_ht:N \@arstrutbox depth 0 pt width 0 pt
+            \vrule height \box_ht:N \@arstrutbox depth \c_zero_dim width \c_zero_dim
           } 
         c 
         < { 
-            \vrule height 0 pt depth \box_dp:N \@arstrutbox width 0 pt
+            \vrule height \c_zero_dim depth \box_dp:N \@arstrutbox width \c_zero_dim
             \end { minipage } 
             \@@_cell_end: 
           } 
@@ -9110,7 +9134,7 @@ version 2005/12/01 or later.
             \@@_qpoint:n { col - \int_use:N \l_@@_initial_j_int }
             \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
             \dim_add:Nn \l_@@_x_initial_dim
-               { \@@_colsep: + \l_@@_right_margin_dim + \l_@@_extra_right_margin_dim }  
+               { \@@_colsep: + \l_@@_right_margin_dim + \l_@@_extra_right_margin_dim }   
           }
 %    \end{macrocode}
 % We have a dotted line open on both sides which is \emph{not} in an exterior column.
@@ -12029,8 +12053,7 @@ version 2005/12/01 or later.
     \pgfpathlineto { \pgfpoint \l_tmpb_dim \l_@@_tmpc_dim }
     \prg_replicate:nn { \l_@@_multiplicity_int - 1 }
       {
-        \dim_sub:Nn \l_tmpb_dim \arrayrulewidth
-        \dim_sub:Nn \l_tmpb_dim \doublerulesep
+        \dim_sub:Nn \l_tmpb_dim { \arrayrulewidth + \doublerulesep }
         \pgfpathmoveto { \pgfpoint \l_tmpb_dim \l_tmpa_dim }
         \pgfpathlineto { \pgfpoint \l_tmpb_dim \l_@@_tmpc_dim }
       }
@@ -12293,8 +12316,7 @@ version 2005/12/01 or later.
     \pgfpathlineto { \pgfpoint \l_@@_tmpc_dim \l_tmpb_dim }
     \prg_replicate:nn { \l_@@_multiplicity_int - 1 }
       {
-        \dim_sub:Nn \l_tmpb_dim \arrayrulewidth
-        \dim_sub:Nn \l_tmpb_dim \doublerulesep
+        \dim_sub:Nn \l_tmpb_dim { \arrayrulewidth + \doublerulesep }
         \pgfpathmoveto { \pgfpoint \l_tmpa_dim \l_tmpb_dim }
         \pgfpathlineto { \pgfpoint \l_@@_tmpc_dim \l_tmpb_dim }
       }
@@ -13898,7 +13920,6 @@ version 2005/12/01 or later.
             \c_math_toggle_token
             \use:e 
               {
-                % C'est cette utilisation de {array} qui pose problème
                 \exp_not:N \begin { array } 
                   [ \str_lowercase:f \l_@@_vpos_block_str ] 
                   { @ { } \l_@@_hpos_block_str @ { } } 
@@ -13937,35 +13958,20 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % If we are in a mono-row block we take into account the height and the depth of
 % that block for the height and the depth of the row, excepted when the block
-% uses explicitely an option of vertical position.
+% uses explicitely an option of vertical position |T| or |B|.
+% Remind that if the user has not used a key for the vertical position of the block,
+% then |\l_@@_vpos_block_str| remains empty.
 %    \begin{macrocode}
-     \bool_lazy_and:nnT
-       { \int_compare_p:nNn { #1 } = { \c_one_int } }
-%    \end{macrocode}
-% If the user has not used a key for the vertical position of the block, then
-% |\l_@@_vpos_block_str| remains empty.
-%    \begin{macrocode}
-       { \str_if_empty_p:N \l_@@_vpos_block_str }
-       {
-         \dim_gset:Nn \g_@@_blocks_ht_dim
-           {
-             \dim_max:nn
-               { \g_@@_blocks_ht_dim }
-               {
-                 \box_ht:c 
-                   { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box } 
-               }
-           } 
-         \dim_gset:Nn \g_@@_blocks_dp_dim
-           {
-             \dim_max:nn
-               { \g_@@_blocks_dp_dim }
-               {
-                 \box_dp:c 
-                   { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box } 
-               }
-           } 
-       }
+    \int_compare:nNnT { #1 } = { \c_one_int } 
+      {
+        \bool_lazy_any:nT
+          {
+            { \str_if_empty_p:N \l_@@_vpos_block_str }
+            { \str_if_eq_p:ee \l_@@_vpos_block_str { t } }
+            { \str_if_eq_p:ee \l_@@_vpos_block_str { b } }
+          }
+          { \@@_adjust_blocks_ht_dp: }
+      }
     \seq_gput_right:Ne \g_@@_blocks_seq
       {   
         \l_tmpa_tl
@@ -14002,7 +14008,30 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %
-%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_adjust_blocks_ht_dp:
+  {
+    \dim_gset:Nn \g_@@_blocks_ht_dim
+      {
+        \dim_max:nn
+          { \g_@@_blocks_ht_dim }
+          {
+            \box_ht:c 
+              { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box } 
+          }
+      } 
+    \dim_gset:Nn \g_@@_blocks_dp_dim
+      {
+        \dim_max:nn
+          { \g_@@_blocks_dp_dim }
+          {
+            \box_dp:c 
+              { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box } 
+          }
+      }
+  }
+%    \end{macrocode}  
+% 
 % \bigskip
 %    \begin{macrocode}
 \cs_new:Npn \@@_adjust_hpos_rotate:
