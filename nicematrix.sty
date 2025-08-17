@@ -9330,13 +9330,13 @@
       }
    \keys_set:nn { nicematrix / Hbrace } { #1 }
   }
-\NewExpandableDocumentCommand { \__nicematrix_Vbrace } { O { } m m }
+\NewDocumentCommand { \__nicematrix_Vbrace } { O { } m m }
   {
     \cs_if_exist:cTF { tikz@library@decorations.pathreplacing@loaded }
       { \__nicematrix_vbrace:nnn { #1 } { #2 } { #3 } }
       { \__nicematrix_error:nn { Hbrace~not~allowed } { \Vbrace } }
   }
-\cs_new:Npn \__nicematrix_vbrace:nnn #1 #2 #3
+\cs_new_protected:Npn \__nicematrix_vbrace:nnn #1 #2 #3 % blabla
   {
     \int_compare:nNnTF { \c@jCol } < { 2 }
       {

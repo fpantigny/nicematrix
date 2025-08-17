@@ -16773,7 +16773,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% The following command must \emph{not} be protected.
+% The following command must \emph{not} be protected because of the
+% |\Hdotsfor| which contains a |\multicolumn|
+% (whereas the similar command |\@@_vbrace:nnn| \emph{must} be protected).
 %    \begin{macrocode}
 \cs_new:Npn \@@_hbrace:nnn #1 #2 #3
   {
@@ -16832,9 +16834,8 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% Here we need an ``fully expandable'' command.
 %    \begin{macrocode}
-\NewExpandableDocumentCommand { \@@_Vbrace } { O { } m m }
+\NewDocumentCommand { \@@_Vbrace } { O { } m m }
   {
     \cs_if_exist:cTF { tikz@library@decorations.pathreplacing@loaded }
       { \@@_vbrace:nnn { #1 } { #2 } { #3 } }
@@ -16843,12 +16844,13 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 %
-% The following command must \emph{not} be protected.
+% The following command must be protected (whereas the similar
+% command |\@@_hbrace:nnn| must not.
 %    \begin{macrocode}
-\cs_new:Npn \@@_vbrace:nnn #1 #2 #3 
+\cs_new_protected:Npn \@@_vbrace:nnn #1 #2 #3 
   {
     \int_compare:nNnTF { \c@jCol } < { 2 }
-      { 
+      {
         \str_if_eq:nnTF { #2 } { * } 
           { 
             \NiceMatrixOptions { nullify-dots }
