@@ -780,6 +780,13 @@ However, there are some good reasons to use such a block.
 \begin{itemize}
 \item It's possible to use the command |\\| in a (mono-cell) block.
 
+\item It's possible to split the cell in several sub-cells with |&| when the
+key |&-in-blocks| is in force (cf p.~\pageref{ampersand-in-blocks}).
+
+peut couper la case en plusieurs parties avec |&| quand la clé
+|&-in-blocks| est activée (voir p.~\pageref{ampersand-in-blocks}).
+
+
 \item It's possible to use the option of horizontal alignment of the block in
 derogation of the type of column given in the preamble of the array.
 
@@ -791,32 +798,6 @@ it's possible to use the command |\cellcolor|.}
 
 \item It's possible to draw one or several borders of the cell with the key |borders|.
 \end{itemize}
-
-\bigskip
-\begin{Code}[width=10cm]
-\begin{NiceTabular}{cc}
-\toprule
-Writer & \emph{\Block[l]{}{year\\ of birth}} \\
-\midrule
-Hugo & 1802 \\
-Balzac & 1799 \\
-\bottomrule
-\end{NiceTabular}
-\end{Code}
-\begin{NiceTabular}{cc}
-\toprule
-Writer & \Block[l]{}{year\\ of birth} \\
-\midrule
-Hugo & 1802 \\
-Balzac & 1799 \\
-\bottomrule
-\end{NiceTabular}
-
-\medskip
-We recall that if the first mandatory argument of |\Block| is left blank, the
-block is mono-cell.\footnote{One may consider that the default value of the
-first mandatory argument of |\Block| is |1-1|.}
-
 
 
 
@@ -1114,6 +1095,7 @@ text & text \\
 
 \subsection{\textbackslash\textbackslash\ and \& in the blocks}
 
+\label{ampersand-in-blocks}
 \index{ampersand-in-blocks}
 \index{\&-in-blocks}
 
@@ -2047,6 +2029,8 @@ of an individual command |\Hline| and in the optional argument of a specifier
 
 However, in that case, it's also possible to use two other keys, \Definition{start}
 and \Definition{end}, which specify the extremities of the rule.
+
+\medskip
 \begin{Code}[width=9.5cm]
 \begin{NiceTabular}{cc\emph{|[color=blue,start=2]}ccc}
 one & two & three & four 
@@ -5647,7 +5631,7 @@ b \cos a+\cos b  { 2 \cos b }
 \medskip
 \index{end-of-row (to be used with light-syntax)}
 It's possible to change the character used to mark the end of rows with the
-option |end-of-row|. As said before, the initial value is a semicolon.
+option \Definition{end-of-row}. As said before, the initial value is a semicolon.
 
 \medskip
 When the option |light-syntax| is used, it is not possible to put verbatim
@@ -6031,7 +6015,7 @@ for some usage. That's why it's possible to use the options \Definition{left-mar
 we have used the options |left-margin| and |right-margin|.\footnote{The
 options |left-margin| and |right-margin| take dimensions as values but, if no
 value is given, the default value is used, which is |\arraycolsep| (by
-default: 5~pt). There is also an option |margin| to fix both |left-margin| and
+default: 5~pt). There is also an option \Definition{margin} to fix both |left-margin| and
 |right-margin| to the same value.}
 \[\begin{pNiceMatrix}[create-large-nodes,left-margin,right-margin]
 \CodeBefore [create-cell-nodes]
@@ -6408,7 +6392,7 @@ using the public variable |\g_nicematrix_code_before_tl|.
 
 \NewDocumentCommand \crossbox { ! O { } }
   {
-    \tl_gput_right:Nx \emph{\g_nicematrix_code_before_tl}
+    \tl_gput_right:Ne \emph{\g_nicematrix_code_before_tl}
       { 
         \__pantigny_crossbox:nnn 
           { \int_use:c { c@iRow } } 
@@ -6433,7 +6417,7 @@ using the public variable |\g_nicematrix_code_before_tl|.
 
 \NewDocumentCommand \crossbox { ! O { } }
   {
-    \tl_gput_right:Nx \g_nicematrix_code_before_tl
+    \tl_gput_right:Ne \g_nicematrix_code_before_tl
       { 
         \__pantigny_crossbox:nnn 
           { \int_use:c { c@iRow } } 
@@ -6717,25 +6701,17 @@ the columns |S| of \pkg{siunitx}).
 \index{Tagging Project}
 \label{Tagging Project}
 
-\colorbox{yellow!50}{\bfseries New 7.0}
-
 Since the version 7.0, the extension \pkg{nicematrix} is compatible with the
 \emph{Tagging Project} of LaTeX (whose aim is to create tagged PDF). At this time, only
 simple standard tabulars are correctly tagged.
 
-Here is a example of code which will produce a generate tagged PDF.
+Here is a example of code which will generate a tagged PDF.
 
 \bigskip
 \begin{center}
 \small
 \begin{Code}
-\DocumentMetadata{
-  lang        = en,
-  pdfversion  = 2.0,
-  pdfstandard = ua-2,
-  pdfstandard = a-4f, 
-  \emph{testphase   = {phase-III, table, math}}
-}
+\emph{\DocumentMetadata{tagging = on}}
 \documentclass{article}
 \usepackage{lmodern}
 \usepackage{nicematrix}

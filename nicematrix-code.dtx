@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.2}
-\def\myfiledate{2025/08/05}
+\def\myfileversion{7.2a}
+\def\myfiledate{2025/08/17}
 %
 %
 %<*batchfile>  
@@ -3100,6 +3100,11 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \cs_set_eq:NN \CodeAfter \@@_CodeAfter_i:
 %    \end{macrocode}
+% The following link only to have a better error message when |\Hline| is used
+% in another place than the beginning of a line.
+%    \begin{macrocode}
+    \cs_set_eq:NN \Hline \@@_Hline_in_cell:
+%    \end{macrocode}
 % We increment the LaTeX counter |jCol|, which is the counter of the columns. 
 %    \begin{macrocode}
     \int_gincr:N \c@jCol 
@@ -4643,7 +4648,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % 
-% The sequence |\g_@@_blocks_seq| will contain the charateristics of the blocks
+% The sequence |\g_@@_blocks_seq| will contain the characteristics of the blocks
 % (specified by |\Block|) of the array. The sequence |\g_@@_pos_of_blocks_seq|
 % will contain only the position of the blocks.
 %    \begin{macrocode}
@@ -5415,7 +5420,7 @@ version 2005/12/01 or later.
 % the standard version of |\setlength|.
 %    \begin{macrocode}
     \setlength { \l_tmpa_dim } { #2 }
-    \@@_make_preamble_ii_iv:nnn { \l_tmpa_dim } { minipage } { }
+    \@@_make_preamble_ii_iv:nnn { \dim_use:N \l_tmpa_dim } { minipage } { } 
   }
 %    \end{macrocode}
 %
@@ -5717,10 +5722,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \setlength { \l_tmpa_dim } { #2 }    
     \IfPackageLoadedTF { varwidth }
-      { \@@_make_preamble_ii_iv:nnn { \l_tmpa_dim } { varwidth } { } }
+      { \@@_make_preamble_ii_iv:nnn { \dim_use:N \l_tmpa_dim } { varwidth } { } }
       { 
         \@@_error_or_warning:n { varwidth~not~loaded }
-        \@@_make_preamble_ii_iv:nnn { \l_tmpa_dim } { minipage } { } 
+        \@@_make_preamble_ii_iv:nnn { \dim_use:N \l_tmpa_dim } { minipage } { } 
       }
   }
 %    \end{macrocode}
@@ -12469,7 +12474,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-%
+% 
 % \medskip
 % The command |\@@_Hline:| will be linked to |\Hline| in the environments of
 % \pkg{nicematrix}. 
@@ -17307,6 +17312,21 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% \medskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_Hline_in_cell:
+  { \@@_fatal:n { Misuse~of~Hline } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Misuse~of~Hline }
+  {
+    Misuse~of~Hline. \\
+    \token_to_str:N \Hline\ must~be~used~only~at~the~beginning~of~a~row.\\
+    That~error~is~fatal.
+  }
+%    \end{macrocode}
+% 
 %    \begin{macrocode}
 \@@_msg_new:nn { hvlines,~rounded-corners~and~corners }
   {

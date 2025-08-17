@@ -832,6 +832,9 @@ fait, il y a plusieurs situations où leur utilisation peut présenter des avant
 \item Un bloc mono-case permet d'utiliser la commande |\\| pour composer le
 bloc sur plusieurs lignes de texte.
 
+\item On peut couper la case en plusieurs parties avec |&| quand la clé
+|&-in-blocks| est activée (voir p.~\pageref{ampersand-in-blocks}).
+
 \item On peut utiliser l'option d'alignement horizontal du bloc pour déroger à
   la consigne générale donnée dans le préambule pour cette colonne (cf.~\ref{horizontal-pos-block}
   p.~\pageref{horizontal-pos-block}).
@@ -843,34 +846,6 @@ bloc sur plusieurs lignes de texte.
 
 \item On peut tracer une ou plusieurs bordures de la case avec la clé |borders|.
 \end{itemize}
-
-\medskip
-\begin{Code}[width=10cm]
-\begin{NiceTabular}{cc}
-\toprule
-Écrivain
-& \emph{\Block[l]{}{année de\\ naissance}} \\
-\midrule
-Hugo & 1802 \\
-Balzac & 1799 \\
-\bottomrule
-\end{NiceTabular}
-\end{Code}
-%
-\begin{NiceTabular}{cc}[no-cell-nodes]
-\toprule
-Écrivain
-& \Block[l]{}{année de\\ naissance} \\
-\midrule
-Hugo & 1802 \\
-Balzac & 1799 \\
-\bottomrule
-\end{NiceTabular}
-
-\medskip
-On rappelle que si le premier argument obligatoire de |\Block| est laissé
-blanc, alors le bloc est mono-case\footnote{On peut considérer que la valeur par
-défaut de ce premier argument obligatoire est |1-1|.}.
 
 
 \subsection{Positionnement horizontal du contenu des blocs}
@@ -1175,6 +1150,7 @@ text & text \\
 
 \subsection{\textbackslash\textbackslash\ et \& dans les blocs}
 
+\label{ampersand-in-blocks}
 \index{ampersand-in-blocks}
 \index{\&-in-blocks}
 
@@ -5504,7 +5480,7 @@ est possible d'utiliser les colonnes de type |S| de \pkg{siunitx} dans les
 environnements de \pkg{nicematrix}. 
 
 \medskip
-\begin{Code}[width = 10.6cm]
+\begin{Code}[width = 10.9cm]
 $\begin{pNiceArray}{\emph{S}cW{c}{1cm}c}[nullify-dots,first-row]
 {C_1} & \Cdots &  & C_n \\
 2.3  & 0 & \Cdots & 0 \\
@@ -5796,7 +5772,7 @@ entre accolades sont considérés comme un tout.
 
 \medskip
 \begin{scope}
-\begin{Code}[width=10cm]
+\begin{Code}[width=10.5cm]
 $\begin{bNiceMatrix}[\emph{light-syntax},first-row,first-col]
 {} a             b                 ;
 a  2\cos a       {\cos a + \cos b} ;
@@ -5814,7 +5790,7 @@ b \cos a+\cos b  { 2 \cos b }
 \medskip
 \index{end-of-row (à utiliser avec light-syntax)}
 On peut changer le caractère utilisé pour indiquer les fins de rangées avec
-l'option |end-of-row|. Comme dit précédemment, la valeur initiale de ce
+l'option \Definition{end-of-row}. Comme dit précédemment, la valeur initiale de ce
 paramètre est un point-virgule.
 
 \medskip
@@ -6195,19 +6171,18 @@ a & a     & a
 
 
 \medskip
-\index{left-margin}
-\index{right-margin}
-Les «nœuds larges» de la première colonne et de la dernière colonne peuvent
-apparaître trop petits pour certains usages. C'est pourquoi il est possible
-d'utiliser les options \Definition{left-margin} et \Definition{right-margin}
-pour ajouter de l'espace des deux côtés du tableau et aussi de l'espace dans les
-«nœuds larges» de la première colonne et de la dernière colonne. Dans l'exemple
-suivant, nous avons utilisé les options |left-margin| et
-|right-margin|.\footnote{Les options |left-margin| et |right-margin| prennent
-  des dimensions comme valeurs mais, si aucune valeur n'est donnée, c'est la
-  valeur par défaut qui est utilisée et elle est égale à |\arraycolsep| (valeur
-  initiale : 5~pt). Il existe aussi une option |margin| pour fixer à la fois
-  |left-margin| et |right-margin|.} 
+\index{left-margin} \index{right-margin} Les «nœuds larges» de la première
+colonne et de la dernière colonne peuvent apparaître trop petits pour certains
+usages. C'est pourquoi il est possible d'utiliser les options
+\Definition{left-margin} et \Definition{right-margin} pour ajouter de l'espace
+des deux côtés du tableau et aussi de l'espace dans les «nœuds larges» de la
+première colonne et de la dernière colonne. Dans l'exemple suivant, nous avons
+utilisé les options |left-margin| et |right-margin|.\footnote{Les options
+  |left-margin| et |right-margin| prennent des dimensions comme valeurs mais, si
+  aucune valeur n'est donnée, c'est la valeur par défaut qui est utilisée et
+  elle est égale à |\arraycolsep| (valeur initiale : 5~pt). Il existe aussi une
+  option \Definition{margin} pour fixer à la fois |left-margin| et
+  |right-margin|.}
 \[\begin{pNiceMatrix}[create-large-nodes,left-margin,right-margin]
 \CodeBefore [create-cell-nodes]
     \begin{tikzpicture}
@@ -6265,23 +6240,23 @@ a & a     & a
 et ne correspondent donc pas nécessairement aux cases délimitées par des filets.
 
 \medskip
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[c]{8cm}
 Voici un tableau qui a été composé de la manière suivante :
 
 \medskip
 \begin{Code}
 \large
-\begin{NiceTabular}{wl{2cm}ll}[hvlines]
+\begin{NiceTabular}{w{l}{2cm}ll}[hvlines]
 fraise & amande & abricot \\
 prune & pêche & poire  \\[1ex]
 noix & noisette & brugnon
 \end{NiceTabular}
 \end{Code}
 \end{minipage}
-\hspace{1cm}
+\hspace{7mm}
 \begin{scope}
 \large
-\begin{NiceTabular}[c]{wl{2cm}ll}[hvlines]
+\begin{NiceTabular}[c]{w{l}{2cm}ll}[hvlines]
 fraise & amande & abricot \\
 prune & pêche & poire  \\[1ex]
 noix & noisette & brugnon
@@ -6289,11 +6264,11 @@ noix & noisette & brugnon
 \end{scope}
 
 \vspace{1cm}
-\begin{minipage}[c]{7cm}
+\begin{minipage}[c]{7.5cm}
 Ci-contre, on a colorié toutes les cases de ce tableau avec
 |\chessboardcolors| (cf.~p.~\pageref{chessboardcolors}).
 \end{minipage}
-\hspace{1.5cm}
+\hspace{1.2cm}
 \begin{scope}
 \large
 \begin{NiceTabular}[c]{wl{2cm}ll}[hvlines,code-before = \chessboardcolors{red!15}{blue!15}]
@@ -6592,7 +6567,7 @@ utilise explicitement la variable publique |\g_nicematrix_code_before_tl|.
 
 \NewDocumentCommand \crossbox { ! O { } }
   {
-    \tl_gput_right:Nx \emph{\g_nicematrix_code_before_tl}
+    \tl_gput_right:Ne \emph{\g_nicematrix_code_before_tl}
       {
         \__pantigny_crossbox:nnn
           { \arabic { iRow } }
@@ -6617,7 +6592,7 @@ utilise explicitement la variable publique |\g_nicematrix_code_before_tl|.
 
 \NewDocumentCommand \crossbox { ! O { } }
   {
-    \tl_gput_right:Nx \g_nicematrix_code_before_tl
+    \tl_gput_right:Ne \g_nicematrix_code_before_tl
       {
         \__pantigny_crossbox:nnn
           { \arabic { iRow } }
@@ -6915,8 +6890,6 @@ on peut utiliser les colonnes |S| de \pkg{siunitx}).
 \index{Tagging Project}
 \label{Tagging Project}
 
-\colorbox{yellow!50}{\bfseries Nouveau 7.0}
-
 Depuis la version 7.0, l'extension \pkg{nicematrix} est compatible avec le
 \emph{Tagging Project} de LaTeX visant à la création automatique de PDF balisés.
 Pour le moment, seuls les tableaux simples sont correctement balisés.
@@ -6928,13 +6901,7 @@ Voici un exemple de code qui va produire un PDF correctement balisé.
 \begin{center}
 \small
 \begin{Code}
-\DocumentMetadata{
-  lang        = en,
-  pdfversion  = 2.0,
-  pdfstandard = ua-2,
-  pdfstandard = a-4f, 
-  \emph{testphase   = {phase-III, table, math}}
-}
+\emph{\DocumentMetadata{tagging = on}}
 \documentclass{article}
 \usepackage{lmodern}
 \usepackage{nicematrix}
