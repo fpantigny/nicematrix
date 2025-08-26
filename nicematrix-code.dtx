@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.2a}
-\def\myfiledate{2025/08/17}
+\def\myfileversion{7.2b}
+\def\myfiledate{2025/08/26}
 %
 %
 %<*batchfile>  
@@ -3508,7 +3508,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_print_node_cell:
   {
     \socket_use:nn { nicematrix / siunitx-wrap } 
-      { \socket_use:nn { nicematrix / create-cell-nodes } \@@_node_cell: } 
+      { \socket_use:nn { nicematrix / create-cell-nodes } { \@@_node_cell: } } 
   }
 %    \end{macrocode}
 %
@@ -3530,7 +3530,7 @@ version 2005/12/01 or later.
 % The following instruction |\set@color| has been added on 2022/10/06. It's
 % necessary only with XeLaTeX and not with the other engines (we don't know why).
 %    \begin{macrocode}
-        \set@color 
+        \sys_if_engine_xetex:T { \set@color }
         \box_use:N \l_@@_cell_box 
       }
       { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol }

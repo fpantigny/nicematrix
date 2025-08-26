@@ -261,8 +261,8 @@ L'extension \pkg{nicematrix} définit les nouveaux environnements suivants :
 \medskip
 \begin{ttfamily}
 \setlength{\tabcolsep}{3mm}
-\begin{tabular}{llll}
-\{NiceTabular\}  & \{NiceArray\}  & \{NiceMatrix\}   \\
+\begin{tabular}{lllll}
+\{NiceTabular\}  & \{NiceArray\}  & \{NiceMatrix\}  & \{NiceArrayWithDelims\} \\
 \{NiceTabular*\} & \{pNiceArray\} & \{pNiceMatrix\}  \\
 \{NiceTabularX\} & \{bNiceArray\} & \{bNiceMatrix\}  \\
                  & \{BNiceArray\} & \{BNiceMatrix\}  \\
@@ -294,12 +294,19 @@ L'environnement |{NiceTabularX}| est similaire à l'environnement
   souhaitée pour le tableau étant spécifiée par la clé |width|:
   cf.~p.~\pageref{colonne-X}.}
 
+\medskip
+L'environnement |{NiceArrayWithDelims}| est une généralisation de |{NiceArray}| et
+ses variantes (cf. p.~\pageref{NiceArrayWithDelims}).
 
 \medskip
 \textbf{On conseille d'utiliser prioritairement les environnements classiques et de
 n'utiliser les environnements de \pkg{nicematrix} que lorsqu'on utilise les
 fonctionnalités supplémentaires offertes par ces environnements (cela permet
-d'économiser la mémoire).}
+d'économiser la mémoire et d'accélérer la compilation).}\footnote{Pour accélérer
+les compilations, on peut aussi utiliser ponctuellement la clé |no-cell-nodes| qui
+supprime la création des nœuds PGF/TikZ correspondants aux contenus des cellules mais
+certains fonctionnalités ne seront plus disponibles (cf.~\pageref{no-cell-nodes}).
+}
 
 \medskip
 Tous les environnements de l'extension \pkg{nicematrix} acceptent, entre
@@ -5893,6 +5900,7 @@ Pour un exemple d'utilisation, voir \url{tex.stackexchange.com/questions/488566}
 \subsection{Les nœuds correspondant aux contenus des cases}
 
 \index{no-cell-nodes}
+\label{no-cell-nodes}
 
 L'extension \pkg{nicematrix} crée un nœud PGF-TikZ\footnote{On rappelle que TikZ
   est une sur-couche de PGF. L'extension \pkg{nicematrix} charge PGF et ne
@@ -6004,15 +6012,15 @@ par |last|-$j$.
 
 
 \medskip
-Dans l'exemple suivant, nous avons surligné tous les nœuds de la matrice.
+Dans l'exemple suivant, nous avons encadré tous les nœuds de la matrice.
 
 \[
 \NiceMatrixOptions
   { 
     pgf-node-code = 
-     { 
-       \pgfsetfillcolor{red!15}%
-       \pgfusepathqfill
+     {
+       \pgfsetstrokecolor{red}%
+       \pgfusepathqstroke
      } 
   }
 \begin{pNiceMatrix}

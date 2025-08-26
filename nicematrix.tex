@@ -234,8 +234,8 @@ The package \pkg{nicematrix} defines the following new environments.
 \medskip
 \begin{ttfamily}
 \setlength{\tabcolsep}{3mm}
-\begin{tabular}{llll}
-\{NiceTabular\}  & \{NiceArray\}  & \{NiceMatrix\}   \\
+\begin{tabular}{lllll}
+\{NiceTabular\}  & \{NiceArray\}  & \{NiceMatrix\}   & \{NiceArrayWithDelims\} \\
 \{NiceTabular*\} & \{pNiceArray\} & \{pNiceMatrix\}  \\
 \{NiceTabularX\} & \{bNiceArray\} & \{bNiceMatrix\}  \\
                  & \{BNiceArray\} & \{BNiceMatrix\}  \\
@@ -266,9 +266,17 @@ from the eponymous package.\footnote{In fact, it's possible to use directly the
 width for the tabular is fixed by the key |width|): cf. p.~\pageref{X-columns}}.
 
 \medskip
-\textbf{It's recommended to use primarily the classical environments and to use the
-environments of \pkg{nicematrix} only when some feature provided by these
-environments is used (this will save memory).}
+The environment |\{NiceArrayWithDelims\}| is a generalisation of the environment
+|{NiceArray}| and its variants (cf. p.~\pageref{NiceArrayWithDelims}).
+
+\medskip
+\textbf{It's recommended to use primarily the classical environments and to use
+  the environments of \pkg{nicematrix} only when some feature provided by these
+  environments is used (this will save memory and speed up the
+  compilation).}\footnote{In order to speed up the compilations, it's also possible
+  to use ponctually the key |no-cell-nodes| which disables the creation of the PGF/TikZ
+  nodes for the contents of the cells but some functionalities won't work any longer
+  (cf.~\pageref{no-cell-nodes}).}
 
 \medskip 
 All the environments of the package \pkg{nicematrix} accept, between square
@@ -5729,6 +5737,7 @@ For an example of utilisation, see \url{tex.stackexchange.com/questions/488566}
 \subsection{The nodes corresponding to the contents of the cells}
 
 \index{no-cell-nodes}
+\label{no-cell-nodes}
 
 The package \pkg{nicematrix} creates a PGF/TikZ node\footnote{We recall that TikZ
 is a layer over PGF. The extension \pkg{nicematrix} loads PGF but does not
@@ -5740,7 +5749,7 @@ the cells of the matrix (inter alia).
 
 
 \smallskip
-\textbf{Caution} : By default, no node is created in a empty cell.
+\textbf{Caution} : By default, no node is created in an empty cell.
 
 \smallskip
 However, it's possible to impose the creation of a node with the command
@@ -5836,15 +5845,15 @@ p.~\pageref{exterior}.}) may also be indicated by $i$-|last|. Similarly, the
 nodes of the last row may be indicated by |last|-$j$.
 
 \bigskip
-In the following example, we have underlined all the nodes of the matrix.
+In the following example, we have stroken all the nodes of the matrix.
 
 \[
 \NiceMatrixOptions
   { 
     pgf-node-code = 
      { 
-       \pgfsetfillcolor{red!15}%
-       \pgfusepathqfill
+       \pgfsetstrokecolor{red}%
+       \pgfusepathqstroke
      } 
   }
 \begin{pNiceMatrix}

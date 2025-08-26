@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.2a}
-\def\myfiledate{2025/08/17}
+\def\myfileversion{7.2b}
+\def\myfiledate{2025/08/26}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -1433,7 +1433,7 @@
 \cs_new_protected:Npn \__nicematrix_print_node_cell:
   {
     \socket_use:nn { nicematrix / siunitx-wrap }
-      { \socket_use:nn { nicematrix / create-cell-nodes } \__nicematrix_node_cell: }
+      { \socket_use:nn { nicematrix / create-cell-nodes } { \__nicematrix_node_cell: } }
   }
 \cs_new_protected:Npn \__nicematrix_node_cell:
   {
@@ -1445,7 +1445,7 @@
       { rectangle }
       { base }
       {
-        \set@color
+        \sys_if_engine_xetex:T { \set@color }
         \box_use:N \l__nicematrix_cell_box
       }
       { \__nicematrix_env: - \int_use:N \c@iRow - \int_use:N \c@jCol }
