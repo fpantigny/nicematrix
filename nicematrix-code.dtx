@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.2b}
-\def\myfiledate{2025/08/26}
+\def\myfileversion{7.3}
+\def\myfiledate{2025/09/30}
 %
 %
 %<*batchfile>  
@@ -143,26 +143,21 @@ version 2005/12/01 or later.
 \msg_new:nnn { nicematrix } { latex-too-old }
   { 
     Your~LaTeX~release~is~too~old. \\
-    You~need~at~least~a~the~version~of~2023-11-01 
+    You~need~at~least~the~version~of~2025-06-01. \\
+    If~you~use~Overleaf,~you~need~at~least~"TeXLive~2025".\\
+    The~package~'nicematrix'~won't~be~loaded.
   }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \providecommand { \IfFormatAtLeastTF } { \@ifl@t@r \fmtversion }
 \IfFormatAtLeastTF
-  { 2023-11-01 } 
-  { } 
-  { \msg_fatal:nn { nicematrix } { latex-too-old } }
+  { 2025-06-01 }
+  { }
+  { \msg_critical:nn { nicematrix } { latex-too-old } }
 %    \end{macrocode}
 % 
 % 
-%    \begin{macrocode}
-\ProvideDocumentCommand { \IfPackageLoadedT } { m m }
-  { \IfPackageLoadedTF { #1 } { #2 } { } }
-
-\ProvideDocumentCommand { \IfPackageLoadedF } { m m }
-  { \IfPackageLoadedTF { #1 } { } { #2 } }
-%    \end{macrocode}
 %
 % \bigskip
 % The command for the treatment of the options of |\usepackage| is at the end of
@@ -176,14 +171,6 @@ version 2005/12/01 or later.
 % \bigskip
 %    \begin{macrocode}
 \RequirePackage { array }
-%    \end{macrocode}
-% In the version 2.6a of \pkg{array}, important modifications have been done for
-% the Tagging Project. 
-%    \begin{macrocode}
-\bool_const:Nn \c_@@_recent_array_bool
-  { \IfPackageAtLeastTF { array } { 2024/05/01 } \c_true_bool \c_false_bool }
-\bool_const:Nn \c_@@_testphase_table_bool
-  { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool }
 %    \end{macrocode}
 % 
 %
@@ -2651,6 +2638,7 @@ version 2005/12/01 or later.
         \tl_set_eq:NN \l_@@_vlines_clist \c_@@_all_tl
         \tl_set_eq:NN \l_@@_hlines_clist \c_@@_all_tl
       } ,
+    hvlines .value_forbidden:n = true ,
     hvlines-except-borders .code:n = 
       { 
         \tl_set_eq:NN \l_@@_vlines_clist \c_@@_all_tl
@@ -2658,6 +2646,7 @@ version 2005/12/01 or later.
         \bool_set_true:N \l_@@_hvlines_bool
         \bool_set_true:N \l_@@_except_borders_bool
       } ,
+    hvlines-except-borders .value_forbidden:n = true ,
     parallelize-diags .bool_set:N = \l_@@_parallelize_diags_bool ,
 %    \end{macrocode}
 %
@@ -3627,20 +3616,18 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \medskip
-% We keep in memory the standard version of |\ialign| because we will redefine
+% We keep in memory the standard version of |\ar@ialign| because we will redefine
 % |\ialign| in the environment |{NiceArrayWithDelims}| but restore the standard
-% version for use in the cells of the array. However, since version 2.6a
-% (version for the Tagging Project), \pkg{array} uses |\ar@ialign| instead of
-% |\ialign|. In that case, of course, you do a saving of |\ar@ialign|.
+% version for use in the cells of the array. However, it seems that RevTeX goes on
+% with a redefinition of |array| which uses |\ialign|.
 %    \begin{macrocode}
-\bool_if:nTF 
-  { \c_@@_recent_array_bool && ! \c_@@_revtex_bool }
+\bool_if:NTF \c_@@_revtex_bool 
+  { \cs_set_eq:NN \@@_old_ialign: \ialign }  
 %    \end{macrocode}
 % We use here a |\cs_set_eq:cN| instead of a |\cs_set_eq:NN| in order to avoid a
 % message when |explcheck| is used on |nicematrix.sty|.
 %    \begin{macrocode}
   { \cs_set_eq:cN { @@_old_ar@ialign: } \ar@ialign }
-  { \cs_set_eq:NN \@@_old_ialign: \ialign }
 %    \end{macrocode}
 %
 % 
@@ -3695,11 +3682,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_in_everycr:
   { 
-    \bool_if:NT \c_@@_recent_array_bool
-      {
-        \tbl_if_row_was_started:T { \UseTaggingSocket { tbl / row / end } }
-        \tbl_update_cell_data_for_next_row:
-      }
+    \tbl_if_row_was_started:T { \UseTaggingSocket { tbl / row / end } }
+    \tbl_update_cell_data_for_next_row:
     \int_gzero:N \c@jCol 
     \bool_gset_false:N \g_@@_after_col_zero_bool
     \bool_if:NF \g_@@_row_of_col_done_bool
@@ -3866,16 +3850,14 @@ version 2005/12/01 or later.
 % several reasons. In particular, |\ar@ialign| sets |\everycr| to |{ }| and we
 % \emph{need} to change the value of |\everycr|. 
 %    \begin{macrocode}
-    \bool_if:NT \c_@@_recent_array_bool
+    \bool_if:NF \c_@@_revtex_bool 
       {
-        \bool_if:NF \c_@@_revtex_bool 
-          {
-            \def \ar@ialign 
-              { 
-                \bool_if:NT \c_@@_testphase_table_bool
-                  \tbl_init_cell_data_for_table:
-                \@@_some_initialization:
-                \dim_zero:N \tabskip 
+        \def \ar@ialign 
+          { 
+            \IfPackageLoadedT { latex-lab-testphase-table }
+              { \tbl_init_cell_data_for_table: }
+            \@@_some_initialization:
+            \dim_zero:N \tabskip 
 %    \end{macrocode}
 %
 % After its first use, the definition of |\ar@ialign| will revert
@@ -3884,25 +3866,7 @@ version 2005/12/01 or later.
 % |\cs_set_eq:Nc| instead of |\cs_set_eq:NN| in order to avoid a message when
 % |explcheck| is used on |nicematrix.sty|.
 %    \begin{macrocode}
-                \cs_set_eq:Nc \ar@ialign { @@_old_ar@ialign: }
-                \halign 
-              }
-          }
-      }
-%    \end{macrocode}
-% The following part should be deleted when we will delete the boolean
-% |\c_@@_recent_array_bool| (when we consider the version 2.6a of \pkg{array}
-% is required). Moreover, \cls{revtex4-2} modifies \pkg{array} and provides
-% commands which are meant to be the standard version of \pkg{array} but, at the
-% date of november 2024, these commands corresponds to the \emph{old} version of
-% \pkg{array}, that is to say without the |\ar@ialign|.
-%    \begin{macrocode}
-      {
-        \def \ialign 
-          { 
-            \@@_some_initialization:
-            \dim_zero:N \tabskip 
-            \cs_set_eq:NN \ialign \@@_old_ialign:
+            \cs_set_eq:Nc \ar@ialign { @@_old_ar@ialign: }
             \halign 
           }
       }
@@ -4201,8 +4165,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \skip_horizontal:N \l_@@_left_margin_dim 
     \skip_horizontal:N \l_@@_extra_left_margin_dim 
-    \bool_if:NT \c_@@_recent_array_bool
-      { \UseTaggingSocket { tbl / hmode / begin } }
+    \UseTaggingSocket { tbl / hmode / begin } 
 %    \end{macrocode}
 %
 % The following code is a workaround to specify to the tagging system that the
@@ -4730,8 +4693,7 @@ version 2005/12/01 or later.
     \skip_horizontal:N \l_@@_right_margin_dim 
     \skip_horizontal:N \l_@@_extra_right_margin_dim 
     \hbox_set_end:
-    \bool_if:NT \c_@@_recent_array_bool
-      { \UseTaggingSocket { tbl / hmode / end } }
+    \UseTaggingSocket { tbl / hmode / end } 
 %    \end{macrocode}
 % End of the construction of the array (in the box |\l_@@_the_array_box|).
 %
@@ -5000,7 +4962,6 @@ version 2005/12/01 or later.
                             ) 
                             / \fp_use:N \g_@@_total_X_weight_fp 
                           }
-
                       }
                   }
               }
@@ -5149,11 +5110,11 @@ version 2005/12/01 or later.
   \dim_compare:nNnT { \l_@@_tabular_width_dim } = { \c_zero_dim }
     {
 %    \end{macrocode}
-% If the tagging of the tabulars is done (part of the Tagging Project), you
+% If the tagging of the tabulars is done (part of the Tagging Project), we
 % don't activate that mechanism because it would create a dummy column of tagged
 % empty cells.
 %    \begin{macrocode}
-      \bool_if:NF \c_@@_testphase_table_bool
+      \IfPackageLoadedF { latex-lab-testphase-table }
         { 
           \tl_gput_right:Nn \g_@@_array_preamble_tl 
             { > { \@@_error_too_much_cols: } l }
@@ -5557,7 +5518,7 @@ version 2005/12/01 or later.
 % mono-column blocks.
 %    \begin{macrocode}
             \dim_set:Nn \l_@@_col_width_dim { #2 }
-            \bool_if:NT \c_@@_testphase_table_bool
+            \IfPackageLoadedT { latex-lab-testphase-table }
               { \tag_struct_begin:n { tag = Div } }
             \@@_cell_begin: 
 %    \end{macrocode}
@@ -5573,7 +5534,8 @@ version 2005/12/01 or later.
                 \vrule height \box_ht:N \@arstrutbox width \c_zero_dim
                 \everypar { }
               }
-            \bool_if:NT \c_@@_testphase_table_bool { \tagpdfparaOn }
+            \IfPackageLoadedT { latex-lab-testphase-table }
+              { \tagpdfparaOn }
 %    \end{macrocode}
 % Now, the potential code for the horizontal position of the content of the cell
 % (|\centering|, |\raggedright|, |\RaggedRight|, etc.).
@@ -5600,7 +5562,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
             #4
             \@@_cell_end: 
-            \bool_if:NT \c_@@_testphase_table_bool { \tag_struct_end: }
+            \IfPackageLoadedT { latex-lab-testphase-table }
+              { \tag_struct_end: }
           } 
       }
   }
@@ -5705,7 +5668,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_V: #1 #2
   {
-    \str_if_eq:nnTF { #1 } { [ } 
+    \str_if_eq:nnTF { #2 } { [ } 
       { \@@_make_preamble_V_i:w [ }
       { \@@_make_preamble_V_i:w [ ] { #2 } }
   }
@@ -5772,10 +5735,12 @@ version 2005/12/01 or later.
     \tl_gput_right:Nn \g_@@_array_preamble_tl
       {
         > {
+%    \end{macrocode}          
 % We use |\setlength| in order to allow |\widthof| which is a command of \pkg{calc}
 % (when loaded \pkg{calc} redefines |\setlength|).
 % Of course, even if \pkg{calc} is not loaded, the following code will work with
 % the standard version of |\setlength|.
+%    \begin{macrocode}
             \setlength { \l_@@_col_width_dim } { #2 }
             \@@_cell_begin:
             \tl_set_eq:NN \l_@@_hpos_cell_tl \c_@@_c_tl
@@ -6158,7 +6123,7 @@ version 2005/12/01 or later.
         }
         { \@@_error_or_warning:n { varwidth~not~loaded~in~X } } ,
     unknown .code:n = 
-      \regex_match:nVTF { \A[0-9]*\.?[0-9]*\Z } \l_keys_key_str 
+      \regex_if_match:nVTF { \A[0-9]*\.?[0-9]*\Z } \l_keys_key_str 
         { \fp_set:Nn \l_tmpa_fp { \l_keys_key_str } }
         { \@@_error_or_warning:n { invalid~weight } }
   }
@@ -6330,7 +6295,7 @@ version 2005/12/01 or later.
     \multispan { #1 }
     \cs_set_eq:NN \@@_update_max_cell_width: \prg_do_nothing: 
     \begingroup
-    \bool_if:NT \c_@@_testphase_table_bool
+    \IfPackageLoadedTF { latex-lab-testphase-table }
       { \tbl_update_multicolumn_cell_data:n { #1 } }
     \def \@addamp 
       { \legacy_if:nTF { @firstamp } { \@firstampfalse } { \@preamerr 5 } } 
@@ -6351,8 +6316,7 @@ version 2005/12/01 or later.
     \exp_args:No \@mkpream \g_@@_preamble_tl
     \@addtopreamble \@empty
     \endgroup
-    \bool_if:NT \c_@@_recent_array_bool
-      { \UseTaggingSocket { tbl / colspan } { #1 } }
+    \UseTaggingSocket { tbl / colspan } { #1 } 
 %    \end{macrocode}
 %
 % \medskip
@@ -6514,9 +6478,8 @@ version 2005/12/01 or later.
         > { 
             \@@_cell_begin:
 %    \end{macrocode}
-% We use |\setlenght| instead of |\dim_set:N| in order to allow a specifier
-% of column like |p{\widthof{Some words}}|. |widthof| is a command provided by
-% \pkg{calc}.
+% We use |\setlength| instead of |\dim_set:N| to allow a specifier
+% like |p{\widthof{Some words}}|. |widthof| is a command provided by \pkg{calc}.
 % Of course, even if \pkg{calc} is not loaded, the following code will work with
 % the standard version of |\setlength|.
 %    \begin{macrocode}
@@ -8060,8 +8023,7 @@ version 2005/12/01 or later.
               }
           }  
       }
-    \bool_if:NT \c_@@_recent_array_bool
-      { \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: }
+    \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: 
     \cs_set_eq:NN \SubMatrix \@@_SubMatrix
     \cs_set_eq:NN \UnderBrace \@@_UnderBrace
     \cs_set_eq:NN \OverBrace \@@_OverBrace
@@ -12179,8 +12141,6 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_hline_i:
   { 
-    % \int_zero:N \l_@@_local_start_int 
-    % \int_zero:N \l_@@_local_end_int 
 %    \end{macrocode}
 % |\l_tmpa_tl| is the number of row and |\l_tmpb_tl| the number of column. When
 % we have found a column corresponding to a rule to draw, we note its number in
@@ -13897,10 +13857,7 @@ version 2005/12/01 or later.
                 \use:e
                   {
 %    \end{macrocode}
-% The |\exp_not:N| is mandatory before |\begin|. 
-% It will be possible to delete the |\exp_not:N| in TeXLive 2025
-% because |\begin| is now protected by |\protected| (and not by |\protect|).
-% There is several other occurrences in that document.
+% Curiously, |\exp_not:N| is still mandatory when |tagging=on|.
 %    \begin{macrocode}
                     \exp_not:N \begin { minipage }
                       [ \str_lowercase:f \l_@@_vpos_block_str ] 
@@ -13914,17 +13871,18 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % In the other cases, we use a |{tabular}|.
 %    \begin{macrocode}
-              { 
-                \bool_if:NT \c_@@_testphase_table_bool
-                  { \tagpdfsetup { table / tagging = presentation } }
+              {
                 \use:e 
                   {
+%    \end{macrocode}
+% Curiously, |\exp_not:N| is still mandatory when |tagging=on|.
+%    \begin{macrocode}
                     \exp_not:N \begin { tabular }
                       [ \str_lowercase:f \l_@@_vpos_block_str ] 
                       { @ { } \l_@@_hpos_block_str @ { } }
                   }  
                   #5 
-                \end { tabular } 
+                \end { tabular }
               }
           } 
 %    \end{macrocode}
@@ -13935,6 +13893,9 @@ version 2005/12/01 or later.
             \c_math_toggle_token
             \use:e 
               {
+%    \end{macrocode}
+% Curiously, |\exp_not:N| is still mandatory when |tagging=on|.
+%    \begin{macrocode}
                 \exp_not:N \begin { array } 
                   [ \str_lowercase:f \l_@@_vpos_block_str ] 
                   { @ { } \l_@@_hpos_block_str @ { } } 
@@ -14146,10 +14107,10 @@ version 2005/12/01 or later.
 % the tabular is the same as the external alignment of the tabular (that is to
 % say the position of the block in its zone of merged cells).
 %    \begin{macrocode}
-                  \bool_if:NT \c_@@_testphase_table_bool 
-                     { \tag_stop:n { table } } 
+                  \IfPackageLoadedTF { latex-lab-testphase-table }
+                    { \tag_stop:n { table } } 
                   \use:e 
-                    { 
+                    {
                       \exp_not:N \begin { tabular } [ \l_@@_vpos_block_str ] 
                       { @ { } \l_@@_hpos_block_str @ { } } 
                     }
@@ -14321,9 +14282,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_draw_blocks:
   {
-    \bool_if:nTF { \c_@@_recent_array_bool && ! \c_@@_revtex_bool }
+    \bool_if:NTF \c_@@_revtex_bool 
+      { \cs_set_eq:NN \ialign \@@_old_ialign: }    
       { \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: }
-      { \cs_set_eq:NN \ialign \@@_old_ialign: }
     \seq_map_inline:Nn \g_@@_blocks_seq { \@@_Block_iv:nnnnnn ##1 }
   }
 %    \end{macrocode}
@@ -15879,7 +15840,7 @@ version 2005/12/01 or later.
       \tl_if_empty:nTF { #1 } 
         { \@@_error:n { Invalid~name } }
         {
-          \regex_match:nnTF { \A[A-Za-z][A-Za-z0-9]*\Z } { #1 }
+          \regex_if_match:nnTF { \A[A-Za-z][A-Za-z0-9]*\Z } { #1 }
             { 
               \seq_if_in:NnTF \g_@@_submatrix_names_seq { #1 }
                 { \@@_error:nn { Duplicate~name~for~SubMatrix } { #1 } }

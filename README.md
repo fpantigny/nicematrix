@@ -32,4 +32,4 @@ You have to put it in the same directory as your document or (best) in a `texmf`
 
 For the documentation in English, run: `lualatex nicematrix.tex` (several compilations are required).
 
-For the documentation in French, run: `lualatex nicematrix-french.tex`
+For the documentation in French, run: `lualatex nicematrix-french.tex` (several compilations are required).

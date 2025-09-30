@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.2b}
-\def\myfiledate{2025/08/26}
+\def\myfileversion{7.3}
+\def\myfiledate{2025/09/30}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -30,24 +30,17 @@
 \msg_new:nnn { nicematrix } { latex-too-old }
   {
     Your~LaTeX~release~is~too~old. \\
-    You~need~at~least~a~the~version~of~2023-11-01
+    You~need~at~least~the~version~of~2025-06-01. \\
+    If~you~use~Overleaf,~you~need~at~least~"TeXLive~2025".\\
+    The~package~'nicematrix'~won't~be~loaded.
   }
 \providecommand { \IfFormatAtLeastTF } { \@ifl@t@r \fmtversion }
 \IfFormatAtLeastTF
-  { 2023-11-01 }
+  { 2025-06-01 }
   { }
-  { \msg_fatal:nn { nicematrix } { latex-too-old } }
-\ProvideDocumentCommand { \IfPackageLoadedT } { m m }
-  { \IfPackageLoadedTF { #1 } { #2 } { } }
-
-\ProvideDocumentCommand { \IfPackageLoadedF } { m m }
-  { \IfPackageLoadedTF { #1 } { } { #2 } }
+  { \msg_critical:nn { nicematrix } { latex-too-old } }
 \RequirePackage { amsmath }
 \RequirePackage { array }
-\bool_const:Nn \c__nicematrix_recent_array_bool
-  { \IfPackageAtLeastTF { array } { 2024/05/01 } \c_true_bool \c_false_bool }
-\bool_const:Nn \c__nicematrix_testphase_table_bool
-  { \IfPackageLoadedTF { latex-lab-testphase-table } \c_true_bool \c_false_bool }
 \cs_new_protected:Npn \__nicematrix_error:n { \msg_error:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_warning:n { \msg_warning:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_error:nn { \msg_error:nnn { nicematrix } }
@@ -934,6 +927,7 @@
         \tl_set_eq:NN \l__nicematrix_vlines_clist \c__nicematrix_all_tl
         \tl_set_eq:NN \l__nicematrix_hlines_clist \c__nicematrix_all_tl
       } ,
+    hvlines .value_forbidden:n = true ,
     hvlines-except-borders .code:n =
       {
         \tl_set_eq:NN \l__nicematrix_vlines_clist \c__nicematrix_all_tl
@@ -941,6 +935,7 @@
         \bool_set_true:N \l__nicematrix_hvlines_bool
         \bool_set_true:N \l__nicematrix_except_borders_bool
       } ,
+    hvlines-except-borders .value_forbidden:n = true ,
     parallelize-diags .bool_set:N = \l__nicematrix_parallelize_diags_bool ,
     renew-dots .bool_set:N = \l__nicematrix_renew_dots_bool ,
     renew-dots .value_forbidden:n = true ,
@@ -1480,10 +1475,9 @@
     [ \str_if_eq:eeTF \l__nicematrix_baseline_tl { c } { c } { t } ]
   }
 \cs_generate_variant:Nn \__nicematrix_array:n { o }
-\bool_if:nTF
-  { \c__nicematrix_recent_array_bool && ! \c__nicematrix_revtex_bool }
-  { \cs_set_eq:cN { __nicematrix_old_ar@ialign: } \ar@ialign }
+\bool_if:NTF \c__nicematrix_revtex_bool
   { \cs_set_eq:NN \__nicematrix_old_ialign: \ialign }
+  { \cs_set_eq:cN { __nicematrix_old_ar@ialign: } \ar@ialign }
 \cs_new_protected:Npn \__nicematrix_create_row_node:
   {
     \int_compare:nNnT { \c@iRow } > { \g__nicematrix_last_row_node_int }
@@ -1521,11 +1515,8 @@
   }
 \cs_new_protected:Npn \__nicematrix_in_everycr:
   {
-    \bool_if:NT \c__nicematrix_recent_array_bool
-      {
-        \tbl_if_row_was_started:T { \UseTaggingSocket { tbl / row / end } }
-        \tbl_update_cell_data_for_next_row:
-      }
+    \tbl_if_row_was_started:T { \UseTaggingSocket { tbl / row / end } }
+    \tbl_update_cell_data_for_next_row:
     \int_gzero:N \c@jCol
     \bool_gset_false:N \g__nicematrix_after_col_zero_bool
     \bool_if:NF \g__nicematrix_row_of_col_done_bool
@@ -1602,27 +1593,15 @@
           }
         \socket_assign_plug:nn { nicematrix / create-cell-nodes } { active }
       }
-    \bool_if:NT \c__nicematrix_recent_array_bool
+    \bool_if:NF \c__nicematrix_revtex_bool
       {
-        \bool_if:NF \c__nicematrix_revtex_bool
+        \def \ar@ialign
           {
-            \def \ar@ialign
-              {
-                \bool_if:NT \c__nicematrix_testphase_table_bool
-                  \tbl_init_cell_data_for_table:
-                \__nicematrix_some_initialization:
-                \dim_zero:N \tabskip
-                \cs_set_eq:Nc \ar@ialign { __nicematrix_old_ar@ialign: }
-                \halign
-              }
-          }
-      }
-      {
-        \def \ialign
-          {
+            \IfPackageLoadedT { latex-lab-testphase-table }
+              { \tbl_init_cell_data_for_table: }
             \__nicematrix_some_initialization:
             \dim_zero:N \tabskip
-            \cs_set_eq:NN \ialign \__nicematrix_old_ialign:
+            \cs_set_eq:Nc \ar@ialign { __nicematrix_old_ar@ialign: }
             \halign
           }
       }
@@ -1754,8 +1733,7 @@
     \hbox_set:Nw \l__nicematrix_the_array_box
     \skip_horizontal:N \l__nicematrix_left_margin_dim
     \skip_horizontal:N \l__nicematrix_extra_left_margin_dim
-    \bool_if:NT \c__nicematrix_recent_array_bool
-      { \UseTaggingSocket { tbl / hmode / begin } }
+    \UseTaggingSocket { tbl / hmode / begin }
     \m@th
     \c_math_toggle_token
     \bool_if:NTF \l__nicematrix_light_syntax_bool
@@ -2028,8 +2006,7 @@
     \skip_horizontal:N \l__nicematrix_right_margin_dim
     \skip_horizontal:N \l__nicematrix_extra_right_margin_dim
     \hbox_set_end:
-    \bool_if:NT \c__nicematrix_recent_array_bool
-      { \UseTaggingSocket { tbl / hmode / end } }
+    \UseTaggingSocket { tbl / hmode / end }
     \bool_if:NT \l__nicematrix_width_used_bool
       {
         \fp_compare:nNnT { \g__nicematrix_total_X_weight_fp } = { \c_zero_fp }
@@ -2250,7 +2227,7 @@
       }
   \dim_compare:nNnT { \l__nicematrix_tabular_width_dim } = { \c_zero_dim }
     {
-      \bool_if:NF \c__nicematrix_testphase_table_bool
+      \IfPackageLoadedF { latex-lab-testphase-table }
         {
           \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
             { > { \__nicematrix_error_too_much_cols: } l }
@@ -2466,7 +2443,7 @@
       {
         > {
             \dim_set:Nn \l__nicematrix_col_width_dim { #2 }
-            \bool_if:NT \c__nicematrix_testphase_table_bool
+            \IfPackageLoadedT { latex-lab-testphase-table }
               { \tag_struct_begin:n { tag = Div } }
             \__nicematrix_cell_begin:
             \use:c { #7 } [ #1 ] { #2 }
@@ -2475,7 +2452,8 @@
                 \vrule height \box_ht:N \@arstrutbox width \c_zero_dim
                 \everypar { }
               }
-            \bool_if:NT \c__nicematrix_testphase_table_bool { \tagpdfparaOn }
+            \IfPackageLoadedT { latex-lab-testphase-table }
+              { \tagpdfparaOn }
             #3
             \g__nicematrix_row_style_tl
             \arraybackslash
@@ -2488,7 +2466,8 @@
             \use:c { end #7 }
             #4
             \__nicematrix_cell_end:
-            \bool_if:NT \c__nicematrix_testphase_table_bool { \tag_struct_end: }
+            \IfPackageLoadedT { latex-lab-testphase-table }
+              { \tag_struct_end: }
           }
       }
   }
@@ -2544,7 +2523,7 @@
   }
 \cs_new_protected:Npn \__nicematrix_V: #1 #2
   {
-    \str_if_eq:nnTF { #1 } { [ }
+    \str_if_eq:nnTF { #2 } { [ }
       { \__nicematrix_make_preamble_V_i:w [ }
       { \__nicematrix_make_preamble_V_i:w [ ] { #2 } }
   }
@@ -2821,7 +2800,7 @@
         }
         { \__nicematrix_error_or_warning:n { varwidth~not~loaded~in~X } } ,
     unknown .code:n =
-      \regex_match:nVTF { \A[0-9]*\.?[0-9]*\Z } \l_keys_key_str
+      \regex_if_match:nVTF { \A[0-9]*\.?[0-9]*\Z } \l_keys_key_str
         { \fp_set:Nn \l_tmpa_fp { \l_keys_key_str } }
         { \__nicematrix_error_or_warning:n { invalid~weight } }
   }
@@ -2895,7 +2874,7 @@
     \multispan { #1 }
     \cs_set_eq:NN \__nicematrix_update_max_cell_width: \prg_do_nothing:
     \begingroup
-    \bool_if:NT \c__nicematrix_testphase_table_bool
+    \IfPackageLoadedTF { latex-lab-testphase-table }
       { \tbl_update_multicolumn_cell_data:n { #1 } }
     \def \@addamp
       { \legacy_if:nTF { @firstamp } { \@firstampfalse } { \@preamerr 5 } }
@@ -2904,8 +2883,7 @@
     \exp_args:No \@mkpream \g__nicematrix_preamble_tl
     \@addtopreamble \@empty
     \endgroup
-    \bool_if:NT \c__nicematrix_recent_array_bool
-      { \UseTaggingSocket { tbl / colspan } { #1 } }
+    \UseTaggingSocket { tbl / colspan } { #1 }
     \int_compare:nNnT { #1 } > { \c_one_int }
       {
         \seq_gput_left:Ne \g__nicematrix_multicolumn_cells_seq
@@ -3926,8 +3904,7 @@
               }
           }
       }
-    \bool_if:NT \c__nicematrix_recent_array_bool
-      { \cs_set_eq:NN \ar@ialign \__nicematrix_old_ar@ialign: }
+    \cs_set_eq:NN \ar@ialign \__nicematrix_old_ar@ialign:
     \cs_set_eq:NN \SubMatrix \__nicematrix_SubMatrix
     \cs_set_eq:NN \UnderBrace \__nicematrix_UnderBrace
     \cs_set_eq:NN \OverBrace \__nicematrix_OverBrace
@@ -7398,8 +7375,6 @@
                 \end { minipage }
               }
               {
-                \bool_if:NT \c__nicematrix_testphase_table_bool
-                  { \tagpdfsetup { table / tagging = presentation } }
                 \use:e
                   {
                     \exp_not:N \begin { tabular }
@@ -7556,8 +7531,8 @@
                 {
                   \dim_zero:N \extrarowheight
                   #4
-                  \bool_if:NT \c__nicematrix_testphase_table_bool
-                     { \tag_stop:n { table } }
+                  \IfPackageLoadedTF { latex-lab-testphase-table }
+                    { \tag_stop:n { table } }
                   \use:e
                     {
                       \exp_not:N \begin { tabular } [ \l__nicematrix_vpos_block_str ]
@@ -7685,9 +7660,9 @@
   }
 \cs_new_protected:Npn \__nicematrix_draw_blocks:
   {
-    \bool_if:nTF { \c__nicematrix_recent_array_bool && ! \c__nicematrix_revtex_bool }
-      { \cs_set_eq:NN \ar@ialign \__nicematrix_old_ar@ialign: }
+    \bool_if:NTF \c__nicematrix_revtex_bool
       { \cs_set_eq:NN \ialign \__nicematrix_old_ialign: }
+      { \cs_set_eq:NN \ar@ialign \__nicematrix_old_ar@ialign: }
     \seq_map_inline:Nn \g__nicematrix_blocks_seq { \__nicematrix_Block_iv:nnnnnn ##1 }
   }
 \cs_new_protected:Npn \__nicematrix_Block_iv:nnnnnn #1 #2 #3 #4 #5 #6
@@ -8704,7 +8679,7 @@
       \tl_if_empty:nTF { #1 }
         { \__nicematrix_error:n { Invalid~name } }
         {
-          \regex_match:nnTF { \A[A-Za-z][A-Za-z0-9]*\Z } { #1 }
+          \regex_if_match:nnTF { \A[A-Za-z][A-Za-z0-9]*\Z } { #1 }
             {
               \seq_if_in:NnTF \g__nicematrix_submatrix_names_seq { #1 }
                 { \__nicematrix_error:nn { Duplicate~name~for~SubMatrix } { #1 } }

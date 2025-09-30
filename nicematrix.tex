@@ -5077,7 +5077,8 @@ For sake of commodity, it is also possible to set these keys in
 pairs \textsl{key=value} where the name of the keys need no longer be
 prefixed by |notes|:
 \begin{center}
-\begin{BVerbatim}[formatcom = \small \color{gray}]
+\small
+\begin{BVerbatim}
 \NiceMatrixOptions
   {
     notes = 
@@ -7104,7 +7105,8 @@ not longer dotted (TikZ should be loaded).
 
 \index{line-style (key for the dotted rules)|textit}
 
-\begin{Verbatim}[formatcom=\small\color{gray}]
+\begin{small}
+\begin{Verbatim}
 \setcounter{MaxMatrixCols}{12}
 \newcommand{\blue}{\color{blue}}
 \[\begin{pNiceMatrix}[last-row,last-col,nullify-dots,xdots/line-style={dashed,blue}]
@@ -7122,6 +7124,7 @@ not longer dotted (TikZ should be loaded).
 & & & \blue \overset{\uparrow}{i} & & & & \blue \overset{\uparrow}{j} \\
 \end{pNiceMatrix}\]
 \end{Verbatim}
+\end{small}
 
 \index{code-for-first-row|textit}
 \index{code-for-last-col|textit}
@@ -8077,6 +8080,10 @@ also available on the
 \small
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
+
+\subsection*{Changes between version 7.2 and 7.3}
+
+Simplification of the code by using the latest version of LaTeX : 2025-06-01
 
 \subsection*{Changes between version 7.1 and 7.2}
 
