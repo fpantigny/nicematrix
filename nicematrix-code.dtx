@@ -98,7 +98,7 @@ version 2005/12/01 or later.
 % \begin{abstract}
 % This document is the documented code of the LaTeX package \pkg{nicematrix}. It
 % is \emph{not} its user's guide. The guide of utilisation is the document
-% |nicematrix.pdf| (with a French traduction: |nicematrix-french.pdf|).
+% |nicematrix.pdf| (with a French translation: |nicematrix-french.pdf|).
 % \end{abstract}
 %
 %
@@ -299,7 +299,6 @@ version 2005/12/01 or later.
 % 
 % The following constants are defined only for efficiency in the tests.
 %   \begin{macrocode}
-\tl_const:Nn \c_@@_b_tl { b }
 \tl_const:Nn \c_@@_c_tl { c }
 \tl_const:Nn \c_@@_l_tl { l }
 \tl_const:Nn \c_@@_r_tl { r }
@@ -589,7 +588,7 @@ version 2005/12/01 or later.
 % We have to act in a fully expandable way since there may be |\noalign| (in the
 % |\multispan|) to detect. That's why we use |\@@_cline_i:en|.
 %    \begin{macrocode}
-  { \@@_cline_i:en \l_@@_first_col_int }
+  { \@@_cline_i:en { \l_@@_first_col_int } }
 %    \end{macrocode}
 % The command |\cline_i:nn| has two arguments. The first is the number of the
 % current column (it \emph{must} be used in that column). The second is a
@@ -660,7 +659,6 @@ version 2005/12/01 or later.
       { \def \CT@drsc@ { \color #1 } }
       { \def \CT@drsc@ { \color { #1 } } }
   }
-\cs_generate_variant:Nn \@@_set_CTdrsc:n { o }
 %    \end{macrocode}
 % 
 % \bigskip
@@ -705,8 +703,6 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \dim_new:N \l_@@_tmpc_dim 
 \dim_new:N \l_@@_tmpd_dim
-\dim_new:N \l_@@_tmpe_dim
-\dim_new:N \l_@@_tmpf_dim
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -1093,8 +1089,8 @@ version 2005/12/01 or later.
 % \emph{environment} whether we are in a command of \pkg{nicematrix} or in an
 % environment of \pkg{nicematrix}. The default value is \emph{environment}.
 %    \begin{macrocode} 
-\tl_new:N \g_@@_com_or_env_str
-\tl_gset:Nn \g_@@_com_or_env_str { environment }
+\str_new:N \g_@@_com_or_env_str
+\str_gset:Nn \g_@@_com_or_env_str { environment }
 %    \end{macrocode}
 %
 % \bigskip
@@ -1111,7 +1107,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new:Npn \@@_full_name_env:
   { 
-    \str_if_eq:eeTF \g_@@_com_or_env_str { command }
+    \str_if_eq:eeTF { \g_@@_com_or_env_str } { command }
       { command \space \c_backslash_str \g_@@_name_env_str }
       { environment \space \{ \g_@@_name_env_str \} }
   }
@@ -1791,7 +1787,7 @@ version 2005/12/01 or later.
 % couple of the form : \texttt{\{\textsl{label}\}\{\textsl{text of the
 % tabularnote}\}}. The first component is the optional argument (between square
 % brackets) of the command |\tabularnote| (if the optional argument is not used,
-% the value will be the special marker expressed by |\c_novalue_tl|).
+% the value will be the special marker expressed by |\NoValue|).
 % \item During the composition of the caption (value of |\l_@@_caption_tl|), the
 % tabular notes will be numbered from $1$ to |\g_@@_notes_caption_int| and the
 % notes themselves will be stored in |\g_@@_notes_in_caption_seq|. The structure
@@ -1961,7 +1957,7 @@ version 2005/12/01 or later.
 % \bigskip 
 % For the version in normal conditions, that is to say not in the |caption|.
 % |#1| is the optional argument of |\tabularnote| (maybe equal to the special
-% marker expressed by |\c_novalue_tl|) and |#2| is the mandatory argument of
+% marker expressed by |\NoValue|) and |#2| is the mandatory argument of
 % |\tabularnote|. 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_tabularnote:nn #1 #2
@@ -1983,7 +1979,7 @@ version 2005/12/01 or later.
 % \texttt{\{\textsl{label}\}\{\textsl{text of the tabularnote}\}}.
 % \end{center}
 % If the user have used |\tabularnote| without the optional argument, the
-% \texttt{\textsl{label}} will be the special marker expressed by |\c_novalue_tl|.
+% \texttt{\textsl{label}} will be the special marker expressed by |\NoValue|.
 %
 % When we will go through the sequence |\g_@@_notes_seq|, we will count in
 % |\l_tmpb_int| the notes without explicit label in order to have the
@@ -2002,7 +1998,7 @@ version 2005/12/01 or later.
               }
           }
         \int_if_zero:nF { \l_tmpa_int }
-          { \int_add:Nn \l_tmpa_int \g_@@_notes_caption_int }
+          { \int_add:Nn \l_tmpa_int { \g_@@_notes_caption_int } }
       }
     \int_if_zero:nT { \l_tmpa_int }
       {
@@ -3610,7 +3606,7 @@ version 2005/12/01 or later.
 % fully expandable and we need something fully expandable here.
 % |\str_if_eq:ee(TF)| is faster than |\str_if_eq:nn(TF)|.
 %    \begin{macrocode}
-    [ \str_if_eq:eeTF \l_@@_baseline_tl { c } { c } { t } ]
+    [ \str_if_eq:eeTF { \l_@@_baseline_tl } { c } { c } { t } ]
   }
 \cs_generate_variant:Nn \@@_array:n { o }
 %    \end{macrocode}
@@ -3695,7 +3691,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \clist_if_empty:NF \l_@@_hlines_clist 
           {
-            \str_if_eq:eeF \l_@@_hlines_clist { all }
+            \str_if_eq:eeF { \l_@@_hlines_clist } { all }
               { 
                 \clist_if_in:NeT 
                   \l_@@_hlines_clist 
@@ -3956,7 +3952,7 @@ version 2005/12/01 or later.
       {
         \tl_if_empty:NF \l_@@_note_in_caption_tl
           { 
-            \int_gset_eq:NN \g_@@_notes_caption_int \l_@@_note_in_caption_tl 
+            \int_gset:Nn \g_@@_notes_caption_int { \l_@@_note_in_caption_tl }
             \int_gset:Nn \c@tabularnote { \l_@@_note_in_caption_tl } 
           }
       }
@@ -3982,10 +3978,10 @@ version 2005/12/01 or later.
 % At the end of the environment |{array}|, |\c@iRow| will be the total
 % number de rows.
 %
-% |\g_@@_row_total_int| will be the number or rows excepted the last row (if
+% |\g_@@_row_total_int| will be the number of rows excepted the last row (if
 % |\l_@@_last_row_bool| has been raised with the option |last-row|).
 %    \begin{macrocode}
-    \int_gzero_new:N \g_@@_row_total_int
+    \int_gzero:N \g_@@_row_total_int
 %    \end{macrocode}
 %
 % The counter |\c@jCol| will be used to count the columns of the array.
@@ -3993,7 +3989,7 @@ version 2005/12/01 or later.
 % create a counter |\g_@@_col_total_int|. These counters are updated in the
 % command |\@@_cell_begin:| executed at the beginning of each cell.  
 %    \begin{macrocode}
-    \int_gzero_new:N \g_@@_col_total_int
+    \int_gzero:N \g_@@_col_total_int
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -4221,8 +4217,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \int_set:Nn \c@iRow { \seq_item:Nn \g_@@_size_seq { 2 } }
     \int_set:Nn \c@jCol { \seq_item:Nn \g_@@_size_seq { 5 } }
-    \int_set:Nn \g_@@_row_total_int { \seq_item:Nn \g_@@_size_seq { 3 } }
-    \int_set:Nn \g_@@_col_total_int { \seq_item:Nn \g_@@_size_seq { 6 } }
+    \int_gset:Nn \g_@@_row_total_int { \seq_item:Nn \g_@@_size_seq { 3 } }
+    \int_gset:Nn \g_@@_col_total_int { \seq_item:Nn \g_@@_size_seq { 6 } }
 %    \end{macrocode}
 %
 %
@@ -4730,7 +4726,7 @@ version 2005/12/01 or later.
             \int_compare:nNnF { \l_@@_last_row_int } = { \c@iRow }
               { 
                 \@@_error:n { Wrong~last~row } 
-                \int_gset_eq:NN \l_@@_last_row_int \c@iRow
+                \int_set_eq:NN \l_@@_last_row_int \c@iRow
               }
           } 
       } 
@@ -4775,10 +4771,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \bool_if:nTF { ! \g_@@_delims_bool }
       { 
-        \str_if_eq:eeTF \l_@@_baseline_tl { c }
+        \str_if_eq:eeTF { \l_@@_baseline_tl } { c }
           { \@@_use_arraybox_with_notes_c: }
           {
-            \str_if_eq:eeTF \l_@@_baseline_tl { b }
+            \str_if_eq:eeTF { \l_@@_baseline_tl } { b }
               { \@@_use_arraybox_with_notes_b: }
               { \@@_use_arraybox_with_notes: }
           }
@@ -5015,7 +5011,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \int_zero:N \l_tmpa_int
     \tl_gclear:N \g_@@_array_preamble_tl 
-    \str_if_eq:eeTF \l_@@_vlines_clist { all }
+    \str_if_eq:eeTF { \l_@@_vlines_clist } { all }
       { 
         \tl_gset:Nn \g_@@_array_preamble_tl 
           { ! { \skip_horizontal:N \arrayrulewidth } }
@@ -5407,7 +5403,7 @@ version 2005/12/01 or later.
     \use:e
       { 
         \@@_make_preamble_ii_vi:nnnnnnnn
-          { \str_if_eq:eeTF \l_@@_vpos_col_str { p } { t } { b } }
+          { \str_if_eq:eeTF { \l_@@_vpos_col_str } { p } { t } { b } }
           { #1 }
           {
 %    \end{macrocode}
@@ -5416,7 +5412,7 @@ version 2005/12/01 or later.
 % itself, you will have, in each cell, the parameter |\l_@@_hpos_cell_tl| which
 % will provide the horizontal alignment of the column to which belongs the cell.
 %    \begin{macrocode}
-            \str_if_eq:eeTF \l_@@_hpos_col_str { j }
+            \str_if_eq:eeTF { \l_@@_hpos_col_str } { j }
               { \tl_clear:N \exp_not:N \l_@@_hpos_cell_tl } 
               {
 %    \end{macrocode}
@@ -5447,9 +5443,9 @@ version 2005/12/01 or later.
               }
             #3
           }
-          { \str_if_eq:eeT \l_@@_vpos_col_str { m } \@@_center_cell_box: }
-          { \str_if_eq:eeT \l_@@_hpos_col_str { si } \siunitx_cell_begin:w }
-          { \str_if_eq:eeT \l_@@_hpos_col_str { si } \siunitx_cell_end: }
+          { \str_if_eq:eeT { \l_@@_vpos_col_str } { m } \@@_center_cell_box: }
+          { \str_if_eq:eeT { \l_@@_hpos_col_str } { si } \siunitx_cell_begin:w }
+          { \str_if_eq:eeT { \l_@@_hpos_col_str } { si } \siunitx_cell_end: }
           { #2 }
           {         
             \str_case:onF \l_@@_hpos_col_str 
@@ -5501,7 +5497,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_ii_vi:nnnnnnnn #1 #2 #3 #4 #5 #6 #7 #8
   {
-    \str_if_eq:eeTF \l_@@_hpos_col_str { si }
+    \str_if_eq:eeTF { \l_@@_hpos_col_str } { si }
       { 
         \tl_gput_right:Nn \g_@@_array_preamble_tl 
           { > \@@_test_if_empty_for_S: } 
@@ -6018,7 +6014,7 @@ version 2005/12/01 or later.
         \str_if_eq:nnTF { #1 } { @ }
           { \@@_rec_preamble_after_col_ii:n }
           {
-            \str_if_eq:eeTF \l_@@_vlines_clist { all }
+            \str_if_eq:eeTF { \l_@@_vlines_clist } { all }
               { 
                 \tl_gput_right:Nn \g_@@_array_preamble_tl 
                   { ! { \skip_horizontal:N \arrayrulewidth } }
@@ -6051,7 +6047,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_rec_preamble_after_col_ii:n #1
   {
-    \str_if_eq:eeTF \l_@@_vlines_clist { all }
+    \str_if_eq:eeTF { \l_@@_vlines_clist } { all }
       { 
         \tl_gput_right:Nn \g_@@_array_preamble_tl 
           { @ { #1 \skip_horizontal:N \arrayrulewidth } }
@@ -6567,7 +6563,7 @@ version 2005/12/01 or later.
   { 
     \box_set_ht:Nn \l_tmpa_box { \box_ht:N \l_tmpa_box + \l_tmpa_dim } 
     \box_set_dp:Nn \l_tmpa_box { \box_dp:N \l_tmpa_box + \l_tmpb_dim } 
-    \str_if_eq:eeTF \l_@@_baseline_tl { c }
+    \str_if_eq:eeTF { \l_@@_baseline_tl } { c }
       { \box_use_drop:N \l_tmpa_box } 
       { \@@_put_box_in_flow_i: }
   }
@@ -6603,7 +6599,7 @@ version 2005/12/01 or later.
           \@@_qpoint:n { row - \int_use:N \l_tmpa_int }
         }
         {
-          \str_if_eq:eeTF \l_@@_baseline_tl { t }
+          \str_if_eq:eeTF { \l_@@_baseline_tl } { t }
             { \int_set_eq:NN \l_tmpa_int \c_one_int }
             {  
               \str_if_eq:onTF \l_@@_baseline_tl  { b }
@@ -6902,7 +6898,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % We convert a value of |t| to a value of |1|.
 %    \begin{macrocode}
-    \str_if_eq:eeT \l_@@_baseline_tl { t } 
+    \str_if_eq:eeT { \l_@@_baseline_tl } { t } 
       { \tl_set:Nn \l_@@_baseline_tl { 1 } } 
 %    \end{macrocode}
 % Now, we convert the value of |\l_@@_baseline_tl| (which should represent an
@@ -7192,7 +7188,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_analyze_end:Nn #1 #2
   {
-    \str_if_eq:eeT \g_@@_name_env_str { #2 }
+    \str_if_eq:eeT { \g_@@_name_env_str } { #2 }
       { \@@_fatal:n { empty~environment } }
 %    \end{macrocode}
 % We reput in the stream the |\end{...}| we have extracted and the user will
@@ -11202,7 +11198,7 @@ version 2005/12/01 or later.
         \tl_if_empty:NTF \l_tmpa_tl 
           { \def \l_tmpa_tl { 1 } }  
           {
-            \str_if_eq:eeT \l_tmpa_tl { * }
+            \str_if_eq:eeT { \l_tmpa_tl } { * }
               { \def \l_tmpa_tl { 1 } }  
           }
         \int_compare:nNnT { \l_tmpa_tl } > { \g_@@_col_total_int }
@@ -11210,7 +11206,7 @@ version 2005/12/01 or later.
         \tl_if_empty:NTF \l_tmpb_tl 
           { \tl_set:No \l_tmpb_tl { \int_use:N \c@jCol } }
           { 
-            \str_if_eq:eeT \l_tmpb_tl { * }
+            \str_if_eq:eeT { \l_tmpb_tl } { * }
               { \tl_set:No \l_tmpb_tl { \int_use:N \c@jCol } }
           }
         \int_compare:nNnT { \l_tmpb_tl } > { \g_@@_col_total_int }
@@ -11238,13 +11234,13 @@ version 2005/12/01 or later.
             \tl_if_empty:NTF \l_tmpa_tl 
               { \def \l_tmpa_tl { 1 } }  
               {
-                \str_if_eq:eeT \l_tmpa_tl { * }
+                \str_if_eq:eeT { \l_tmpa_tl } { * }
                   { \def \l_tmpa_tl { 1 } }  
               }
             \tl_if_empty:NTF \l_tmpb_tl
               { \tl_set:No \l_tmpb_tl { \int_use:N \c@iRow } }
               {
-                \str_if_eq:eeT \l_tmpb_tl { * }
+                \str_if_eq:eeT { \l_tmpb_tl } { * }
                   { \tl_set:No \l_tmpb_tl { \int_use:N \c@iRow } }
               }
             \int_compare:nNnT { \l_tmpa_tl } > { \g_@@_row_total_int }
@@ -11367,11 +11363,11 @@ version 2005/12/01 or later.
           { \@@_cut_on_hyphen:w ##1 \q_stop }  
           { \@@_cut_on_hyphen:w ##1 - ##1 \q_stop }  
         \bool_lazy_or:nnT
-          { \str_if_eq_p:ee \l_tmpa_tl { * } }
+          { \str_if_eq_p:ee { \l_tmpa_tl } { * } }
           { \tl_if_blank_p:o \l_tmpa_tl }
           { \def \l_tmpa_tl { 1 } }  
         \bool_lazy_or:nnT
-          { \str_if_eq_p:ee \l_tmpb_tl { * } }
+          { \str_if_eq_p:ee { \l_tmpb_tl } { * } }
           { \tl_if_blank_p:o \l_tmpb_tl }
           { \tl_set:No \l_tmpb_tl { \int_use:N #2 } }
         \int_compare:nNnT { \l_tmpb_tl } > { #2 }
@@ -12109,7 +12105,7 @@ version 2005/12/01 or later.
           { \int_eval:n { \c@jCol + 1 } } 
       }
       { 
-        \str_if_eq:eeF \l_@@_vlines_clist { all }
+        \str_if_eq:eeF { \l_@@_vlines_clist } { all }
           { \clist_if_in:NnT \l_@@_vlines_clist { ##1 } }
           { \@@_vline:n { position = ##1 , total-width = \arrayrulewidth } }
       }
@@ -12430,7 +12426,7 @@ version 2005/12/01 or later.
           { \int_eval:n { \c@iRow + 1 } } 
       }
       { 
-        \str_if_eq:eeF \l_@@_hlines_clist { all }
+        \str_if_eq:eeF { \l_@@_hlines_clist } { all }
           { \clist_if_in:NnT \l_@@_hlines_clist { ##1 } }
           { \@@_hline:n { position = ##1 , total-width = \arrayrulewidth } }
       }
@@ -13943,8 +13939,8 @@ version 2005/12/01 or later.
         \bool_lazy_any:nT
           {
             { \str_if_empty_p:N \l_@@_vpos_block_str }
-            { \str_if_eq_p:ee \l_@@_vpos_block_str { t } }
-            { \str_if_eq_p:ee \l_@@_vpos_block_str { b } }
+            { \str_if_eq_p:ee { \l_@@_vpos_block_str } { t } }
+            { \str_if_eq_p:ee { \l_@@_vpos_block_str } { b } }
           }
           { \@@_adjust_blocks_ht_dp: }
       }
@@ -14701,7 +14697,7 @@ version 2005/12/01 or later.
         { ( \pgf@x - \l_tmpa_dim ) / \int_use:N \l_@@_split_int }
       \bool_lazy_or:nnT 
         { \l_@@_vlines_block_bool }
-        { \str_if_eq_p:ee \l_@@_vlines_clist { all } }
+        { \str_if_eq_p:ee { \l_@@_vlines_clist } { all } }
         {
           \int_step_inline:nn { \l_@@_split_int - 1 } 
             { 
@@ -14809,9 +14805,9 @@ version 2005/12/01 or later.
       \bool_lazy_any:nTF
         {
           { \str_if_empty_p:N \l_@@_vpos_block_str } 
-          { \str_if_eq_p:ee \l_@@_vpos_block_str { c } }
-          { \str_if_eq_p:ee \l_@@_vpos_block_str { T } }
-          { \str_if_eq_p:ee \l_@@_vpos_block_str { B } }
+          { \str_if_eq_p:ee { \l_@@_vpos_block_str } { c } }
+          { \str_if_eq_p:ee { \l_@@_vpos_block_str } { T } }
+          { \str_if_eq_p:ee { \l_@@_vpos_block_str } { B } }
         }
 %    \end{macrocode}
 % \medskip
@@ -14910,7 +14906,7 @@ version 2005/12/01 or later.
             { 
               \@@_qpoint:n 
                 { 
-                  row - \str_if_eq:eeTF \l_@@_vpos_block_str { b } { #3 } { #1 }  
+                  row - \str_if_eq:eeTF { \l_@@_vpos_block_str } { b } { #3 } { #1 }  
                   - base 
                 } 
             } 
@@ -15669,7 +15665,7 @@ version 2005/12/01 or later.
 % If this is really the end of the current environment (of \pkg{nicematrix}), we
 % put back the command |\end| and its argument in the TeX flow.
 %    \begin{macrocode}
-    \str_if_eq:eeTF \@currenvir { #1 } 
+    \str_if_eq:eeTF { \@currenvir } { #1 } 
       { \end { #1 } }
 %    \end{macrocode}
 % If this is not the |\end| we are looking for, we put those tokens in
@@ -15987,7 +15983,7 @@ version 2005/12/01 or later.
         \dim_set_eq:NN \l_@@_x_initial_dim \c_max_dim
         \dim_set:Nn \l_@@_x_final_dim { - \c_max_dim }
 %    \end{macrocode}
-% The last value of |\int_step_inline:nnn| is provided by currifycation.
+% The last value of |\int_step_inline:nnn| is provided by curryfication.
 %    \begin{macrocode}
         \bool_if:NTF \l_@@_submatrix_slim_bool
           { \int_step_inline:nnn { \l_@@_first_i_tl } { \l_@@_last_i_tl } }
@@ -16102,7 +16098,7 @@ version 2005/12/01 or later.
 % The last argument of |\int_step_inline:nn| or |\clist_map_inline:Nn| is given
 % by curryfication.
 %    \begin{macrocode}
-    \str_if_eq:eeTF \l_@@_submatrix_vlines_clist { all }
+    \str_if_eq:eeTF { \l_@@_submatrix_vlines_clist } { all }
       { \int_step_inline:nn { \l_@@_last_j_tl - \l_@@_first_j_tl } }
       { \clist_map_inline:Nn \l_@@_submatrix_vlines_clist }
       {
@@ -16127,7 +16123,7 @@ version 2005/12/01 or later.
 % The last argument of |\int_step_inline:nn| or |\clist_map_inline:Nn| is given
 % by curryfication.
 %    \begin{macrocode}
-    \str_if_eq:eeTF \l_@@_submatrix_hlines_clist { all }
+    \str_if_eq:eeTF { \l_@@_submatrix_hlines_clist } { all }
       { \int_step_inline:nn { \l_@@_last_i_tl - \l_@@_first_i_tl } }
       { \clist_map_inline:Nn \l_@@_submatrix_hlines_clist }
       {
@@ -16920,9 +16916,6 @@ version 2005/12/01 or later.
       }
       { \@@_error:n { TikzEveryCell~without~tikz } }
   }
-
-\tl_new:N \l_@@_i_tl
-\tl_new:N \l_@@_j_tl
 
 
 \cs_new_protected:Nn \@@_all_the_cells:
@@ -18169,8 +18162,9 @@ version 2005/12/01 or later.
     You~have~used~'last-row= \int_use:N \l_@@_last_row_int '~but~your~
     \@@_full_name_env: \ seems~to~have~ \int_use:N \c@iRow \ rows.~
     If~you~go~on,~the~value~of~ \int_use:N \c@iRow \ will~be~used~for~
-    last~row.~You~can~avoid~this~problem~by~using~'last-row'~  
-    without~value~(more~compilations~might~be~necessary).
+    last~row~but~you~should~correct~your~code.~You~can~avoid~this~
+    problem~by~using~'last-row'~without~value~(more~compilations~
+    might~be~necessary).
   }
 %    \end{macrocode}     
 %

@@ -18,7 +18,7 @@ This package can be used with xelatex, lualatex, pdflatex but also by the classi
 
 ## Installation
 
-The package `nicematrix` is present in the distributions MiKTeX, TeXLive and MacTeX.
+The package `nicematrix` is present in the distributions MiKTeX, TeX Live and MacTeX.
 
 For a manual installation:
 

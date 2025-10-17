@@ -115,6 +115,7 @@
 
 \hypersetup
   {
+    colorlinks,
     pdfinfo =
       {
         Title = L’extension nicematrix ,
@@ -203,10 +204,10 @@ Distiller). \textsl{Néanmoins, le fichier nicematrix-french.tex de la présente
   documentation ne peut être compilé qu'avec LuaLaTeX.}
 
 \medskip
-Cette extension nécessite et charge les extensions \pkg{l3keys2e}, \pkg{array},
-\pkg{amsmath} et \pkg{pgfcore} ainsi que le module \pkg{shapes} de \textsc{pgf}
-(l'extension \pkg{tikz}, qui est une surcouche de \textsc{pgf}, n'est \emph{pas}
-chargée). L'utilisateur final n'a qu'à charger l'extension \pkg{nicematrix} avec
+Cette extension nécessite et charge les extensions \pkg{array}, \pkg{amsmath} et
+\pkg{pgfcore} ainsi que le module \pkg{shapes} de \textsc{pgf} (l'extension
+\pkg{tikz}, qui est une surcouche de \textsc{pgf}, n'est \emph{pas} chargée).
+L'utilisateur final n'a qu'à charger l'extension \pkg{nicematrix} avec
 l'instruction habituelle : |\usepackage{nicematrix}|.
 
 
@@ -232,6 +233,12 @@ chargé par défaut).
 Une commande |\NiceMatrixOptions| est fournie pour régler les options (la portée
 des options fixées par cette commande est le groupe TeX courant : elles sont
 semi-globales).
+
+
+
+\newpage
+
+\tableofcontents
 
 
 
@@ -304,7 +311,7 @@ n'utiliser les environnements de \pkg{nicematrix} que lorsqu'on utilise les
 fonctionnalités supplémentaires offertes par ces environnements (cela permet
 d'économiser la mémoire et d'accélérer la compilation).}\footnote{Pour accélérer
 les compilations, on peut aussi utiliser ponctuellement la clé |no-cell-nodes| qui
-supprime la création des nœuds PGF/TikZ correspondants aux contenus des cellules mais
+supprime la création des nœuds PGF-TikZ correspondants aux contenus des cellules mais
 certains fonctionnalités ne seront plus disponibles (cf.~\pageref{no-cell-nodes}).
 }
 
@@ -1155,7 +1162,7 @@ text & text \\
 \end{scope}
 
 
-\subsection{\textbackslash\textbackslash\ et \& dans les blocs}
+\subsection{ \texttt{\textbackslash\textbackslash} et \texttt{\&} dans les blocs}
 
 \label{ampersand-in-blocks}
 \index{ampersand-in-blocks}
@@ -1320,7 +1327,7 @@ exemple~|I|, pour tracer des filets verticaux avec le comportement standard de \
 \end{Verbatim}
 
 
-\subsubsection{La commande  \textbackslash cline}
+\subsubsection{La commande  \texttt{\textbackslash cline}}
 
 \label{cline}
 \index{cline@\texttt{\textbackslash cline} (commande de LaTeX)}
@@ -1439,7 +1446,7 @@ garantit un meilleur résultat dans les lecteurs de PDF aux bas niveaux de zoom.
 
 
 \medskip
-\subsection{Les outils de nicematrix pour tracer des filets}
+\subsection{Les outils de \texorpdfstring{\pkg{nicematrix}}{nicematrix} pour tracer des filets}
 
 
 
@@ -1726,7 +1733,7 @@ dans les coins (cf.~p.~\pageref{color-in-code-before}). La commande
 p.~\pageref{TikzEveryCell}) tient également compte des coins.
 
 
-\subsubsection{La commande \textbackslash diagbox}
+\subsubsection{La commande \texttt{\textbackslash diagbox}}
 
 \indexcommand{diagbox}
 
@@ -1801,7 +1808,7 @@ c & c & b & a & e
 \medskip
 Il est de toutes manières toujours possible de tracer tous les traits souhaités
 avec TikZ dans le |\CodeAfter| (ou le |\CodeBefore|) en utilisant les nœuds
-PGF/TikZ créés par \pkg{nicematrix} : cf. p.~\pageref{PGF-nodes}.
+PGF-TikZ créés par \pkg{nicematrix} : cf. p.~\pageref{PGF-nodes}.
 
 \subsubsection{Commandes pour filets personnalisés}
 \label{custom-line}
@@ -2134,7 +2141,7 @@ neuf & dix & onze & douze
 
 \index{Couleur!de fond pour les cases}
 
-\subsection{Utilisation de colortbl}
+\subsection{Utilisation de \texorpdfstring{\pkg{colortbl}}{colortbl}}
 
 \index{colortbl@\pkg{colortbl} (extension)}
 
@@ -2174,7 +2181,7 @@ L'extension \pkg{nicematrix} propose des outils qui permettent d'éviter ces
 inconvénients.
 \end{itemize}
 
-\subsection{Les outils de nicematrix dans le \textbackslash CodeBefore}
+\subsection{Les outils de \texorpdfstring{\pkg{nicematrix}}{nicematrix} dans le \texttt{\textbackslash CodeBefore}}
 
 \label{color-in-code-before}
 \index{code-before!clé pour un environnement}
@@ -2940,7 +2947,7 @@ La couleur |nocolor| fournit donc un moyen commode de faire des exceptions à
 l'action d'une commande de coloriage générale.
 
 
-\section{La commande \textbackslash RowStyle}
+\section{La commande \texttt{\textbackslash RowStyle}}
 
 \label{RowStyle}
 \indexcommand{RowStyle}
@@ -3163,7 +3170,7 @@ $\begin{array}{c}
 \end{array}$ 
 \end{NiceMatrixBlock}
 
-\subsection{Les colonnes V de varwidth}
+\subsection{Les colonnes V de \texorpdfstring{\pkg{varwidth}}{varwidth}}
 
 \label{varwidth}
 \index{varwidth@\pkg{varwidth} (extension)}
@@ -3724,7 +3731,7 @@ horizontalement mais aussi verticalement.
 elle n'implique pas que la ligne en pointillés ne sera pas tracée ! 
 
 
-\subsection{Les commandes \textbackslash Hdotsfor et \textbackslash Vdotsfor}
+\subsection{Les commandes \texttt{\textbackslash Hdotsfor} et \texttt{\textbackslash Vdotsfor}}
 
 \indexcommand{Hdotsfor}
 \indexcommand{Vdotsfor}
@@ -4084,7 +4091,7 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 
 
 
-\subsection{Les commandes \textbackslash Hbrace et \textbackslash Vbrace}
+\subsection{Les commandes \texttt{\textbackslash Hbrace} et \texttt{\textbackslash Vbrace}}
 
 \colorbox{yellow!50}{\textbf{Nouveau 7.1}}
 
@@ -4368,7 +4375,7 @@ Par ailleurs, plusieurs commandes spéciales sont disponibles dans le
 On veillera à éviter les espaces parasites dans ce |\CodeAfter|.\footnote{Voir
   \url{https://tex.stackexchange.com/questions/52848}} 
 
-\subsection{La commande \textbackslash line dans le \textbackslash CodeAfter}
+\subsection{La commande \texttt{\textbackslash line} dans le \texttt{\textbackslash CodeAfter}}
 
 \label{line-in-code-after}
 \index{line@\texttt{\textbackslash line} (commande du
@@ -4438,8 +4445,8 @@ autres lignes diagonales (par défaut, les lignes tracées par |\Ddots| sont
 
 
 
-\subsection{La commande \textbackslash SubMatrix dans le \textbackslash
-  CodeAfter (et le \textbackslash CodeBefore)}
+\subsection{La commande \texttt{\textbackslash SubMatrix} dans le \texttt{\textbackslash
+  CodeAfter} (et le \texttt{\textbackslash CodeBefore})}
 
 \label{sub-matrix}
 \index{SubMatrix@\texttt{\textbackslash SubMatrix} (commande du 
@@ -4743,8 +4750,8 @@ Comme on le voit, le tracé effectué par la commande |\MyDraw| est \emph{relati
 
 
 
-\subsection{Les commandes \textbackslash OverBrace et \textbackslash
-  UnderBrace dans le \textbackslash CodeAfter}
+\subsection{Les commandes \texttt{\textbackslash OverBrace} et \texttt{\textbackslash
+  UnderBrace} dans le \texttt{\textbackslash CodeAfter}}
 
 \index{UncerBrace@\texttt{\textbackslash UnderBrace} (commande du 
 \texttt{\textbackslash CodeAfter}\newline et du
@@ -4841,7 +4848,8 @@ $\begin{pNiceMatrix}
 
 
 
-\subsection{La commande \textbackslash TikzEveryCell dans le \textbackslash CodeAfter}
+\subsection{La commande \texttt{\textbackslash TikzEveryCell} dans le
+\texttt{\textbackslash CodeAfter}}
 
 \index{tikzeverycell@\texttt{\textbackslash TikzEveryCell} (commande du 
 \texttt{\textbackslash CodeAfter}\newline et du
@@ -5369,7 +5377,7 @@ Valeur initiale : |true|
 Pour un exemple de personnalisation des notes de tableau, voir p.~\pageref{ex:notes}.
 
 
-\subsection{Utilisation de \{NiceTabular\} avec threeparttable}
+\subsection{Utilisation de \{NiceTabular\} avec \texorpdfstring{\pkg{threeparttable}}{threeparttable}}
 
 \index{threeparttable@\pkg{threeparttable} (extension)}
 
@@ -5446,7 +5454,7 @@ Cette clé est disponible dans tous les environnements et commandes de
 
 
 
-\subsection{Commande \textbackslash ShowCellNames}
+\subsection{Commande \texttt{\textbackslash ShowCellNames}}
 
 \index{ShowCellNames@\texttt{\textbackslash ShowCellNames} (commande du 
 \texttt{\textbackslash CodeAfter}\newline et du 
@@ -5476,7 +5484,7 @@ semi-transparent pour estomper le tableau (attention : certains lecteurs de
 \end{NiceTabular}
 
 
-\subsection{Utilisation du type de colonne S de siunitx}
+\subsection{Utilisation du type de colonne S de \texorpdfstring{\pkg{siunitx}}{siunitx}}
 
 
 \index{S (les colonnes S de \pkg{siunitx})}
@@ -5541,7 +5549,7 @@ La clé |columns-type| peut être utilisée dans |\NiceMatrixOptions| à conditi
 de la préfixer par |matrix|, ce qui fait que son nom devient |matrix/columns-type|.
 
 
-\subsection{La commande \textbackslash rotate}
+\subsection{La commande \texttt{\textbackslash rotate}}
 
 \label{rotate}
 \index{rotate@\texttt{\textbackslash rotate}}
@@ -5877,7 +5885,7 @@ $\begin{NiceArrayWithDelims}
 \end{NiceArrayWithDelims}$
 
 
-\subsection{La commande \textbackslash OnlyMainNiceMatrix}
+\subsection{La commande \texttt{\textbackslash OnlyMainNiceMatrix}}
 
 \indexcommand{OnlyMainNiceMatrix}
 
@@ -5903,11 +5911,11 @@ Pour un exemple d'utilisation, voir \url{tex.stackexchange.com/questions/488566}
 \label{no-cell-nodes}
 
 L'extension \pkg{nicematrix} crée un nœud PGF-TikZ\footnote{On rappelle que TikZ
-  est une sur-couche de PGF. L'extension \pkg{nicematrix} charge PGF et ne
+  est une sur-couche de \textsc{pgf}. L'extension \pkg{nicematrix} charge \textsc{pgf} et ne
   charge pas TikZ. On parle de «nœud PGF-TikZ» pour rappeler que, en fait, les
-  nœuds créés par \pkg{nicematrix} avec PGF sont en fait aussi utilisables avec
+  nœuds créés par \pkg{nicematrix} avec \textsc{pgf} sont en fait aussi utilisables avec
   TikZ. L'utilisateur final préférera sans doute les utiliser avec TikZ qu'avec
-  PGF.} pour chaque case non vide du tableau considéré. Ces nœuds sont utilisés,
+  \textsc{pgf}.} pour chaque case non vide du tableau considéré. Ces nœuds sont utilisés,
 entre autres, pour tracer les lignes en pointillés entre les cases du tableau.
 
 \smallskip
@@ -6030,8 +6038,8 @@ a & a     & a
 \end{pNiceMatrix}\]
 
 \bigskip
-Puisque ces nœuds sont des nœuds PGF, on ne sera pas étonné d'appendre qu'ils
-sont tracés en utilisant un style PGF spécifique. Ce style est nommé
+Puisque ces nœuds sont des nœuds \textsc{pgf}, on ne sera pas étonné d'appendre qu'ils
+sont tracés en utilisant un style \textsc{pgf} spécifique. Ce style est nommé
 |nicematrix/cell-node| et sa définition dans le fichier source |nicematrix.sty|
 est la suivante :
 
@@ -6058,8 +6066,8 @@ p.~\pageref{ex:triangular}.
 
 \index{pgf-node-code} 
 \textbf{Pour les utilisateurs expérimentés}, \pkg{nicematrix} fournit la clé
-\Definition{pgf-node-code} qui correspond à du code PGF qui sera exécuté à la
-création, par PGF, des nœuds correspondants aux cases du tableau. Plus
+\Definition{pgf-node-code} qui correspond à du code \textsc{pgf} qui sera exécuté à la
+création, par \textsc{pgf}, des nœuds correspondants aux cases du tableau. Plus
 précisément, la valeur fournie à la clé |pgf-node-code| sera passée en cinquième
 argument de la commande |\pgfnode|. Cette valeur doit contenir au moins une
 instruction comme |\pgfusepath|, |\pgfusepathqstroke|, |\pgfusepathqfill|, etc.
@@ -6475,7 +6483,7 @@ $\begin{pNiceArray}{ccc|c}[no-cell-nodes]
 \end{pNiceArray}$
 
 
-\subsection{Les nœuds correspondant aux commandes \textbackslash SubMatrix}
+\subsection{Les nœuds correspondant aux commandes \texttt{\textbackslash SubMatrix}}
 
 \label{node-sub-matrix}
 
@@ -6934,7 +6942,7 @@ George     & Adams     & $34$
 
 \section{Exemples}
 
-\subsection{Utilisation de la clé «tikz» de la commande \textbackslash Block}
+\subsection{Utilisation de la clé «tikz» de la commande \texttt{\textbackslash Block}}
 
 \index{tikzz@tikz!clé de \texttt{\textbackslash Block}|textit}
 
@@ -7024,7 +7032,7 @@ sept & huit & neuf
 
 
 
-\subsection{Utilisation avec tcolorbox}
+\subsection{Utilisation avec \texorpdfstring{\pkg{tcolorbox}}{tcolorbox}}
 
 \label{ex:tcolorbox}
 \index{tcolorbox@\pkg{tcolorbox} (extension)|textit}
@@ -8128,7 +8136,7 @@ a & a     & a         & L_3
 
 
 
-\subsection{Utilisation de \textbackslash SubMatrix dans le \textbackslash CodeBefore}
+\subsection{Utilisation de \texttt{\textbackslash SubMatrix} dans le \texttt{\textbackslash CodeBefore}}
 
 \index{SubMatrix@\texttt{\textbackslash SubMatrix} (commande du 
 \texttt{\textbackslash CodeAfter}\newline et du 
@@ -8230,7 +8238,7 @@ de parenthèses ont été rajoutées avec |\SubMatrix| dans le |\CodeBefore|.
   du \texttt{\textbackslash CodeBefore})|textit}
 \index{CodeBefore@\texttt{\textbackslash CodeBefore}...\texttt{\textbackslash Body}|textit}
 
-Dans l'exemple suivant, on utilise le style PGF/Tikz |nicematrix/cell-node| pour faire
+Dans l'exemple suivant, on utilise le style PGF-Tikz |nicematrix/cell-node| pour faire
 tourner le contenu des cases (rotation que l'on compense ensuite en faisant
 tourner tout le tableau avec la commande |\adjustbox| de l'extension éponyme,
 qui doit donc être chargée préalablement).
@@ -8312,7 +8320,7 @@ suivant :
 
 \medskip
 Les versions successives du fichier |nicematrix.sty| fournies par
-TeXLive sont également disponibles sur le serveur \textsc{svn} de TeXLive :
+TeX Live sont également disponibles sur le serveur \textsc{svn} de TeX Live :
 
 \smallskip
 {
@@ -8320,9 +8328,6 @@ TeXLive sont également disponibles sur le serveur \textsc{svn} de TeXLive :
 \nolinkurl{www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
 
-\vspace{2cm}
-
-\tableofcontents
 
 \end{document}
 
