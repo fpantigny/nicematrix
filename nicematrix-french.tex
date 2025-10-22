@@ -1523,11 +1523,20 @@ c & d \\
 \index{vlines!clé pour un environnement}
 
 \medskip
-Les clés \Definition{hlines} et \Definition{vlines} (qui, bien sûr, tracent des
-filets horizontaux et verticaux) prennent comme valeur une liste de numéros qui
-sont les numéros des filets\footnote{Il est également possible de mettre dans la
-  liste des intervalles de numéros de la forme $i$|-|$j$.} à tracer. Si aucune
-valeur n'est donnée, tous les filets sont tracés.
+Les clés \Definition{hlines} et \Definition{vlines} tracent des filets
+horizontaux et verticaux.
+
+Si aucune valeur n'est donnée, tous les filets sont tracés.
+
+\medskip
+Quand une valeur est présente, il s'agit d'une liste de numéros de filets à tracer.
+\begin{itemize}
+\item Il est possible de mettre des intervalles de numéros de la forme $i$|-|$j$.
+
+\item \colorbox{yellow!50}{\textbf{Nouveau 7.4}} : il est possible de mettre
+des numéros négatifs qui sont alors comptés à partir de la fin.
+\end{itemize}
+
 
 En fait, pour les environnements avec délimiteurs (comme |{pNiceMatrix}| ou
 |{bNiceArray}|), la clé |vlines| ne trace pas les filets extérieurs (ce qui est
@@ -3898,16 +3907,14 @@ $\begin{pmatrix}
 
 Les commandes |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|, |\Iddots|, |\Hdotsfor| et
 |\Vdotsfor| (ainsi que la commande |\line| dans le |\CodeAfter| décrite
-p.~\pageref{line-in-code-after}) peuvent en fait prendre deux arguments
-optionnels spécifiés par les caractères |_| et |^| pour des labels situés
-au-dessous et au-dessus de la ligne. Les arguments sont composés en mode
+p.~\pageref{line-in-code-after}) peuvent en fait prendre trois arguments
+optionnels spécifiés par les caractères |_|, |^| et |:| pour des labels situés
+au-dessous, au-dessus, ou sur la ligne. Les arguments sont composés en mode
 mathématique avec |\scriptstyle|.
 
 \smallskip
-La version 6.22 de \pkg{nicematrix} a introduit un nouveau label spécifié par le
-caractère~«|:|» pour un label situé \emph{sur} la ligne elle-même. Ce label est
-en fait composé sur un fond blanc qui est superposé sur la ligne en pointillés
-(voir un exemple p.~\pageref{ex:colon}).
+Le label spécifié par le caractère~«|:|» est en fait composé sur un fond blanc qui
+est superposé sur la ligne en pointillés (voir un exemple p.~\pageref{ex:colon}).
 
 \bigskip
 \begin{Code}[width=10cm]
@@ -7283,25 +7290,25 @@ Un exemple avec un système linéaire:
 \index{code-for-last-col|textit}
 
 \begin{Verbatim}
-$\begin{pNiceArray}{*6{c}|c}[nullify-dots,last-col,code-for-last-col=\scriptstyle]
+\begin{pNiceMatrix}[vlines=-1,nullify-dots,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
        &   &   &\Ddots &   &        & \Vdots & \Vdots \\
 \Vdots &   &   &\Ddots &   & 0      & \\
 0      &   &   &\Cdots & 0 & 1      & 0      & L_n \gets L_n-L_1
-\end{pNiceArray}$
+\end{pNiceMatrix}$
 \end{Verbatim}
 
 
-\[\begin{pNiceArray}{*6{c}|c}[nullify-dots,last-col,code-for-last-col=\scriptstyle]
+\[\begin{pNiceMatrix}[vlines=-1,nullify-dots,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
        &   &   &\Ddots &   &        & \Vdots & \Vdots \\
 \Vdots &   &   &\Ddots &   & 0      & \\
 0      &   &   &\Cdots & 0 & 1      & 0      & L_n \gets L_n-L_1
-\end{pNiceArray}\]
+\end{pNiceMatrix}\]
 
 
 
@@ -7463,7 +7470,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \end{pNiceArray}$}
 
 
-
+\medskip
 Il est possible de changer le style TikZ des accolades en changeant le style
 |nicematrix/brace|. Dans l'exemple suivant, on suppose que l'extension
 \pkg{calligraphy} de TikZ a été chargée:

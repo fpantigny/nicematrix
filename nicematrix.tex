@@ -1449,10 +1449,19 @@ c & d \\
 \index{vlines|see{Rules}}
 \index{vlines!key for an environment}
 
-The keys \Definition{hlines} and \Definition{vlines} (which draw, of course,
-horizontal and vertical rules) take in as value a list of numbers which are the
-numbers of the rules to draw.\footnote{It's possible to put in that list some
-  intervals of integers with the syntax $i$|-|$j$.}
+The keys \Definition{hlines} and \Definition{vlines} draw horizontal and vertical rules.
+
+If no value is provided, all the rules are drawn.
+
+\medskip
+When a value is provided, it should be a comma-separated list of numbers (corresponding
+to the rules which will be drawn).
+\begin{itemize}
+\item It's possible to put some intervals of integers with the syntax $i$|-|$j$
+
+\item \colorbox{yellow!50}{\bfseries{New 7.4}} It's possible to put negative numbers
+(which are counted from the end).
+\end{itemize}
 
 In fact, for the environments with delimiters (such as |{pNiceMatrix}| or
 |{bNiceArray}|), the key |vlines| don't draw the exterior rules (this is
@@ -3773,14 +3782,12 @@ $\begin{pmatrix}
 
 The commands |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|, |\Iddots|, |\Hdotsfor| and
 |\Vdotsfor| (and the command |\line| in the |\CodeAfter| which is described
-p.~\pageref{line-in-code-after}) accept two optional arguments specified by the
-tokens |_| and |^| for labels positioned below and above the line. The
+p.~\pageref{line-in-code-after}) accept three optional arguments specified by the
+tokens |_|, |^| and |:| for labels positioned below, above or on the line. The
 arguments are composed in math mode with |\scriptstyle|.
 
-The version 6.22 of \pkg{nicematrix} has introduced a new label, specified by
-the token ``|:|'' for a label placed on the line. The label is composed on a
-white background which is put on the line previously drawn (see example on
-p.~\pageref{ex:colon}).
+The label specified by ``|:|'' is composed on a white background which is put on
+the line previously drawn (see example on p.~\pageref{ex:colon}).
 
 \bigskip
 \begin{Code}[width=10cm]
@@ -7065,31 +7072,32 @@ a_p   &      &&a_0    &       &      &b_1   \\
 \end{scope}   
 
 \vspace{2cm}
-An example for a linear system:\par\nobreak
+An example for a linear system:
 
 \index{last-col|textit}
 \index{code-for-last-col|textit}
 
+\nobreak
 \begin{Verbatim}
-$\begin{pNiceArray}{*6{c}|c}[nullify-dots,last-col,code-for-last-col=\scriptstyle]
+\begin{pNiceMatrix}[vlines=-1,nullify-dots,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
        &   &   &\Ddots &   &        & \Vdots & \Vdots \\
 \Vdots &   &   &\Ddots &   & 0      & \\
-0      &   &   &\Cdots & 0 & 1      & 0      & L_n \gets L_n-L_1 
-\end{pNiceArray}$
+0      &   &   &\Cdots & 0 & 1      & 0      & L_n \gets L_n-L_1
+\end{pNiceMatrix}$
 \end{Verbatim}
 
 
-\[\begin{pNiceArray}{*6{c}|c}[nullify-dots,last-col,code-for-last-col=\scriptstyle]
+\[\begin{pNiceMatrix}[vlines=-1,nullify-dots,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
        &   &   &\Ddots &   &        & \Vdots & \Vdots \\
 \Vdots &   &   &\Ddots &   & 0      & \\
-0      &   &   &\Cdots & 0 & 1      & 0      & L_n \gets L_n-L_1 
-\end{pNiceArray}\]
+0      &   &   &\Cdots & 0 & 1      & 0      & L_n \gets L_n-L_1
+\end{pNiceMatrix}\]
 
 
 

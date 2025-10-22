@@ -1709,29 +1709,44 @@ version 2005/12/01 or later.
 % The following takes as argument the name of a |clist| and which should be a
 % list of intervals of integers. It \emph{expands} that list, that is to say,
 % it replaces (by a sort of |mapcan| or |flat_map|) the interval by the explicit
-% list of the integers.
+% list of the integers. The second argument is |\c@iRow| or |\c@jCol|.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_expand_clist:N #1 
+\cs_new_protected:Npn \@@_expand_clist_hvlines:NN #1 #2
   {
     \clist_if_in:NnF #1 { all }
       {
         \clist_clear:N \l_tmpa_clist 
         \clist_map_inline:Nn #1 
-          {  
+          {
+            \tl_if_head_eq_meaning:nNTF { ##1 } - 
+              {
 %    \end{macrocode}
-% We recall thant |\tl_if_in:nnTF| is slightly faster than |\str_if_in:nnTF|.
+% If we have yet the number of columns or the number of columns (because
+% they have been computed during a previous run and written on the |aux| file),
+% we can compute the actual position of the rule with a negative position.
 %    \begin{macrocode}
-            \tl_if_in:nnTF { ##1 } { - }
-              { \@@_cut_on_hyphen:w ##1 \q_stop }
-              { 
+                \int_if_zero:nF { #2 }
+                  {
+                    \clist_put_right:Ne \l_tmpa_clist
+                      { \int_eval:n { #2 + (##1) + 1 } }
+                  }
+              }
+              {
+%    \end{macrocode}
+% We recall than |\tl_if_in:nnTF| is slightly faster than |\str_if_in:nnTF|.
+%    \begin{macrocode}
+                \tl_if_in:nnTF { ##1 } { - }
+                  { \@@_cut_on_hyphen:w ##1 \q_stop }
+                  { 
 %    \end{macrocode}
 % Here, we use |\def| instead of |\tl_set:Nn| for efficiency only.
 %    \begin{macrocode}
-                \def \l_tmpa_tl { ##1 } 
-                \def \l_tmpb_tl { ##1 } 
+                    \def \l_tmpa_tl { ##1 } 
+                    \def \l_tmpb_tl { ##1 } 
+                  }
+                \int_step_inline:nnn { \l_tmpa_tl } { \l_tmpb_tl }
+                  { \clist_put_right:Nn \l_tmpa_clist { ####1 } }
               }
-            \int_step_inline:nnn { \l_tmpa_tl } { \l_tmpb_tl }
-              { \clist_put_right:Nn \l_tmpa_clist { ####1 } }
           }
         \tl_set_eq:NN #1 \l_tmpa_clist
       }
@@ -3787,6 +3802,8 @@ version 2005/12/01 or later.
 % 
 % \label{prearray}
 %
+% |\@@_pre_array_ii:| contains code executed after the analyse of the keys and after
+% the execution of the |\CodeBefore|.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_pre_array_ii:
   { 
@@ -3800,8 +3817,11 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \@@_expand_clist:N \l_@@_hlines_clist
-    \@@_expand_clist:N \l_@@_vlines_clist
+    \@@_expand_clist_hvlines:NN \l_@@_hlines_clist \c@iRow
+    \@@_expand_clist_hvlines:NN \l_@@_vlines_clist \c@jCol
+%    \end{macrocode}
+%
+%    \begin{macrocode}
     \@@_patch_booktabs:
     \box_clear_new:N \l_@@_cell_box
     \normalbaselines
@@ -4033,6 +4053,23 @@ version 2005/12/01 or later.
     \cs_if_exist:NT \thejCol { \int_set_eq:NN \l_@@_old_jCol_int \c@jCol }
     \int_gzero_new:N \c@jCol
 %    \end{macrocode}
+%
+% We give values to the LaTeX counters |iRow| and |jCol|. We remind that before
+% and after the main array (in particular in the |\CodeBefore| and the
+% |\CodeAfter|, they represent the numbers of rows and columns of the array
+% (without the potential last row and last column). The value of
+% |\g_@@_row_total_int| is the number of the last row (with potentially a last
+% exterior row) and |\g_@@_col_total_int| is the number of the last column (with
+% potentially a last exterior column).
+%    \begin{macrocode}
+    \bool_if:NT \g_@@_aux_found_bool
+      {
+        \int_set:Nn \c@iRow { \seq_item:Nn \g_@@_size_seq { 2 } }
+        \int_set:Nn \c@jCol { \seq_item:Nn \g_@@_size_seq { 5 } }
+        \int_gset:Nn \g_@@_row_total_int { \seq_item:Nn \g_@@_size_seq { 3 } }
+        \int_gset:Nn \g_@@_col_total_int { \seq_item:Nn \g_@@_size_seq { 6 } }
+      }
+%    \end{macrocode}
 % 
 % \bigskip
 % We recall that |\l_@@_last_row_int| and |\l_@@_last_column_int| are \emph{not}
@@ -4208,21 +4245,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_pre_code_before:
   {
 %    \end{macrocode}
-% First, we give values to the LaTeX counters |iRow| and |jCol|. We remind that,
-% in the |\CodeBefore| (and in the |\CodeAfter|) they represent the numbers of
-% rows and columns of the array (without the potential last row and last
-% column). The value of |\g_@@_row_total_int| is the number of the last row
-% (with potentially a last exterior row) and |\g_@@_col_total_int| is the number
-% of the last column (with potentially a last exterior column).
-%    \begin{macrocode}
-    \int_set:Nn \c@iRow { \seq_item:Nn \g_@@_size_seq { 2 } }
-    \int_set:Nn \c@jCol { \seq_item:Nn \g_@@_size_seq { 5 } }
-    \int_gset:Nn \g_@@_row_total_int { \seq_item:Nn \g_@@_size_seq { 3 } }
-    \int_gset:Nn \g_@@_col_total_int { \seq_item:Nn \g_@@_size_seq { 6 } }
-%    \end{macrocode}
-%
-%
-% Now, we will create all the |col| nodes and |row| nodes with the information
+% We will create all the |col| nodes and |row| nodes with the information
 % written in the |aux| file. You use the technique described in the page~1247 of
 % |pgfmanual.pdf|, version~3.1.10.
 %    \begin{macrocode}
@@ -4459,7 +4482,7 @@ version 2005/12/01 or later.
           { \@@_env: - last - ##1 } 
           { \@@_env: - \int_use:N \c@iRow - ##1 } 
       }
-    \pgfnodealias % added 2025-04-05
+    \pgfnodealias 
       { \@@_env: - last - last } 
       { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol } 
   }
@@ -6958,7 +6981,7 @@ version 2005/12/01 or later.
     \dim_zero_new:N \l_@@_real_right_delim_dim
     \hbox_set:Nn \l_tmpb_box
       {
-        \m@th % added 2024/11/21
+        \m@th
         \c_math_toggle_token
         \left #1 
         \vcenter 
@@ -6974,7 +6997,7 @@ version 2005/12/01 or later.
       { \box_wd:N \l_tmpb_box - \nulldelimiterspace }  
     \hbox_set:Nn \l_tmpb_box
       {
-        \m@th % added 2024/11/21
+        \m@th
         \c_math_toggle_token
         \left .
         \vbox_to_ht:nn 
@@ -8156,7 +8179,7 @@ version 2005/12/01 or later.
           { \l_@@_name_str - last - ##1 } 
           { \@@_env: - \int_use:N \c@iRow - ##1 } 
       }
-    \pgfnodealias  % added 2025-04-05
+    \pgfnodealias 
       { \l_@@_name_str - last - last } 
       { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol } 
   }
@@ -8585,7 +8608,7 @@ version 2005/12/01 or later.
         { \int_min:nn { \l_@@_initial_j_int } { \l_@@_final_j_int } }
         { \int_use:N \l_@@_final_i_int }
         { \int_max:nn { \l_@@_initial_j_int } { \l_@@_final_j_int } }
-        { } % for the name of the block
+        { } 
       }
   } 
 %    \end{macrocode}

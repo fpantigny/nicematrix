@@ -500,21 +500,31 @@
     \def \l_tmpa_tl { #1 }
     \def \l_tmpb_tl { #2 }
   }
-\cs_new_protected:Npn \__nicematrix_expand_clist:N #1
+\cs_new_protected:Npn \__nicematrix_expand_clist_hvlines:NN #1 #2
   {
     \clist_if_in:NnF #1 { all }
       {
         \clist_clear:N \l_tmpa_clist
         \clist_map_inline:Nn #1
           {
-            \tl_if_in:nnTF { ##1 } { - }
-              { \__nicematrix_cut_on_hyphen:w ##1 \q_stop }
+            \tl_if_head_eq_meaning:nNTF { ##1 } -
               {
-                \def \l_tmpa_tl { ##1 }
-                \def \l_tmpb_tl { ##1 }
+                \int_if_zero:nF { #2 }
+                  {
+                    \clist_put_right:Ne \l_tmpa_clist
+                      { \int_eval:n { #2 + (##1) + 1 } }
+                  }
               }
-            \int_step_inline:nnn { \l_tmpa_tl } { \l_tmpb_tl }
-              { \clist_put_right:Nn \l_tmpa_clist { ####1 } }
+              {
+                \tl_if_in:nnTF { ##1 } { - }
+                  { \__nicematrix_cut_on_hyphen:w ##1 \q_stop }
+                  {
+                    \def \l_tmpa_tl { ##1 }
+                    \def \l_tmpb_tl { ##1 }
+                  }
+                \int_step_inline:nnn { \l_tmpa_tl } { \l_tmpb_tl }
+                  { \clist_put_right:Nn \l_tmpa_clist { ####1 } }
+              }
           }
         \tl_set_eq:NN #1 \l_tmpa_clist
       }
@@ -1569,8 +1579,8 @@
   {
     \fp_gzero:N \g__nicematrix_total_X_weight_fp
     \bool_gset_false:N \g__nicematrix_V_of_X_bool
-    \__nicematrix_expand_clist:N \l__nicematrix_hlines_clist
-    \__nicematrix_expand_clist:N \l__nicematrix_vlines_clist
+    \__nicematrix_expand_clist_hvlines:NN \l__nicematrix_hlines_clist \c@iRow
+    \__nicematrix_expand_clist_hvlines:NN \l__nicematrix_vlines_clist \c@jCol
     \__nicematrix_patch_booktabs:
     \box_clear_new:N \l__nicematrix_cell_box
     \normalbaselines
@@ -1681,6 +1691,13 @@
     \int_gzero_new:N \c@iRow
     \cs_if_exist:NT \thejCol { \int_set_eq:NN \l__nicematrix_old_jCol_int \c@jCol }
     \int_gzero_new:N \c@jCol
+    \bool_if:NT \g__nicematrix_aux_found_bool
+      {
+        \int_set:Nn \c@iRow { \seq_item:Nn \g__nicematrix_size_seq { 2 } }
+        \int_set:Nn \c@jCol { \seq_item:Nn \g__nicematrix_size_seq { 5 } }
+        \int_gset:Nn \g__nicematrix_row_total_int { \seq_item:Nn \g__nicematrix_size_seq { 3 } }
+        \int_gset:Nn \g__nicematrix_col_total_int { \seq_item:Nn \g__nicematrix_size_seq { 6 } }
+      }
     \int_compare:nNnT { \l__nicematrix_last_row_int } = { -1 }
       {
         \bool_set_true:N \l__nicematrix_last_row_without_value_bool
@@ -1747,10 +1764,6 @@
   }
 \cs_new_protected:Npn \__nicematrix_pre_code_before:
   {
-    \int_set:Nn \c@iRow { \seq_item:Nn \g__nicematrix_size_seq { 2 } }
-    \int_set:Nn \c@jCol { \seq_item:Nn \g__nicematrix_size_seq { 5 } }
-    \int_gset:Nn \g__nicematrix_row_total_int { \seq_item:Nn \g__nicematrix_size_seq { 3 } }
-    \int_gset:Nn \g__nicematrix_col_total_int { \seq_item:Nn \g__nicematrix_size_seq { 6 } }
     \pgfsys@markposition { \__nicematrix_env: - position }
     \pgfsys@getposition { \__nicematrix_env: - position } \__nicematrix_picture_position:
     \pgfpicture
@@ -1886,7 +1899,7 @@
           { \__nicematrix_env: - last - ##1 }
           { \__nicematrix_env: - \int_use:N \c@iRow - ##1 }
       }
-    \pgfnodealias % added 2025-04-05
+    \pgfnodealias
       { \__nicematrix_env: - last - last }
       { \__nicematrix_env: - \int_use:N \c@iRow - \int_use:N \c@jCol }
   }
@@ -3965,7 +3978,7 @@
           { \l__nicematrix_name_str - last - ##1 }
           { \__nicematrix_env: - \int_use:N \c@iRow - ##1 }
       }
-    \pgfnodealias  % added 2025-04-05
+    \pgfnodealias
       { \l__nicematrix_name_str - last - last }
       { \__nicematrix_env: - \int_use:N \c@iRow - \int_use:N \c@jCol }
   }
