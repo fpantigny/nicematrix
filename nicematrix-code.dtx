@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.3}
-\def\myfiledate{2025/09/30}
+\def\myfileversion{7.4}
+\def\myfiledate{2025/10/23}
 %
 %
 %<*batchfile>  
@@ -740,10 +740,15 @@ version 2005/12/01 or later.
 % its nodes --- without having to give it a name). This command \emph{must} be
 % expandable since it will be used in \pkg{pgf} nodes.
 %    \begin{macrocode}
-\NewExpandableDocumentCommand \NiceMatrixLastEnv { } 
-  { \int_use:N \g_@@_env_int } 
+\NewExpandableDocumentCommand \NiceMatrixLastEnv { } { \int_use:N \g_@@_env_int } 
 %    \end{macrocode}
 %
+% \medskip
+% The array will be composed in a box (named |\l_@@_the_array_box|) because we
+% have to do manipulations concerning the potential exterior rows.
+%    \begin{macrocode}
+\box_new:N \l_@@_the_array_box
+%    \end{macrocode}
 %
 % \bigskip
 % The following command is only a syntaxic shortcut. The |q| in |qpoint| means 
@@ -1065,7 +1070,7 @@ version 2005/12/01 or later.
 % 
 % The list of the columns where vertical lines in sub-matrices (vlism) must be
 % drawn. Of course, the actual value of this sequence will be known after the
-% analyse of the preamble of the array. 
+% analysis of the preamble of the array. 
 %    \begin{macrocode}
 \seq_new:N \g_@@_cols_vlism_seq
 %    \end{macrocode}
@@ -1680,7 +1685,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \bool_new:N \g_@@_last_col_found_bool
 %    \end{macrocode}
-% This boolean is set to |false| at the end of |\@@_pre_array_ii:|.
+% This boolean is set to |false| at the end of |\@@_pre_array_after_CodeBefore:|.
 %
 % \medskip
 % In the last column, we will raise the following flag (it will be used by
@@ -3802,13 +3807,43 @@ version 2005/12/01 or later.
 % 
 % \label{prearray}
 %
-% |\@@_pre_array_ii:| contains code executed after the analyse of the keys and after
-% the execution of the |\CodeBefore|.
+% |\@@_pre_array_after_CodeBefore:| will be executed in |\@@_pre_array:|
+% \emph{after} the execution of the |\CodeBefore|.
+% It contains all the code before the beginning of the construction of
+% |\l_@@_the_array_box|.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_pre_array_ii:
+\cs_new_protected:Npn \@@_pre_array_after_CodeBefore:
   { 
 %    \end{macrocode}
 %
+% \medskip
+% The value of |\g_@@_pos_of_blocks_seq| has been written on the |aux| file and
+% loaded before the (potential) execution of the |\CodeBefore|. Now, we clear
+% that variable because it will be reconstructed during the creation of the
+% array.
+%    \begin{macrocode}
+    \seq_gset_eq:NN \g_@@_pos_of_blocks_seq \g_@@_future_pos_of_blocks_seq
+    \seq_gclear:N \g_@@_future_pos_of_blocks_seq
+%    \end{macrocode}
+%
+% Idem for other sequences written on the |aux| file.
+%    \begin{macrocode}
+    \seq_gclear_new:N \g_@@_multicolumn_cells_seq
+    \seq_gclear_new:N \g_@@_multicolumn_sizes_seq
+%    \end{macrocode}
+% 
+% \bigskip
+% The command |\create_row_node:| will create a row-node (and not a row of
+% nodes!). However, at the end of the array we construct a ``false row'' (for
+% the col-nodes) and it interferes with the construction of the last row-node
+% of the array. We don't want to create such row-node twice (to avaid warnings
+% or, maybe, errors). That's why the command |\@@_create_row_node:| will use the
+% following counter to avoid such construction.
+%    \begin{macrocode}
+    \int_gset:Nn \g_@@_last_row_node_int { -2 } 
+%    \end{macrocode}
+% The value $-2$ is important.
+% 
 % \bigskip
 % The total weight of the letters |X| in the preamble of the array.
 %    \begin{macrocode}
@@ -4037,14 +4072,39 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \tl_gclear:N \g_nicematrix_code_before_tl
     \tl_gclear:N \g_@@_pre_code_before_tl
+%    \end{macrocode}
+%
+% \medskip
+% We compute the width of both delimiters. We remind that, when the
+% environment |{NiceArray}| is used, it's possible to specify the delimiters in
+% the preamble (eg |[ccc]|).
+%    \begin{macrocode}
+    \dim_zero_new:N \l_@@_left_delim_dim
+    \dim_zero_new:N \l_@@_right_delim_dim
+    \bool_if:NTF \g_@@_delims_bool
+      { 
+%    \end{macrocode}
+% The command |\bBigg@| is a command of \pkg{amsmath}.
+%    \begin{macrocode}
+        \hbox_set:Nn \l_tmpa_box { $ \bBigg@ 5 \g_@@_left_delim_tl $ }
+        \dim_set:Nn \l_@@_left_delim_dim { \box_wd:N \l_tmpa_box }
+        \hbox_set:Nn \l_tmpa_box { $ \bBigg@ 5 \g_@@_right_delim_tl $ }
+        \dim_set:Nn \l_@@_right_delim_dim { \box_wd:N \l_tmpa_box }
+      }
+      { 
+        \dim_gset:Nn \l_@@_left_delim_dim 
+          { 2 \bool_if:NTF \l_@@_tabular_bool { \tabcolsep } { \arraycolsep } }
+        \dim_gset_eq:NN \l_@@_right_delim_dim \l_@@_left_delim_dim 
+      }
   }
 %    \end{macrocode}
-% This is the end of |\@@_pre_array_ii:|.
+% This is the end of |\@@_pre_array_after_CodeBefore:|.
 %
 %
 % \bigskip
-% The command |\@@_pre_array:| will be executed after analyse of the keys of the
-% environment. 
+% The command |\@@_pre_array:| will be executed after analysis of the keys of the
+% environment. If will, in particular, read the potential informations written on
+% the |aux| file.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_pre_array:
   {
@@ -4062,6 +4122,10 @@ version 2005/12/01 or later.
 % exterior row) and |\g_@@_col_total_int| is the number of the last column (with
 % potentially a last exterior column).
 %    \begin{macrocode}
+    \int_compare:nNnT \l_@@_last_row_int > 0
+      { \int_set:Nn \c@iRow { \l_@@_last_row_int - 1 } }
+    \int_compare:nNnT \l_@@_last_col_int > 0
+      { \int_set:Nn \c@jCol { \l_@@_last_col_int - 1 } }
     \bool_if:NT \g_@@_aux_found_bool
       {
         \int_set:Nn \c@iRow { \seq_item:Nn \g_@@_size_seq { 2 } }
@@ -4072,9 +4136,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% We recall that |\l_@@_last_row_int| and |\l_@@_last_column_int| are \emph{not}
+% We recall that |\l_@@_last_row_int| and |\l_@@_last_col_int| are \emph{not}
 % the numbers of the last row and last column of the array. There are only the
-% values of the keys |last-row| and |last-column| (maybe the user has provided
+% values of the keys |last-row| and |last-col| (maybe the user has provided
 % erroneous values). The meaning of that counters does not change during the
 % environment of \pkg{nicematrix}. There is only a slight adjustment: if the
 % user have used one of those keys without value, we provide now the right value
@@ -4121,70 +4185,10 @@ version 2005/12/01 or later.
     \bool_if:NT \l_@@_code_before_bool { \@@_exec_code_before: }
 %    \end{macrocode}
 % 
-% \bigskip
-% The value of |\g_@@_pos_of_blocks_seq| has been written on the |aux| file and
-% loaded before the (potential) execution of the |\CodeBefore|. Now, we clear
-% that variable because it will be reconstructed during the creation of the
-% array.
-%    \begin{macrocode}
-    \seq_gset_eq:NN \g_@@_pos_of_blocks_seq \g_@@_future_pos_of_blocks_seq
-    \seq_gclear:N \g_@@_future_pos_of_blocks_seq
-%    \end{macrocode}
-%
-% Idem for other sequences written on the |aux| file.
-%    \begin{macrocode}
-    \seq_gclear_new:N \g_@@_multicolumn_cells_seq
-    \seq_gclear_new:N \g_@@_multicolumn_sizes_seq
-%    \end{macrocode}
-% 
-% \bigskip
-% The command |\create_row_node:| will create a row-node (and not a row of
-% nodes!). However, at the end of the array we construct a ``false row'' (for
-% the col-nodes) and it interferes with the construction of the last row-node
-% of the array. We don't want to create such row-node twice (to avaid warnings
-% or, maybe, errors). That's why the command |\@@_create_row_node:| will use the
-% following counter to avoid such construction.
-%    \begin{macrocode}
-    \int_gset:Nn \g_@@_last_row_node_int { -2 } 
-%    \end{macrocode}
-% The value $-2$ is important.
-% 
-% 
 % \interitem
-% The code in |\@@_pre_array_ii:| is used only here.
+% The code in |\@@_pre_array_after_CodeBefore:| is used only here.
 %    \begin{macrocode}
-    \@@_pre_array_ii:
-%    \end{macrocode}
-% 
-% \medskip
-% The array will be composed in a box (named |\l_@@_the_array_box|) because we
-% have to do manipulations concerning the potential exterior rows.
-%    \begin{macrocode}
-    \box_clear_new:N \l_@@_the_array_box
-%    \end{macrocode}
-%
-% \medskip
-% We compute the width of both delimiters. We remind that, when the
-% environment |{NiceArray}| is used, it's possible to specify the delimiters in
-% the preamble (eg |[ccc]|).
-%    \begin{macrocode}
-    \dim_zero_new:N \l_@@_left_delim_dim
-    \dim_zero_new:N \l_@@_right_delim_dim
-    \bool_if:NTF \g_@@_delims_bool
-      { 
-%    \end{macrocode}
-% The command |\bBigg@| is a command of \pkg{amsmath}.
-%    \begin{macrocode}
-        \hbox_set:Nn \l_tmpa_box { $ \bBigg@ 5 \g_@@_left_delim_tl $ }
-        \dim_set:Nn \l_@@_left_delim_dim { \box_wd:N \l_tmpa_box }
-        \hbox_set:Nn \l_tmpa_box { $ \bBigg@ 5 \g_@@_right_delim_tl $ }
-        \dim_set:Nn \l_@@_right_delim_dim { \box_wd:N \l_tmpa_box }
-      }
-      { 
-        \dim_gset:Nn \l_@@_left_delim_dim 
-          { 2 \bool_if:NTF \l_@@_tabular_bool { \tabcolsep } { \arraycolsep } }
-        \dim_gset_eq:NN \l_@@_right_delim_dim \l_@@_left_delim_dim 
-      }
+    \@@_pre_array_after_CodeBefore:
 %    \end{macrocode}
 % 
 % \bigskip
@@ -4230,7 +4234,7 @@ version 2005/12/01 or later.
 % |\CodeBefore|). By definition, the |\CodeBefore| must be executed before the
 % body of the array...
 %    \begin{macrocode}
-    \@@_pre_array: 
+    \@@_pre_array:
   }
 %    \end{macrocode}
 %
@@ -5400,7 +5404,7 @@ version 2005/12/01 or later.
 % the standard version of |\setlength|.
 %    \begin{macrocode}
     \setlength { \l_tmpa_dim } { #2 }
-    \@@_make_preamble_ii_iv:nnn { \dim_use:N \l_tmpa_dim } { minipage } { } 
+    \@@_make_preamble_ii_iv:nnn { \dim_use:N \l_tmpa_dim } { minipage } { }
   }
 %    \end{macrocode}
 %
@@ -7862,9 +7866,9 @@ version 2005/12/01 or later.
   { 
 %    \end{macrocode}
 % There was a |\hook_gput_code:nnn { env / tabular / begin } { nicematrix }| in
-% the command |\@@_pre_array_ii:| in order to come back to the standard
-% definition of |\multicolumn| (in the tabulars used by the final user in the
-% cells of our array of \pkg{nicematrix}) and maybe another linked to
+% the command |\@@_pre_array_after_CodeBefore:| in order to come back to the
+% standard definition of |\multicolumn| (in the tabulars used by the final user
+% in the cells of our array of \pkg{nicematrix}) and maybe another linked to
 % \pkg{colortbl}.
 %    \begin{macrocode}
     \hook_gremove_code:nn { env / tabular / begin } { nicematrix }   
@@ -8619,7 +8623,7 @@ version 2005/12/01 or later.
 % ``closed extremities'' will be shortened by that key. The following command
 % will be used \emph{after} the detection of the extremities of a dotted line
 % (hence at a time when we known whether the extremities are closed or open) but
-% before the analyse of the keys of the individual command |\Cdots|, |\Vdots|.
+% before the analysis of the keys of the individual command |\Cdots|, |\Vdots|.
 % Hence, the keys |shorten|, |shorten-start| and |shorten-end| of that
 % individual command will be applied.
 %    \begin{macrocode}
@@ -11829,7 +11833,7 @@ version 2005/12/01 or later.
 % \bigskip
 % It's possible that the rule won't be drawn continuously from |start| to |end|
 % because of the blocks (created with the command |\Block|), the virtual blocks
-% (created by |\Cdots|, etc.), etc. That's why an analyse is done and the rule
+% (created by |\Cdots|, etc.), etc. That's why an analysis is done and the rule
 % is cut in small rules which will actually be drawn. The small continuous rules
 % will be drawn by |\@@_vline_ii:| and |\@@_hline_ii:|. Those commands use the
 % following set of keys.
@@ -12596,7 +12600,7 @@ version 2005/12/01 or later.
               { \@@_error:ne { Forbidden~letter } \l_@@_letter_str }
               { 
 %    \end{macrocode}
-% During the analyse of the preamble provided by the final user, our automaton,
+% During the analysis of the preamble provided by the final user, our automaton,
 % for the letter corresponding at the custom line, will directly use the
 % following command that you define in the main hash table of TeX.
 %    \begin{macrocode}
