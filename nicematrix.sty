@@ -6659,7 +6659,7 @@
               { \__nicematrix_error:ne { Forbidden~letter } \l__nicematrix_letter_str }
               {
                 \cs_set_nopar:cpn { __nicematrix _ \l__nicematrix_letter_str : } ##1
-                  { \__nicematrix_v_custom_line:n { #1 } }
+                  { \__nicematrix_v_custom_line:nn { #1 } }
               }
           }
       }
@@ -6764,21 +6764,29 @@
           }
       }
   }
-\cs_new_protected:Npn \__nicematrix_v_custom_line:n #1
+\cs_new_protected:Npn \__nicematrix_v_custom_line:nn #1 #2
   {
-    \__nicematrix_compute_rule_width:n { #1 }
+    \str_if_eq:nnTF { #2 } { [ }
+      { \__nicematrix_v_custom_line_i:nw { #1 } [ }
+      { \__nicematrix_v_custom_line_ii:nn { #2 } { #1 } }
+  }
+\cs_new_protected:Npn \__nicematrix_v_custom_line_i:nw #1 [ #2 ]
+  { \__nicematrix_v_custom_line:nn { #1 , #2 } }
+\cs_new_protected:Npn \__nicematrix_v_custom_line_ii:nn #1 #2
+  {
+    \__nicematrix_compute_rule_width:n { #2 }
     \tl_gput_right:Ne \g__nicematrix_array_preamble_tl
       { \exp_not:N ! { \skip_horizontal:n { \dim_use:N \l__nicematrix_rule_width_dim } } }
     \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
       {
         \__nicematrix_vline:n
           {
-            #1 ,
+            #2 ,
             position = \int_eval:n { \c@jCol + 1 } ,
             total-width = \dim_use:N \l__nicematrix_rule_width_dim
           }
       }
-    \__nicematrix_rec_preamble:n
+    \__nicematrix_rec_preamble:n #1
   }
 \__nicematrix_custom_line:n
   { letter = : , command = hdottedline , ccommand = cdottedline, dotted }
@@ -9235,24 +9243,21 @@
       { }
       { }
   }
-\hook_gput_code:nnn { begindocument } { . }
+\AddToHook { package / tikz / after }
   {
-    \cs_if_exist:cT { tikz@library@decorations.pathreplacing@loaded }
+    \tikzset
       {
-        \tikzset
+        nicematrix / brace / .style =
           {
-            nicematrix / brace / .style =
-              {
-                decoration = { brace , raise = -0.15 em } ,
-                decorate ,
-              } ,
-            nicematrix / mirrored-brace / .style =
-              {
-                nicematrix / brace ,
-                decoration = mirror ,
-              }
+            decoration = { brace , raise = -0.15 em } ,
+            decorate ,
+          } ,
+        nicematrix / mirrored-brace / .style =
+          {
+            nicematrix / brace ,
+            decoration = mirror ,
           }
-     }
+      }
   }
 \keys_define:nn { nicematrix / Hbrace }
   {

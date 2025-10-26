@@ -5269,6 +5269,8 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% The following constructions aims to allow cumulative blocks of options between
+% square brackets such as in \verb+|[color=blue][tikz=dashed]+.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_i_ii:nn #1 #2
   {
@@ -12605,7 +12607,7 @@ version 2005/12/01 or later.
 % following command that you define in the main hash table of TeX.
 %    \begin{macrocode}
                 \cs_set_nopar:cpn { @@ _ \l_@@_letter_str : } ##1 
-                  { \@@_v_custom_line:n { #1 } }
+                  { \@@_v_custom_line:nn { #1 } }
               } 
           }
       }
@@ -12772,11 +12774,23 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% The following constructions aims to allow cumulative blocks of options between
+% square brackets such as in |I[color=blue][tikz=dashed]|.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_v_custom_line:nn #1 #2
+  {
+    \str_if_eq:nnTF { #2 } { [ }
+      { \@@_v_custom_line_i:nw { #1 } [ }
+      { \@@_v_custom_line_ii:nn { #2 } { #1 } }
+  }
+\cs_new_protected:Npn \@@_v_custom_line_i:nw #1 [ #2 ]  
+  { \@@_v_custom_line:nn { #1 , #2 } }
+%    \end{macrocode}
 % 
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_v_custom_line:n #1 
+\cs_new_protected:Npn \@@_v_custom_line_ii:nn #1 #2
   {
-    \@@_compute_rule_width:n { #1 }
+    \@@_compute_rule_width:n { #2 }
 %    \end{macrocode}
 % In the following line, the |\dim_use:N| is mandatory since we do an expansion.
 %    \begin{macrocode}
@@ -12786,12 +12800,12 @@ version 2005/12/01 or later.
       { 
         \@@_vline:n 
           { 
-            #1 , 
+            #2 , 
             position = \int_eval:n { \c@jCol + 1 } ,
             total-width = \dim_use:N \l_@@_rule_width_dim 
           } 
       }
-    \@@_rec_preamble:n
+    \@@_rec_preamble:n #1
   }
 %    \end{macrocode}
 %
@@ -16714,28 +16728,25 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 %    \begin{macrocode} 
-\hook_gput_code:nnn { begindocument } { . } 
+\AddToHook { package / tikz / after }
   {
-    \cs_if_exist:cT { tikz@library@decorations.pathreplacing@loaded }
+    \tikzset
       {
-        \tikzset
-          {
-            nicematrix / brace / .style = 
-              { 
-                decoration = { brace , raise = -0.15 em } , 
-                decorate , 
-              } ,
+        nicematrix / brace / .style = 
+          { 
+            decoration = { brace , raise = -0.15 em } , 
+            decorate , 
+          } ,
 %    \end{macrocode}
 % Unlike the previous one, the following set of keys is internal. It won't be
 % provided by the final user.
 %    \begin{macrocode}
-            nicematrix / mirrored-brace / .style = 
-              {
-                nicematrix / brace ,
-                decoration = mirror , 
-              }
-          }    
-     }
+        nicematrix / mirrored-brace / .style = 
+          {
+            nicematrix / brace ,
+            decoration = mirror , 
+          }
+      }    
   }
 %    \end{macrocode}
 %
