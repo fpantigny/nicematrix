@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.4}
-\def\myfiledate{2025/10/23}
+\def\myfileversion{7.4a}
+\def\myfiledate{2025/10/29}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -855,15 +855,10 @@
     width .value_required:n = true ,
     unknown .code:n = \__nicematrix_error:n { Unknown~key~for~rules }
   }
-\cs_new_protected:Npn \__nicematrix_err_key_color_inside:
-  {
-    \__nicematrix_error_or_warning:n { key~color-inside }
-    \cs_gset:Npn \__nicematrix_err_key_color_inside: { }
-  }
 \keys_define:nn { nicematrix / Global }
   {
-    color-inside .code:n = \__nicematrix_err_key_color_inside: ,
-    colortbl-like .code:n = \__nicematrix_err_key_color_inside: ,
+    color-inside .code:n = \__nicematrix_fatal:n { key~color-inside } ,
+    colortbl-like .code:n = \__nicematrix_fatal:n { key~color-inside } ,
     ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
     ampersand-in-blocks .default:n = true ,
     &-in-blocks .meta:n = ampersand-in-blocks ,
@@ -2885,7 +2880,7 @@
     \multispan { #1 }
     \cs_set_eq:NN \__nicematrix_update_max_cell_width: \prg_do_nothing:
     \begingroup
-    \IfPackageLoadedTF { latex-lab-testphase-table }
+    \IfPackageLoadedT { latex-lab-testphase-table }
       { \tbl_update_multicolumn_cell_data:n { #1 } }
     \def \@addamp
       { \legacy_if:nTF { @firstamp } { \@firstampfalse } { \@preamerr 5 } }
@@ -3151,8 +3146,7 @@
   {
     \group_begin:
     \bool_set_true:N \l__nicematrix_in_caption_bool
-    \IfPackageLoadedT { floatrow }
-      { \cs_set_eq:NN \@makecaption \FR@makecaption }
+    \IfPackageLoadedT { floatrow } { \cs_set_eq:NN \@makecaption \FR@makecaption }
     \tl_if_empty:NTF \l__nicematrix_short_caption_tl
       { \caption }
       { \caption [ \l__nicematrix_short_caption_tl ] }
@@ -7548,7 +7542,7 @@
                 {
                   \dim_zero:N \extrarowheight
                   #4
-                  \IfPackageLoadedTF { latex-lab-testphase-table }
+                  \IfPackageLoadedT { latex-lab-testphase-table }
                     { \tag_stop:n { table } }
                   \use:e
                     {
@@ -9281,7 +9275,7 @@
       {
         \str_if_eq:nnTF { #2 } { * }
           {
-            \NiceMatrixOptions { nullify-dots }
+            \bool_set_true:N \l__nicematrix_nullify_dots_bool
             \Ldots
               [
                 line-style = nicematrix / brace ,
@@ -9304,7 +9298,7 @@
       {
         \str_if_eq:nnTF { #2 } { * }
           {
-            \NiceMatrixOptions { nullify-dots }
+            \bool_set_true:N \l__nicematrix_nullify_dots_bool
             \Ldots
               [
                 line-style = nicematrix / mirrored-brace ,
@@ -9338,7 +9332,7 @@
       {
         \str_if_eq:nnTF { #2 } { * }
           {
-            \NiceMatrixOptions { nullify-dots }
+            \bool_set_true:N \l__nicematrix_nullify_dots_bool
             \Vdots
               [
                 Vbrace ,
@@ -9363,7 +9357,7 @@
       {
         \str_if_eq:nnTF { #2 } { * }
           {
-            \NiceMatrixOptions { nullify-dots }
+            \bool_set_true:N \l__nicematrix_nullify_dots_bool
             \Vdots
               [
                 Vbrace ,
@@ -9694,10 +9688,10 @@
   }
 \__nicematrix_msg_new:nn { key~color-inside }
   {
-    Key~deprecated.\\
-    The~key~'color-inside'~(and~its~alias~'colortbl-like')~is~now~point-less~
-    and~have~been~deprecated.\\
-    You~won't~have~similar~message~till~the~end~of~the~document.
+    Deleted~key.\\
+    The~key~'color-inside'~(and~its~alias~'colortbl-like')~has~been~deleted~in
+    ~'nicematrix'~and~must~not~be~used.\\
+    This~error~is~fatal.
   }
 \__nicematrix_msg_new:nn { invalid~weight }
   {

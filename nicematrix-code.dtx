@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.4}
-\def\myfiledate{2025/10/23}
+\def\myfileversion{7.4a}
+\def\myfiledate{2025/10/29}
 %
 %
 %<*batchfile>  
@@ -2564,14 +2564,6 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_err_key_color_inside:
-  {
-    \@@_error_or_warning:n { key~color-inside } 
-    \cs_gset:Npn \@@_err_key_color_inside: { }
-  }
-%    \end{macrocode}
-%
 % \bigskip 
 % First, we define a set of keys ``|nicematrix / Global|'' which will be used
 % (with the mechanism of |.inherit:n|) by other sets of keys.
@@ -2579,8 +2571,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Global }
   {
-    color-inside .code:n = \@@_err_key_color_inside: ,
-    colortbl-like .code:n = \@@_err_key_color_inside: ,
+    color-inside .code:n = \@@_fatal:n { key~color-inside } ,
+    colortbl-like .code:n = \@@_fatal:n { key~color-inside } ,
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
     ampersand-in-blocks .default:n = true , 
     &-in-blocks .meta:n = ampersand-in-blocks ,
@@ -6184,7 +6176,7 @@ version 2005/12/01 or later.
     \@@_keys_p_column:n { #1 }
 %    \end{macrocode}
 % The unknown keys have been stored by |\@@_keys_p_column:n| in |\l_tmpa_tl| and
-% we use them right now in the set of keys |nicematrix/X-column| in order to
+% we use them right away in the set of keys |nicematrix/X-column| in order to
 % retrieve the potential weight explicitely provided by the final user.
 % 
 %    \begin{macrocode}
@@ -6320,7 +6312,7 @@ version 2005/12/01 or later.
     \multispan { #1 }
     \cs_set_eq:NN \@@_update_max_cell_width: \prg_do_nothing: 
     \begingroup
-    \IfPackageLoadedTF { latex-lab-testphase-table }
+    \IfPackageLoadedT { latex-lab-testphase-table }
       { \tbl_update_multicolumn_cell_data:n { #1 } }
     \def \@addamp 
       { \legacy_if:nTF { @firstamp } { \@firstampfalse } { \@preamerr 5 } } 
@@ -6689,6 +6681,7 @@ version 2005/12/01 or later.
         \tl_if_empty:NF \l_@@_caption_tl 
           { 
 %    \end{macrocode}
+%
 %    \begin{macrocode}
             \bool_set_false:N \g_@@_caption_finished_bool
             \int_gzero:N \c@tabularnote
@@ -6718,7 +6711,7 @@ version 2005/12/01 or later.
       { 
         \box_use_drop:N \l_@@_the_array_box
 %    \end{macrocode}
-% We have to draw the blocks right now because there may be tabular notes in
+% We have to draw the blocks right away because there may be tabular notes in
 % some blocks (which are not mono-column: the blocks which are mono-column
 % have been composed in boxes yet)... and we have to create (potentially) the
 % extra nodes before creating the blocks since there are |medium| nodes to create
@@ -6776,8 +6769,7 @@ version 2005/12/01 or later.
 % |\@makecaption| has been stored by \pkg{floatrow} in |\FR@makecaption|. That's
 % why we restore the old version.
 %    \begin{macrocode}
-    \IfPackageLoadedT { floatrow }
-      { \cs_set_eq:NN \@makecaption \FR@makecaption }
+    \IfPackageLoadedT { floatrow } { \cs_set_eq:NN \@makecaption \FR@makecaption } 
     \tl_if_empty:NTF \l_@@_short_caption_tl 
       { \caption }
       { \caption [ \l_@@_short_caption_tl ] }
@@ -13726,7 +13718,7 @@ version 2005/12/01 or later.
         \l_tmpa_bool                                    { \@@_Block_vii:eennn }
         \l_@@_p_block_bool                              { \@@_Block_vi:eennn } 
 %    \end{macrocode}
-% For the blocks mono-column, we will compose right now in a box in order to
+% For the blocks mono-column, we will compose right away in a box in order to
 % compute its width and take that width into account for the width of the
 % column. However, if the column is a |X| column, we should not do that since
 % the width is determined by another way. This should be the same for the |p|,
@@ -13748,7 +13740,7 @@ version 2005/12/01 or later.
 % \bigskip
 % The following macro is for the case of a |\Block| which is mono-row or
 % mono-column (or both) and don't use the key~|p|. In that case, the content of
-% the block is composed right now in a box (because we have to take into account
+% the block is composed right away in a box (because we have to take into account
 % the dimensions of that box for the width of the current column or the height
 % and the depth of the current row). However, that box will be put in the array
 % \emph{after the construction of the array} (by using \textsc{pgf}) with
@@ -14109,7 +14101,7 @@ version 2005/12/01 or later.
 % \bigskip
 % The following macro is for the standard case, where the block is not mono-row
 % and not mono-column and does not use the key |p|). In that case, the content of
-% the block is \emph{not} composed right now in a box. The composition in a box
+% the block is \emph{not} composed right away in a box. The composition in a box
 % will be done further, just after the construction of the array (cf.
 % |\@@_draw_blocks:| and above all |\@@_Block_v:nnnnnn|).
 %
@@ -14144,7 +14136,7 @@ version 2005/12/01 or later.
 % the tabular is the same as the external alignment of the tabular (that is to
 % say the position of the block in its zone of merged cells).
 %    \begin{macrocode}
-                  \IfPackageLoadedTF { latex-lab-testphase-table }
+                  \IfPackageLoadedT { latex-lab-testphase-table }
                     { \tag_stop:n { table } } 
                   \use:e 
                     {
@@ -16725,8 +16717,15 @@ version 2005/12/01 or later.
 % \bigskip
 % \section{The commands HBrace et VBrace}
 %
-% 
+%
 % \bigskip
+% The TikZ style |nicematrix/brace| is a TikZ style used to draw the braces created by
+% |\Hbrace| and |\Vbrace|.
+%
+% We can't load that definition right away because of course, maybe the final user has not
+% yet loaded TikZ (|\Hbrace| and |\Vbrace| are available only when TikZ is loaded and also
+% its library |decorations.pathreplacing|).
+%
 %    \begin{macrocode} 
 \AddToHook { package / tikz / after }
   {
@@ -16791,7 +16790,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \str_if_eq:nnTF { #2 } { * } 
           { 
-            \NiceMatrixOptions { nullify-dots }
+            \bool_set_true:N \l_@@_nullify_dots_bool
             \Ldots 
               [ 
                 line-style = nicematrix / brace ,  
@@ -16814,7 +16813,7 @@ version 2005/12/01 or later.
       { 
         \str_if_eq:nnTF { #2 } { * } 
           { 
-            \NiceMatrixOptions { nullify-dots }
+            \bool_set_true:N \l_@@_nullify_dots_bool
             \Ldots 
               [ 
                 line-style = nicematrix / mirrored-brace , 
@@ -16858,7 +16857,7 @@ version 2005/12/01 or later.
       {
         \str_if_eq:nnTF { #2 } { * } 
           { 
-            \NiceMatrixOptions { nullify-dots }
+            \bool_set_true:N \l_@@_nullify_dots_bool
             \Vdots 
               [
                 Vbrace ,
@@ -16883,7 +16882,7 @@ version 2005/12/01 or later.
       {
         \str_if_eq:nnTF { #2 } { * } 
           {
-            \NiceMatrixOptions { nullify-dots }
+            \bool_set_true:N \l_@@_nullify_dots_bool
             \Vdots 
               [
                 Vbrace ,
@@ -17344,10 +17343,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { key~color-inside }
   {
-    Key~deprecated.\\
-    The~key~'color-inside'~(and~its~alias~'colortbl-like')~is~now~point-less~
-    and~have~been~deprecated.\\
-    You~won't~have~similar~message~till~the~end~of~the~document.
+    Deleted~key.\\
+    The~key~'color-inside'~(and~its~alias~'colortbl-like')~has~been~deleted~in
+    ~'nicematrix'~and~must~not~be~used.\\
+    This~error~is~fatal.
   }
 %    \end{macrocode}
 %
