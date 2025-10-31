@@ -1603,8 +1603,7 @@
       {
         \def \ar@ialign
           {
-            \IfPackageLoadedT { latex-lab-testphase-table }
-              { \tbl_init_cell_data_for_table: }
+            \tbl_init_cell_data_for_table:
             \__nicematrix_some_initialization:
             \dim_zero:N \tabskip
             \cs_set_eq:Nc \ar@ialign { __nicematrix_old_ar@ialign: }
@@ -2231,14 +2230,11 @@
               }
           }
       }
-  \dim_compare:nNnT { \l__nicematrix_tabular_width_dim } = { \c_zero_dim }
-    {
-      \IfPackageLoadedF { latex-lab-testphase-table }
-        {
-          \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
-            { > { \__nicematrix_error_too_much_cols: } l }
-        }
-    }
+    \dim_compare:nNnT { \l__nicematrix_tabular_width_dim } = { \c_zero_dim }
+      {
+         \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
+           { > { \__nicematrix_error_too_much_cols: } l }
+      }
   }
 \cs_new_protected:Npn \__nicematrix_rec_preamble:n #1
   {
@@ -2449,8 +2445,7 @@
       {
         > {
             \dim_set:Nn \l__nicematrix_col_width_dim { #2 }
-            \IfPackageLoadedT { latex-lab-testphase-table }
-              { \tag_struct_begin:n { tag = Div } }
+            \tag_if_active:T { \tag_struct_begin:n { tag = Div } }
             \__nicematrix_cell_begin:
             \use:c { #7 } [ #1 ] { #2 }
             \everypar
@@ -2458,8 +2453,7 @@
                 \vrule height \box_ht:N \@arstrutbox width \c_zero_dim
                 \everypar { }
               }
-            \IfPackageLoadedT { latex-lab-testphase-table }
-              { \tagpdfparaOn }
+            \tag_if_active:T { \tagpdfparaOn }
             #3
             \g__nicematrix_row_style_tl
             \arraybackslash
@@ -2472,8 +2466,7 @@
             \use:c { end #7 }
             #4
             \__nicematrix_cell_end:
-            \IfPackageLoadedT { latex-lab-testphase-table }
-              { \tag_struct_end: }
+            \tag_if_active:T { \tag_struct_end: }
           }
       }
   }
@@ -2880,8 +2873,7 @@
     \multispan { #1 }
     \cs_set_eq:NN \__nicematrix_update_max_cell_width: \prg_do_nothing:
     \begingroup
-    \IfPackageLoadedT { latex-lab-testphase-table }
-      { \tbl_update_multicolumn_cell_data:n { #1 } }
+    \tbl_update_multicolumn_cell_data:n { #1 }
     \def \@addamp
       { \legacy_if:nTF { @firstamp } { \@firstampfalse } { \@preamerr 5 } }
     \tl_gclear:N \g__nicematrix_preamble_tl
@@ -7542,8 +7534,7 @@
                 {
                   \dim_zero:N \extrarowheight
                   #4
-                  \IfPackageLoadedT { latex-lab-testphase-table }
-                    { \tag_stop:n { table } }
+                  \tag_if_active:T { \tag_stop:n { table } }
                   \use:e
                     {
                       \exp_not:N \begin { tabular } [ \l__nicematrix_vpos_block_str ]
