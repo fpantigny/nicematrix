@@ -1637,6 +1637,7 @@
     \cs_set_eq:NN \OnlyMainNiceMatrix \__nicematrix_OnlyMainNiceMatrix:n
     \cs_set_eq:NN \dotfill \__nicematrix_dotfill:
     \cs_set_eq:NN \CodeAfter \__nicematrix_CodeAfter:
+    \cs_if_free:NT \Body { \cs_set_eq:NN \Body \__nicematrix_Body: }
     \cs_set_eq:NN \diagbox \__nicematrix_diagbox:nn
     \cs_set_eq:NN \NotEmpty \__nicematrix_NotEmpty:
     \cs_set_eq:NN \TopRule \__nicematrix_TopRule
@@ -1759,6 +1760,7 @@
     \bool_set_true:N \l__nicematrix_code_before_bool
     \__nicematrix_pre_array:
   }
+\cs_new_protected_nopar:Npn \__nicematrix_Body: { \__nicematrix_fatal:n { Body~alone } }
 \cs_new_protected:Npn \__nicematrix_pre_code_before:
   {
     \pgfsys@markposition { \__nicematrix_env: - position }
@@ -2230,10 +2232,13 @@
               }
           }
       }
-    \dim_compare:nNnT { \l__nicematrix_tabular_width_dim } = { \c_zero_dim }
+    \tag_if_active:F
       {
-         \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
-           { > { \__nicematrix_error_too_much_cols: } l }
+        \dim_compare:nNnT { \l__nicematrix_tabular_width_dim } = { \c_zero_dim }
+          {
+            \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
+              { > { \__nicematrix_err_too_much_cols: } l }
+          }
       }
   }
 \cs_new_protected:Npn \__nicematrix_rec_preamble:n #1
@@ -2445,7 +2450,8 @@
       {
         > {
             \dim_set:Nn \l__nicematrix_col_width_dim { #2 }
-            \tag_if_active:T { \tag_struct_begin:n { tag = Div } }
+            % \tag_if_active:T { \tag_struct_begin:n { tag = Div } }
+            % \UseTaggingSocket { tbl / pcell / begin }
             \__nicematrix_cell_begin:
             \use:c { #7 } [ #1 ] { #2 }
             \everypar
@@ -2453,7 +2459,7 @@
                 \vrule height \box_ht:N \@arstrutbox width \c_zero_dim
                 \everypar { }
               }
-            \tag_if_active:T { \tagpdfparaOn }
+            % \tag_if_active:T { \tagpdfparaOn }
             #3
             \g__nicematrix_row_style_tl
             \arraybackslash
@@ -2466,7 +2472,8 @@
             \use:c { end #7 }
             #4
             \__nicematrix_cell_end:
-            \tag_if_active:T { \tag_struct_end: }
+            % \UseTaggingSocket { tbl / pcell / begin }
+            % \tag_if_active:T { \tag_struct_end: }
           }
       }
   }
@@ -2874,10 +2881,14 @@
     \cs_set_eq:NN \__nicematrix_update_max_cell_width: \prg_do_nothing:
     \begingroup
     \tbl_update_multicolumn_cell_data:n { #1 }
-    \def \@addamp
-      { \legacy_if:nTF { @firstamp } { \@firstampfalse } { \@preamerr 5 } }
     \tl_gclear:N \g__nicematrix_preamble_tl
     \__nicematrix_make_m_preamble:n #2 \q_stop
+    \def \@addamp
+      {
+        \legacy_if:nTF { @firstamp }
+          { \legacy_if_set_false:n { @firstamp } }
+          { \@preamerr 5 }
+      }
     \exp_args:No \@mkpream \g__nicematrix_preamble_tl
     \@addtopreamble \@empty
     \endgroup
@@ -3048,11 +3059,13 @@
       \tl_if_in:NnTF \l__nicematrix_baseline_tl { line- }
         {
           \int_set:Nn \l_tmpa_int
+            { \str_range:Nnn \l__nicematrix_baseline_tl { 6 } { -1 } }
+          \bool_lazy_or:nnT
+            { \int_compare_p:nNn { \l_tmpa_int } < { 1 } }
+            { \int_compare_p:nNn { \l_tmpa_int } > { \c@iRow + 1 } }
             {
-              \str_range:Nnn
-                \l__nicematrix_baseline_tl
-                6
-                { \tl_count:o \l__nicematrix_baseline_tl }
+              \__nicematrix_error:n { bad~value~for~baseline-line }
+              \int_set_eq:NN \l_tmpa_int \c_one_int
             }
           \__nicematrix_qpoint:n { row - \int_use:N \l_tmpa_int }
         }
@@ -3475,12 +3488,14 @@
           \__nicematrix_node_alias:n { \int_eval:n { \g_tmpa_int + 1 } }
         \endpgfpicture
       }
-        &
-        \omit
+        % &      % moved on 2025-11-02
+        % \omit
         \bool_lazy_or:nnF
           { \int_compare_p:nNn \g__nicematrix_col_total_int = 1 }
           { \int_compare_p:nNn \g__nicematrix_col_total_int = 2 && \g__nicematrix_last_col_found_bool }
           {
+            &
+            \omit
             \skip_horizontal:N \g_tmpa_skip
             \int_gincr:N \g_tmpa_int
             \bool_lazy_any:nF
@@ -3541,7 +3556,6 @@
             \endpgfpicture
           }
       }
-  % \cr
   }
 \cs_new_protected:Npn \__nicematrix_mark_position:n #1
   {
@@ -9646,7 +9660,7 @@
   }
 \seq_gset_map_e:NNn \g__nicematrix_types_of_matrix_seq \g__nicematrix_types_of_matrix_seq
   { \tl_to_str:n { #1 } }
-\cs_new_protected:Npn \__nicematrix_error_too_much_cols:
+\cs_new_protected:Npn \__nicematrix_err_too_much_cols:
   {
     \seq_if_in:NoF \g__nicematrix_types_of_matrix_seq \g__nicematrix_name_env_str
       { \__nicematrix_fatal:nn { too~much~cols~for~array } }
@@ -9676,6 +9690,12 @@
     Incompatible~options.\\
     You~should~not~use~'hvlines',~'rounded-corners'~and~'corners'~at~the~same~time.\\
     The~output~will~not~be~reliable.
+  }
+\__nicematrix_msg_new:nn { Body~alone }
+  {
+    \token_to_str:N \Body\ alone. \\
+    You~have~used~\token_to_str:N \Body\ without~\token_to_str:N \CodeBefore.\\
+    That~error~is~fatal.
   }
 \__nicematrix_msg_new:nn { key~color-inside }
   {
@@ -9968,6 +9988,14 @@
     \int_use:N \g__nicematrix_row_total_int \ or~equal~to~'t',~'c'~or~'b'~or~of~
     the~form~'line-i'.\\
     A~value~of~1~will~be~used.
+  }
+\__nicematrix_msg_new:nn { bad~value~for~baseline-line }
+  {
+    Bad~value~for~baseline~with~line.\\
+    The~value~given~to~'baseline'~( \int_use:N \l_tmpa_int )~is~not~
+    valid.~The~number~of~the~line~must~be~between~1~and~
+    \int_eval:n { \c@iRow + 1 } \\
+    A~value~of~'line-1'~will~be~used.
   }
 \__nicematrix_msg_new:nn { detection~of~empty~cells }
   {

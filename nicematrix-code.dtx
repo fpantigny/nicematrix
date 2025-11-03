@@ -3956,6 +3956,7 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \OnlyMainNiceMatrix \@@_OnlyMainNiceMatrix:n
     \cs_set_eq:NN \dotfill \@@_dotfill:
     \cs_set_eq:NN \CodeAfter \@@_CodeAfter:
+    \cs_if_free:NT \Body { \cs_set_eq:NN \Body \@@_Body: }
     \cs_set_eq:NN \diagbox \@@_diagbox:nn
     \cs_set_eq:NN \NotEmpty \@@_NotEmpty:
     \cs_set_eq:NN \TopRule \@@_TopRule
@@ -4232,6 +4233,11 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % \section{The \textbackslash CodeBefore}
+%
+%
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_Body: { \@@_fatal:n { Body~alone } }
+%    \end{macrocode}
 % 
 % The following command will be executed if the |\CodeBefore| has to be actually
 % executed (that command will be used only once and is present alone only for legibility).
@@ -5114,10 +5120,13 @@ version 2005/12/01 or later.
               } 
           }
       }
-    \dim_compare:nNnT { \l_@@_tabular_width_dim } = { \c_zero_dim }
+    \tag_if_active:F
       {
-         \tl_gput_right:Nn \g_@@_array_preamble_tl 
-           { > { \@@_error_too_much_cols: } l }
+        \dim_compare:nNnT { \l_@@_tabular_width_dim } = { \c_zero_dim }
+          {
+            \tl_gput_right:Nn \g_@@_array_preamble_tl
+              { > { \@@_err_too_much_cols: } l }
+          }
       }
   }
 %    \end{macrocode}
@@ -5126,6 +5135,7 @@ version 2005/12/01 or later.
 % not possible to do that in |{NiceTabular*}| and that's why we used to control that with
 % the value of |\l_@@_tabular_width_dim|).
 %
+% 
 % \bigskip
 % The preamble provided by the final user will be read by a finite
 % automata. The following function |\@@_rec_preamble:n| will read that preamble
@@ -5516,14 +5526,13 @@ version 2005/12/01 or later.
     \tl_gclear:N \g_@@_pre_cell_tl
     \tl_gput_right:Nn \g_@@_array_preamble_tl
       {
-        > { 
+        > {
 %    \end{macrocode}
 % The parameter |\l_@@_col_width_dim|, which is the width of the current column,
 % will be available in each cell of the column. It will be used by the
 % mono-column blocks.
 %    \begin{macrocode}
             \dim_set:Nn \l_@@_col_width_dim { #2 }
-            \tag_if_active:T { \tag_struct_begin:n { tag = Div } }
             \@@_cell_begin: 
 %    \end{macrocode}
 % We use the form |\minipage|--|\endminipage| (|\varwidth|--|\endvarwidth|) for
@@ -5538,7 +5547,6 @@ version 2005/12/01 or later.
                 \vrule height \box_ht:N \@arstrutbox width \c_zero_dim
                 \everypar { }
               }
-            \tag_if_active:T { \tagpdfparaOn }
 %    \end{macrocode}
 % Now, the potential code for the horizontal position of the content of the cell
 % (|\centering|, |\raggedright|, |\RaggedRight|, etc.).
@@ -5564,8 +5572,7 @@ version 2005/12/01 or later.
 % |\@@_center_cell_box:| (see just below).
 %    \begin{macrocode}
             #4
-            \@@_cell_end: 
-            \tag_if_active:T { \tag_struct_end: }
+            \@@_cell_end:
           } 
       }
   }
@@ -6298,8 +6305,6 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \@@_update_max_cell_width: \prg_do_nothing: 
     \begingroup
     \tbl_update_multicolumn_cell_data:n { #1 } 
-    \def \@addamp 
-      { \legacy_if:nTF { @firstamp } { \@firstampfalse } { \@preamerr 5 } } 
 %    \end{macrocode}
 %
 % \medskip
@@ -6314,6 +6319,12 @@ version 2005/12/01 or later.
 % The following lines are an adaptation of the definition of |\multicolumn| in
 % \pkg{array}. 
 %    \begin{macrocode}
+    \def \@addamp 
+      {
+        \legacy_if:nTF { @firstamp }
+          { \legacy_if_set_false:n { @firstamp } }
+          { \@preamerr 5 }
+      } 
     \exp_args:No \@mkpream \g_@@_preamble_tl
     \@addtopreamble \@empty
     \endgroup
@@ -6344,7 +6355,7 @@ version 2005/12/01 or later.
             } 
             { \int_eval:n { \c@jCol + #1 } }
 %    \end{macrocode}
-% The last argument is for the name of the block
+% The last argument is for the name of the block.
 %    \begin{macrocode}
             { }
           }
@@ -6575,8 +6586,6 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% 
-% \medskip
 % The command |\@@_put_box_in_flow_i:| is used when the value of
 % |\l_@@_baseline_tl| is different of |c| (the initial value).
 %    \begin{macrocode}
@@ -6594,12 +6603,14 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
       \tl_if_in:NnTF \l_@@_baseline_tl { line- }
         {
-          \int_set:Nn \l_tmpa_int
-            {
-              \str_range:Nnn 
-                \l_@@_baseline_tl 
-                6 
-                { \tl_count:o \l_@@_baseline_tl } 
+          \int_set:Nn \l_tmpa_int 
+            { \str_range:Nnn \l_@@_baseline_tl { 6 } { -1 } }
+          \bool_lazy_or:nnT
+            { \int_compare_p:nNn { \l_tmpa_int } < { 1 } }
+            { \int_compare_p:nNn { \l_tmpa_int } > { \c@iRow + 1 } }
+            { 
+              \@@_error:n { bad~value~for~baseline-line }
+              \int_set_eq:NN \l_tmpa_int \c_one_int
             }
           \@@_qpoint:n { row - \int_use:N \l_tmpa_int }
         }
@@ -7211,7 +7222,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new:Npn \@@_create_col_nodes:
   {
-    \crcr 
+    \crcr
     \int_if_zero:nT { \l_@@_first_col_int }
       { 
         \omit 
@@ -7231,7 +7242,8 @@ version 2005/12/01 or later.
       }
     \omit
 %    \end{macrocode}
-% The following instruction must be put after the instruction |\omit|.
+% The following instruction must be put after the instruction |\omit| since, of course,
+% it is not expandable.
 %    \begin{macrocode}
     \bool_gset_true:N \g_@@_row_of_col_done_bool
 %    \end{macrocode}
@@ -7307,7 +7319,7 @@ version 2005/12/01 or later.
     \bool_if:NTF \g_@@_last_col_found_bool
       { \prg_replicate:nn { \int_max:nn { \g_@@_col_total_int - 3 } { 0 } } }
       { \prg_replicate:nn { \int_max:nn { \g_@@_col_total_int - 2 } { 0 } } }
-      { 
+      {
         & 
         \omit 
         \int_gincr:N \g_tmpa_int 
@@ -7331,8 +7343,8 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 %    \begin{macrocode}
-        & 
-        \omit
+        % &      % moved on 2025-11-02
+        % \omit
 %    \end{macrocode}        
 % 
 % If there is only one column (and a potential ``last column''), we don't have
@@ -7343,6 +7355,8 @@ version 2005/12/01 or later.
           { \int_compare_p:nNn \g_@@_col_total_int = 1 }
           { \int_compare_p:nNn \g_@@_col_total_int = 2 && \g_@@_last_col_found_bool }
           {
+            &
+            \omit
             \skip_horizontal:N \g_tmpa_skip 
             \int_gincr:N \g_tmpa_int 
             \bool_lazy_any:nF 
@@ -7413,7 +7427,6 @@ version 2005/12/01 or later.
             \endpgfpicture
           }
       }
-  % \cr 
   }
 %    \end{macrocode}
 %
@@ -17268,13 +17281,13 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% If the user uses too much columns, the command |\@@_error_too_much_cols:| is
+% If the user uses too much columns, the command |\@@_err_too_much_cols:| is
 % triggered. This command raises an error but also tries to give the best
 % information to the user in the error message. The command |\seq_if_in:NoF| is
 % not expandable and that's why we can't put it in the error message itself. We
 % have to do the test before the |\@@_fatal:n|.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_error_too_much_cols:
+\cs_new_protected:Npn \@@_err_too_much_cols:
   { 
     \seq_if_in:NoF \g_@@_types_of_matrix_seq \g_@@_name_env_str
       { \@@_fatal:nn { too~much~cols~for~array } }
@@ -17321,7 +17334,15 @@ version 2005/12/01 or later.
     The~output~will~not~be~reliable.
   }
 %    \end{macrocode}
-% 
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Body~alone }
+  {
+    \token_to_str:N \Body\ alone. \\
+    You~have~used~\token_to_str:N \Body\ without~\token_to_str:N \CodeBefore.\\
+    That~error~is~fatal.
+  }
+%    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_msg_new:nn { key~color-inside }
@@ -17733,6 +17754,17 @@ version 2005/12/01 or later.
     \int_use:N \g_@@_row_total_int \ or~equal~to~'t',~'c'~or~'b'~or~of~
     the~form~'line-i'.\\
     A~value~of~1~will~be~used.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { bad~value~for~baseline-line }
+  {
+    Bad~value~for~baseline~with~line.\\
+    The~value~given~to~'baseline'~( \int_use:N \l_tmpa_int )~is~not~
+    valid.~The~number~of~the~line~must~be~between~1~and~
+    \int_eval:n { \c@iRow + 1 } \\
+    A~value~of~'line-1'~will~be~used.
   }
 %    \end{macrocode}
 %
