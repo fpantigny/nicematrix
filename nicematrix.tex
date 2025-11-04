@@ -105,6 +105,7 @@
 \NewDocumentCommand{\indexenv}{m}{\index{#1@\texttt{\{#1\}}}}
 
 \usepackage[hyperfootnotes = false]{hyperref}
+\usepackage{bookmark}
 
 \hypersetup
   {
@@ -4830,7 +4831,7 @@ the package \pkg{threeparttable} or the package \pkg{floatrow}.
 \smallskip
 By default, the caption is composed below the tabular. With the key
 \Definition{caption-above}, available in |\NiceMatrixOptions|, the caption will
-be composed above the tabular.
+be composed above the tabular (that key is not available for an individual environment).
 
 \smallskip
 The key |short-caption| corresponds to the optional argument of the classical

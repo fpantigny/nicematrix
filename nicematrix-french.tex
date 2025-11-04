@@ -8,7 +8,7 @@
 \usepackage{geometry}
 \geometry{left=2.8cm,right=2.8cm,top=2.5cm,bottom=2.5cm,papersize={21cm,29.7cm}}
 
-\usepackage{array}%[=v2.5]
+\usepackage{array}
 \usepackage{nicematrix}
 
 \usepackage{tikz}
@@ -111,7 +111,9 @@
 \NewDocumentCommand{\indexenv}{m}{\index{#1@\texttt{\{#1\}}}}
 
 
+
 \usepackage[hyperfootnotes = false]{hyperref}
+\usepackage{bookmark}
 
 \hypersetup
   {
@@ -4984,7 +4986,7 @@ d'avoir recours à l'extension \pkg{threeparttable} ou l'extension
 \smallskip
 Par défaut, la légende est placée au-dessous du tableau. Pour avoir la légende
 placée au-dessus, il convient d'utiliser la clé \Definition{caption-above} dans
-|\NiceMatrixOptions|. 
+|\NiceMatrixOptions| (elle n'est pas disponible dans un environnement individuel).
 
 \smallskip
 La clé |short-caption| correspond à l'argument optionnel de la commande

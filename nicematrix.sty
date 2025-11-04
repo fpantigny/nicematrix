@@ -19,7 +19,7 @@
 %% LaTeX version 2005/12/01 or later.
 %% 
 \def\myfileversion{7.4a}
-\def\myfiledate{2025/10/29}
+\def\myfiledate{2025/11/04}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -40,7 +40,7 @@
   { }
   { \msg_critical:nn { nicematrix } { latex-too-old } }
 \RequirePackage { amsmath }
-\RequirePackage { array }
+\RequirePackage{array}[=2025/06/08] % v2.6j
 \cs_new_protected:Npn \__nicematrix_error:n { \msg_error:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_warning:n { \msg_warning:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_error:nn { \msg_error:nnn { nicematrix } }
@@ -268,7 +268,7 @@
       { & \__nicematrix_cline_i:en { \int_eval:n { #3 + 1 } } }
       { \everycr { } \cr }
   }
-\cs_set_eq:NN \__nicematrix_math_toggle: \c_math_toggle_token
+\cs_set:Nn \__nicematrix_math_toggle: { $ } % $
 \cs_new_protected:Npn \__nicematrix_set_CTarc:n #1
   {
     \tl_if_blank:nF { #1 }
@@ -857,6 +857,8 @@
   }
 \keys_define:nn { nicematrix / Global }
   {
+    caption-above .code:n = \__nicematrix_error_or_warning:n { caption-above~in~env } ,
+    show-cell-names .code = \__nicematrix_error_or_warning:n { show-cell-names } ,
     color-inside .code:n = \__nicematrix_fatal:n { key~color-inside } ,
     colortbl-like .code:n = \__nicematrix_fatal:n { key~color-inside } ,
     ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
@@ -1245,10 +1247,10 @@
 \cs_set_nopar:Npn \__nicematrix_tuning_not_tabular_begin:
   {
     \m@th
-    \c_math_toggle_token
+    $ % $
     \__nicematrix_tuning_key_small:
   }
-\cs_set_eq:NN \__nicematrix_tuning_not_tabular_end: \c_math_toggle_token
+\cs_set:Nn \__nicematrix_tuning_not_tabular_end: { $ } % $
 \cs_new_protected:Npn \__nicematrix_begin_of_row:
   {
     \int_gincr:N \c@iRow
@@ -1296,9 +1298,9 @@
         \hbox_set:Nn \l__nicematrix_cell_box
           {
             \m@th
-            \c_math_toggle_token
+            $ % $
             \vcenter { \box_use:N \l__nicematrix_cell_box }
-            \c_math_toggle_token
+            $ % $
           }
       }
       {
@@ -1746,7 +1748,7 @@
     \skip_horizontal:N \l__nicematrix_extra_left_margin_dim
     \UseTaggingSocket { tbl / hmode / begin }
     \m@th
-    \c_math_toggle_token
+    $ % $
     \bool_if:NTF \l__nicematrix_light_syntax_bool
       { \use:c { __nicematrix-light-syntax } }
       { \use:c { __nicematrix-normal-syntax } }
@@ -1817,9 +1819,9 @@
     \if_mode_math:
       \__nicematrix_exec_code_before_i:
     \else:
-      \c_math_toggle_token
+      $ % $
       \__nicematrix_exec_code_before_i:
-      \c_math_toggle_token
+      $ % $
     \fi:
     \group_end:
   }
@@ -2010,7 +2012,7 @@
     \bool_if:NTF \l__nicematrix_light_syntax_bool
       { \use:c { end __nicematrix-light-syntax } }
       { \use:c { end __nicematrix-normal-syntax } }
-    \c_math_toggle_token
+    $ % $
     \skip_horizontal:N \l__nicematrix_right_margin_dim
     \skip_horizontal:N \l__nicematrix_extra_right_margin_dim
     \hbox_set_end:
@@ -2071,7 +2073,7 @@
         \hbox_set:Nn \l_tmpa_box
           {
             \m@th
-            \c_math_toggle_token
+            $ % $
             \__nicematrix_color:o \l__nicematrix_delimiters_color_tl
             \exp_after:wN \left \g__nicematrix_left_delim_tl
             \vcenter
@@ -2090,7 +2092,7 @@
                 \skip_vertical:n { - \l_tmpb_dim  + \arrayrulewidth }
               }
             \exp_after:wN \right \g__nicematrix_right_delim_tl
-            \c_math_toggle_token
+            $ % $
           }
         \bool_if:NTF \l__nicematrix_delimiters_max_width_bool
           {
@@ -2450,8 +2452,6 @@
       {
         > {
             \dim_set:Nn \l__nicematrix_col_width_dim { #2 }
-            % \tag_if_active:T { \tag_struct_begin:n { tag = Div } }
-            % \UseTaggingSocket { tbl / pcell / begin }
             \__nicematrix_cell_begin:
             \use:c { #7 } [ #1 ] { #2 }
             \everypar
@@ -2459,7 +2459,6 @@
                 \vrule height \box_ht:N \@arstrutbox width \c_zero_dim
                 \everypar { }
               }
-            % \tag_if_active:T { \tagpdfparaOn }
             #3
             \g__nicematrix_row_style_tl
             \arraybackslash
@@ -2472,8 +2471,6 @@
             \use:c { end #7 }
             #4
             \__nicematrix_cell_end:
-            % \UseTaggingSocket { tbl / pcell / begin }
-            % \tag_if_active:T { \tag_struct_end: }
           }
       }
   }
@@ -3285,7 +3282,7 @@
     \hbox_set:Nn \l_tmpb_box
       {
         \m@th
-        \c_math_toggle_token
+        $ % $
         \left #1
         \vcenter
           {
@@ -3294,20 +3291,20 @@
               { }
           }
         \right .
-        \c_math_toggle_token
+        $ % $
       }
     \dim_set:Nn \l__nicematrix_real_left_delim_dim
       { \box_wd:N \l_tmpb_box - \nulldelimiterspace }
     \hbox_set:Nn \l_tmpb_box
       {
         \m@th
-        \c_math_toggle_token
+        $ % $
         \left .
         \vbox_to_ht:nn
           { \box_ht_plus_dp:N \l_tmpa_box }
           { }
         \right #2
-        \c_math_toggle_token
+        $ % $
       }
     \dim_set:Nn \l__nicematrix_real_right_delim_dim
       { \box_wd:N \l_tmpb_box - \nulldelimiterspace }
@@ -4960,9 +4957,9 @@
           {
             \rotatebox { \fp_eval:n { - \l_tmpa_fp } }
               {
-                \c_math_toggle_token
+                $ % $
                 \scriptstyle \l__nicematrix_xdots_middle_tl
-                \c_math_toggle_token
+                $ % $
               }
           }
           { }
@@ -4980,9 +4977,9 @@
           {
             \rotatebox { \fp_eval:n { - \l_tmpa_fp } }
               {
-                \c_math_toggle_token
+                $ % $
                 \scriptstyle \l__nicematrix_xdots_up_tl
-                \c_math_toggle_token
+                $ % $
               }
           }
           { }
@@ -4996,9 +4993,9 @@
           {
             \rotatebox { \fp_eval:n { - \l_tmpa_fp } }
               {
-                \c_math_toggle_token
+                $ % $
                 \scriptstyle \l__nicematrix_xdots_down_tl
-                \c_math_toggle_token
+                $ % $
               }
           }
           { }
@@ -5491,9 +5488,9 @@
             \exp_not:n
               {
                 \if_mode_math:
-                  \c_math_toggle_token
+                  $ % $
                   \bfseries \boldmath
-                  \c_math_toggle_token
+                  $ % $
                 \else:
                   \bfseries \boldmath
                 \fi:
@@ -7403,7 +7400,7 @@
               }
           }
           {
-            \c_math_toggle_token
+            $ % $
             \use:e
               {
                 \exp_not:N \begin { array }
@@ -7412,7 +7409,7 @@
               }
               #5
             \end { array }
-            \c_math_toggle_token
+            $ % $
           }
       }
     \bool_if:NT \g__nicematrix_rotate_bool { \__nicematrix_rotate_box_of_block: }
@@ -7523,13 +7520,13 @@
         \hbox_gset:cn
           { g__nicematrix_ block _ box _ \int_use:N \g__nicematrix_block_box_int _ box }
           {
-            \c_math_toggle_token
+            $ % $
             \vcenter
               {
                 \box_use:c
                 { g__nicematrix_ block _ box _ \int_use:N \g__nicematrix_block_box_int _ box }
               }
-            \c_math_toggle_token
+            $ % $
           }
       }
   }
@@ -7566,7 +7563,7 @@
                 {
                   \dim_zero:N \extrarowheight
                   #4
-                  \c_math_toggle_token
+                  $ % $
                   \use:e
                     {
                       \exp_not:N \begin { array } [ \l__nicematrix_vpos_block_str ]
@@ -7574,7 +7571,7 @@
                     }
                     #5
                   \end { array }
-                  \c_math_toggle_token
+                  $ % $
                 }
               \group_end:
             }
@@ -8635,7 +8632,7 @@
       { \bool_if:nTF { #3 } { east } { west } }
       {
         \nullfont
-        \c_math_toggle_token
+        $ % $
         \__nicematrix_color:o \l__nicematrix_delimiters_color_tl
         \bool_if:nTF { #3 } { \left #1 } { \left . }
         \vcenter
@@ -8647,7 +8644,7 @@
                    \@width \c_zero_dim
           }
         \bool_if:nTF { #3 } { \right . } { \right #1 }
-        \c_math_toggle_token
+        $ % $
       }
       { }
       { }
@@ -9023,7 +9020,7 @@
       { east }
       {
         \nullfont
-        \c_math_toggle_token
+        $ % $
         \__nicematrix_color:o \l__nicematrix_delimiters_color_tl
         \left #1
         \vcenter
@@ -9034,7 +9031,7 @@
                    \@width \c_zero_dim
           }
         \right .
-        \c_math_toggle_token
+        $ % $
       }
       { #2 }
       { }
@@ -9046,7 +9043,7 @@
       { west }
       {
         \nullfont
-        \c_math_toggle_token
+        $ % $
         \colorlet { current-color } { . }
         \__nicematrix_color:o \l__nicematrix_delimiters_color_tl
         \left .
@@ -9060,7 +9057,7 @@
         \right #1
         \tl_if_empty:nF { #3 } { _ { \smash { #3 } } }
         ^ { \color { current-color } \smash { #4 } }
-        \c_math_toggle_token
+        $ % $
       }
       { #2 }
       { }
@@ -9186,14 +9183,14 @@
                   { \begin { tabular } { c } #1 \end { tabular } }
                   { $ \begin { array } { c } #1 \end { array } $ }
                 \cr
-                \c_math_toggle_token
+                $ % $
                 \overbrace
                   {
                     \hbox_to_wd:nn
                       { \l__nicematrix_x_final_dim - \l__nicematrix_x_initial_dim }
                       { }
                   }
-                \c_math_toggle_token
+                $ % $
               \cr
               }
             \group_end:
@@ -9222,14 +9219,14 @@
             \halign
               {
                 \hfil ## \hfil \crcr
-                \c_math_toggle_token
+                $ % $
                 \underbrace
                   {
                     \hbox_to_wd:nn
                       { \l__nicematrix_x_final_dim - \l__nicematrix_x_initial_dim }
                       { }
                   }
-                \c_math_toggle_token
+                $ % $
                 \cr
                 \bool_if:NTF \l__nicematrix_tabular_bool
                   { \begin { tabular } { c } #1 \end { tabular } }
@@ -10748,6 +10745,19 @@
   {
     The~names~already~defined~in~this~document~are:~
     \clist_use:Nnnn \g__nicematrix_names_clist { ~and~ } { ,~ } { ~and~ } .
+  }
+\__nicematrix_msg_new:nn { caption-above~in~env }
+  {
+    The~key~'caption-above'~must~be~used~in~\token_to_str:N \NiceMatrixOptions.\\
+    That~key~will~be~ignored.
+  }
+\__nicematrix_msg_new:nn { show-cell-names }
+  {
+    There~is~no~key~'show-cell-names'~in~nicematrix.\\
+    You~should~use~the~command~\token_to_str:N \ShowCellNames\
+    in~the~\token_to_str:N \CodeBefore\ or~the~\token_to_str:N
+    \CodeAfter. \\
+    That~key~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { Option~auto~for~columns-width }
   {

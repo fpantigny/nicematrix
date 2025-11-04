@@ -18,7 +18,7 @@
 % \fi
 % \iffalse
 \def\myfileversion{7.4a}
-\def\myfiledate{2025/10/29}
+\def\myfiledate{2025/11/04}
 %
 %
 %<*batchfile>  
@@ -170,7 +170,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
-\RequirePackage { array }
+\RequirePackage{array}[=2025/06/08] % v2.6j
 %    \end{macrocode}
 % 
 %
@@ -634,7 +634,7 @@ version 2005/12/01 or later.
 % The following command will be nullified in the environment |{NiceTabular}|,
 % |{NiceTabular*}| and |{NiceTabularX}|.
 %    \begin{macrocode}
-\cs_set_eq:NN \@@_math_toggle: \c_math_toggle_token 
+\cs_set:Nn \@@_math_toggle: { $ } % $
 %    \end{macrocode}
 %
 % \bigskip
@@ -2563,7 +2563,6 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-%
 % \bigskip 
 % First, we define a set of keys ``|nicematrix / Global|'' which will be used
 % (with the mechanism of |.inherit:n|) by other sets of keys.
@@ -2571,6 +2570,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Global }
   {
+    caption-above .code:n = \@@_error_or_warning:n { caption-above~in~env } , 
+    show-cell-names .code = \@@_error_or_warning:n { show-cell-names } ,
     color-inside .code:n = \@@_fatal:n { key~color-inside } ,
     colortbl-like .code:n = \@@_fatal:n { key~color-inside } ,
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
@@ -3200,14 +3201,14 @@ version 2005/12/01 or later.
 \cs_set_nopar:Npn \@@_tuning_not_tabular_begin: 
   { 
     \m@th
-    \c_math_toggle_token 
+    $ % $
 %    \end{macrocode}
 % A special value is provided by the following control sequence when the key
 % |small| is in force.
 %    \begin{macrocode}
     \@@_tuning_key_small:
   }
-\cs_set_eq:NN \@@_tuning_not_tabular_end: \c_math_toggle_token
+\cs_set:Nn \@@_tuning_not_tabular_end: { $ } % $
 %    \end{macrocode}
 % 
 % \interitem
@@ -3276,9 +3277,9 @@ version 2005/12/01 or later.
         \hbox_set:Nn \l_@@_cell_box
           { 
             \m@th
-            \c_math_toggle_token 
+            $ % $
             \vcenter { \box_use:N \l_@@_cell_box } 
-            \c_math_toggle_token 
+            $ % $
           } 
       }
       {
@@ -4185,7 +4186,7 @@ version 2005/12/01 or later.
 % \bigskip
 % Here is the beginning of the box which will contain the array. The
 % |\hbox_set_end:| corresponding to this |\hbox_set:Nw| will be in the second
-% part of the environment (and the closing |\c_math_toggle_token| also).
+% part of the environment (and the closing |$| also).
 %    \begin{macrocode}
     \hbox_set:Nw \l_@@_the_array_box
 %    \end{macrocode}
@@ -4201,7 +4202,7 @@ version 2005/12/01 or later.
 % recent versions of LaTeX).
 %    \begin{macrocode}
     \m@th
-    \c_math_toggle_token
+    $ % $
     \bool_if:NTF \l_@@_light_syntax_bool
       { \use:c { @@-light-syntax } }
       { \use:c { @@-normal-syntax } }
@@ -4348,9 +4349,9 @@ version 2005/12/01 or later.
     \if_mode_math:
       \@@_exec_code_before_i:
     \else:
-      \c_math_toggle_token
+      $ % $
       \@@_exec_code_before_i:
-      \c_math_toggle_token
+      $ % $
     \fi: 
     \group_end:
   }
@@ -4708,7 +4709,7 @@ version 2005/12/01 or later.
     \bool_if:NTF \l_@@_light_syntax_bool
       { \use:c { end @@-light-syntax } }
       { \use:c { end @@-normal-syntax } }
-    \c_math_toggle_token
+    $ % $
     \skip_horizontal:N \l_@@_right_margin_dim 
     \skip_horizontal:N \l_@@_extra_right_margin_dim 
     \hbox_set_end:
@@ -4836,7 +4837,7 @@ version 2005/12/01 or later.
         \hbox_set:Nn \l_tmpa_box
           {
             \m@th 
-            \c_math_toggle_token
+            $ % $
             \@@_color:o \l_@@_delimiters_color_tl 
             \exp_after:wN \left \g_@@_left_delim_tl
             \vcenter 
@@ -4863,7 +4864,7 @@ version 2005/12/01 or later.
                 \skip_vertical:n { - \l_tmpb_dim  + \arrayrulewidth }
               }
             \exp_after:wN \right \g_@@_right_delim_tl
-            \c_math_toggle_token
+            $ % $
           }
 %    \end{macrocode}
 % Now, the box |\l_tmpa_box| is created with the correct delimiters.
@@ -5120,8 +5121,18 @@ version 2005/12/01 or later.
               } 
           }
       }
+%    \end{macrocode}
+% We try to give a good error message when the final user puts more columns
+% than allowed by the preamble of the array. The mechanism consists of an extra column.
+% However, if tagging is in force, that dummy extra column will be tagged (with |<TD>|
+% tags) and that's why we disable that mechanism when tagging is in force. 
+%    \begin{macrocode}
     \tag_if_active:F
       {
+%    \end{macrocode}
+% Moreover, when |{NiceTabular*}| is used, the mechanism can't be used for technical reasons.
+% We test that situation with |\l_@@_tabular_width_dim|.
+%    \begin{macrocode}
         \dim_compare:nNnT { \l_@@_tabular_width_dim } = { \c_zero_dim }
           {
             \tl_gput_right:Nn \g_@@_array_preamble_tl
@@ -6975,7 +6986,7 @@ version 2005/12/01 or later.
     \hbox_set:Nn \l_tmpb_box
       {
         \m@th
-        \c_math_toggle_token
+        $ % $
         \left #1 
         \vcenter 
           { 
@@ -6984,20 +6995,20 @@ version 2005/12/01 or later.
               { }
           }
         \right .
-        \c_math_toggle_token
+        $ % $
       } 
     \dim_set:Nn \l_@@_real_left_delim_dim 
       { \box_wd:N \l_tmpb_box - \nulldelimiterspace }  
     \hbox_set:Nn \l_tmpb_box
       {
         \m@th
-        \c_math_toggle_token
+        $ % $
         \left .
         \vbox_to_ht:nn 
           { \box_ht_plus_dp:N \l_tmpa_box }
           { }
         \right #2
-        \c_math_toggle_token
+        $ % $
       } 
     \dim_set:Nn \l_@@_real_right_delim_dim 
       { \box_wd:N \l_tmpb_box - \nulldelimiterspace } 
@@ -9570,11 +9581,6 @@ version 2005/12/01 or later.
     \draw 
       [ #1 ]
           ( \l_@@_x_initial_dim , \l_@@_y_initial_dim )
-%    \end{macrocode}
-% Be careful: We can't put |\c_math_toggle_token| instead of |$| in the
-% following lines because we are in the contents of Tikz nodes (and they will be
-% \emph{rescanned} if the Tikz library \pkg{babel} is loaded).
-%    \begin{macrocode}
        -- node [ @@_node_middle] { $ \scriptstyle #4 $ }  
           node [ @@_node_below ] { $ \scriptstyle #3 $ }
           node [ @@_node_above ] { $ \scriptstyle #2 $ }
@@ -9775,9 +9781,9 @@ version 2005/12/01 or later.
           {
             \rotatebox { \fp_eval:n { - \l_tmpa_fp } }
               {
-                \c_math_toggle_token 
+                $ % $ 
                 \scriptstyle \l_@@_xdots_middle_tl
-                \c_math_toggle_token 
+                $ % $ 
               }
           }
           { } 
@@ -9795,9 +9801,9 @@ version 2005/12/01 or later.
           { 
             \rotatebox { \fp_eval:n { - \l_tmpa_fp } }
               {
-                \c_math_toggle_token 
+                $ % $ 
                 \scriptstyle \l_@@_xdots_up_tl 
-                \c_math_toggle_token
+                $ % $
               }
           }
           { } 
@@ -9811,9 +9817,9 @@ version 2005/12/01 or later.
           {
             \rotatebox { \fp_eval:n { - \l_tmpa_fp } }
               {
-                \c_math_toggle_token 
+                $ % $ 
                 \scriptstyle \l_@@_xdots_down_tl
-                \c_math_toggle_token 
+                $ % $ 
               }
           }
           { } 
@@ -10597,9 +10603,9 @@ version 2005/12/01 or later.
             \exp_not:n
               {
                 \if_mode_math:
-                  \c_math_toggle_token
+                  $ % $
                   \bfseries \boldmath 
-                  \c_math_toggle_token
+                  $ % $
                 \else:
                   \bfseries \boldmath
                 \fi:
@@ -13916,7 +13922,7 @@ version 2005/12/01 or later.
 % composition is always done with an |{array}| (never with a |{minipage}|). 
 %    \begin{macrocode}
           { 
-            \c_math_toggle_token
+            $ % $
             \use:e 
               {
 %    \end{macrocode}
@@ -13928,7 +13934,7 @@ version 2005/12/01 or later.
               }
               #5 
             \end { array } 
-            \c_math_toggle_token 
+            $ % $ 
           }
       }
 %    \end{macrocode}
@@ -14083,13 +14089,13 @@ version 2005/12/01 or later.
         \hbox_gset:cn
           { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box }
           {
-            \c_math_toggle_token
+            $ % $
             \vcenter 
               { 
                 \box_use:c
                 { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box }
               } 
-            \c_math_toggle_token
+            $ % $
           }
       } 
   }
@@ -14157,7 +14163,7 @@ version 2005/12/01 or later.
                 {
                   \dim_zero:N \extrarowheight 
                   #4 
-                  \c_math_toggle_token  
+                  $ % $  
                   \use:e 
                     { 
                       \exp_not:N \begin { array } [ \l_@@_vpos_block_str ]
@@ -14165,7 +14171,7 @@ version 2005/12/01 or later.
                     } 
                     #5 
                   \end { array } 
-                  \c_math_toggle_token
+                  $ % $
                 }
               \group_end:
             }
@@ -15793,7 +15799,7 @@ version 2005/12/01 or later.
 % constructed with its right size.
 %    \begin{macrocode}
         \nullfont
-        \c_math_toggle_token
+        $ % $
         \@@_color:o \l_@@_delimiters_color_tl 
         \bool_if:nTF { #3 } { \left #1 } { \left . }
         \vcenter 
@@ -15805,7 +15811,7 @@ version 2005/12/01 or later.
                    \@width \c_zero_dim 
           }
         \bool_if:nTF { #3 } { \right . } { \right #1 }
-        \c_math_toggle_token
+        $ % $
       } 
       { }
       { }
@@ -16439,7 +16445,7 @@ version 2005/12/01 or later.
       { east }
       {
         \nullfont
-        \c_math_toggle_token
+        $ % $
         \@@_color:o \l_@@_delimiters_color_tl 
         \left #1
         \vcenter 
@@ -16450,7 +16456,7 @@ version 2005/12/01 or later.
                    \@width \c_zero_dim 
           }
         \right .
-        \c_math_toggle_token
+        $ % $
       } 
       { #2 }
       { }
@@ -16470,7 +16476,7 @@ version 2005/12/01 or later.
       { west }
       {
         \nullfont
-        \c_math_toggle_token
+        $ % $
         \colorlet { current-color } { . }
         \@@_color:o \l_@@_delimiters_color_tl 
         \left .
@@ -16484,7 +16490,7 @@ version 2005/12/01 or later.
         \right #1 
         \tl_if_empty:nF { #3 } { _ { \smash { #3 } } }
         ^ { \color { current-color } \smash { #4 } } 
-        \c_math_toggle_token
+        $ % $
       } 
       { #2 }
       { }
@@ -16646,14 +16652,14 @@ version 2005/12/01 or later.
                   { \begin { tabular } { c } #1 \end { tabular } }
                   { $ \begin { array } { c } #1 \end { array } $ }
                 \cr 
-                \c_math_toggle_token
+                $ % $
                 \overbrace 
                   { 
                     \hbox_to_wd:nn 
                       { \l_@@_x_final_dim - \l_@@_x_initial_dim } 
                       { } 
                   } 
-                \c_math_toggle_token
+                $ % $
               \cr
               }
             \group_end:
@@ -16688,14 +16694,14 @@ version 2005/12/01 or later.
             \halign
               { 
                 \hfil ## \hfil \crcr 
-                \c_math_toggle_token
+                $ % $
                 \underbrace 
                   { 
                     \hbox_to_wd:nn 
                       { \l_@@_x_final_dim - \l_@@_x_initial_dim } 
                       { }
                   } 
-                \c_math_toggle_token
+                $ % $
                 \cr
                 \bool_if:NTF \l_@@_tabular_bool 
                   { \begin { tabular } { c } #1 \end { tabular } }
@@ -18712,6 +18718,25 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\@@_msg_new:nn { caption-above~in~env }
+  {
+    The~key~'caption-above'~must~be~used~in~\token_to_str:N \NiceMatrixOptions.\\
+    That~key~will~be~ignored.    
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { show-cell-names }
+  {
+    There~is~no~key~'show-cell-names'~in~nicematrix.\\
+    You~should~use~the~command~\token_to_str:N \ShowCellNames\
+    in~the~\token_to_str:N \CodeBefore\ or~the~\token_to_str:N
+    \CodeAfter. \\
+    That~key~will~be~ignored.
+  }
+%    \end{macrocode}
+% 
 %    \begin{macrocode}
 \@@_msg_new:nn { Option~auto~for~columns-width }
   { 
