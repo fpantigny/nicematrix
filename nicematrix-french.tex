@@ -422,15 +422,15 @@ $A = \begin{pNiceMatrix}[baseline=2,no-cell-nodes]
 
 \interitem L'option |baseline| peut aussi prendre les trois valeurs spéciales
 |t|, |c| et |b|. Ces trois lettres peuvent aussi être utilisées de manière
-absolue comme pour l'option des environnements |{tabular}| et |{array}| de
-\pkg{array}. La valeur initiale de |baseline| est~|c|.
+absolue comme pour l'option des environnements |{tabular}| et |{array}| tels que définis
+par l'extension \pkg{array}. La valeur initiale de |baseline| est~|c|.
 
 
 \medskip
 Dans l'exemple suivant, on utilise l'option |t| (synonyme de |baseline=t|)
 immédiatement après un |\item| de liste. On remarquera que la présence d'un
 |\hline| initial n'empêche pas l'alignement sur la ligne de base de la première
-rangée (avec |{tabular}| ou |{array}| de \pkg{array}, il faut utiliser
+rangée (avec |{tabular}| ou |{array}| de l'extension \pkg{array}, il faut utiliser
 |\firsthline|).
 
 
@@ -565,6 +565,11 @@ dernière rangée (idem pour les colonnes).
 Dans |{NiceTabular}|, |{NiceTabular*}| et |{NiceTabularX}|, le contenu est
 composé en mode texte tandis que, dans les autres environnements, il est composé
 en mode mathématique.
+
+Pour des raisons techniques liées à LaTeX, on ne peut pas débuter le contenu du bloc par
+une commande |\color| (mais on peut envisager d'utiliser
+|\textcolor|).\footnote{cf. \url{https://tex.stackexchange.com/questions/674788}}
+
 \end{itemize}
 
 \interitem
@@ -725,8 +730,9 @@ Attention : cette clé n'implique pas du tout que le contenu du bloc sera
 transparent.
 \end{itemize}
 
-Il existe aussi des clés de positionnement horizontal et vertical du bloc qui
-sont décrites ci-dessous (cf. \ref{horizontal-pos-block} p.~\pageref{horizontal-pos-block}).
+Il existe aussi des clés de positionnement horizontal et vertical du contenu du
+bloc qui sont décrites ci-dessous (cf. \ref{horizontal-pos-block}
+p.~\pageref{horizontal-pos-block}).
 
 
 \interitem
@@ -737,7 +743,7 @@ certaines conditions comme expliqué plus loin.
 
 \medskip
 Dans l'exemple suivant, on a dû élargir à la main les colonnes 2 et 3 (avec la
-construction |w{c}{...}| de \pkg{array}).
+construction classique |w{c}{...}| de l'extension \pkg{array}).
 
 \medskip
 \begin{Code}
@@ -1443,7 +1449,7 @@ muguet & dahlia & souci \\
 \medskip
 En fait, dans cet exemple, au lieu de |\hline|, il aurait mieux valu utiliser la
 commande |\Hline|, fournie par \pkg{nicematrix} et décrite ci-dessous, car elle
-garantit un meilleur résultat dans les lecteurs de PDF aux bas niveaux de zoom.
+garantit un meilleur résultat dans les lecteurs de \textsc{pdf} aux bas niveaux de zoom.
 
 
 
@@ -1493,7 +1499,7 @@ p.~\pageref{custom-line}.\footnote{Remarque technique. Si l'utilisateur définit
   |\NewExpandableDocumentCommand| de LaTeX3, |\newcommand| de LaTeX ou même
   |\def| de TeX). Exemple : |\NewExpandableDocumentCommand{\RedLine}{}{\Hline[color=red]}|}
 
-De même que la commande |\Hline|, le specificateur «\verb+|+» admet entre crochets
+De même que la commande |\Hline|, le spécificateur «\verb+|+» admet entre crochets
 des options qui caractérisent le filet à tracer. 
 
 \medskip
@@ -1836,19 +1842,21 @@ une liste de paires de la forme \textsl{clé=valeur}. Il y a d'abord trois clés
 pour spécifier les outils qui permettront d'utiliser ce nouveau type de filet.
 
 \begin{itemize}
-\item la clé \Definition{command} indique le nom (sans la contre-oblique) d'une commande
-qui sera créée par \pkg{nicematrix} et que l'utilisateur pourra utiliser pour
-tracer des filets horizontaux (de manière similaire à |\hline|) ; 
+\item la clé \Definition{command} indique le nom (\emph{avec} ou \emph{sans} la
+contre-oblique) d'une commande qui sera créée par \pkg{nicematrix} et que
+l'utilisateur pourra utiliser pour tracer des filets horizontaux (de manière
+similaire à |\hline|) ;
 
-\item la clé \Definition{ccommand} indique le nom (sans la contre-oblique) d'une
-commande qui sera créée par \pkg{nicematrix} et que l'utilisateur pourra
-utiliser pour tracer des filets horizontaux partiels (de manière similaire à
-|\cline|, d'où le nom |ccommand|) : l'argument de cette commande est une liste
-d'intervalles de colonnes spécifiés par la syntaxe $i$ ou $i$-$j$ ;\footnote{Il
-  est recommandé de n'utiliser ces commandes qu'une seule fois par rangée car
-  chaque utilisation crée un espace vertical entre les rangées correspondant à
-  la largeur totale du trait qui sera tracé. De toutes manières, on peut tracer plusieurs
-  filets avec une unique utilisation de la commande.}
+\item la clé \Definition{ccommand} indique le nom (\emph{avec} ou \emph{sans} la
+contre-oblique) d'une commande qui sera créée par \pkg{nicematrix} et que
+l'utilisateur pourra utiliser pour tracer des filets horizontaux partiels (de
+manière similaire à |\cline|, d'où le nom |ccommand|) : l'argument de cette
+commande sera une liste d'intervalles de colonnes spécifiés par la syntaxe $i$ ou
+$i$-$j$ ;\footnote{Il est recommandé de n'utiliser ces commandes qu'une seule
+  fois par rangée car chaque utilisation crée un espace vertical entre les
+  rangées correspondant à la largeur totale du trait qui sera tracé. De toutes
+  manières, on peut tracer plusieurs filets avec une unique utilisation de la
+  commande.}
 
 \item la clé \Definition{letter} prend en argument une lettre\footnote{Les lettres
   suivantes ne sont pas autorisées : \verb+lcrpmbVX|()[]!@<>+} qui pourra être
@@ -1934,7 +1942,7 @@ s'applique aussi entre les deux filets).
   {
     custom-line = 
      {
-       command = DoubleRule , 
+       command = \DoubleRule , 
        multiplicity = 2 , 
        sep-color = white
      }
@@ -1946,7 +1954,7 @@ s'applique aussi entre les deux filets).
   {
     custom-line = 
      {
-       command = DoubleRule , 
+       command = \DoubleRule , 
        multiplicity = 2 , 
        \emph{sep-color = white}
      }
@@ -2848,9 +2856,9 @@ commandes similaires de \pkg{colortbl}).
 TeX (alors que si c'était la commande |\cellcolor| de \pkg{colortbl}, il
 faudrait au contaire une fonction \emph{fully expandable}).} ;
 \item \DefinitionCommande{rowcolor} à utiliser dans une case et qui colorie le
-reste de la rangée;\footnote{Si vous souhaitez une commande pour colorier les
+reste de la rangée\footnote{Si vous souhaitez une commande pour colorier les
   $n$~rangées suivantes, considérez la commande |\RowStyle| et sa clé
-  |fill|, p.~\pageref{RowStyle}.} 
+  |fill|, p.~\pageref{RowStyle}.} ;
 \item \DefinitionCommande{columncolor} à utiliser dans le préambule du tableau
 de la même manière que la commande homonyme de \pkg{colortbl} (néanmoins,
 contrairement à la commande |\columncolor| de \pkg{colortbl}, celle de
@@ -2859,7 +2867,8 @@ utilisée dans le préambule; en revanche, elle ne prend pas les deux arguments
 optionnels à la fin entre crochets pour du débord comme la commande de
 \pkg{colortbl}) ;
 \item \DefinitionCommande{rowcolors} qui prend pour arguments deux couleurs et
-colorie la suite du tableau avec ces deux couleurs ;
+colorie la suite du tableau avec ces deux couleurs (à utiliser après un éventuel
+|\hline|, |\Hline| ou |\toprule| !) ;
 \item \DefinitionCommande{rowlistcolors} qui prend pour argument une liste de
 couleurs et colorie la suite du tableau avec ces couleurs.\footnote{Quand la
   commande |\rowlistcolors| (ou la commande |\rowcolors|) est utilisée dans une
@@ -5693,7 +5702,7 @@ délimiteurs directement dans le préambule d'un environnement avec préambule (
 partie \ref{delimiters-in-preamble}, p.~\pageref{delimiters-in-preamble}).
 
 
-\subsection{Les compteurs iRow et jCol}
+\subsection{\texttt{\textbackslash AutoNiceMatrix} et les compteurs iRow et jCol}
 
 \label{iRow}
 \index{iRow (compteur LaTeX)}

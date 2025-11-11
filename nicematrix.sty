@@ -2239,7 +2239,7 @@
         \dim_compare:nNnT { \l__nicematrix_tabular_width_dim } = { \c_zero_dim }
           {
             \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
-              { > { \__nicematrix_err_too_much_cols: } l }
+              { > { \__nicematrix_err_too_many_cols: } l }
           }
       }
   }
@@ -6609,6 +6609,16 @@
     \str_clear_new:N \l__nicematrix_letter_str
     \tl_clear_new:N \l__nicematrix_other_keys_tl
     \keys_set_known:nnN { nicematrix / custom-line } { #1 } \l__nicematrix_other_keys_tl
+    \str_if_eq:eeT \c_backslash_str { \str_head:N \l__nicematrix_command_str }
+      {
+        \str_set:Ne \l__nicematrix_command_str { \str_tail:N \l__nicematrix_command_str }
+        \str_set:Ne \l__nicematrix_command_str { \str_range:Nnn \l__nicematrix_command_str { 1 } { -2 } }
+      }
+    \str_if_eq:eeT \c_backslash_str { \str_head:N \l__nicematrix_ccommand_str }
+      {
+        \str_set:Ne \l__nicematrix_ccommand_str { \str_tail:N \l__nicematrix_ccommand_str }
+        \str_set:Ne \l__nicematrix_ccommand_str { \str_range:Nnn \l__nicematrix_ccommand_str { 1 } { -2 } }
+      }
     \bool_lazy_all:nTF
       {
         { \str_if_empty_p:N \l__nicematrix_letter_str }
@@ -9657,16 +9667,16 @@
   }
 \seq_gset_map_e:NNn \g__nicematrix_types_of_matrix_seq \g__nicematrix_types_of_matrix_seq
   { \tl_to_str:n { #1 } }
-\cs_new_protected:Npn \__nicematrix_err_too_much_cols:
+\cs_new_protected:Npn \__nicematrix_err_too_many_cols:
   {
     \seq_if_in:NoF \g__nicematrix_types_of_matrix_seq \g__nicematrix_name_env_str
-      { \__nicematrix_fatal:nn { too~much~cols~for~array } }
+      { \__nicematrix_fatal:nn { too~many~cols~for~array } }
     \int_compare:nNnT { \l__nicematrix_last_col_int } = { -2 }
-      { \__nicematrix_fatal:n { too~much~cols~for~matrix } }
+      { \__nicematrix_fatal:n { too~many~cols~for~matrix } }
     \int_compare:nNnT { \l__nicematrix_last_col_int } = { -1 }
-      { \__nicematrix_fatal:n { too~much~cols~for~matrix } }
+      { \__nicematrix_fatal:n { too~many~cols~for~matrix } }
     \bool_if:NF \l__nicematrix_last_col_without_value_bool
-      { \__nicematrix_fatal:n { too~much~cols~for~matrix~with~last~col } }
+      { \__nicematrix_fatal:n { too~many~cols~for~matrix~with~last~col } }
   }
 \cs_new:Npn \__nicematrix_message_hdotsfor:
   {
@@ -9713,9 +9723,9 @@
     in~your~\__nicematrix_full_name_env: .~
     However,~you~can~go~on.
   }
-\__nicematrix_msg_new:nn { too~much~cols~for~matrix~with~last~col }
+\__nicematrix_msg_new:nn { too~many~cols~for~matrix~with~last~col }
   {
-    Too~much~columns.\\
+    Too~many~columns.\\
     In~the~row~ \int_eval:n { \c@iRow },~
     you~try~to~use~more~columns~
     than~allowed~by~your~ \__nicematrix_full_name_env: .
@@ -9723,9 +9733,9 @@
     The~maximal~number~of~columns~is~ \int_eval:n { \l__nicematrix_last_col_int - 1 }~
     (plus~the~exterior~columns).~This~error~is~fatal.
   }
-\__nicematrix_msg_new:nn { too~much~cols~for~matrix }
+\__nicematrix_msg_new:nn { too~many~cols~for~matrix }
   {
-    Too~much~columns.\\
+    Too~many~columns.\\
     In~the~row~ \int_eval:n { \c@iRow } ,~
     you~try~to~use~more~columns~than~allowed~by~your~ \__nicematrix_full_name_env: .
     \__nicematrix_message_hdotsfor: \
@@ -9736,9 +9746,9 @@
     (use~ \token_to_str:N \setcounter \ to~change~that~value).~
     This~error~is~fatal.
   }
-\__nicematrix_msg_new:nn { too~much~cols~for~array }
+\__nicematrix_msg_new:nn { too~many~cols~for~array }
   {
-    Too~much~columns.\\
+    Too~many~columns.\\
     In~the~row~ \int_eval:n { \c@iRow } ,~
     ~you~try~to~use~more~columns~than~allowed~by~your~
     \__nicematrix_full_name_env: . \__nicematrix_message_hdotsfor: \ The~maximal~number~of~columns~is~

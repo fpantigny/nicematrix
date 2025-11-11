@@ -5136,7 +5136,7 @@ version 2005/12/01 or later.
         \dim_compare:nNnT { \l_@@_tabular_width_dim } = { \c_zero_dim }
           {
             \tl_gput_right:Nn \g_@@_array_preamble_tl
-              { > { \@@_err_too_much_cols: } l }
+              { > { \@@_err_too_many_cols: } l }
           }
       }
   }
@@ -12528,6 +12528,19 @@ version 2005/12/01 or later.
     \str_clear_new:N \l_@@_letter_str
     \tl_clear_new:N \l_@@_other_keys_tl
     \keys_set_known:nnN { nicematrix / custom-line } { #1 } \l_@@_other_keys_tl
+    \str_if_eq:eeT \c_backslash_str { \str_head:N \l_@@_command_str }
+      {
+        \str_set:Ne \l_@@_command_str { \str_tail:N \l_@@_command_str }
+%    \end{macrocode}
+% We delete the last character which is a space.
+%    \begin{macrocode}
+        \str_set:Ne \l_@@_command_str { \str_range:Nnn \l_@@_command_str { 1 } { -2 } } 
+      } 
+    \str_if_eq:eeT \c_backslash_str { \str_head:N \l_@@_ccommand_str }
+      {
+        \str_set:Ne \l_@@_ccommand_str { \str_tail:N \l_@@_ccommand_str }
+        \str_set:Ne \l_@@_ccommand_str { \str_range:Nnn \l_@@_ccommand_str { 1 } { -2 } } 
+      } 
 %    \end{macrocode}
 % If the final user only wants to draw horizontal rules, he does not need to
 % specify a letter (for the vertical rules in the preamble of the array). On the
@@ -12553,9 +12566,9 @@ version 2005/12/01 or later.
   {
     letter .str_set:N = \l_@@_letter_str , 
     letter .value_required:n = true ,
-    command .str_set:N = \l_@@_command_str , 
+    command .str_set:N = \l_@@_command_str ,
     command .value_required:n = true ,
-    ccommand .str_set:N = \l_@@_ccommand_str , 
+    ccommand .str_set:N = \l_@@_ccommand_str ,
     ccommand .value_required:n = true ,
   }
 %    \end{macrocode}
@@ -17287,22 +17300,22 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% If the user uses too much columns, the command |\@@_err_too_much_cols:| is
+% If the user uses too much columns, the command |\@@_err_too_many_cols:| is
 % triggered. This command raises an error but also tries to give the best
 % information to the user in the error message. The command |\seq_if_in:NoF| is
 % not expandable and that's why we can't put it in the error message itself. We
 % have to do the test before the |\@@_fatal:n|.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_err_too_much_cols:
+\cs_new_protected:Npn \@@_err_too_many_cols:
   { 
     \seq_if_in:NoF \g_@@_types_of_matrix_seq \g_@@_name_env_str
-      { \@@_fatal:nn { too~much~cols~for~array } }
+      { \@@_fatal:nn { too~many~cols~for~array } }
     \int_compare:nNnT { \l_@@_last_col_int } = { -2 }
-      { \@@_fatal:n { too~much~cols~for~matrix } }
+      { \@@_fatal:n { too~many~cols~for~matrix } }
     \int_compare:nNnT { \l_@@_last_col_int } = { -1 }
-      { \@@_fatal:n { too~much~cols~for~matrix } }
+      { \@@_fatal:n { too~many~cols~for~matrix } }
     \bool_if:NF \l_@@_last_col_without_value_bool
-      { \@@_fatal:n { too~much~cols~for~matrix~with~last~col } }
+      { \@@_fatal:n { too~many~cols~for~matrix~with~last~col } }
   }
 %    \end{macrocode}
 %
@@ -17379,9 +17392,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 %    \begin{macrocode}
-\@@_msg_new:nn { too~much~cols~for~matrix~with~last~col }
+\@@_msg_new:nn { too~many~cols~for~matrix~with~last~col }
   { 
-    Too~much~columns.\\
+    Too~many~columns.\\
     In~the~row~ \int_eval:n { \c@iRow },~
     you~try~to~use~more~columns~
     than~allowed~by~your~ \@@_full_name_env: .
@@ -17393,9 +17406,9 @@ version 2005/12/01 or later.
 % 
 % 
 %    \begin{macrocode}
-\@@_msg_new:nn { too~much~cols~for~matrix }
+\@@_msg_new:nn { too~many~cols~for~matrix }
   { 
-    Too~much~columns.\\
+    Too~many~columns.\\
     In~the~row~ \int_eval:n { \c@iRow } ,~
     you~try~to~use~more~columns~than~allowed~by~your~ \@@_full_name_env: . 
     \@@_message_hdotsfor: \ 
@@ -17410,9 +17423,9 @@ version 2005/12/01 or later.
 %
 % \medskip
 %    \begin{macrocode}
-\@@_msg_new:nn { too~much~cols~for~array }
+\@@_msg_new:nn { too~many~cols~for~array }
   { 
-    Too~much~columns.\\
+    Too~many~columns.\\
     In~the~row~ \int_eval:n { \c@iRow } ,~
     ~you~try~to~use~more~columns~than~allowed~by~your~
     \@@_full_name_env: . \@@_message_hdotsfor: \ The~maximal~number~of~columns~is~ 
@@ -17888,7 +17901,7 @@ version 2005/12/01 or later.
     Your~ \@@_full_name_env: \ is~empty.~This~error~is~fatal. 
   }
 %    \end{macrocode}
-% 
+%
 %
 %    \begin{macrocode}
 \@@_msg_new:nn { No~letter~and~no~command }

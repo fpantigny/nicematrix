@@ -513,6 +513,10 @@ block extends until the last row (idem for the columns).
 \item The second argument is the content of the block. In |{NiceTabular}|,
 |{NiceTabular*}| and |{NiceTabularX}|, the content of the block is composed in
 text mode whereas, in the other environments, it is composed in math mode.
+
+Due to technical reasons of LaTeX, it's not possible to use |\color| at the
+beginnning of the content of the block (but it's possible to use
+|\textcolor|).\footnote{cf. \url{https://tex.stackexchange.com/questions/674788}}
 \end{itemize}
 
 
@@ -1766,18 +1770,20 @@ options of individual environments. That key takes in as argument a list of
 will be used to use that new type of rule.
 
 \begin{itemize}
-\item the key \Definition{command} is the name (without the backslash) of a
-command that will be created by \pkg{nicematrix} and that will be available for
-the final user in order to draw horizontal rules (similarly to |\hline|);
+\item the key \Definition{command} is the name (\emph{with} or \emph{without}
+the backslash) of a command that will be created by \pkg{nicematrix} and that
+will be available for the final user in order to draw horizontal rules
+(similarly to |\hline|);
 
-\item the key \Definition{ccommand} is the name (without the backslash) of a
-command that will be created by \pkg{nicematrix} and that will be available for
-the final user to order to draw partial horizontal rules (similarly to |\cline|,
-hence the name |ccommand|): the argument of that command is a list of intervals
-of columns specified by the syntax~$i$ or $i$-$j$.\footnote{It's recommended to
-  use such commands only once in a row because each use will create space
-  between the rows corresponding to the total width of the rule. Likewise, it's
-  possible to draw several rules with only one use of the command.}
+\item the key \Definition{ccommand} is the name (\emph{with} or \emph{without}
+the backslash) of a command that will be created by \pkg{nicematrix} and that
+will be available for the final user to order to draw partial horizontal rules
+(similarly to |\cline|, hence the name |ccommand|): the argument of that command
+will be list of intervals of columns specified by the syntax~$i$ or
+$i$-$j$.\footnote{It's recommended to use such commands only once in a row
+  because each use will create space between the rows corresponding to the total
+  width of the rule. Likewise, it's possible to draw several rules with only one
+  use of the command.}
 
 \item the key \Definition{letter} takes in as argument a letter\footnote{The following
 letters are forbidden: \verb+lcrpmbVX|()[]!@<>+} that the user will use in
@@ -2755,7 +2761,8 @@ environment with the same syntax as the corresponding command of \pkg{colortbl}
 the array; on the other hand, the two final optional arguments for fixing offset
 are not supported);
 \item \DefinitionCommand{rowcolors} which takes in as arguments two colors and
-color the rest of the tabular with those colors;
+color the rest of the tabular with those colors (must be used after a potential
+|\hline|, |\Hline| or |\toprule|!) ;
 \item \DefinitionCommand{rowlistcolors} which takes in as argument a color and
 color the rest of the tabular with the colors of that list of
 colors.\footnote{When the command |\rowlistcolors| (or the command |\rowcolors|)
