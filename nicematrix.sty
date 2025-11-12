@@ -1122,7 +1122,10 @@
     matrix / columns-type .value_required:n = true ,
     caption-above .bool_set:N = \l__nicematrix_caption_above_bool ,
     caption-above .default:n = true ,
-    unknown .code:n  = \__nicematrix_error:n { Unknown~key~for~NiceMatrixOptions }
+    unknown .code:n  =
+      \__nicematrix_unknown_key:nn
+        { nicematrix / Global , nicematrix / NiceMatrixOptions }
+        { Unknown~key~for~NiceMatrixOptions }
   }
 \NewDocumentCommand \NiceMatrixOptions { m }
   { \keys_set:nn { nicematrix / NiceMatrixOptions } { #1 } }
@@ -1157,7 +1160,10 @@
                        \int_zero:N \l__nicematrix_last_col_int ,
     r .code:n = \__nicematrix_error:n { r~or~l~with~preamble } ,
     l .code:n = \__nicematrix_error:n { r~or~l~with~preamble } ,
-    unknown .code:n = \__nicematrix_error:n { Unknown~key~for~NiceArray }
+    unknown .code:n =
+      \__nicematrix_unknown_key:nn
+        { nicematrix / NiceArray , nicematrix / Global , nicematrix / environments}
+        { Unknown~key~for~NiceArray }
   }
 \keys_define:nn { nicematrix / pNiceArray }
   {
@@ -1176,7 +1182,10 @@
     small .value_forbidden:n = true ,
     r .code:n = \__nicematrix_error:n { r~or~l~with~preamble } ,
     l .code:n = \__nicematrix_error:n { r~or~l~with~preamble } ,
-    unknown .code:n = \__nicematrix_error:n { Unknown~key~for~NiceMatrix }
+    unknown .code:n =
+      \__nicematrix_unknown_key:nn
+        { nicematrix / pNiceArray , nicematrix / Global , nicematrix / environments }
+        { Unknown~key~for~NiceMatrix }
   }
 \keys_define:nn { nicematrix / NiceTabular }
   {
@@ -1197,7 +1206,10 @@
                        \int_zero:N \l__nicematrix_last_col_int ,
     r .code:n = \__nicematrix_error:n { r~or~l~with~preamble } ,
     l .code:n = \__nicematrix_error:n { r~or~l~with~preamble } ,
-    unknown .code:n = \__nicematrix_error:n { Unknown~key~for~NiceTabular }
+    unknown .code:n =
+      \__nicematrix_unknown_key:nn
+        { nicematrix / NiceTabular , nicematrix / Global , nicematrix / environments }
+        { Unknown~key~for~NiceTabular }
   }
 \keys_define:nn { nicematrix / CodeAfter }
   {
@@ -9653,11 +9665,35 @@
           { \__nicematrix_error:n { underscore~after~nicematrix } }
       }
   }
+\cs_new_protected:Npn \__nicematrix_unknown_key:nn #1 #2
+  {
+    \keys_if_exist:neTF { #1 } { \str_lowercase:f { \l_keys_key_str } }
+      { \__nicematrix_error:n { lowercase~key~exists } }
+      { \__nicematrix_error:n { #2 } }
+  }
+\cs_set_protected:Npn \__nicematrix_unknown_key:nn #1 #2
+  {
+    \bool_set_false:N \l_tmpa_bool
+    \clist_map_inline:nn { #1 }
+      {
+        \keys_if_exist:neT { ##1 } { \str_lowercase:f { \l_keys_key_str } }
+          {
+            \__nicematrix_error:n { lowercase~key~exists }
+            \bool_set_true:N \l_tmpa_bool
+            \clist_map_break:
+          }
+      }
+    \bool_if:NF \l_tmpa_bool { \__nicematrix_error:n { #2 } }
+  }
+\__nicematrix_msg_new:nn { lowercase~key~exists }
+  {
+    The~key~'\l_keys_key_str'~does~not~exists.~It~will~be~ignored.\\
+    Maybe~you~want~to~use~the~key~'\str_lowercase:f { \l_keys_key_str }'.
+  }
 \str_const:Ne \c__nicematrix_available_keys_str
   {
-    \bool_if:nTF { ! \g__nicematrix_messages_for_Overleaf_bool }
+    \bool_if:nT { ! \g__nicematrix_messages_for_Overleaf_bool }
       { For~a~list~of~the~available~keys,~type~H~<return>. }
-      { }
   }
 \seq_new:N \g__nicematrix_types_of_matrix_seq
 \seq_gset_from_clist:Nn \g__nicematrix_types_of_matrix_seq

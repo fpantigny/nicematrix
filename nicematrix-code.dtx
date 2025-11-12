@@ -2550,6 +2550,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% 
 %
 % \bigskip
 %    \begin{macrocode}
@@ -2921,7 +2922,10 @@ version 2005/12/01 or later.
     matrix / columns-type .value_required:n = true ,
     caption-above .bool_set:N = \l_@@_caption_above_bool ,
     caption-above .default:n = true , 
-    unknown .code:n  = \@@_error:n { Unknown~key~for~NiceMatrixOptions } 
+    unknown .code:n  =
+      \@@_unknown_key:nn
+        { nicematrix / Global , nicematrix / NiceMatrixOptions }
+        { Unknown~key~for~NiceMatrixOptions }
   }
 %    \end{macrocode}
 %
@@ -2988,7 +2992,10 @@ version 2005/12/01 or later.
                        \int_zero:N \l_@@_last_col_int ,
     r .code:n = \@@_error:n { r~or~l~with~preamble } ,
     l .code:n = \@@_error:n { r~or~l~with~preamble } ,
-    unknown .code:n = \@@_error:n { Unknown~key~for~NiceArray } 
+    unknown .code:n =
+      \@@_unknown_key:nn
+        { nicematrix / NiceArray , nicematrix / Global , nicematrix / environments}
+        { Unknown~key~for~NiceArray } 
   }
 %    \end{macrocode}
 %
@@ -3012,7 +3019,10 @@ version 2005/12/01 or later.
     small .value_forbidden:n = true ,
     r .code:n = \@@_error:n { r~or~l~with~preamble } ,
     l .code:n = \@@_error:n { r~or~l~with~preamble } ,
-    unknown .code:n = \@@_error:n { Unknown~key~for~NiceMatrix } 
+    unknown .code:n =
+      \@@_unknown_key:nn
+        { nicematrix / pNiceArray , nicematrix / Global , nicematrix / environments }
+        { Unknown~key~for~NiceMatrix } 
   }
 %    \end{macrocode}
 %
@@ -3044,7 +3054,10 @@ version 2005/12/01 or later.
                        \int_zero:N \l_@@_last_col_int ,
     r .code:n = \@@_error:n { r~or~l~with~preamble } ,
     l .code:n = \@@_error:n { r~or~l~with~preamble } ,
-    unknown .code:n = \@@_error:n { Unknown~key~for~NiceTabular } 
+    unknown .code:n =
+      \@@_unknown_key:nn
+        { nicematrix / NiceTabular , nicematrix / Global , nicematrix / environments }      
+        { Unknown~key~for~NiceTabular } 
   }
 %    \end{macrocode}
 %
@@ -17279,12 +17292,45 @@ version 2005/12/01 or later.
 % \bigskip
 % \section{Error messages of the package}
 %
+% \bigskip
+% |#1| is a clist of names of sets of keys and |#2| is the error message
+% to send.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_unknown_key:nn #1 #2
+  {
+    \keys_if_exist:neTF { #1 } { \str_lowercase:f { \l_keys_key_str } }
+      { \@@_error:n { lowercase~key~exists } }
+      { \@@_error:n { #2 } }
+  }
+\cs_set_protected:Npn \@@_unknown_key:nn #1 #2
+  {
+    \bool_set_false:N \l_tmpa_bool 
+    \clist_map_inline:nn { #1 }
+      {
+        \keys_if_exist:neT { ##1 } { \str_lowercase:f { \l_keys_key_str } }
+          {
+            \@@_error:n { lowercase~key~exists }
+            \bool_set_true:N \l_tmpa_bool
+            \clist_map_break:
+          }
+      }
+    \bool_if:NF \l_tmpa_bool { \@@_error:n { #2 } } 
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { lowercase~key~exists }
+  {
+    The~key~'\l_keys_key_str'~does~not~exists.~It~will~be~ignored.\\
+    Maybe~you~want~to~use~the~key~'\str_lowercase:f { \l_keys_key_str }'.
+  }
+%    \end{macrocode}
+% 
 %    \begin{macrocode}
 \str_const:Ne \c_@@_available_keys_str 
   {
-    \bool_if:nTF { ! \g_@@_messages_for_Overleaf_bool }
+    \bool_if:nT { ! \g_@@_messages_for_Overleaf_bool }
       { For~a~list~of~the~available~keys,~type~H~<return>. }
-      { } 
   }
 %    \end{macrocode}
 % 
