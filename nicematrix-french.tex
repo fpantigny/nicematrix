@@ -1235,8 +1235,9 @@ préféré le codage suivant :
   & \Block{1-5}{les cinq premiers 
                  entiers naturels} \\ 
 3 & \Block{1-5}{un & deux & trois} \\
-4 & \Block{1-5}{un& deux & trois & quatre} \\
-5 & un & deux & trois & quatre & cinq \\
+4 & \Block{1-5}{un&deux&trois&quatre} \\
+5 & un & deux & trois
+  & \cellcolor{red!15} quatre & cinq \\
 \end{NiceTabular}
 \end{Code}
 %
@@ -1245,12 +1246,16 @@ préféré le codage suivant :
   & \Block{1-5}{les cinq premiers entiers naturels} \\ 
 3 & \Block{1-5}{un & deux & trois} \\
 4 & \Block{1-5}{un& deux & trois & quatre} \\
-5 & un & deux & trois & quatre & cinq \\
+5 & un & deux & trois & \cellcolor{red!15} quatre & cinq \\
 \end{NiceTabular}
 
 \medskip
 Dans ce codage, il s'agit de blocs de taille |1-5| qui sont coupés en trois et
 quatre sous-blocs.
+
+\medskip
+On a illustré la possibilité de colorier une sous-cellule en utilisant la commande
+|\cellcolor|.
 
 
 \index{Blocs@\textbf{Blocs dans les tableaux}|)}

@@ -203,13 +203,13 @@ final user only has to load the package with |\usepackage{nicematrix}|.
 
 
 \medskip
-The idea of \pkg{nicematrix} is to create \textsc{pgf} nodes under the cells
-and the positions of the rules of the tabular created by \pkg{array} and to
-use these nodes to develop new features. As usual with \textsc{pgf}, the
-coordinates of these nodes are written in the |aux| to be used on the next
-compilation and that's why \pkg{nicematrix} may need \textbf{several
-compilations}\footnote{If you use Overleaf, Overleaf will do automatically
-a sufficient number of compilations.}. One must not use the command |\nofiles|
+The idea of \pkg{nicematrix} is to create \textsc{pgf} nodes under the cells and
+the positions of the rules of the tabular created by \pkg{array} and to use
+these nodes to develop new features. As usual with \textsc{pgf}, the coordinates
+of these nodes are written in the |aux| to be used on the next compilation and
+that's why \pkg{nicematrix} may need \textbf{several compilations}\footnote{If
+  you use Overleaf, Overleaf will do automatically a sufficient number of
+  compilations (by using |latexmk|).}. One must not use the command |\nofiles|
 (which prevents the creation of the |aux| file).
 
 \medskip
@@ -1136,7 +1136,7 @@ braced are protected but not those in an environment.\footnote{It's not possible
 
 
 \bigskip
-With the ampserand |&|, it's possible to divide horizontally a block in
+With the ampersand |&|, it's possible to divide horizontally a block in
 sub-blocks of \emph{the same size}.
 
 \medskip
@@ -1171,7 +1171,8 @@ be prefered.
                  natural numbers} \\ 
 3 & \Block{1-5}{one & two & three} \\
 4 & \Block{1-5}{one& two & three & four} \\
-5 & one & two & three & four & five \\
+5 & one & two & three
+  & \cellcolor{red!15} four & five \\
 \end{NiceTabular}
 \end{Code}
 %
@@ -1180,12 +1181,16 @@ be prefered.
   & \Block{1-5}{the five first natural numbers} \\ 
 3 & \Block{1-5}{one & two & three} \\
 4 & \Block{1-5}{one& two & three & four} \\
-5 & one & two & three & four & five \\
+5 & one & two & three & \cellcolor{red!15} four & five \\
 \end{NiceTabular}
 
 \medskip
 In this code, we have blocks of size |1-5| which are divided into three or four
-sub-blocks. 
+sub-blocks.
+
+\smallskip
+We have illustrated the fact that it's possible to color the background of a subcell
+of the block by using the key |\cellcolor|.
 
 
 
