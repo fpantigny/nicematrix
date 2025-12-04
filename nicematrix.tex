@@ -589,7 +589,7 @@ with that color;
 the key \Definition{opacity} sets the opacity of the filling color specified by
 |fill|;\footnote{Caution: that feature creates instructions of
   transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
-  support such instructions.} 
+  support such instructions. The  opacity is applied by using |\pgfsetfillopacity|.} 
 \item \index{draw (key of \texttt{\textbackslash Block})}
 the key \Definition{draw} takes in as value a color and strokes the
 frame of the block with that color (the default value of that key is the
@@ -2204,7 +2204,7 @@ the extension \pkg{xcolor};
 a specification of opacity of the form \texttt{opacity =
   \textsl{value}}.\footnote{Caution: that feature creates instructions of
   transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
-  support such instructions.} 
+  support such instructions. The opacity is applied by using |\pgfsetfillopacity|.} 
 \end{itemize}
 
 \bigskip
@@ -2887,7 +2887,8 @@ corresponding global keys (cf. p.~\pageref{cell-space}).
 The key \Definition{fill} (alias: \Definition{rowcolor}) sets the color of the
 background and \Definition{opacity}\footnote{Caution: that feature creates instructions of
   transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
-  support such instructions.} sets its opacity. 
+  support such instructions. The opacity is applied by using |\pgfsetfillopacity|.}
+sets its opacity. 
 
 \item If the key \Definition{rounded-corners} is used, that background will have
 rounded-corners.
@@ -3165,7 +3166,8 @@ section~\ref{X-columns}, p.~\pageref{X-columns}.
 \bigskip
 One should remark that the extension \pkg{varwidth} (at least in its version
 0.92) has some problems: for instance, with LuaLaTeX, it does not work when
-the content begins with |\color|.
+the content begins with |\color|. Moreover, \pkg{varwidth} must be loaded after
+the package \pkg{array} (itself loaded by \pkg{nicematrix}).
 
 
 \subsection{The columns X}

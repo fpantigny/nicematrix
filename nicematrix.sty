@@ -100,6 +100,8 @@
 \str_const:Nn \c__nicematrix_r_str { r }
 \str_const:Nn \c__nicematrix_c_str { c }
 \str_const:Nn \c__nicematrix_l_str { l }
+\tl_const:Nn \c__nicematrix_brace_tl { nicematrix/brace }
+\tl_const:Nn \c__nicematrix_mirrored_brace_tl { nicematrix/mirrored-brace }
 \tl_new:N \l__nicematrix_argspec_tl
 \cs_generate_variant:Nn \seq_set_split:Nnn { N o }
 \cs_generate_variant:Nn \str_set:Nn { N o }
@@ -403,6 +405,7 @@
 \fp_new:N \g__nicematrix_total_X_weight_fp
 \bool_new:N \l__nicematrix_X_columns_aux_bool
 \dim_new:N \l__nicematrix_X_columns_dim
+\dim_new:N \l__nicematrix_brace_shift_dim
 \bool_new:N \g__nicematrix_after_col_zero_bool
 \bool_new:N \g__nicematrix_row_of_col_done_bool
 \bool_new:N \g__nicematrix_not_empty_cell_bool
@@ -802,6 +805,8 @@
 \bool_new:N \l__nicematrix_delimiters_max_width_bool
 \keys_define:nn { nicematrix / xdots }
   {
+    brace-shift .dim_set:N = \l__nicematrix_brace_shift_dim ,
+    brace-shift .value_required:n = true ,
     Vbrace .bool_set:N = \l__nicematrix_Vbrace_bool ,
     shorten-start .code:n =
       \hook_gput_code:nnn { begindocument } { . }
@@ -4817,6 +4822,45 @@
       }
     \tl_if_empty:nF { #4 }
       { \tikzset { __nicematrix_node_middle / .append~style = { fill = white } } }
+    \dim_zero:N \l_tmpa_dim
+    \dim_zero:N \l_tmpb_dim
+    \bool_lazy_or:nnT
+      { \tl_if_eq_p:NN \l__nicematrix_xdots_line_style_tl \c__nicematrix_brace_tl }
+      { \tl_if_eq_p:NN \l__nicematrix_xdots_line_style_tl \c__nicematrix_mirrored_brace_tl }
+      {
+        \dim_set:Nn \l__nicematrix_l_dim
+          {
+            \fp_to_dim:n
+              {
+                sqrt
+                 (
+                   ( \l__nicematrix_x_final_dim - \l__nicematrix_x_initial_dim ) ^ 2
+                      +
+                   ( \l__nicematrix_y_final_dim - \l__nicematrix_y_initial_dim ) ^ 2
+                 )
+              }
+          }
+        \dim_set:Nn \l_tmpa_dim
+          {
+            \c_zero_dim - ( \l__nicematrix_y_final_dim - \l__nicematrix_y_initial_dim )
+            * \dim_ratio:nn { \l__nicematrix_brace_shift_dim } { \l__nicematrix_l_dim }
+          }
+        \dim_set:Nn \l_tmpb_dim
+          {
+            ( \l__nicematrix_x_final_dim - \l__nicematrix_x_initial_dim )
+            * \dim_ratio:nn { \l__nicematrix_brace_shift_dim } { \l__nicematrix_l_dim }
+          }
+      }
+    \tl_if_eq:NNT \l__nicematrix_xdots_line_style_tl \c__nicematrix_mirrored_brace_tl
+      {
+        \dim_set:Nn \l_tmpa_dim { - \l_tmpa_dim }
+        \dim_set:Nn \l_tmpb_dim { - \l_tmpb_dim }
+      }
+    \use:e
+      {
+        \exp_not:N \begin { scope }
+          [ shift = {(\dim_use:N \l_tmpa_dim,\dim_use:N \l_tmpb_dim)} ] % added 2025-12-04
+      }
     \draw
       [ #1 ]
           ( \l__nicematrix_x_initial_dim , \l__nicematrix_y_initial_dim )
@@ -4824,6 +4868,7 @@
           node [ __nicematrix_node_below ] { $ \scriptstyle #3 $ }
           node [ __nicematrix_node_above ] { $ \scriptstyle #2 $ }
           ( \l__nicematrix_x_final_dim , \l__nicematrix_y_final_dim ) ;
+    \end { scope }
     \end { scope }
   }
 \cs_generate_variant:Nn \__nicematrix_draw_unstandard_dotted_line:nnnn { n o o o }
@@ -5835,7 +5880,7 @@
         \def \l_tmpa_tl { ##1 }
         \tl_if_in:NnTF \l_tmpa_tl { - }
           { \__nicematrix_cut_on_hyphen:w ##1 \q_stop }
-          { \def \l_tmpb_tl { ##1 } } % 2025-04-16
+          { \def \l_tmpb_tl { ##1 } }
         \tl_if_empty:NTF \l_tmpa_tl
           { \def \l_tmpa_tl { 1 } }
           {
@@ -6632,12 +6677,15 @@
     \str_if_eq:eeT \c_backslash_str { \str_head:N \l__nicematrix_command_str }
       {
         \str_set:Ne \l__nicematrix_command_str { \str_tail:N \l__nicematrix_command_str }
-        \str_set:Ne \l__nicematrix_command_str { \str_range:Nnn \l__nicematrix_command_str { 1 } { -2 } }
+        \str_set:Ne \l__nicematrix_command_str
+          { \str_range:Nnn \l__nicematrix_command_str { 1 } { -2 } }
       }
     \str_if_eq:eeT \c_backslash_str { \str_head:N \l__nicematrix_ccommand_str }
       {
-        \str_set:Ne \l__nicematrix_ccommand_str { \str_tail:N \l__nicematrix_ccommand_str }
-        \str_set:Ne \l__nicematrix_ccommand_str { \str_range:Nnn \l__nicematrix_ccommand_str { 1 } { -2 } }
+        \str_set:Ne \l__nicematrix_ccommand_str
+          { \str_tail:N \l__nicematrix_ccommand_str }
+        \str_set:Ne \l__nicematrix_ccommand_str
+          { \str_range:Nnn \l__nicematrix_ccommand_str { 1 } { -2 } }
       }
     \bool_lazy_all:nTF
       {
@@ -9406,6 +9454,7 @@
     shorten .code:n = ,
     shorten-start .code:n = ,
     shorten-end .code:n = ,
+    brace-shift .code:n = ,
     unknown .code:n = \__nicematrix_fatal:n { Unknown~key~for~Hbrace }
   }
 \NewExpandableDocumentCommand { \__nicematrix_Hbrace } { O { } m m }
@@ -9843,6 +9892,7 @@
 \__nicematrix_msg_new:nn { Misuse~of~Hline }
   {
     Misuse~of~Hline. \\
+    Error~in~your~row~ \int_eval:n { \c@iRow }. \\
     \token_to_str:N \Hline\ must~be~used~only~at~the~beginning~of~a~row.\\
     That~error~is~fatal.
   }
@@ -10035,7 +10085,7 @@
     Unknown~key.\\
     You~have~used~the~key~' \l_keys_key_str '~but~the~only~
     keys~allowed~for~the~commands~ \token_to_str:N \Hbrace \
-    and~ \token_to_str:N \Vbrace \ are:~'color',~
+    and~ \token_to_str:N \Vbrace \ are:~'brace-shift',~'color',~
     'horizontal-label(s)',~'shorten'~'shorten-end'~
     and~'shorten-start'.\\
     That~error~is~fatal.

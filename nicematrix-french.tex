@@ -640,7 +640,8 @@ avec cette couleur ;
 la clé \Definition{opacity} fixe l'opacité de la couleur de remplissage donnée
 par |fill| ;\footnote{Attention : cette fonctionnalité génère des
   instructions de transparence dans le \textsc{pdf} résultant et certains
-  lecteurs de \textsc{pdf} n'acceptent pas la transparence.}
+  lecteurs de \textsc{pdf} n'acceptent pas la transparence. L'application de
+  l'opacité est faite par |\pgfsetfillopacity|}
 \item \index{draw (clé de \texttt{\textbackslash Block})}
 la clé \Definition{draw} prend en argument une couleur et trace le cadre
 avec cette couleur (la valeur par défaut de cette clé est la couleur courante
@@ -2290,7 +2291,8 @@ l'extension \pkg{xcolor} ;
 une spécification d'opacité selon la forme \texttt{opacity =
   \textsl{valeur}}.\footnote{Attention : cette fonctionnalité génère des instructions de
   transparence dans le \textsc{pdf} résultant et certains lecteurs de
-  \textsc{pdf} n'acceptent pas la transparence.}
+  \textsc{pdf} n'acceptent pas la transparence. L'application de l'opacité est faite par
+  |\pgfsetfillopacity|.}
 \end{itemize}
 
 
@@ -3284,7 +3286,8 @@ p.~\pageref{colonne-X}.
 \medskip
 Remarquons que l'extension \pkg{varwidth} a quelques problèmes (au moins dans sa
 version 0.92). Par exemple, avec LuaLaTeX, elle ne fonctionne pas si le contenu
-commence par une instruction |\color|.
+commence par une instruction |\color|. De plus, \pkg{varwidth} doit être chargée après
+l'extension \pkg{array} (elle-même chargée par \pkg{nicematrix}).
 
 
 \subsection{Les colonnes X}

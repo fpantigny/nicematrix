@@ -309,6 +309,11 @@ version 2005/12/01 or later.
 \str_const:Nn \c_@@_l_str { l }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\tl_const:Nn \c_@@_brace_tl { nicematrix/brace }
+\tl_const:Nn \c_@@_mirrored_brace_tl { nicematrix/mirrored-brace }
+%    \end{macrocode}
+% 
 %
 % 
 % \bigskip
@@ -1215,6 +1220,12 @@ version 2005/12/01 or later.
 \bool_new:N \l_@@_X_columns_aux_bool
 \dim_new:N \l_@@_X_columns_dim
 %    \end{macrocode}
+%
+% \bigskip
+%    \begin{macrocode}
+\dim_new:N \l_@@_brace_shift_dim
+%    \end{macrocode}
+% 
 % 
 % \bigskip
 % This boolean will be used only to detect in an expandable way whether we are
@@ -2492,6 +2503,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / xdots }
   {
+    brace-shift .dim_set:N = \l_@@_brace_shift_dim ,
+    brace-shift .value_required:n = true ,
     Vbrace .bool_set:N = \l_@@_Vbrace_bool ,
     shorten-start .code:n = 
       \hook_gput_code:nnn { begindocument } { . } 
@@ -9593,6 +9606,55 @@ version 2005/12/01 or later.
       }
     \tl_if_empty:nF { #4 }
       { \tikzset { @@_node_middle / .append~style = { fill = white } } }
+%    \end{macrocode}
+%
+%
+%    \begin{macrocode}
+    \dim_zero:N \l_tmpa_dim
+    \dim_zero:N \l_tmpb_dim
+    \bool_lazy_or:nnT
+      { \tl_if_eq_p:NN \l_@@_xdots_line_style_tl \c_@@_brace_tl }
+      { \tl_if_eq_p:NN \l_@@_xdots_line_style_tl \c_@@_mirrored_brace_tl }
+      {
+        \dim_set:Nn \l_@@_l_dim
+          { 
+            \fp_to_dim:n 
+              { 
+                sqrt 
+                 ( 
+                   ( \l_@@_x_final_dim - \l_@@_x_initial_dim ) ^ 2
+                      +
+                   ( \l_@@_y_final_dim - \l_@@_y_initial_dim ) ^ 2 
+                 )
+              }
+          }
+%    \end{macrocode}          
+% For the x-axis
+%    \begin{macrocode}
+        \dim_set:Nn \l_tmpa_dim 
+          {
+            \c_zero_dim - ( \l_@@_y_final_dim - \l_@@_y_initial_dim )
+            * \dim_ratio:nn { \l_@@_brace_shift_dim } { \l_@@_l_dim }
+          }
+%    \end{macrocode}          
+% For the y-axis
+%    \begin{macrocode}
+        \dim_set:Nn \l_tmpb_dim 
+          {
+            ( \l_@@_x_final_dim - \l_@@_x_initial_dim )
+            * \dim_ratio:nn { \l_@@_brace_shift_dim } { \l_@@_l_dim }
+          }
+      }
+    \tl_if_eq:NNT \l_@@_xdots_line_style_tl \c_@@_mirrored_brace_tl 
+      {
+        \dim_set:Nn \l_tmpa_dim { - \l_tmpa_dim }
+        \dim_set:Nn \l_tmpb_dim { - \l_tmpb_dim } 
+      }          
+    \use:e
+      {
+        \exp_not:N \begin { scope }
+          [ shift = {(\dim_use:N \l_tmpa_dim,\dim_use:N \l_tmpb_dim)} ] % added 2025-12-04
+      }
     \draw 
       [ #1 ]
           ( \l_@@_x_initial_dim , \l_@@_y_initial_dim )
@@ -9600,6 +9662,7 @@ version 2005/12/01 or later.
           node [ @@_node_below ] { $ \scriptstyle #3 $ }
           node [ @@_node_above ] { $ \scriptstyle #2 $ }
           ( \l_@@_x_final_dim , \l_@@_y_final_dim ) ;
+    \end { scope }
     \end { scope }
   }
 \cs_generate_variant:Nn \@@_draw_unstandard_dotted_line:nnnn { n o o o }
@@ -10517,8 +10580,11 @@ version 2005/12/01 or later.
         { \int_set:Nn \l_@@_key_nb_rows_int { #1 } } ,
     nb-rows .value_required:n = true ,
     fill .tl_set:N = \l_@@_fill_tl ,
-    fill .value_required:n = true , 
-    opacity .tl_set:N = \l_@@_opacity_tl , 
+    fill .value_required:n = true ,
+%    \end{macrocode}
+% \emph{In fine}, the opacity will be applied by |\pgfsetfillopacity|.
+%    \begin{macrocode}
+    opacity .tl_set:N = \l_@@_opacity_tl ,
     opacity .value_required:n = true , 
     rowcolor .tl_set:N = \l_@@_fill_tl ,
     rowcolor .value_required:n = true , 
@@ -11236,7 +11302,7 @@ version 2005/12/01 or later.
         \def \l_tmpa_tl { ##1 }
         \tl_if_in:NnTF \l_tmpa_tl { - } 
           { \@@_cut_on_hyphen:w ##1 \q_stop }  
-          { \def \l_tmpb_tl { ##1 } } % 2025-04-16
+          { \def \l_tmpb_tl { ##1 } } 
         \tl_if_empty:NTF \l_tmpa_tl 
           { \def \l_tmpa_tl { 1 } }  
           {
@@ -14283,6 +14349,9 @@ version 2005/12/01 or later.
         { \char_set_catcode_other:N ! }
         { #1 } ,
     fill .value_required:n = true ,
+%    \end{macrocode}
+% \emph{In fine}, the opacity will be applied by |\pgfsetfillopacity|.
+%    \begin{macrocode}
     opacity .tl_set:N = \l_@@_opacity_tl , 
     opacity .value_required:n = true ,
     draw .code:n = 
@@ -16935,7 +17004,8 @@ version 2005/12/01 or later.
     horizontal-labels .code:n = ,
     shorten .code:n = ,
     shorten-start .code:n = , 
-    shorten-end .code:n = , 
+    shorten-end .code:n = ,
+    brace-shift .code:n = ,
     unknown .code:n = \@@_fatal:n { Unknown~key~for~Hbrace } 
   }
 %    \end{macrocode}
@@ -17536,6 +17606,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Misuse~of~Hline }
   {
     Misuse~of~Hline. \\
+    Error~in~your~row~ \int_eval:n { \c@iRow }. \\
     \token_to_str:N \Hline\ must~be~used~only~at~the~beginning~of~a~row.\\
     That~error~is~fatal.
   }
@@ -17813,7 +17884,7 @@ version 2005/12/01 or later.
     Unknown~key.\\
     You~have~used~the~key~' \l_keys_key_str '~but~the~only~
     keys~allowed~for~the~commands~ \token_to_str:N \Hbrace \
-    and~ \token_to_str:N \Vbrace \ are:~'color',~
+    and~ \token_to_str:N \Vbrace \ are:~'brace-shift',~'color',~
     'horizontal-label(s)',~'shorten'~'shorten-end'~
     and~'shorten-start'.\\
     That~error~is~fatal.
