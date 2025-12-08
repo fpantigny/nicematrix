@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.4b}
-\def\myfiledate{2025/11/23}
+\def\myfileversion{7.5}
+\def\myfiledate{2025/12/06}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -2464,7 +2464,11 @@
         \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
           { > \__nicematrix_test_if_empty_for_S: }
       }
-      { \tl_gput_right:Nn \g__nicematrix_array_preamble_tl { > \__nicematrix_test_if_empty: } }
+      {
+        \str_if_eq:eeTF { #7 } { varwidth }
+          { \tl_gput_right:Nn \g__nicematrix_array_preamble_tl { > \__nicematrix_test_if_empty_varwidth: } }
+          { \tl_gput_right:Nn \g__nicematrix_array_preamble_tl { > \__nicematrix_test_if_empty: } }
+      }
     \tl_gput_right:No \g__nicematrix_array_preamble_tl \g__nicematrix_pre_cell_tl
     \tl_gclear:N \g__nicematrix_pre_cell_tl
     \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
@@ -2508,6 +2512,21 @@
           }
       }
   }
+\cs_new_protected:Npn \__nicematrix_test_if_empty_varwidth: \ignorespaces
+  {
+    \group_align_safe_begin:
+    \peek_meaning:NTF &
+      { \__nicematrix_the_cell_is_empty_varwidth: }
+      {
+        \peek_meaning:NTF \\
+          { \__nicematrix_the_cell_is_empty_varwidth: }
+          {
+            \peek_meaning:NTF \crcr
+              \__nicematrix_the_cell_is_empty_varwidth:
+              \group_align_safe_end:
+          }
+      }
+  }
 \cs_new_protected:Npn \__nicematrix_the_cell_is_empty:
   {
     \group_align_safe_end:
@@ -2516,6 +2535,12 @@
         \box_set_wd:Nn \l__nicematrix_cell_box \c_zero_dim
         \skip_horizontal:N \l__nicematrix_col_width_dim
       }
+  }
+\cs_new_protected:Npn \__nicematrix_the_cell_is_empty_varwidth:
+  {
+    \group_align_safe_end:
+    \tl_gput_right:Nn \g__nicematrix_cell_after_hook_tl
+      { \box_set_wd:Nn \l__nicematrix_cell_box \c_zero_dim }
   }
 \cs_new_protected:Npn \__nicematrix_test_if_empty_for_S:
   {
@@ -4824,37 +4849,19 @@
       { \tikzset { __nicematrix_node_middle / .append~style = { fill = white } } }
     \dim_zero:N \l_tmpa_dim
     \dim_zero:N \l_tmpb_dim
-    \bool_lazy_or:nnT
-      { \tl_if_eq_p:NN \l__nicematrix_xdots_line_style_tl \c__nicematrix_brace_tl }
-      { \tl_if_eq_p:NN \l__nicematrix_xdots_line_style_tl \c__nicematrix_mirrored_brace_tl }
+    \tl_if_eq:NNTF \l__nicematrix_xdots_line_style_tl \c__nicematrix_brace_tl
       {
-        \dim_set:Nn \l__nicematrix_l_dim
-          {
-            \fp_to_dim:n
-              {
-                sqrt
-                 (
-                   ( \l__nicematrix_x_final_dim - \l__nicematrix_x_initial_dim ) ^ 2
-                      +
-                   ( \l__nicematrix_y_final_dim - \l__nicematrix_y_initial_dim ) ^ 2
-                 )
-              }
-          }
-        \dim_set:Nn \l_tmpa_dim
-          {
-            \c_zero_dim - ( \l__nicematrix_y_final_dim - \l__nicematrix_y_initial_dim )
-            * \dim_ratio:nn { \l__nicematrix_brace_shift_dim } { \l__nicematrix_l_dim }
-          }
-        \dim_set:Nn \l_tmpb_dim
-          {
-            ( \l__nicematrix_x_final_dim - \l__nicematrix_x_initial_dim )
-            * \dim_ratio:nn { \l__nicematrix_brace_shift_dim } { \l__nicematrix_l_dim }
-          }
+        \dim_compare:nNnTF \l__nicematrix_x_final_dim = \l__nicematrix_x_initial_dim
+          { \dim_set_eq:NN \l_tmpa_dim \l__nicematrix_brace_shift_dim }
+          { \dim_set_eq:NN \l_tmpb_dim \l__nicematrix_brace_shift_dim }
       }
-    \tl_if_eq:NNT \l__nicematrix_xdots_line_style_tl \c__nicematrix_mirrored_brace_tl
       {
-        \dim_set:Nn \l_tmpa_dim { - \l_tmpa_dim }
-        \dim_set:Nn \l_tmpb_dim { - \l_tmpb_dim }
+        \tl_if_eq:NNT \l__nicematrix_xdots_line_style_tl \c__nicematrix_mirrored_brace_tl
+          {
+            \dim_compare:nNnTF \l__nicematrix_x_final_dim = \l__nicematrix_x_initial_dim
+              { \dim_set:Nn \l_tmpa_dim { - \l__nicematrix_brace_shift_dim } }
+              { \dim_set:Nn \l_tmpb_dim { - \l__nicematrix_brace_shift_dim } }
+          }
       }
     \use:e
       {
@@ -10355,7 +10362,8 @@
 \__nicematrix_msg_new:nn { Hdotsfor~in~col~0 }
   {
     Erroneous~use.\\
-    You~can't~use~ \token_to_str:N \Hdotsfor \ in~an~exterior~column~of~
+    You~can't~use~ \token_to_str:N \Hdotsfor\ or~\token_to_str:N \Hbrace\
+    in~an~exterior~column~of~
     the~array.~This~error~is~fatal.
   }
 \__nicematrix_msg_new:nn { bad~corner }

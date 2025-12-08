@@ -4109,6 +4109,33 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 \end{pNiceMatrix}\]
 
 
+\subsection{Les lignes pointillées et les filets}
+
+\label{dotted-and-rules}
+
+Les lignes pointillées délimitent des blocs virtuels qui ont le même
+comportement vis à vis des filets que les blocs créés par |\Block| (les filets
+spécifiés par le spécificateur \verb+|+ dans le préambule, la commande |\Hline|,
+les clés |vlines|, |hlines|, |hvlines| et |hvlines-except-borders| et les outils
+créés par |custom-line| ne sont pas tracés dans les blocs).\footnote{En revanche, la commande |\line| dans le |\CodeAfter|
+  (cf.~p.~\pageref{line-in-code-after}) ne crée pas de bloc.}
+
+\medskip
+\begin{Code}[width=10.6cm]
+$\begin{bNiceMatrix}[margin,\emph{hvlines}]
+\Block{3-3}<\LARGE>{A} & & & 0 \\
+& \hspace*{1cm} & & \Vdots \\
+& & & 0 \\
+0 & \Cdots& 0 & 0
+\end{bNiceMatrix}$
+\end{Code}
+$\begin{bNiceMatrix}[margin,hvlines]
+\Block[C]{3-3}<\LARGE>{A} & & & 0 \\
+& \hspace*{1cm} & & \Vdots \\
+& & & 0 \\
+0 & \Cdots& 0 & 0
+\end{bNiceMatrix}$
+
 
 
 \subsection{Les commandes \texttt{\textbackslash Hbrace} et \texttt{\textbackslash Vbrace}}
@@ -4149,11 +4176,21 @@ arguments:
 \textsl{clé=valeur} : les clés autorisées sont |color|, |horizontal-label|,
 |shorten|, |shorten-start| et |shorten-end|.
 
+\smallskip
+\colorbox{yellow!50}{\textbf{Nouveau 7.5}}
+
+\index{brace-shift (clé de \texttt{\textbackslash Hbrace} et \texttt{\textbackslash Vbrace})}
+\nobreak
+Il existe aussi une clé \Definition{brace-shift} pour déplacer l'accolade (et
+son label) vers l'extérieur de la matrice.
+
+
 \item un deuxième argument, obligatoire, qui est le nombre de colonnes (pour
 |\Hbrace|) ou de rangées (pour |\Vbrace|) sur lesquelles l'accolade va s'étendre.
 
 \item un troisième argument, obligatoire, qui est le label de l'accolade.
 \end{itemize}
+
 
 Concernant la commande |\Hbrace|, son comportement vis à vis des esperluettes
 (|&|) est le même que celui des commandes |\multicolumn|, |\hdotsfor|,
@@ -4169,7 +4206,7 @@ $\begin{NiceArray}{ccccc}%
     first-col ,
     last-col ,
     xdots/horizontal-labels ]
-& \emph{\Hbrace{3}{p}} & \emph{\Hbrace{2}{q}} \\
+& \emph{\Hbrace{3}{p}} & \emph{\Hbrace[brace-shift=1mm]{2}{q}} \\
 \emph{\Vbrace{3}{p}} & 1 & 1 & 134 & 1 & 1 & \emph{\Vbrace{3}{p}} \\
 & 1 & 1 & 134 & 1 & 1 \\
 & 1 & 1 & 13456 & 1 & 1 \\
@@ -4187,7 +4224,7 @@ $\begin{NiceArray}{ccccc}%
     last-col ,
     xdots/horizontal-labels 
   ]
-& \Hbrace{3}{p} & \Hbrace{2}{q} \\
+& \Hbrace{3}{p} & \Hbrace[brace-shift=1mm]{2}{q} \\
 \Vbrace{3}{p} & 1 & 1 & 134 & 1 & 1 & \Vbrace{3}{p} \\
 & 1 & 1 & 134 & 1 & 1 \\
 & 1 & 1 & 13456 & 1 & 1 \\
@@ -4214,33 +4251,6 @@ structure avec les clés |decorate| et |decoration|).
 Pour un autre exemple d'utilisation de |\Hbrace| et |\Vbrace|, voir la partie
 «Des lignes pointillées qui ne sont plus pointillées»,
 p.~\pageref{ex:no-longer-dotted-rules}.
-
-\subsection{Les lignes pointillées et les filets}
-
-\label{dotted-and-rules}
-
-Les lignes pointillées délimitent des blocs virtuels qui ont le même
-comportement vis à vis des filets que les blocs créés par |\Block| (les filets
-spécifiés par le spécificateur \verb+|+ dans le préambule, la commande |\Hline|,
-les clés |vlines|, |hlines|, |hvlines| et |hvlines-except-borders| et les outils
-créés par |custom-line| ne sont pas tracés dans les blocs).\footnote{En revanche, la commande |\line| dans le |\CodeAfter|
-  (cf.~p.~\pageref{line-in-code-after}) ne crée pas de bloc.}
-
-\medskip
-\begin{Code}[width=10.6cm]
-$\begin{bNiceMatrix}[margin,\emph{hvlines}]
-\Block{3-3}<\LARGE>{A} & & & 0 \\
-& \hspace*{1cm} & & \Vdots \\
-& & & 0 \\
-0 & \Cdots& 0 & 0
-\end{bNiceMatrix}$
-\end{Code}
-$\begin{bNiceMatrix}[margin,hvlines]
-\Block[C]{3-3}<\LARGE>{A} & & & 0 \\
-& \hspace*{1cm} & & \Vdots \\
-& & & 0 \\
-0 & \Cdots& 0 & 0
-\end{bNiceMatrix}$
 
 \index{Pointillés@\textbf{Pointillés (lignes en ---)}|)}
 

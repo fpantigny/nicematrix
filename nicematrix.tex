@@ -2703,10 +2703,6 @@ the user).
 \index{EmptyRow@\texttt{\textbackslash EmptyRow} (command of \texttt{\textbackslash CodeBefore})}
 \index{EmptyColumn@\texttt{\textbackslash EmptyColumn} (command of \texttt{\textbackslash CodeBefore})}
 
-\colorbox{yellow!50}{\textbf{New 7.1}}
-
-\nobreak
-\smallskip
 It's also possible, in the |\CodeBefore|, to use the commands
 \DefinitionCommand{EmptyColumn} and \DefinitionCommand{EmptyRow}. The command
 |\EmptyColumn| takes in as argument a (comma-separated) list of numbers of
@@ -3971,12 +3967,40 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 0      & \Cdots &        & 0      & b      & a
 \end{pNiceMatrix}\]
 
+\subsection{The dotted lines and the rules}
+
+\label{dotted-and-rules}
+
+The dotted lines determine virtual blocks which have the same behaviour
+regarding the rules (the rules specified by the specifier \verb+|+ in the
+preamble, by the command |\Hline|, by the keys |hlines|, |vlines|,
+|hvlines| and |hvlines-except-borders| and by the tools created by
+|custom-line| are not drawn within the
+blocks).\footnote{On the other side, the command |\line| in the
+|\CodeAfter| (cf.~p.~\pageref{line-in-code-after}) does \emph{not} create
+block.}
+
+\medskip
+\begin{Code}[width=10.6cm]
+$\begin{bNiceMatrix}[margin,\emph{hvlines}]
+\Block{3-3}<\LARGE>{A} & & & 0 \\
+& \hspace*{1cm} & & \Vdots \\
+& & & 0 \\
+0 & \Cdots& 0 & 0
+\end{bNiceMatrix}$
+\end{Code}
+$\begin{bNiceMatrix}[margin,hvlines]
+\Block{3-3}<\LARGE>{A} & & & 0 \\
+& \hspace*{1cm} & & \Vdots \\
+& & & 0 \\
+0 & \Cdots& 0 & 0
+\end{bNiceMatrix}$
+
 
 
 \subsection{The commands \textbackslash Hbrace and \textbackslash Vbrace}
 
-\colorbox{yellow!50}{\textbf{New 7.1}}
-
+e
 \indexcommand{Hbrace}
 \indexcommand{Vbrace}
 \index{brace (nicematrix/brace is a TikZ style\newline used by \textbackslash
@@ -4010,6 +4034,14 @@ three arguments:
 \textsl{key=value} pairs: the keys allowed are |color|, |horizontal-labels|,
 |shorten|, |shorten-start| and |shorten-end|.
 
+\smallskip
+\colorbox{yellow!50}{\textbf{New 7.5}}
+
+\index{brace-shift (key of \texttt{\textbackslash Hbrace} and \texttt{\textbackslash Vbrace})}
+\nobreak
+A key \Definition{brace-shift} is also provided to shift the brace (and its
+label) towards the exterior of the matrix.
+
 \item a mandatory argument which is the number of columns (for |\Hbrace|) or the
 number of rows (for |\Vbrace|) over which the command applies;
 
@@ -4030,7 +4062,7 @@ $\begin{NiceArray}{ccccc}%
     first-col ,
     last-col ,
     xdots/horizontal-labels ]
-& \emph{\Hbrace{3}{p}} & \emph{\Hbrace{2}{q}} \\
+& \emph{\Hbrace{3}{p}} & \emph{\Hbrace[brace-shift=1mm]{2}{q}} \\
 \emph{\Vbrace{3}{p}} & 1 & 1 & 134 & 1 & 1 & \emph{\Vbrace{3}{p}} \\
 & 1 & 1 & 134 & 1 & 1 \\
 & 1 & 1 & 13456 & 1 & 1 \\
@@ -4048,7 +4080,7 @@ $\begin{NiceArray}{ccccc}%
     last-col ,
     xdots/horizontal-labels 
   ]
-& \Hbrace{3}{p} & \Hbrace{2}{q} \\
+& \Hbrace{3}{p} & \Hbrace[brace-shift=1mm]{2}{q} \\
 \Vbrace{3}{p} & 1 & 1 & 134 & 1 & 1 & \Vbrace{3}{p} \\
 & 1 & 1 & 134 & 1 & 1 \\
 & 1 & 1 & 13456 & 1 & 1 \\
@@ -4076,35 +4108,6 @@ the section ``Dotted lines that are no longer dotted'',
 p.~\pageref{ex:no-longer-dotted-rules}. 
 
 
-
-\subsection{The dotted lines and the rules}
-
-\label{dotted-and-rules}
-
-The dotted lines determine virtual blocks which have the same behaviour
-regarding the rules (the rules specified by the specifier \verb+|+ in the
-preamble, by the command |\Hline|, by the keys |hlines|, |vlines|,
-|hvlines| and |hvlines-except-borders| and by the tools created by
-|custom-line| are not drawn within the
-blocks).\footnote{On the other side, the command |\line| in the
-|\CodeAfter| (cf.~p.~\pageref{line-in-code-after}) does \emph{not} create
-block.}
-
-\medskip
-\begin{Code}[width=10.6cm]
-$\begin{bNiceMatrix}[margin,\emph{hvlines}]
-\Block{3-3}<\LARGE>{A} & & & 0 \\
-& \hspace*{1cm} & & \Vdots \\
-& & & 0 \\
-0 & \Cdots& 0 & 0
-\end{bNiceMatrix}$
-\end{Code}
-$\begin{bNiceMatrix}[margin,hvlines]
-\Block{3-3}<\LARGE>{A} & & & 0 \\
-& \hspace*{1cm} & & \Vdots \\
-& & & 0 \\
-0 & \Cdots& 0 & 0
-\end{bNiceMatrix}$
 
 
 \index{dotted@\textbf{Dotted lines}|)}
@@ -8094,6 +8097,10 @@ also available on the
 \small
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
+
+\subsection*{Changes between version 7.4 and 7.5}
+
+New key |brace-shift| for the commands |\Hbrace| and |\Vbrace|.
 
 \subsection*{Changes between version 7.3 and 7.4}
 
