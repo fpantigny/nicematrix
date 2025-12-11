@@ -1336,9 +1336,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \seq_new:N \g_@@_future_pos_of_blocks_seq 
 %    \end{macrocode}
-% The, after the execution of the |\CodeBefore|, the sequence
-% |\g_@@_pos_of_blocs_seq| will erased and replaced by the value of 
-% |\g_@@_future_pos_of_blocks_seq|. 
+% They will be added to |\g_@@_pos_of_blocks_seq| after the computation of the
+% ``empty corners''.
 % 
 % \bigskip
 % We will also manage a sequence for the positions of the dotted lines. These
@@ -2069,10 +2068,7 @@ version 2005/12/01 or later.
 % put the labels in a |\textsuperscript|.
 %    \begin{macrocode}
             \@@_notes_label_in_tabular:n 
-              { 
-                \seq_use:Nnnn 
-                  \l_@@_notes_labels_seq { , } { , } { , }
-              } 
+              { \seq_use:Nn \l_@@_notes_labels_seq { , } } 
           }
 %    \end{macrocode}
 % We want the (last) tabular note referenceable (with the standard command |\label|).
@@ -2160,8 +2156,7 @@ version 2005/12/01 or later.
       }
     \peek_meaning:NF \tabularnote
       {
-        \@@_notes_label_in_tabular:n 
-          { \seq_use:Nnnn \l_@@_notes_labels_seq { , } { , } { , } } 
+        \@@_notes_label_in_tabular:n { \seq_use:Nn \l_@@_notes_labels_seq { , } } 
         \seq_clear:N \l_@@_notes_labels_seq 
       }
   }
@@ -3839,12 +3834,15 @@ version 2005/12/01 or later.
 %
 % \medskip
 % The value of |\g_@@_pos_of_blocks_seq| has been written on the |aux| file and
-% loaded before the (potential) execution of the |\CodeBefore|. Now, we clear
-% that variable because it will be reconstructed during the creation of the
-% array.
+% loaded before the (potential) execution of the |\CodeBefore|.
+% 
+% Now, we reinitialize that variable with the content of
+% |\g_@@_future_pos_of_blocks_seq| because the mains blocks will be added
+% in |\g_@@_pos_of_blocks_seq| during the construction of the array.
 %    \begin{macrocode}
-    \seq_gset_eq:NN \g_@@_pos_of_blocks_seq \g_@@_future_pos_of_blocks_seq
-    \seq_gclear:N \g_@@_future_pos_of_blocks_seq
+    % \seq_gset_eq:NN \g_@@_pos_of_blocks_seq \g_@@_future_pos_of_blocks_seq
+    % \seq_gclear:N \g_@@_future_pos_of_blocks_seq
+    \seq_gclear:N \g_@@_pos_of_blocks_seq
 %    \end{macrocode}
 %
 % Idem for other sequences written on the |aux| file.
@@ -7993,7 +7991,7 @@ version 2005/12/01 or later.
         \tl_gput_right:Ne \g_@@_aux_tl
           { 
             \seq_gset_from_clist:Nn \exp_not:N \g_@@_pos_of_blocks_seq
-              { \seq_use:Nnnn \g_@@_pos_of_blocks_seq , , , }
+              { \seq_use:Nn \g_@@_pos_of_blocks_seq { , } }
           }
       } 
     \seq_if_empty:NF \g_@@_multicolumn_cells_seq
@@ -8001,9 +7999,9 @@ version 2005/12/01 or later.
         \tl_gput_right:Ne \g_@@_aux_tl
           { 
             \seq_gset_from_clist:Nn \exp_not:N \g_@@_multicolumn_cells_seq
-              { \seq_use:Nnnn \g_@@_multicolumn_cells_seq , , , }
+              { \seq_use:Nn \g_@@_multicolumn_cells_seq { , } }
             \seq_gset_from_clist:Nn \exp_not:N \g_@@_multicolumn_sizes_seq
-              { \seq_use:Nnnn \g_@@_multicolumn_sizes_seq , , , }
+              { \seq_use:Nn \g_@@_multicolumn_sizes_seq { , } }
           }
       }
 %    \end{macrocode}
@@ -8086,6 +8084,17 @@ version 2005/12/01 or later.
       }
 %    \end{macrocode}
 %
+% \bigskip
+% By design, we have computed the corners before the adjonction of
+% |\g_@@_future_pos_of_blocks_seq| is used by |\EmptyRow| and |\EmptyColumn| in the
+% |\CodeBefore|.
+%    \begin{macrocode}
+   \seq_gconcat:NNN \g_@@_pos_of_blocks_seq
+     \g_@@_pos_of_blocks_seq
+     \g_@@_future_pos_of_blocks_seq
+   \seq_gclear:N \g_@@_future_pos_of_blocks_seq
+%    \end{macrocode}
+% 
 % \bigskip
 % The sequence |\g_@@_pos_of_blocks_seq| must be ``adjusted'' (for the case
 % where the user have written something like |\Block{1-*}|).

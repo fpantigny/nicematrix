@@ -650,10 +650,7 @@
         \hbox_set:Nn \l_tmpa_box
           {
             \__nicematrix_notes_label_in_tabular:n
-              {
-                \seq_use:Nnnn
-                  \l__nicematrix_notes_labels_seq { , } { , } { , }
-              }
+              { \seq_use:Nn \l__nicematrix_notes_labels_seq { , } }
           }
         \int_gdecr:N \c@tabularnote
         \int_set_eq:NN \l_tmpa_int \c@tabularnote
@@ -699,8 +696,7 @@
       }
     \peek_meaning:NF \tabularnote
       {
-        \__nicematrix_notes_label_in_tabular:n
-          { \seq_use:Nnnn \l__nicematrix_notes_labels_seq { , } { , } { , } }
+        \__nicematrix_notes_label_in_tabular:n { \seq_use:Nn \l__nicematrix_notes_labels_seq { , } }
         \seq_clear:N \l__nicematrix_notes_labels_seq
       }
   }
@@ -1593,8 +1589,9 @@
   }
 \cs_new_protected:Npn \__nicematrix_pre_array_after_CodeBefore:
   {
-    \seq_gset_eq:NN \g__nicematrix_pos_of_blocks_seq \g__nicematrix_future_pos_of_blocks_seq
-    \seq_gclear:N \g__nicematrix_future_pos_of_blocks_seq
+    % \seq_gset_eq:NN \g__nicematrix_pos_of_blocks_seq \g__nicematrix_future_pos_of_blocks_seq
+    % \seq_gclear:N \g__nicematrix_future_pos_of_blocks_seq
+    \seq_gclear:N \g__nicematrix_pos_of_blocks_seq
     \seq_gclear_new:N \g__nicematrix_multicolumn_cells_seq
     \seq_gclear_new:N \g__nicematrix_multicolumn_sizes_seq
     \int_gset:Nn \g__nicematrix_last_row_node_int { -2 }
@@ -3903,7 +3900,7 @@
         \tl_gput_right:Ne \g__nicematrix_aux_tl
           {
             \seq_gset_from_clist:Nn \exp_not:N \g__nicematrix_pos_of_blocks_seq
-              { \seq_use:Nnnn \g__nicematrix_pos_of_blocks_seq , , , }
+              { \seq_use:Nn \g__nicematrix_pos_of_blocks_seq { , } }
           }
       }
     \seq_if_empty:NF \g__nicematrix_multicolumn_cells_seq
@@ -3911,9 +3908,9 @@
         \tl_gput_right:Ne \g__nicematrix_aux_tl
           {
             \seq_gset_from_clist:Nn \exp_not:N \g__nicematrix_multicolumn_cells_seq
-              { \seq_use:Nnnn \g__nicematrix_multicolumn_cells_seq , , , }
+              { \seq_use:Nn \g__nicematrix_multicolumn_cells_seq { , } }
             \seq_gset_from_clist:Nn \exp_not:N \g__nicematrix_multicolumn_sizes_seq
-              { \seq_use:Nnnn \g__nicematrix_multicolumn_sizes_seq , , , }
+              { \seq_use:Nn \g__nicematrix_multicolumn_sizes_seq { , } }
           }
       }
     \__nicematrix_create_diag_nodes:
@@ -3940,6 +3937,10 @@
           { \__nicematrix_error:n { corners~with~no-cell-nodes } }
           { \__nicematrix_compute_corners: }
       }
+   \seq_gconcat:NNN \g__nicematrix_pos_of_blocks_seq
+     \g__nicematrix_pos_of_blocks_seq
+     \g__nicematrix_future_pos_of_blocks_seq
+   \seq_gclear:N \g__nicematrix_future_pos_of_blocks_seq
     \__nicematrix_adjust_pos_of_blocks_seq:
     \__nicematrix_deal_with_rounded_corners:
     \clist_if_empty:NF \l__nicematrix_hlines_clist { \__nicematrix_draw_hlines: }
