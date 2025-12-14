@@ -18,7 +18,7 @@
 % \fi
 % \iffalse
 \def\myfileversion{7.5}
-\def\myfiledate{2025/12/06}
+\def\myfiledate{2025/12/14}
 %
 %
 %<*batchfile>  
@@ -5560,7 +5560,10 @@ version 2005/12/01 or later.
       }
       {
         \str_if_eq:eeTF { #7 } { varwidth }
-          { \tl_gput_right:Nn \g_@@_array_preamble_tl { > \@@_test_if_empty_varwidth: } } 
+          {
+            \tl_gput_right:Nn \g_@@_array_preamble_tl
+              { > \@@_test_if_empty_varwidth: }
+          } 
           { \tl_gput_right:Nn \g_@@_array_preamble_tl { > \@@_test_if_empty: } }
       } 
     \tl_gput_right:No \g_@@_array_preamble_tl \g_@@_pre_cell_tl 
@@ -9679,7 +9682,7 @@ version 2005/12/01 or later.
     \use:e
       {
         \exp_not:N \begin { scope }
-          [ shift = {(\dim_use:N \l_tmpa_dim,\dim_use:N \l_tmpb_dim)} ] % added 2025-12-04
+          [ shift = {(\dim_use:N \l_tmpa_dim,\dim_use:N \l_tmpb_dim)} ]
       }
     \draw 
       [ #1 ]
