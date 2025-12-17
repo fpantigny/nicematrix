@@ -1987,7 +1987,7 @@ letter ``|:|'' for those dotted rules.\footnote{However, it's possible to
 
 \smallskip
 \begin{Code}
-\NiceMatrixOptions \emph{% \textsl{present in nicematrix.sty}}
+\NiceMatrixOptions \emph{% \textsl{yet present in nicematrix.sty}}
   { 
     custom-line = 
       { 
@@ -4000,7 +4000,7 @@ $\begin{bNiceMatrix}[margin,hvlines]
 
 \subsection{The commands \textbackslash Hbrace and \textbackslash Vbrace}
 
-e
+
 \indexcommand{Hbrace}
 \indexcommand{Vbrace}
 \index{brace (nicematrix/brace is a TikZ style\newline used by \textbackslash
@@ -4049,11 +4049,20 @@ number of rows (for |\Vbrace|) over which the command applies;
 \end{itemize}
 
 As regards the ampersands (|&|), |\Hbrace| has the same behavior as the commands
-|\multicolumn|, |\hdotsfor|, |\Hdotsfor|, etc.: only one ampersand must be
-inserted, even if the brace that will be drawn will extend on several columns.
+|\multicolumn|, |\hdotsfor|, |\Hdotsfor| (provided by \pkg{nicematrix}), etc.:
+only one ampersand must be inserted, even if the brace that will be drawn will
+extend on several columns.
 
 
 \bigskip
+\begin{footnotesize}
+\begin{Verbatim}
+\usepackage{tikz}                          % in the preamble
+\usetikzlibrary{decorations.pathreplacing} % in the preamble
+\end{Verbatim}
+\end{footnotesize}
+
+\medskip
 \begin{Code}[width=11.2cm]
 $\begin{NiceArray}{ccccc}%
   [ hvlines ,

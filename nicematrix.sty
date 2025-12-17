@@ -1847,7 +1847,7 @@
       { \__nicematrix_rescan_for_spanish:N \l__nicematrix_code_before_tl }
     \exp_last_unbraced:No \__nicematrix_CodeBefore_keys:
       \g__nicematrix_pre_code_before_tl
-      \__nicematrix_actually_color:
+      \bool_if:NT \g__nicematrix_aux_found_bool { \__nicematrix_actually_color: }
       \l__nicematrix_code_before_tl
       \q_stop
   }
@@ -2463,7 +2463,10 @@
       }
       {
         \str_if_eq:eeTF { #7 } { varwidth }
-          { \tl_gput_right:Nn \g__nicematrix_array_preamble_tl { > \__nicematrix_test_if_empty_varwidth: } }
+          {
+            \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
+              { > \__nicematrix_test_if_empty_varwidth: }
+          }
           { \tl_gput_right:Nn \g__nicematrix_array_preamble_tl { > \__nicematrix_test_if_empty: } }
       }
     \tl_gput_right:No \g__nicematrix_array_preamble_tl \g__nicematrix_pre_cell_tl
@@ -3964,8 +3967,15 @@
     \cs_set_eq:NN \ShowCellNames \__nicematrix_ShowCellNames
     \cs_set_eq:NN \TikzEveryCell \__nicematrix_TikzEveryCell
     \cs_set_eq:NN \line \__nicematrix_line
+    \group_begin:
+    \bool_if:NF \g__nicematrix_aux_found_bool
+      {
+        \cs_set_eq:NN \__nicematrix_vline:n \use_none:n
+        \cs_set_eq:NN \__nicematrix_hline:n \use_none:n
+      }
     \legacy_if:nF { measuring@ } { \g__nicematrix_pre_code_after_tl }
     \tl_gclear:N \g__nicematrix_pre_code_after_tl
+    \group_end:
     \cs_set_eq:NN \CodeAfter \prg_do_nothing:
     \seq_gclear:N \g__nicematrix_submatrix_names_seq
     \int_compare:nNnT { \char_value_catcode:n { 60 } } = { 13 }
@@ -4403,18 +4413,21 @@
     \cs_if_free:cT { __nicematrix _ dotted _ #1 - #2 }
       {
         \__nicematrix_find_extremities_of_line:nnnn { #1 } { #2 } 0 1
-        \group_begin:
-          \__nicematrix_open_shorten:
-          \int_if_zero:nTF { #1 }
-            { \color { nicematrix-first-row } }
-            {
-              \int_compare:nNnT { #1 } = { \l__nicematrix_last_row_int }
-                { \color { nicematrix-last-row } }
-            }
-          \keys_set:nn { nicematrix / xdots } { #3 }
-          \__nicematrix_color:o \l__nicematrix_xdots_color_tl
-          \__nicematrix_actually_draw_Ldots:
-        \group_end:
+        \bool_if:NT \g__nicematrix_aux_found_bool
+          {
+            \group_begin:
+              \__nicematrix_open_shorten:
+              \int_if_zero:nTF { #1 }
+                { \color { nicematrix-first-row } }
+                {
+                  \int_compare:nNnT { #1 } = { \l__nicematrix_last_row_int }
+                    { \color { nicematrix-last-row } }
+                }
+              \keys_set:nn { nicematrix / xdots } { #3 }
+              \__nicematrix_color:o \l__nicematrix_xdots_color_tl
+              \__nicematrix_actually_draw_Ldots:
+            \group_end:
+          }
       }
   }
 \cs_new_protected:Npn \__nicematrix_actually_draw_Ldots:
@@ -4455,18 +4468,21 @@
     \cs_if_free:cT { __nicematrix _ dotted _ #1 - #2 }
       {
         \__nicematrix_find_extremities_of_line:nnnn { #1 } { #2 } { 0 } { 1 }
-        \group_begin:
-          \__nicematrix_open_shorten:
-          \int_if_zero:nTF { #1 }
-            { \color { nicematrix-first-row } }
-            {
-              \int_compare:nNnT { #1 } = { \l__nicematrix_last_row_int }
-                { \color { nicematrix-last-row } }
-            }
-          \keys_set:nn { nicematrix / xdots } { #3 }
-          \__nicematrix_color:o \l__nicematrix_xdots_color_tl
-          \__nicematrix_actually_draw_Cdots:
-        \group_end:
+        \bool_if:NT \g__nicematrix_aux_found_bool
+          {
+            \group_begin:
+              \__nicematrix_open_shorten:
+              \int_if_zero:nTF { #1 }
+                { \color { nicematrix-first-row } }
+                {
+                  \int_compare:nNnT { #1 } = { \l__nicematrix_last_row_int }
+                    { \color { nicematrix-last-row } }
+                }
+              \keys_set:nn { nicematrix / xdots } { #3 }
+              \__nicematrix_color:o \l__nicematrix_xdots_color_tl
+              \__nicematrix_actually_draw_Cdots:
+            \group_end:
+         }
       }
   }
 \cs_new_protected:Npn \__nicematrix_actually_draw_Cdots:
@@ -4551,20 +4567,23 @@
     \cs_if_free:cT { __nicematrix _ dotted _ #1 - #2 }
       {
         \__nicematrix_find_extremities_of_line:nnnn { #1 } { #2 } { 1 } { 0 }
-        \group_begin:
-          \__nicematrix_open_shorten:
-          \int_if_zero:nTF { #2 }
-            { \color { nicematrix-first-col } }
-            {
-              \int_compare:nNnT { #2 } = { \l__nicematrix_last_col_int }
-                { \color { nicematrix-last-col } }
-            }
-          \keys_set:nn { nicematrix / xdots } { #3 }
-          \__nicematrix_color:o \l__nicematrix_xdots_color_tl
-          \bool_if:NTF \l__nicematrix_Vbrace_bool
-            { \__nicematrix_actually_draw_Vbrace: }
-            { \__nicematrix_actually_draw_Vdots: }
-        \group_end:
+        \bool_if:NT \g__nicematrix_aux_found_bool
+          {
+            \group_begin:
+              \__nicematrix_open_shorten:
+              \int_if_zero:nTF { #2 }
+                { \color { nicematrix-first-col } }
+                {
+                  \int_compare:nNnT { #2 } = { \l__nicematrix_last_col_int }
+                    { \color { nicematrix-last-col } }
+                }
+              \keys_set:nn { nicematrix / xdots } { #3 }
+              \__nicematrix_color:o \l__nicematrix_xdots_color_tl
+              \bool_if:NTF \l__nicematrix_Vbrace_bool
+                { \__nicematrix_actually_draw_Vbrace: }
+                { \__nicematrix_actually_draw_Vdots: }
+              \group_end:
+          }
       }
   }
 \cs_new_protected:Npn \__nicematrix_actually_draw_Vdots:
@@ -4678,12 +4697,15 @@
     \cs_if_free:cT { __nicematrix _ dotted _ #1 - #2 }
       {
         \__nicematrix_find_extremities_of_line:nnnn { #1 } { #2 } { 1 } { 1 }
-        \group_begin:
-          \__nicematrix_open_shorten:
-          \keys_set:nn { nicematrix / xdots } { #3 }
-          \__nicematrix_color:o \l__nicematrix_xdots_color_tl
-          \__nicematrix_actually_draw_Ddots:
-        \group_end:
+        \bool_if:NT \g__nicematrix_aux_found_bool
+          {
+            \group_begin:
+              \__nicematrix_open_shorten:
+              \keys_set:nn { nicematrix / xdots } { #3 }
+              \__nicematrix_color:o \l__nicematrix_xdots_color_tl
+              \__nicematrix_actually_draw_Ddots:
+            \group_end:
+          }
       }
   }
 \cs_new_protected:Npn \__nicematrix_actually_draw_Ddots:
@@ -4730,12 +4752,15 @@
     \cs_if_free:cT { __nicematrix _ dotted _ #1 - #2 }
       {
         \__nicematrix_find_extremities_of_line:nnnn { #1 } { #2 } { 1 } { -1 }
-        \group_begin:
-          \__nicematrix_open_shorten:
-          \keys_set:nn { nicematrix / xdots } { #3 }
-          \__nicematrix_color:o \l__nicematrix_xdots_color_tl
-          \__nicematrix_actually_draw_Iddots:
-        \group_end:
+        \bool_if:NT \g__nicematrix_aux_found_bool
+          {
+            \group_begin:
+              \__nicematrix_open_shorten:
+              \keys_set:nn { nicematrix / xdots } { #3 }
+              \__nicematrix_color:o \l__nicematrix_xdots_color_tl
+              \__nicematrix_actually_draw_Iddots:
+            \group_end:
+          }
       }
   }
 \cs_new_protected:Npn \__nicematrix_actually_draw_Iddots:
@@ -4867,7 +4892,7 @@
     \use:e
       {
         \exp_not:N \begin { scope }
-          [ shift = {(\dim_use:N \l_tmpa_dim,\dim_use:N \l_tmpb_dim)} ] % added 2025-12-04
+          [ shift = {(\dim_use:N \l_tmpa_dim,\dim_use:N \l_tmpb_dim)} ]
       }
     \draw
       [ #1 ]
@@ -5279,18 +5304,21 @@
             \bool_set_true:N \l__nicematrix_final_open_bool
           }
       }
-    \group_begin:
-    \__nicematrix_open_shorten:
-    \int_if_zero:nTF { #1 }
-      { \color { nicematrix-first-row } }
+    \bool_if:NT \g__nicematrix_aux_found_bool
       {
-        \int_compare:nNnT { #1 } = { \g__nicematrix_row_total_int }
-          { \color { nicematrix-last-row } }
+        \group_begin:
+        \__nicematrix_open_shorten:
+        \int_if_zero:nTF { #1 }
+          { \color { nicematrix-first-row } }
+          {
+            \int_compare:nNnT { #1 } = { \g__nicematrix_row_total_int }
+              { \color { nicematrix-last-row } }
+          }
+        \keys_set:nn { nicematrix / xdots } { #4 }
+        \__nicematrix_color:o \l__nicematrix_xdots_color_tl
+        \__nicematrix_actually_draw_Ldots:
+        \group_end:
       }
-    \keys_set:nn { nicematrix / xdots } { #4 }
-    \__nicematrix_color:o \l__nicematrix_xdots_color_tl
-    \__nicematrix_actually_draw_Ldots:
-    \group_end:
     \int_step_inline:nnn { #2 } { #2 + #3 - 1 }
       { \cs_set_nopar:cpn { __nicematrix _ dotted _ #1 - ##1 } { } }
   }
@@ -5359,20 +5387,23 @@
             \bool_set_true:N \l__nicematrix_final_open_bool
           }
       }
-    \group_begin:
-    \__nicematrix_open_shorten:
-    \int_if_zero:nTF { #2 }
-      { \color { nicematrix-first-col } }
+    \bool_if:NT \g__nicematrix_aux_found_bool
       {
-        \int_compare:nNnT { #2 } = { \g__nicematrix_col_total_int }
-          { \color { nicematrix-last-col } }
+        \group_begin:
+        \__nicematrix_open_shorten:
+        \int_if_zero:nTF { #2 }
+          { \color { nicematrix-first-col } }
+          {
+            \int_compare:nNnT { #2 } = { \g__nicematrix_col_total_int }
+              { \color { nicematrix-last-col } }
+          }
+        \keys_set:nn { nicematrix / xdots } { #4 }
+        \__nicematrix_color:o \l__nicematrix_xdots_color_tl
+        \bool_if:NTF \l__nicematrix_Vbrace_bool
+          { \__nicematrix_actually_draw_Vbrace: }
+          { \__nicematrix_actually_draw_Vdots: }
+        \group_end:
       }
-    \keys_set:nn { nicematrix / xdots } { #4 }
-    \__nicematrix_color:o \l__nicematrix_xdots_color_tl
-    \bool_if:NTF \l__nicematrix_Vbrace_bool
-      { \__nicematrix_actually_draw_Vbrace: }
-      { \__nicematrix_actually_draw_Vdots: }
-    \group_end:
     \int_step_inline:nnn { #1 } { #1 + #3 - 1 }
       { \cs_set_nopar:cpn { __nicematrix _ dotted _ ##1 - #2 } { } }
   }

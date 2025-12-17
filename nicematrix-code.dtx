@@ -1000,7 +1000,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}  
 %
 % During the second run, if information concerning the current environment has
-% been found in the |aux| file, the following flag will be raised.
+% been found in the |aux| file, the following flag will be raised. It will be
+% used, for instance to disable several constructions (continuous dotted lines,
+% and colored backgrounds) during the first compilation (in order to speed up it).
 %    \begin{macrocode}
 \bool_new:N \g_@@_aux_found_bool
 %    \end{macrocode}
@@ -4411,7 +4413,7 @@ version 2005/12/01 or later.
 % want to draw all the cells with the same color at the same time to absolutely
 % avoid thin white lines in some \textsc{pdf} viewers.
 %    \begin{macrocode}
-      \@@_actually_color:
+      \bool_if:NT \g_@@_aux_found_bool { \@@_actually_color: }
       \l_@@_code_before_tl 
       \q_stop 
   } 
@@ -8069,7 +8071,7 @@ version 2005/12/01 or later.
 % Now, we actually draw the dotted lines (specified by |\Cdots|, |\Vdots|,
 % etc.). 
 %    \begin{macrocode}
-    \@@_draw_dotted_lines:
+    \@@_draw_dotted_lines: 
 %    \end{macrocode}
 %
 % 
@@ -8137,8 +8139,15 @@ version 2005/12/01 or later.
 % The LaTeX-style boolean |\ifmeasuring@| is used by \pkg{amsmath} during the
 % phase of measure in environments such as |{align}|, etc. 
 %    \begin{macrocode}
+    \group_begin:
+    \bool_if:NF \g_@@_aux_found_bool
+      {
+        \cs_set_eq:NN \@@_vline:n \use_none:n
+        \cs_set_eq:NN \@@_hline:n \use_none:n        
+      }
     \legacy_if:nF { measuring@ } { \g_@@_pre_code_after_tl }
     \tl_gclear:N \g_@@_pre_code_after_tl
+    \group_end:
 %    \end{macrocode}
 % When |light-syntax| is used, we insert systematically a |\CodeAfter| in the
 % flow. Thus, it's possible to have two instructions |\CodeAfter| and the second
@@ -8902,23 +8911,26 @@ version 2005/12/01 or later.
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
 % of the line.
 %    \begin{macrocode}
-        \group_begin:
-          \@@_open_shorten:
-          \int_if_zero:nTF { #1 } 
-            { \color { nicematrix-first-row } }
-            { 
+        \bool_if:NT \g_@@_aux_found_bool
+          {
+            \group_begin:
+              \@@_open_shorten:
+              \int_if_zero:nTF { #1 } 
+                { \color { nicematrix-first-row } }
+                { 
 %    \end{macrocode}
 % We remind that, when there is a ``last row'' |\l_@@_last_row_int| will always
 % be (after the construction of the array) the number of that ``last row'' even
 % if the option |last-row| has been used without value.
 %    \begin{macrocode}
-              \int_compare:nNnT { #1 } = { \l_@@_last_row_int }
-                { \color { nicematrix-last-row } }
-            }
-          \keys_set:nn { nicematrix / xdots } { #3 }
-          \@@_color:o \l_@@_xdots_color_tl
-          \@@_actually_draw_Ldots:
-        \group_end:
+                  \int_compare:nNnT { #1 } = { \l_@@_last_row_int }
+                    { \color { nicematrix-last-row } }
+                }
+              \keys_set:nn { nicematrix / xdots } { #3 }
+              \@@_color:o \l_@@_xdots_color_tl
+              \@@_actually_draw_Ldots: 
+            \group_end:
+          }        
       }
   }
 %    \end{macrocode}
@@ -8997,23 +9009,26 @@ version 2005/12/01 or later.
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
 % of the line.
 %    \begin{macrocode}
-        \group_begin:
-          \@@_open_shorten:
-          \int_if_zero:nTF { #1 } 
-            { \color { nicematrix-first-row } }
-            { 
+        \bool_if:NT \g_@@_aux_found_bool
+          {
+            \group_begin:
+              \@@_open_shorten:
+              \int_if_zero:nTF { #1 } 
+                { \color { nicematrix-first-row } }
+                { 
 %    \end{macrocode}
 % We remind that, when there is a ``last row'' |\l_@@_last_row_int| will always
 % be (after the construction of the array) the number of that ``last row'' even
 % if the option |last-row| has been used without value.
 %    \begin{macrocode}
-              \int_compare:nNnT { #1 } = { \l_@@_last_row_int }
-                { \color { nicematrix-last-row } }
-            }
-          \keys_set:nn { nicematrix / xdots } { #3 }
-          \@@_color:o \l_@@_xdots_color_tl
-          \@@_actually_draw_Cdots: 
-        \group_end:
+                  \int_compare:nNnT { #1 } = { \l_@@_last_row_int }
+                    { \color { nicematrix-last-row } }
+                }
+              \keys_set:nn { nicematrix / xdots } { #3 }
+              \@@_color:o \l_@@_xdots_color_tl
+              \@@_actually_draw_Cdots: 
+            \group_end:
+         }
       }
   }
 %    \end{macrocode}
@@ -9130,20 +9145,23 @@ version 2005/12/01 or later.
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
 % of the line.
 %    \begin{macrocode}
-        \group_begin:
-          \@@_open_shorten:
-          \int_if_zero:nTF { #2 } 
-            { \color { nicematrix-first-col } }
-            {
-              \int_compare:nNnT { #2 } = { \l_@@_last_col_int }
-                { \color { nicematrix-last-col } }
-            }
-          \keys_set:nn { nicematrix / xdots } { #3 }
-          \@@_color:o \l_@@_xdots_color_tl
-          \bool_if:NTF \l_@@_Vbrace_bool
-            { \@@_actually_draw_Vbrace: }
-            { \@@_actually_draw_Vdots: }
-        \group_end:
+        \bool_if:NT \g_@@_aux_found_bool
+          {
+            \group_begin:
+              \@@_open_shorten:
+              \int_if_zero:nTF { #2 } 
+                { \color { nicematrix-first-col } }
+                {
+                  \int_compare:nNnT { #2 } = { \l_@@_last_col_int }
+                    { \color { nicematrix-last-col } }
+                }
+              \keys_set:nn { nicematrix / xdots } { #3 }
+              \@@_color:o \l_@@_xdots_color_tl
+              \bool_if:NTF \l_@@_Vbrace_bool
+                { \@@_actually_draw_Vbrace: }
+                { \@@_actually_draw_Vdots: }
+              \group_end:                
+          }
       }
   }
 %    \end{macrocode}
@@ -9361,12 +9379,15 @@ version 2005/12/01 or later.
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
 % of the line.
 %    \begin{macrocode}
-        \group_begin:
-          \@@_open_shorten:
-          \keys_set:nn { nicematrix / xdots } { #3 }
-          \@@_color:o \l_@@_xdots_color_tl
-          \@@_actually_draw_Ddots:
-        \group_end:
+        \bool_if:NT \g_@@_aux_found_bool
+          {
+            \group_begin:
+              \@@_open_shorten:
+              \keys_set:nn { nicematrix / xdots } { #3 }
+              \@@_color:o \l_@@_xdots_color_tl
+              \@@_actually_draw_Ddots:
+            \group_end:
+          }
       }
   }
 %    \end{macrocode}
@@ -9459,12 +9480,15 @@ version 2005/12/01 or later.
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
 % of the line.
 %    \begin{macrocode}
-        \group_begin:
-          \@@_open_shorten:
-          \keys_set:nn { nicematrix / xdots } { #3 }
-          \@@_color:o \l_@@_xdots_color_tl
-          \@@_actually_draw_Iddots:
-        \group_end:
+        \bool_if:NT \g_@@_aux_found_bool
+          {
+            \group_begin:
+              \@@_open_shorten:
+              \keys_set:nn { nicematrix / xdots } { #3 }
+              \@@_color:o \l_@@_xdots_color_tl
+              \@@_actually_draw_Iddots: 
+            \group_end:
+          }
       }
   }
 %    \end{macrocode}
@@ -10247,18 +10271,21 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \group_begin:
-    \@@_open_shorten:
-    \int_if_zero:nTF { #1 } 
-      { \color { nicematrix-first-row } }
-      { 
-        \int_compare:nNnT { #1 } = { \g_@@_row_total_int }
-          { \color { nicematrix-last-row } }
+    \bool_if:NT \g_@@_aux_found_bool
+      {
+        \group_begin:
+        \@@_open_shorten:
+        \int_if_zero:nTF { #1 } 
+          { \color { nicematrix-first-row } }
+          { 
+            \int_compare:nNnT { #1 } = { \g_@@_row_total_int }
+              { \color { nicematrix-last-row } }
+          }
+        \keys_set:nn { nicematrix / xdots } { #4 }
+        \@@_color:o \l_@@_xdots_color_tl
+        \@@_actually_draw_Ldots: 
+        \group_end:
       }
-    \keys_set:nn { nicematrix / xdots } { #4 }
-    \@@_color:o \l_@@_xdots_color_tl
-    \@@_actually_draw_Ldots:
-    \group_end:
 %    \end{macrocode}
 %
 % \medskip
@@ -10361,20 +10388,23 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \group_begin:
-    \@@_open_shorten:
-    \int_if_zero:nTF { #2 } 
-      { \color { nicematrix-first-col } }
-      { 
-        \int_compare:nNnT { #2 } = { \g_@@_col_total_int }
-          { \color { nicematrix-last-col } }
+    \bool_if:NT \g_@@_aux_found_bool
+      {
+        \group_begin:
+        \@@_open_shorten:
+        \int_if_zero:nTF { #2 } 
+          { \color { nicematrix-first-col } }
+          { 
+            \int_compare:nNnT { #2 } = { \g_@@_col_total_int }
+              { \color { nicematrix-last-col } }
+          }
+        \keys_set:nn { nicematrix / xdots } { #4 }
+        \@@_color:o \l_@@_xdots_color_tl
+        \bool_if:NTF \l_@@_Vbrace_bool
+          { \@@_actually_draw_Vbrace: }
+          { \@@_actually_draw_Vdots: }
+        \group_end:
       }
-    \keys_set:nn { nicematrix / xdots } { #4 }
-    \@@_color:o \l_@@_xdots_color_tl
-    \bool_if:NTF \l_@@_Vbrace_bool
-      { \@@_actually_draw_Vbrace: }
-      { \@@_actually_draw_Vdots: }
-    \group_end:
 %    \end{macrocode}
 %
 % \medskip

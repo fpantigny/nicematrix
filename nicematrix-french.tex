@@ -2068,7 +2068,7 @@ lettre «|:|» pour ces filets en pointillés.\footnote{Néanmoins, l'utilisateu
 
 \smallskip
 \begin{Code}
-\emph{% présent dans nicematrix.sty}
+\emph{% déjà présent dans nicematrix.sty}
 \NiceMatrixOptions
   { 
     custom-line = 
@@ -4191,13 +4191,21 @@ son label) vers l'extérieur de la matrice.
 \item un troisième argument, obligatoire, qui est le label de l'accolade.
 \end{itemize}
 
-
 Concernant la commande |\Hbrace|, son comportement vis à vis des esperluettes
 (|&|) est le même que celui des commandes |\multicolumn|, |\hdotsfor|,
-|\Hdotsfor|, etc. : on ne doit mettre qu'une seule esperluette après la
-commande, même si l'accolade s'étend sur plusieurs colonnes.
+|\Hdotsfor| (fournie par \pkg{nicematrix}), etc. : on ne doit mettre qu'une
+seule esperluette après la commande, même si l'accolade s'étend sur plusieurs
+colonnes.
 
 \bigskip
+\begin{footnotesize}
+\begin{Verbatim}
+\usepackage{tikz}                          % dans le préambule
+\usetikzlibrary{decorations.pathreplacing} % dans le préambule
+\end{Verbatim}
+\end{footnotesize}
+
+\medskip
 \begin{Code}[width=11.2cm]
 $\begin{NiceArray}{ccccc}%
   [ hvlines ,
