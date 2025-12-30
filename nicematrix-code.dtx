@@ -2,7 +2,7 @@
 %
 % This file should be compiled with $lualatex$.
 %
-% Copyright (C) 2018-2025 by F. Pantigny
+% Copyright (C) 2018-206 by F. Pantigny
 % ------------------------------------------
 %
 % This file may be distributed and/or modified under the
@@ -30,7 +30,7 @@
 
 
 
-Copyright (C) 2018-2025 by F. Pantigny
+Copyright (C) 2018-2026 by F. Pantigny
 -----------------------------------
 
 This file may be distributed and/or modified under the
@@ -3842,8 +3842,6 @@ version 2005/12/01 or later.
 % |\g_@@_future_pos_of_blocks_seq| because the mains blocks will be added
 % in |\g_@@_pos_of_blocks_seq| during the construction of the array.
 %    \begin{macrocode}
-    % \seq_gset_eq:NN \g_@@_pos_of_blocks_seq \g_@@_future_pos_of_blocks_seq
-    % \seq_gclear:N \g_@@_future_pos_of_blocks_seq
     \seq_gclear:N \g_@@_pos_of_blocks_seq
 %    \end{macrocode}
 %
@@ -4301,11 +4299,6 @@ version 2005/12/01 or later.
           { \pgfpointdiff \@@_picture_position: \@@_node_position: }
       }
 %    \end{macrocode}
-% Now, you recreate the diagonal nodes by using the |row| nodes and the |col| 
-% nodes.
-%    \begin{macrocode}
-    \@@_create_diag_nodes:
-%    \end{macrocode}
 %
 % \medskip 
 % Now, the creation of the cell nodes |(i-j)|, and, maybe also the ``medium
@@ -4313,6 +4306,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \bool_if:NT \g_@@_create_cell_nodes_bool { \@@_recreate_cell_nodes: }
     \endpgfpicture
+%    \end{macrocode}
+%
+% Now, you recreate the diagonal nodes by using the |row| nodes and the |col| 
+% nodes.
+%    \begin{macrocode}
+    \@@_create_diag_nodes:
 %    \end{macrocode}
 %
 % \medskip
@@ -4346,6 +4345,8 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \EmptyRow \@@_EmptyRow:n
   }
 %    \end{macrocode}
+%
+%
 % 
 % \bigskip
 %    \begin{macrocode}
@@ -4413,7 +4414,7 @@ version 2005/12/01 or later.
 % want to draw all the cells with the same color at the same time to absolutely
 % avoid thin white lines in some \textsc{pdf} viewers.
 %    \begin{macrocode}
-      \bool_if:NT \g_@@_aux_found_bool { \@@_actually_color: }
+      \@@_actually_color:
       \l_@@_code_before_tl 
       \q_stop 
   } 
@@ -4446,14 +4447,46 @@ version 2005/12/01 or later.
 % whether the key |create-cell-nodes| has been used. Now, you can execute the
 % rest of the |\CodeBefore|, excepted, of course, if we are in the first
 % compilation. 
+%
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_CodeBefore:w #1 \q_stop
   { 
-    \bool_if:NT \g_@@_aux_found_bool
-      { 
+    \bool_if:NTF \g_@@_aux_found_bool
+      {
         \@@_pre_code_before: 
         \legacy_if:nF { measuring@ } { #1 } 
-      } 
+      }
+%    \begin{macrocode}
+% If we are in the first compilation, you won't really execute the |\CodeBefore| but
+% we have to execute some instructions of creation of PGF/TikZ pictures in order
+% to have the correct |aux| file in the next run (hence, we avoid to ``lose'' a run).
+%    \end{macrocode}
+      {
+        \pgfsys@markposition { \@@_env: - position }
+        \pgfsys@getposition { \@@_env: - position } \@@_picture_position:         
+        \pgfpicture
+          \pgf@relevantforpicturesizefalse
+        \endpgfpicture
+%    \end{macrocode}
+% The following picture corresponds to |\@@_create_diag_nodes:|
+%    \begin{macrocode}
+        \pgfpicture
+          \pgfrememberpicturepositiononpagetrue
+        \endpgfpicture
+%    \end{macrocode}
+% The following picture corresponds to |\@@_create_blocks_nodes:|.
+%    \begin{macrocode}
+        \pgfpicture
+          \pgf@relevantforpicturesizefalse
+          \pgfrememberpicturepositiononpagetrue
+        \endpgfpicture        
+%    \end{macrocode}
+% The following picture corresponds |\@@_actually_color:|
+%    \begin{macrocode}
+        \pgfpicture
+          \pgf@relevantforpicturesizefalse
+        \endpgfpicture
+      }
   }
 %    \end{macrocode}
 %
@@ -7421,11 +7454,6 @@ version 2005/12/01 or later.
       }
 %    \end{macrocode}
 % 
-% \bigskip
-%    \begin{macrocode}
-        % &      % moved on 2025-11-02
-        % \omit
-%    \end{macrocode}        
 % 
 % If there is only one column (and a potential ``last column''), we don't have
 % to put the following code (there is only one column and we have put the
@@ -8139,15 +8167,8 @@ version 2005/12/01 or later.
 % The LaTeX-style boolean |\ifmeasuring@| is used by \pkg{amsmath} during the
 % phase of measure in environments such as |{align}|, etc. 
 %    \begin{macrocode}
-    \group_begin:
-    \bool_if:NF \g_@@_aux_found_bool
-      {
-        \cs_set_eq:NN \@@_vline:n \use_none:n
-        \cs_set_eq:NN \@@_hline:n \use_none:n        
-      }
     \legacy_if:nF { measuring@ } { \g_@@_pre_code_after_tl }
     \tl_gclear:N \g_@@_pre_code_after_tl
-    \group_end:
 %    \end{macrocode}
 % When |light-syntax| is used, we insert systematically a |\CodeAfter| in the
 % flow. Thus, it's possible to have two instructions |\CodeAfter| and the second
@@ -8757,7 +8778,7 @@ version 2005/12/01 or later.
 %
 %
 % Here is the programmation of that command with the the standard syntax of L3.
-% \begin{Verbatim}
+%    \begin{Verbatim}
 % \cs_new_protected:Npn \@@_adjust_to_submatrix:nnnnnn #1 #2 #3 #4 #5 #6
 %   {
 %     \bool_if:nT 
@@ -8773,11 +8794,11 @@ version 2005/12/01 or later.
 %         \int_set:Nn \l_@@_col_max_int { \int_min:nn \l_@@_col_max_int { #6 } }
 %       }
 %   }
-% \end{Verbatim}
+%    \end{Verbatim}
 %
 % \medskip
 % However, for efficiency, we will use the following version.
-% \begin{macrocode}
+%    \begin{macrocode}
 \cs_new_protected:Npn \@@_adjust_to_submatrix:nnnnnn #1 #2 #3 #4 #5 #6
   {
     \if_int_compare:w #3 > #1 
@@ -8790,8 +8811,8 @@ version 2005/12/01 or later.
           \else: 
             \if_int_compare:w \l_@@_row_min_int < #3 \l_@@_row_min_int = #3 \fi:
             \if_int_compare:w \l_@@_col_min_int < #4 \l_@@_col_min_int = #4 \fi:
-            \if_int_compare:w \l_@@_row_max_int < #5 \l_@@_row_max_int = #5 \fi:
-            \if_int_compare:w \l_@@_col_max_int < #6 \l_@@_col_max_int = #6 \fi:
+            \if_int_compare:w \l_@@_row_max_int > #5 \l_@@_row_max_int = #5 \fi:
+            \if_int_compare:w \l_@@_col_max_int > #6 \l_@@_col_max_int = #6 \fi:
           \fi:
         \fi:
       \fi:
@@ -11563,6 +11584,16 @@ version 2005/12/01 or later.
     \ignorespaces
   }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\NewDocumentCommand \@@_cellcolor_error { O { } m }
+  { \@@_error:n { cellcolor~in~Block } }
+% \end{macrocode}
+%
+%    \begin{macrocode}
+\NewDocumentCommand \@@_rowcolor_error { O { } m }
+  { \@@_error:n { rowcolor~in~Block } }
+% \end{macrocode}
 % 
 % \bigskip
 % The following command will be linked to |\rowcolor| in the tabular.
@@ -12135,7 +12166,7 @@ version 2005/12/01 or later.
       { \@@_vline_iv: }
       {
         \tl_if_empty:NTF \l_@@_tikz_rule_tl
-          { \@@_vline_iii: }
+          { \@@_vline_iii: } 
           { \@@_vline_v: }
       }
   }
@@ -13324,8 +13355,6 @@ version 2005/12/01 or later.
 %
 % \section{The extra nodes}
 %
-%
-% 
 % \bigskip
 % The following command is called in |\@@_use_arraybox_with_notes_c:| just
 % before the construction of the blocks (if the creation of medium nodes is
@@ -13484,16 +13513,16 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_create_medium_nodes:
   {
     \pgfpicture
-      \pgfrememberpicturepositiononpagetrue
-      \pgf@relevantforpicturesizefalse
-      \@@_computations_for_medium_nodes:
+    \pgfrememberpicturepositiononpagetrue
+    \pgf@relevantforpicturesizefalse
+    \@@_computations_for_medium_nodes:
 %    \end{macrocode}
 % Now, we can create the ``medium nodes''. We use a command |\@@_create_nodes:|
 % because this command will also be used for the creation of the ``large nodes''.
 %    \begin{macrocode} 
-      \tl_set:Nn \l_@@_suffix_tl { -medium }
-      \@@_create_nodes:
-      \endpgfpicture
+    \tl_set:Nn \l_@@_suffix_tl { -medium }
+    \@@_create_nodes:
+    \endpgfpicture
   }
 %    \end{macrocode}
 % 
@@ -13923,6 +13952,8 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_Block_iv:nnnnn #1 #2 #3 #4 #5
   {  
     \int_gincr:N \g_@@_block_box_int
+    \cs_set_eq:NN \cellcolor \@@_cellcolor_error
+    \cs_set_eq:NN \rowcolor \@@_rowcolor_error    
     \cs_set_protected_nopar:Npn \diagbox ##1 ##2
       {
         \tl_gput_right:Ne \g_@@_pre_code_after_tl    
@@ -15662,6 +15693,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_subcellcolor:nnnnnnn #1 #2 #3 #4 #5 #6 #7
   {
@@ -17600,7 +17632,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { key~with~normal~form~exists }
   {
-    The~key~'\l_keys_key_str'~does~not~exists.~It~will~be~ignored.\\
+    The~key~'\l_keys_key_str'~does~not~exists.\\
+    It~will~be~ignored.\\
     Maybe~you~want~to~use~the~key~'\l_tmpa_str'.
   }
 %    \end{macrocode}
@@ -17690,6 +17723,25 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
+\@@_msg_new:nn { cellcolor~in~Block } 
+  {
+    Bad~use~of~\token_to_str:N \cellcolor \\
+    You~can't~use~\token_to_str:N \cellcolor\ in~\token_to_str:N \Block\
+    (except~in~a~sub-block).\\
+    That~command~will~be~ignored.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { rowcolor~in~Block } 
+  {
+    Bad~use~of~\token_to_str:N \rowcolor \\
+    You~can't~use~\token_to_str:N \rowcolor\ in~\token_to_str:N \Block.\\
+    That~command~will~be~ignored.
+  }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
 \@@_msg_new:nn { key~color-inside }
   {
     Deleted~key.\\
@@ -17758,7 +17810,7 @@ version 2005/12/01 or later.
     \int_use:N \g_@@_static_num_of_col_int \
     \bool_if:nT
       { \int_compare_p:n { \l_@@_first_col_int = 0 } || \g_@@_last_col_found_bool }
-      { ~(plus~the~exterior~ones) }
+      { (plus~the~exterior~ones)~}
     since~the~preamble~is~' \g_@@_user_preamble_tl '.\\
     This~error~is~fatal.
   }
@@ -18566,7 +18618,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}     
 %
-%
+% 
 %    \begin{macrocode}
 \@@_msg_new:nn { Yet~in~env }
   { 

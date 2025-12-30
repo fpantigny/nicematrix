@@ -6,7 +6,7 @@
 %%
 %% nicematrix-code.dtx  (with options: `package')
 %% 
-%% Copyright (C) 2018-2025 by F. Pantigny
+%% Copyright (C) 2018-2026 by F. Pantigny
 %% 
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, either
@@ -1589,8 +1589,6 @@
   }
 \cs_new_protected:Npn \__nicematrix_pre_array_after_CodeBefore:
   {
-    % \seq_gset_eq:NN \g__nicematrix_pos_of_blocks_seq \g__nicematrix_future_pos_of_blocks_seq
-    % \seq_gclear:N \g__nicematrix_future_pos_of_blocks_seq
     \seq_gclear:N \g__nicematrix_pos_of_blocks_seq
     \seq_gclear_new:N \g__nicematrix_multicolumn_cells_seq
     \seq_gclear_new:N \g__nicematrix_multicolumn_sizes_seq
@@ -1797,9 +1795,9 @@
         \pgfcoordinate { \__nicematrix_env: - col - ##1 }
           { \pgfpointdiff \__nicematrix_picture_position: \__nicematrix_node_position: }
       }
-    \__nicematrix_create_diag_nodes:
     \bool_if:NT \g__nicematrix_create_cell_nodes_bool { \__nicematrix_recreate_cell_nodes: }
     \endpgfpicture
+    \__nicematrix_create_diag_nodes:
     \__nicematrix_create_blocks_nodes:
     \IfPackageLoadedT { tikz }
       {
@@ -1847,7 +1845,7 @@
       { \__nicematrix_rescan_for_spanish:N \l__nicematrix_code_before_tl }
     \exp_last_unbraced:No \__nicematrix_CodeBefore_keys:
       \g__nicematrix_pre_code_before_tl
-      \bool_if:NT \g__nicematrix_aux_found_bool { \__nicematrix_actually_color: }
+      \__nicematrix_actually_color:
       \l__nicematrix_code_before_tl
       \q_stop
   }
@@ -1868,10 +1866,27 @@
   }
 \cs_new_protected:Npn \__nicematrix_CodeBefore:w #1 \q_stop
   {
-    \bool_if:NT \g__nicematrix_aux_found_bool
+    \bool_if:NTF \g__nicematrix_aux_found_bool
       {
         \__nicematrix_pre_code_before:
         \legacy_if:nF { measuring@ } { #1 }
+      }
+      {
+        \pgfsys@markposition { \__nicematrix_env: - position }
+        \pgfsys@getposition { \__nicematrix_env: - position } \__nicematrix_picture_position:
+        \pgfpicture
+          \pgf@relevantforpicturesizefalse
+        \endpgfpicture
+        \pgfpicture
+          \pgfrememberpicturepositiononpagetrue
+        \endpgfpicture
+        \pgfpicture
+          \pgf@relevantforpicturesizefalse
+          \pgfrememberpicturepositiononpagetrue
+        \endpgfpicture
+        \pgfpicture
+          \pgf@relevantforpicturesizefalse
+        \endpgfpicture
       }
   }
 \cs_new_protected:Npn \__nicematrix_recreate_cell_nodes:
@@ -3529,8 +3544,6 @@
           \__nicematrix_node_alias:n { \int_eval:n { \g_tmpa_int + 1 } }
         \endpgfpicture
       }
-        % &      % moved on 2025-11-02
-        % \omit
         \bool_lazy_or:nnF
           { \int_compare_p:nNn \g__nicematrix_col_total_int = 1 }
           { \int_compare_p:nNn \g__nicematrix_col_total_int = 2 && \g__nicematrix_last_col_found_bool }
@@ -3967,15 +3980,8 @@
     \cs_set_eq:NN \ShowCellNames \__nicematrix_ShowCellNames
     \cs_set_eq:NN \TikzEveryCell \__nicematrix_TikzEveryCell
     \cs_set_eq:NN \line \__nicematrix_line
-    \group_begin:
-    \bool_if:NF \g__nicematrix_aux_found_bool
-      {
-        \cs_set_eq:NN \__nicematrix_vline:n \use_none:n
-        \cs_set_eq:NN \__nicematrix_hline:n \use_none:n
-      }
     \legacy_if:nF { measuring@ } { \g__nicematrix_pre_code_after_tl }
     \tl_gclear:N \g__nicematrix_pre_code_after_tl
-    \group_end:
     \cs_set_eq:NN \CodeAfter \prg_do_nothing:
     \seq_gclear:N \g__nicematrix_submatrix_names_seq
     \int_compare:nNnT { \char_value_catcode:n { 60 } } = { 13 }
@@ -4324,8 +4330,8 @@
           \else:
             \if_int_compare:w \l__nicematrix_row_min_int < #3 \l__nicematrix_row_min_int = #3 \fi:
             \if_int_compare:w \l__nicematrix_col_min_int < #4 \l__nicematrix_col_min_int = #4 \fi:
-            \if_int_compare:w \l__nicematrix_row_max_int < #5 \l__nicematrix_row_max_int = #5 \fi:
-            \if_int_compare:w \l__nicematrix_col_max_int < #6 \l__nicematrix_col_max_int = #6 \fi:
+            \if_int_compare:w \l__nicematrix_row_max_int > #5 \l__nicematrix_row_max_int = #5 \fi:
+            \if_int_compare:w \l__nicematrix_col_max_int > #6 \l__nicematrix_col_max_int = #6 \fi:
           \fi:
         \fi:
       \fi:
@@ -6054,6 +6060,10 @@
       }
     \ignorespaces
   }
+\NewDocumentCommand \__nicematrix_cellcolor_error { O { } m }
+  { \__nicematrix_error:n { cellcolor~in~Block } }
+\NewDocumentCommand \__nicematrix_rowcolor_error { O { } m }
+  { \__nicematrix_error:n { rowcolor~in~Block } }
 \NewDocumentCommand \__nicematrix_rowcolor_tabular { O { } m }
   {
     \tl_gput_right:Ne \g__nicematrix_pre_code_before_tl
@@ -7203,12 +7213,12 @@
 \cs_new_protected:Npn \__nicematrix_create_medium_nodes:
   {
     \pgfpicture
-      \pgfrememberpicturepositiononpagetrue
-      \pgf@relevantforpicturesizefalse
-      \__nicematrix_computations_for_medium_nodes:
-      \tl_set:Nn \l__nicematrix_suffix_tl { -medium }
-      \__nicematrix_create_nodes:
-      \endpgfpicture
+    \pgfrememberpicturepositiononpagetrue
+    \pgf@relevantforpicturesizefalse
+    \__nicematrix_computations_for_medium_nodes:
+    \tl_set:Nn \l__nicematrix_suffix_tl { -medium }
+    \__nicematrix_create_nodes:
+    \endpgfpicture
   }
 \cs_new_protected:Npn \__nicematrix_create_large_nodes:
   {
@@ -7444,6 +7454,8 @@
 \cs_new_protected:Npn \__nicematrix_Block_iv:nnnnn #1 #2 #3 #4 #5
   {
     \int_gincr:N \g__nicematrix_block_box_int
+    \cs_set_eq:NN \cellcolor \__nicematrix_cellcolor_error
+    \cs_set_eq:NN \rowcolor \__nicematrix_rowcolor_error
     \cs_set_protected_nopar:Npn \diagbox ##1 ##2
       {
         \tl_gput_right:Ne \g__nicematrix_pre_code_after_tl
@@ -9893,7 +9905,8 @@
   }
 \__nicematrix_msg_new:nn { key~with~normal~form~exists }
   {
-    The~key~'\l_keys_key_str'~does~not~exists.~It~will~be~ignored.\\
+    The~key~'\l_keys_key_str'~does~not~exists.\\
+    It~will~be~ignored.\\
     Maybe~you~want~to~use~the~key~'\l_tmpa_str'.
   }
 \str_const:Ne \c__nicematrix_available_keys_str
@@ -9947,6 +9960,19 @@
     You~have~used~\token_to_str:N \Body\ without~\token_to_str:N \CodeBefore.\\
     That~error~is~fatal.
   }
+\__nicematrix_msg_new:nn { cellcolor~in~Block }
+  {
+    Bad~use~of~\token_to_str:N \cellcolor \\
+    You~can't~use~\token_to_str:N \cellcolor\ in~\token_to_str:N \Block\
+    (except~in~a~sub-block).\\
+    That~command~will~be~ignored.
+  }
+\__nicematrix_msg_new:nn { rowcolor~in~Block }
+  {
+    Bad~use~of~\token_to_str:N \rowcolor \\
+    You~can't~use~\token_to_str:N \rowcolor\ in~\token_to_str:N \Block.\\
+    That~command~will~be~ignored.
+  }
 \__nicematrix_msg_new:nn { key~color-inside }
   {
     Deleted~key.\\
@@ -9998,7 +10024,7 @@
     \int_use:N \g__nicematrix_static_num_of_col_int \
     \bool_if:nT
       { \int_compare_p:n { \l__nicematrix_first_col_int = 0 } || \g__nicematrix_last_col_found_bool }
-      { ~(plus~the~exterior~ones) }
+      { (plus~the~exterior~ones)~}
     since~the~preamble~is~' \g__nicematrix_user_preamble_tl '.\\
     This~error~is~fatal.
   }
