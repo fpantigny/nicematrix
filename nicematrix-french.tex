@@ -3669,7 +3669,7 @@ $\begin{bNiceMatrix}
 0      & \Cdots &               & 0
 \end{bNiceMatrix}$
 
-\subsection{L'option nullify-dots}
+\subsection{L'option xdots/nullify}
 
 \index{nullify-dots}
 
@@ -3728,28 +3728,28 @@ x & \Ldots & \Ldots  & \Ldots & \Ldots & x
 \medskip
 On pourrait toutefois préférer la géométrie de la première matrice $A$ et
 vouloir avoir la même géométrie avec une ligne en pointillés continue dans la
-seconde rangée. C'est possible en utilisant l'option \Definition{nullify-dots}
+seconde rangée. C'est possible en utilisant l'option \Definition{xdots/nullify}\footnote{Cette clé a un alias : \Definition{nullify-dots}.}
 (et une seule instruction |\Ldots| suffit).
 
 \nobreak
 \medskip
 \begin{Code}[width=10cm]
-$D = \begin{pNiceMatrix}[\emph{nullify-dots}]
+$D = \begin{pNiceMatrix}[\emph{xdots/nullify}]
 h & i & j & k & l & m \\
 x & \Ldots & & & & x
 \end{pNiceMatrix}$
 \end{Code}
-$D = \begin{pNiceMatrix}[nullify-dots]
+$D = \begin{pNiceMatrix}[xdots/nullify]
 h & i & j & k & l & m \\
 x & \Ldots & &  &  & x
 \end{pNiceMatrix}$
 
 \medskip
-L'option |nullify-dots| «smashe» les instructions |\Ldots| (et ses variantes)
+L'option |xdots/nullify| «smashe» les instructions |\Ldots| (et ses variantes)
 horizontalement mais aussi verticalement.
 
 \medskip
-\textbf{Attention} : la clé |nullify-dots| a un nom qui peut prêter à confusion ; 
+\textbf{Attention} : la clé |xdots/nullify| a un nom qui peut prêter à confusion ; 
 elle n'implique pas que la ligne en pointillés ne sera pas tracée ! 
 
 
@@ -4088,7 +4088,7 @@ Voici par exemple une matrice tridiagonale avec le style |loosely dotted|
 \nobreak
 \medskip
 \begin{Code}
-$\begin{pNiceMatrix}[nullify-dots,\emph{xdots/line-style=loosely dotted}]
+$\begin{pNiceMatrix}[xdots={nullify,\emph{line-style=loosely dotted}}]
 a      & b      & 0      &        & \Cdots & 0      \\
 b      & a      & b      & \Ddots &        & \Vdots \\
 0      & b      & a      & \Ddots &        &        \\
@@ -4099,7 +4099,7 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 \end{Code}
 
 
-\[\begin{pNiceMatrix}[nullify-dots,xdots/line-style=loosely dotted]
+\[\begin{pNiceMatrix}[xdots={nullify,line-style=loosely dotted}]
 a      & b      & 0      &        & \Cdots & 0      \\
 b      & a      & b      & \Ddots &        & \Vdots \\
 0      & b      & a      & \Ddots &        &        \\
@@ -5533,7 +5533,7 @@ environnements de \pkg{nicematrix}.
 
 \medskip
 \begin{Code}[width = 10.9cm]
-$\begin{pNiceArray}{\emph{S}cW{c}{1cm}c}[nullify-dots,first-row]
+$\begin{pNiceArray}{\emph{S}cW{c}{1cm}c}[xdots/nullify,first-row]
 {C_1} & \Cdots &  & C_n \\
 2.3  & 0 & \Cdots & 0 \\
 12.4 & \Vdots & & \Vdots \\
@@ -5541,7 +5541,7 @@ $\begin{pNiceArray}{\emph{S}cW{c}{1cm}c}[nullify-dots,first-row]
 7.2  & 0 & \Cdots & 0
 \end{pNiceArray}$
 \end{Code}
-$\begin{pNiceArray}{ScW{c}{1cm}c}[nullify-dots,first-row]
+$\begin{pNiceArray}{ScW{c}{1cm}c}[xdots/nullify,first-row]
 {C_1} & \Cdots &  & C_n \\
 2.3  & 0 & \Cdots & 0 \\
 12.4 & \Vdots & & \Vdots \\
@@ -6584,7 +6584,7 @@ L'extension \pkg{nicematrix} fournit deux variables internes mais publiques\foot
 
 \medskip
 Ces variables constituent le code du «|code-before|» (que l'on rentre souvent
-avec la syntaxte utilisant |\CodeBefore| et |\Body| en début d'environnement) et
+avec la syntaxe utilisant |\CodeBefore| et |\Body| en début d'environnement) et
 du «|code-after|» (que l'on rentre souvent en fin d'environnement après le
 mot-clé |\CodeAfter|). Le développeur peut donc les utiliser pour y ajouter du
 code à partir d'une case du tableau (l'affectation devra être globale, ce qui
@@ -6599,24 +6599,24 @@ compilation supplémentaire (car les instructions sont écrites dans le fichier
 \emph{Exemple} : On souhaite écrire une commande |\crossbox| qui barre en croix
 la case courante. Cette commande prendra en argument optionnel une liste de
 couples \textsl{clé}-\textsl{valeur} qui sera passée à TikZ avant que la croix
-ne soit tracée.
-
-
-On peut alors programmer cette commande |\crossbox| de la manière suivante, qui
-utilise explicitement la variable publique |\g_nicematrix_code_before_tl|.
+ne soit tracée. On peut alors programmer cette commande |\crossbox| de la
+manière suivante, qui utilise explicitement la variable publique
+|\g_nicematrix_code_before_tl|. On utilise |\g_nicematrix_code_before_tl| au
+lieu de |\g_nicematrix_code_after_tl| pour que la croix soit tracée avant les
+éventuels filets verticaux (de manière à avoir un résultat parfait).
 
 
 \index{crossbox@\texttt{\textbackslash crossbox} (définie dans un exemple)|textit}
 
 
-
+\medskip
 \begin{Code}
 \ExplSyntaxOn
 \cs_new_protected:Nn \__pantigny_crossbox:nnn
   {
     \tikz \draw [ #3 ]
-          ( #1 -| \int_eval:n { #2 + 1 } ) -- ( \int_eval:n { #1 + 1 } -| #2 )
-          ( #1 -| #2 ) -- ( \int_eval:n { #1 + 1 } -| \int_eval:n { #2 + 1 } ) ;
+          ( #1 -| \inteval { #2 + 1 } ) -- ( \inteval { #1 + 1 } -| #2 )
+          ( #1 -| #2 ) -- ( \inteval { #1 + 1 } -| \inteval { #2 + 1 } ) ;
   }
 
 \NewDocumentCommand \crossbox { ! O { } }
@@ -6639,8 +6639,8 @@ utilise explicitement la variable publique |\g_nicematrix_code_before_tl|.
 \cs_new_protected:Nn \__pantigny_crossbox:nnn
   {
     \tikz \draw [ #3 ]
-          ( #1 -| \int_eval:n { #2 + 1 } ) -- ( \int_eval:n { #1 + 1 } -| #2 )
-          ( #1 -| #2 ) -- ( \int_eval:n { #1 + 1 } -| \int_eval:n { #2 + 1 } ) ;
+          ( #1 -| \inteval { #2 + 1 } ) -- ( \inteval { #1 + 1 } -| #2 )
+          ( #1 -| #2 ) -- ( \inteval { #1 + 1 } -| \inteval { #2 + 1 } ) ;
   }
 
 
@@ -7315,13 +7315,15 @@ a_p   &      &&a_0    &       &      &b_1   \\
 \end{scope}
 
 \vspace{2cm}
-Un exemple avec un système linéaire:
+\goodbreak
+Un exemple avec un système linéaire. Rappelons que |xdots/nullify|
+annule les espaces horizontaux et verticaux créés par les commands |\Cdots|, |\Vdots|, etc.
 
 \index{last-col|textit}
 \index{code-for-last-col|textit}
 
 \begin{Verbatim}
-\begin{pNiceMatrix}[vlines=-1,nullify-dots,last-col,code-for-last-col=\scriptstyle]
+\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
@@ -7332,7 +7334,7 @@ Un exemple avec un système linéaire:
 \end{Verbatim}
 
 
-\[\begin{pNiceMatrix}[vlines=-1,nullify-dots,last-col,code-for-last-col=\scriptstyle]
+\[\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
@@ -7358,7 +7360,7 @@ pointillées (TikZ doit être chargé).
 \begin{Verbatim}
 \setcounter{MaxMatrixCols}{12}
 \newcommand{\blue}{\color{blue}}
-\[\begin{pNiceMatrix}[last-row,last-col,nullify-dots,xdots/line-style={dashed,blue}]
+\[\begin{pNiceMatrix}[last-row,last-col,xdots={nullify,line-style={dashed,blue}}]
 1& & & \Vdots & & & & \Vdots \\
 & \Ddots[line-style=standard] \\
 & & 1 \\
@@ -7381,7 +7383,7 @@ pointillées (TikZ doit être chargé).
 \begin{scope}
 \setcounter{MaxMatrixCols}{12}
 \newcommand{\blue}{\color{blue}}
-\[\begin{pNiceMatrix}[last-row,last-col,nullify-dots,xdots/line-style={dashed,blue}]
+\[\begin{pNiceMatrix}[last-row,last-col,xdots={nullify,line-style={dashed,blue}}]
 1& & & \Vdots & & & & \Vdots \\
 & \Ddots[line-style=standard] \\
 & & 1 \\
@@ -8199,7 +8201,7 @@ de parenthèses ont été rajoutées avec |\SubMatrix| dans le |\CodeBefore|.
                            fit=#1}}%
 %
 %
-\[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[nullify-dots]
+\[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[xdots/nullify]
 \CodeBefore [create-cell-nodes]
   \SubMatrix({2-7}{6-last})
   \SubMatrix({7-2}{last-6})
@@ -8238,7 +8240,7 @@ de parenthèses ont été rajoutées avec |\SubMatrix| dans le |\CodeBefore|.
 \begin{scope}
 \footnotesize
 \begin{Code}
-\[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[nullify-dots]
+\[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[xdots/nullify]
 \CodeBefore [create-cell-nodes]
   \SubMatrix({2-7}{6-last})
   \SubMatrix({7-2}{last-6})

@@ -3251,7 +3251,7 @@ A potential ``first row'' (exterior) has the number $0$ (and not $1$). Idem
 for the potential ``first column''. 
 
 \begin{Code}
-$\begin{pNiceMatrix}[\emph{first-row,last-row,first-col,last-col},nullify-dots]
+$\begin{pNiceMatrix}[\emph{first-row,last-row,first-col,last-col},xdots/nullify]
        & C_1    & \Cdots &        & C_4    &        \\
 L_1    & a_{11} & a_{12} & a_{13} & a_{14} & L_1    \\
 \Vdots & a_{21} & a_{22} & a_{23} & a_{24} & \Vdots \\
@@ -3261,7 +3261,7 @@ L_4    & a_{41} & a_{42} & a_{43} & a_{44} & L_4    \\
 \end{pNiceMatrix}$
 \end{Code}
 
-\[\begin{pNiceMatrix}[first-row,last-row,first-col,last-col,nullify-dots]
+\[\begin{pNiceMatrix}[first-row,last-row,first-col,last-col,xdots/nullify]
        & C_1    & \Cdots &        & C_4    &        \\
 L_1    & a_{11} & a_{12} & a_{13} & a_{14} & L_1    \\
 \Vdots & a_{21} & a_{22} & a_{23} & a_{24} & \Vdots \\
@@ -3327,7 +3327,7 @@ corresponding row or column.
                    code-for-last-row = \color{green},
                    code-for-last-col = \color{magenta}}}
 \begin{displaymath}
-\begin{pNiceArray}{cc|cc}[first-row,last-row=5,first-col,last-col,nullify-dots]
+\begin{pNiceArray}{cc|cc}[first-row,last-row=5,first-col,last-col,xdots/nullify]
        & C_1    & \multicolumn1c{\Cdots} &        & C_4    &        \\
 L_1    & a_{11} & a_{12} & a_{13} & a_{14} & L_1    \\
 \Vdots & a_{21} & a_{22} & a_{23} & a_{24} & \Vdots \\
@@ -3345,7 +3345,7 @@ L_4    & a_{41} & a_{42} & a_{43} & a_{44} & L_4    \\
                    code-for-last-row = \color{green},
                    code-for-last-col = \color{magenta}}
 \begin{displaymath}
-\begin{pNiceArray}{cc|cc}[first-row,last-row=5,first-col,last-col,nullify-dots]
+\begin{pNiceArray}{cc|cc}[first-row,last-row=5,first-col,last-col,xdots/nullify]
        & C_1    & \multicolumn1c{\Cdots} &        & C_4    &        \\
 L_1    & a_{11} & a_{12} & a_{13} & a_{14} & L_1    \\
 \Vdots & a_{21} & a_{22} & a_{23} & a_{24} & \Vdots \\
@@ -3536,7 +3536,7 @@ $\begin{bNiceMatrix}
 
 
 
-\subsection{The option nullify-dots}
+\subsection{The option xdots/nullify}
 
 \index{nullify-dots}
 
@@ -3596,28 +3596,29 @@ x & \Ldots & \Ldots  & \Ldots & \Ldots & x
 \bigskip
 However, one may prefer the geometry of the first matrix $A$ and would like to
 have such a geometry with a dotted line in the second row. It's possible by
-using the option \Definition{nullify-dots} (and only one instruction |\Ldots| is
+using the option \Definition{xdots/nullify}\footnote{The key |xdots/nullify| has
+  an alias, which is |nullify-dots|.} (and only one instruction |\Ldots| is
 necessary).
 
 \nobreak
 \medskip
 \begin{Code}[width=10cm]
-$D = \begin{pNiceMatrix}[\emph{nullify-dots}]
+$D = \begin{pNiceMatrix}[\emph{xdots/nullify}]
 h & i & j & k & l & m \\
 x & \Ldots & &  &  & x 
 \end{pNiceMatrix}$
 \end{Code}
-$D = \begin{pNiceMatrix}[nullify-dots]
+$D = \begin{pNiceMatrix}[xdots/nullify]
 h & i & j & k & l & m \\
 x & \Ldots & &  &  & x 
 \end{pNiceMatrix}$
 
 \medskip
-The option |nullify-dots| smashes the instructions |\Ldots| (and the variants)
+The option |xdots/nullify| smashes the instructions |\Ldots| (and the variants)
 horizontally but also vertically.
 
 \medskip
-\textbf{Caution}: the key |nullify-dots| has a name that may be confusing; that
+\textbf{Caution}: the key |xdots/nullify| has a name that may be confusing; that
 key does not imply that the dotted rules won't be drawn!
 
 
@@ -3947,7 +3948,7 @@ Here is for example a tridiagonal matrix with the style |loosely dotted|:
 \nobreak
 \medskip
 \begin{Code}
-$\begin{pNiceMatrix}[nullify-dots,\emph{xdots/line-style=loosely dotted}]
+\[\begin{pNiceMatrix}[xdots={nullify,\emph{line-style=loosely dotted}}]
 a      & b      & 0      &        & \Cdots & 0      \\ 
 b      & a      & b      & \Ddots &        & \Vdots \\
 0      & b      & a      & \Ddots &        &        \\
@@ -3958,7 +3959,7 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 \end{Code}
 
 
-\[\begin{pNiceMatrix}[nullify-dots,xdots/line-style=loosely dotted]
+\[\begin{pNiceMatrix}[xdots={nullify,line-style=loosely dotted}]
 a      & b      & 0      &        & \Cdots & 0      \\ 
 b      & a      & b      & \Ddots &        & \Vdots \\
 0      & b      & a      & \Ddots &        &        \\
@@ -5358,7 +5359,7 @@ of \pkg{nicematrix}.
 
 \medskip
 \begin{Code}[width = 11cm]
-$\begin{pNiceArray}{\emph{S}cW{c}{1cm}c}[nullify-dots,first-row]
+$\begin{pNiceArray}{\emph{S}cW{c}{1cm}c}[xdots/nullify,first-row]
 {C_1} & \Cdots &  & C_n \\
 2.3  & 0 & \Cdots & 0 \\
 12.4 & \Vdots & & \Vdots \\
@@ -5366,7 +5367,7 @@ $\begin{pNiceArray}{\emph{S}cW{c}{1cm}c}[nullify-dots,first-row]
 7.2  & 0 & \Cdots & 0 
 \end{pNiceArray}$
 \end{Code}
-$\begin{pNiceArray}{ScW{c}{1cm}c}[nullify-dots,first-row]
+$\begin{pNiceArray}{ScW{c}{1cm}c}[xdots/nullify,first-row]
 {C_1} & \Cdots &  & C_n \\
 2.3  & 0 & \Cdots & 0 \\
 12.4 & \Vdots & & \Vdots \\
@@ -6408,20 +6409,23 @@ used during the next run).
 current cell. This command will take in an optional argument between square
 brackets for a list of pairs \textsl{key}-\textsl{value} which will be given to
 TikZ before the drawing.
-
 It's possible to program such command |\crossbox| as follows, explicitly
 using the public variable |\g_nicematrix_code_before_tl|.
 
+We use |\g_nicematrix_code_before_tl| instead of |\g_nicematrix_code_after_tl| because
+we want to draw the cross before the horizontal aud vertical rules (in order to have
+a perfect output).
+
 \index{crossbox@\texttt{\textbackslash crossbox} (defined in an example)|textit}
 
-
+\medskip
 \begin{Code}
 \ExplSyntaxOn
 \cs_new_protected:Nn \__pantigny_crossbox:nnn
   {
     \tikz \draw [ #3 ] 
-          ( #1 -| \int_eval:n { #2 + 1 } ) -- ( \int_eval:n { #1 + 1 } -| #2 ) 
-          ( #1 -| #2 ) -- ( \int_eval:n { #1 + 1 } -| \int_eval:n { #2 + 1 } ) ; 
+          ( #1 -| \inteval { #2 + 1 } ) -- ( \inteval { #1 + 1 } -| #2 ) 
+          ( #1 -| #2 ) -- ( \inteval { #1 + 1 } -| \inteval { #2 + 1 } ) ; 
   }
 
 \NewDocumentCommand \crossbox { ! O { } }
@@ -6444,8 +6448,8 @@ using the public variable |\g_nicematrix_code_before_tl|.
 \cs_new_protected:Nn \__pantigny_crossbox:nnn
   {
     \tikz \draw [ #3 ] 
-          ( #1 -| \int_eval:n { #2 + 1 } ) -- ( \int_eval:n { #1 + 1 } -| #2 ) 
-          ( #1 -| #2 ) -- ( \int_eval:n { #1 + 1 } -| \int_eval:n { #2 + 1 } ) ; 
+          ( #1 -| \inteval { #2 + 1 } ) -- ( \inteval { #1 + 1 } -| #2 ) 
+          ( #1 -| #2 ) -- ( \inteval { #1 + 1 } -| \inteval { #2 + 1 } ) ; 
   }
 
 
@@ -7091,14 +7095,15 @@ a_p   &      &&a_0    &       &      &b_1   \\
 \end{scope}   
 
 \vspace{2cm}
-An example for a linear system:
+An example for a linear system. We recall that the command |xdots/nullify| nullifies the
+horizontal and vertical spaces created by the commands |\Cdots|, |\Vdots|, etc.
 
 \index{last-col|textit}
 \index{code-for-last-col|textit}
 
 \nobreak
 \begin{Verbatim}
-\begin{pNiceMatrix}[vlines=-1,nullify-dots,last-col,code-for-last-col=\scriptstyle]
+\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
@@ -7109,7 +7114,7 @@ An example for a linear system:
 \end{Verbatim}
 
 
-\[\begin{pNiceMatrix}[vlines=-1,nullify-dots,last-col,code-for-last-col=\scriptstyle]
+\[\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
@@ -7134,7 +7139,7 @@ not longer dotted (TikZ should be loaded).
 \begin{Verbatim}
 \setcounter{MaxMatrixCols}{12}
 \newcommand{\blue}{\color{blue}}
-\[\begin{pNiceMatrix}[last-row,last-col,nullify-dots,xdots/line-style={dashed,blue}]
+\[\begin{pNiceMatrix}[last-row,last-col,xdots={nullify,line-style={dashed,blue}}]
 1& & & \Vdots & & & & \Vdots \\
 & \Ddots[line-style=standard] \\
 & & 1 \\
@@ -7158,7 +7163,7 @@ not longer dotted (TikZ should be loaded).
 \begin{scope}
 \setcounter{MaxMatrixCols}{12}
 \newcommand{\blue}{\color{blue}}
-\[\begin{pNiceMatrix}[last-row,last-col,nullify-dots,xdots/line-style={dashed,blue}]
+\[\begin{pNiceMatrix}[last-row,last-col,xdots={nullify,line-style={dashed,blue}}]
 1& & & \Vdots & & & & \Vdots \\
 & \Ddots[line-style=standard] \\
 & & 1 \\
@@ -7949,7 +7954,7 @@ parenthesis have been added with |\SubMatrix| in the |\CodeBefore|.
                            rounded corners = 0.5 mm, 
                            inner sep=1pt,
                            fit=#1}}%
-\[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[nullify-dots]
+\[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[xdots/nullify]
 \CodeBefore [create-cell-nodes]
   \SubMatrix({2-7}{6-last})
   \SubMatrix({7-2}{last-6})
@@ -7987,7 +7992,7 @@ parenthesis have been added with |\SubMatrix| in the |\CodeBefore|.
 
 \begin{footnotesize}
 \begin{Code}
-\[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[nullify-dots]
+\[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[xdots/nullify]
 \CodeBefore [create-cell-nodes]
   \SubMatrix({2-7}{6-last})
   \SubMatrix({7-2}{last-6})

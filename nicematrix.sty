@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.5}
-\def\myfiledate{2025/12/14}
+\def\myfileversion{7.5a}
+\def\myfiledate{2026/01/05}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -801,6 +801,8 @@
 \bool_new:N \l__nicematrix_delimiters_max_width_bool
 \keys_define:nn { nicematrix / xdots }
   {
+    nullify .bool_set:N = \l__nicematrix_nullify_dots_bool ,
+    nullify .default:n = true ,
     brace-shift .dim_set:N = \l__nicematrix_brace_shift_dim ,
     brace-shift .value_required:n = true ,
     Vbrace .bool_set:N = \l__nicematrix_Vbrace_bool ,
@@ -10198,6 +10200,7 @@
     'horizontal(s)-labels',~
     'inter',~
     'line-style',~
+    'nullify',~
     'radius',~
     'shorten',~
     'shorten-end'~and~'shorten-start'.

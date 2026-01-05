@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.5}
-\def\myfiledate{2025/12/14}
+\def\myfileversion{7.5a}
+\def\myfiledate{2026/01/05}
 %
 %
 %<*batchfile>  
@@ -2500,6 +2500,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / xdots }
   {
+    nullify .bool_set:N = \l_@@_nullify_dots_bool ,
+    nullify .default:n = true , 
     brace-shift .dim_set:N = \l_@@_brace_shift_dim ,
     brace-shift .value_required:n = true ,
     Vbrace .bool_set:N = \l_@@_Vbrace_bool ,
@@ -4456,11 +4458,11 @@ version 2005/12/01 or later.
         \@@_pre_code_before: 
         \legacy_if:nF { measuring@ } { #1 } 
       }
-%    \begin{macrocode}
+%    \end{macrocode}
 % If we are in the first compilation, you won't really execute the |\CodeBefore| but
 % we have to execute some instructions of creation of PGF/TikZ pictures in order
 % to have the correct |aux| file in the next run (hence, we avoid to ``lose'' a run).
-%    \end{macrocode}
+%    \begin{macrocode}
       {
         \pgfsys@markposition { \@@_env: - position }
         \pgfsys@getposition { \@@_env: - position } \@@_picture_position:         
@@ -18055,6 +18057,7 @@ version 2005/12/01 or later.
     'horizontal(s)-labels',~
     'inter',~
     'line-style',~
+    'nullify',~
     'radius',~
     'shorten',~
     'shorten-end'~and~'shorten-start'.
