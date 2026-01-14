@@ -805,15 +805,29 @@
     nullify .default:n = true ,
     brace-shift .dim_set:N = \l__nicematrix_brace_shift_dim ,
     brace-shift .value_required:n = true ,
+    brace-shift+ .code:n =
+      \dim_add:Nn \l__nicematrix_brace_shift_dim { #1 } ,
+    brace-shift+ .value_required:n = true ,
+    brace-shift~+ .meta:n = { brace-shift+ = #1 } ,
     Vbrace .bool_set:N = \l__nicematrix_Vbrace_bool ,
     shorten-start .code:n =
       \hook_gput_code:nnn { begindocument } { . }
         { \dim_set:Nn \l__nicematrix_xdots_shorten_start_dim { #1 } } ,
+    shorten-start .value_required:n = true ,
+    shorten-start+ .code:n =
+      \hook_gput_code:nnn { begindocument } { . }
+        { \dim_add:Nn \l__nicematrix_xdots_shorten_start_dim { #1 } } ,
+    shorten-start~+ .meta:n = { shorten-start+ = #1 } ,
+    shorten-start+ .value_required:n = true ,
     shorten-end .code:n =
       \hook_gput_code:nnn { begindocument } { . }
         { \dim_set:Nn \l__nicematrix_xdots_shorten_end_dim { #1 } } ,
-    shorten-start .value_required:n = true ,
     shorten-end .value_required:n = true ,
+    shorten-end+ .code:n =
+      \hook_gput_code:nnn { begindocument } { . }
+        { \dim_add:Nn \l__nicematrix_xdots_shorten_end_dim { #1 } } ,
+    shorten-end+ .value_required:n = true ,
+    shorten-end~+ .meta:n = { shorten-end+ = #1 } ,
     shorten .code:n =
       \hook_gput_code:nnn { begindocument } { . }
         {
@@ -821,6 +835,13 @@
           \dim_set:Nn \l__nicematrix_xdots_shorten_end_dim { #1 }
         } ,
     shorten .value_required:n = true ,
+    shorten+ .code:n =
+      \hook_gput_code:nnn { begindocument } { . }
+        {
+          \dim_add:Nn \l__nicematrix_xdots_shorten_start_dim { #1 }
+          \dim_add:Nn \l__nicematrix_xdots_shorten_end_dim { #1 }
+        } ,
+    shorten~+ .meta:n = { shorten+ = #1 } ,
     horizontal-labels .bool_set:N = \l__nicematrix_xdots_h_labels_bool ,
     horizontal-labels .default:n = true ,
     horizontal-label .bool_set:N = \l__nicematrix_xdots_h_labels_bool ,
@@ -882,14 +903,29 @@
     standard-cline .default:n = true ,
     cell-space-top-limit .dim_set:N = \l__nicematrix_cell_space_top_limit_dim ,
     cell-space-top-limit .value_required:n = true ,
+    cell-space-top-limit+ .code:n =
+      \dim_add:Nn \l__nicematrix_cell_space_top_limit_dim { #1 } ,
+    cell-space-top-limit+ .value_required:n = true ,
+    cell-space-top-limit~+ .meta:n = { cell-space-top-limit+ = #1 } ,
     cell-space-bottom-limit .dim_set:N = \l__nicematrix_cell_space_bottom_limit_dim ,
     cell-space-bottom-limit .value_required:n = true ,
+    cell-space-bottom-limit+ .code:n =
+      \dim_add:Nn \l__nicematrix_cell_space_bottom_limit_dim { #1 } ,
+    cell-space-bottom-limit+ .value_required:n = true ,
+    cell-space-bottom-limit~+ .meta:n = { cell-space-bottom-limit+ = #1 } ,
     cell-space-limits .meta:n =
       {
         cell-space-top-limit = #1 ,
         cell-space-bottom-limit = #1 ,
       } ,
     cell-space-limits .value_required:n = true ,
+    cell-space-limits+ .meta:n =
+      {
+        cell-space-top-limit += #1 ,
+        cell-space-bottom-limit += #1 ,
+      } ,
+    cell-space-limits+ .value_required:n = true ,
+    cell-space-limits~+ .meta:n = { cell-space-limits+ = #1 } ,
     xdots .code:n = \keys_set:nn { nicematrix / xdots } { #1 } ,
     light-syntax .code:n =
       \bool_set_true:N \l__nicematrix_light_syntax_bool
@@ -901,18 +937,40 @@
     light-syntax-expanded .value_forbidden:n = true ,
     end-of-row .tl_set:N = \l__nicematrix_end_of_row_tl ,
     end-of-row .value_required:n = true ,
+
     first-col .code:n = \int_zero:N \l__nicematrix_first_col_int ,
     first-row .code:n = \int_zero:N \l__nicematrix_first_row_int ,
     last-row .int_set:N = \l__nicematrix_last_row_int ,
     last-row .default:n = -1 ,
+
     code-for-first-col .tl_set:N = \l__nicematrix_code_for_first_col_tl ,
     code-for-first-col .value_required:n = true ,
+    code-for-first-col+ .code:n =
+      { \tl_put_right:Nn \l__nicematrix_code_for_first_col_tl { #1 } } ,
+    code-for-first-col+ .value_required:n = true ,
+    code-for-first-col~+ .meta:n = { code-for-first-col+ = #1 } ,
+
     code-for-last-col .tl_set:N = \l__nicematrix_code_for_last_col_tl ,
     code-for-last-col .value_required:n = true ,
+    code-for-last-col+ .code:n =
+      { \tl_put_right:Nn \l__nicematrix_code_for_last_col_tl { #1 } } ,
+    code-for-last-col+ .value_required:n = true ,
+    code-for-last-col~+ .meta:n = { code-for-last-col+ = #1 } ,
+
     code-for-first-row .tl_set:N = \l__nicematrix_code_for_first_row_tl ,
     code-for-first-row .value_required:n = true ,
+    code-for-first-row+ .code:n =
+      { \tl_put_right:Nn \l__nicematrix_code_for_first_row_tl { #1 } } ,
+    code-for-first-row+ .value_required:n = true ,
+    code-for-first-row~+ .meta:n = { code-for-first-row+ = #1 } ,
+
     code-for-last-row .tl_set:N = \l__nicematrix_code_for_last_row_tl ,
     code-for-last-row .value_required:n = true ,
+    code-for-last-row+ .code:n =
+      { \tl_put_right:Nn \l__nicematrix_code_for_first_col_tl { #1 } } ,
+    code-for-last-row+ .value_required:n = true ,
+    code-for-last-row~+ .meta:n = { code-for-last-row+ = #1 } ,
+
     hlines .clist_set:N = \l__nicematrix_hlines_clist ,
     vlines .clist_set:N = \l__nicematrix_vlines_clist ,
     hlines .default:n = all ,
@@ -1011,6 +1069,12 @@
     para .default:n = true ,
     code-before .tl_set:N = \l__nicematrix_notes_code_before_tl ,
     code-before .value_required:n = true ,
+    code-before+ .code:n =
+      \tl_put_right:Nn \l__nicematrix_note_code_before_tl { #1 } ,
+    code-before+ .value_required:n = true ,
+    code-before~+ .code:n =
+      \tl_put_right:Nn \l__nicematrix_note_code_before_tl { #1 } ,
+    code-before~+ .value_required:n = true ,
     code-after .tl_set:N = \l__nicematrix_notes_code_after_tl ,
     code-after .value_required:n = true ,
     bottomrule .bool_set:N = \l__nicematrix_notes_bottomrule_bool ,
@@ -1233,11 +1297,9 @@
     \cs_set_eq:NN \CodeAfter \__nicematrix_CodeAfter_i:
     \cs_set_eq:NN \Hline \__nicematrix_Hline_in_cell:
     \int_gincr:N \c@jCol
-    \int_compare:nNnT { \c@jCol } = { \c_one_int }
-      {
-        \int_compare:nNnT { \l__nicematrix_first_col_int } = { \c_one_int }
-          { \__nicematrix_begin_of_row: }
-      }
+    \if_int_compare:w \c@jCol = \c_one_int
+      \if_int_compare:w \l__nicematrix_first_col_int = \c_one_int \__nicematrix_begin_of_row: \fi
+    \fi:
     \hbox_set:Nw \l__nicematrix_cell_box
     \__nicematrix_tuning_not_tabular_begin:
     \__nicematrix_tuning_first_row:
@@ -4322,7 +4384,8 @@
   }
 \cs_new_protected:Npn \__nicematrix_adjust_to_submatrix:nnnnnn #1 #2 #3 #4 #5 #6
   {
-    \if_int_compare:w #3 > #1
+    \if_int_compare:w
+    #3 > #1
     \else:
       \if_int_compare:w #1 > #5
       \else:
@@ -5505,13 +5568,27 @@
   {
     cell-space-top-limit .dim_set:N = \l_tmpa_dim ,
     cell-space-top-limit .value_required:n = true ,
+    cell-space-top-limit+ .code:n =
+      \dim_set:Nn \l_tmpa_dim { \l__nicematrix_cell_space_top_limit_dim + #1 } ,
+    cell-space-top-limit+ .value_required:n = true ,
+    cell-space-top-limit~+ .meta:n = { cell-space-top-limit+ = #1 } ,
     cell-space-bottom-limit .dim_set:N = \l_tmpb_dim ,
     cell-space-bottom-limit .value_required:n = true ,
+    cell-space-bottom-limit+ .code:n =
+      \dim_set:Nn \l_tmpb_dim { \l__nicematrix_cell_space_bottom_limit_dim + #1 } ,
+    cell-space-bottom-limit+ .value_required:n = true ,
+    cell-space-bottom-limit~+ .meta:n = { cell-space-bottom-limit+ = #1 } ,
     cell-space-limits .meta:n =
       {
         cell-space-top-limit = #1 ,
         cell-space-bottom-limit = #1 ,
       } ,
+    cell-space-limits+ .meta:n =
+      {
+        cell-space-top-limit += #1 ,
+        cell-space-bottom-limit += #1 ,
+      } ,
+    cell-space-limits~+ .meta:n = { cell-space-limits+ = #1 } ,
     color .tl_set:N = \l__nicematrix_color_tl ,
     color .value_required:n = true ,
     bold .bool_set:N = \l__nicematrix_bold_row_style_bool ,
@@ -9507,7 +9584,15 @@
     shorten .code:n = ,
     shorten-start .code:n = ,
     shorten-end .code:n = ,
+    shorten+ .code:n = ,
+    shorten-start+ .code:n = ,
+    shorten-end+ .code:n = ,
+    shorten~+ .code:n = ,
+    shorten-start~+ .code:n = ,
+    shorten-end~+ .code:n = ,
     brace-shift .code:n = ,
+    brace-shift+ .code:n = ,
+    brace-shift~+ .code:n = ,
     unknown .code:n = \__nicematrix_fatal:n { Unknown~key~for~Hbrace }
   }
 \NewExpandableDocumentCommand { \__nicematrix_Hbrace } { O { } m m }
@@ -10107,7 +10192,7 @@
 \__nicematrix_msg_new:nn { bad~option~for~line-style }
   {
     Bad~line~style.\\
-    Since~you~haven't~loaded~Tikz,~the~only~value~you~can~give~to~'line-style'~
+    Since~you~haven't~loaded~TikZ,~the~only~value~you~can~give~to~'line-style'~
     is~'standard'.~That~key~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { corners~with~no-cell-nodes }
@@ -10152,7 +10237,7 @@
     Unknown~key.\\
     You~have~used~the~key~' \l_keys_key_str '~but~the~only~
     keys~allowed~for~the~commands~ \token_to_str:N \Hbrace \
-    and~ \token_to_str:N \Vbrace \ are:~'brace-shift',~'color',~
+    and~ \token_to_str:N \Vbrace \ are:~'brace-shift(+)',~'color',~
     'horizontal-label(s)',~'shorten'~'shorten-end'~
     and~'shorten-start'.\\
     That~error~is~fatal.
@@ -10568,23 +10653,23 @@
   }
 \__nicematrix_msg_new:nn { tikz~without~tikz }
   {
-    Tikz~not~loaded. \\
-    You~can't~use~the~key~'tikz'~here~because~Tikz~is~not~
+    TikZ~not~loaded. \\
+    You~can't~use~the~key~'tikz'~here~because~TikZ~is~not~
     loaded.~If~you~go~on,~that~key~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { tikz~in~custom-line~without~tikz }
   {
-    Tikz~not~loaded. \\
+    TikZ~not~loaded. \\
     You~have~used~the~key~'tikz'~in~the~definition~of~a~
-    customized~line~(with~'custom-line')~but~tikz~is~not~loaded.~
+    customized~line~(with~'custom-line')~but~TikZ~is~not~loaded.~
     You~can~go~on~but~you~will~have~another~error~if~you~actually~
     use~that~custom~line.
   }
 \__nicematrix_msg_new:nn { tikz~in~borders~without~tikz }
   {
-    Tikz~not~loaded. \\
+    TikZ~not~loaded. \\
     You~have~used~the~key~'tikz'~in~a~key~'borders'~(of~a~
-    command~' \token_to_str:N \Block ')~but~tikz~is~not~loaded.~
+    command~' \token_to_str:N \Block ')~but~TikZ~is~not~loaded.~
     That~key~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { color~in~custom-line~with~tikz }
@@ -10747,7 +10832,7 @@
     The~available~keys~are~(in~alphabetic~order):~
     bottomrule,~
     code-after,~
-    code-before,~
+    code-before(+),~
     detect-duplicates,~
     enumitem-keys,~
     enumitem-keys-para,~
@@ -10767,9 +10852,9 @@
   {
     The~available~keys~are~(in~alphabetic~order):~
     bold,~
-    cell-space-top-limit,~
-    cell-space-bottom-limit,~
-    cell-space-limits,~
+    cell-space-top-limit(+),~
+    cell-space-bottom-limit(+),~
+    cell-space-limits(+),~
     color,~
     fill~(alias:~rowcolor),~
     nb-rows,~
@@ -10790,13 +10875,13 @@
     allow-duplicate-names,~
     ampersand-in-blocks,~
     caption-above,~
-    cell-space-bottom-limit,~
-    cell-space-limits,~
-    cell-space-top-limit,~
-    code-for-first-col,~
-    code-for-first-row,~
-    code-for-last-col,~
-    code-for-last-row,~
+    cell-space-bottom-limit(+),~
+    cell-space-limits(+),~
+    cell-space-top-limit(+),~
+    code-for-first-col(+),~
+    code-for-first-row(+),~
+    code-for-last-col(+),~
+    code-for-last-row(+),~
     corners,~
     custom-key,~
     create-extra-nodes,~
@@ -10850,10 +10935,10 @@
     cell-space-limits,~
     cell-space-top-limit,~
     code-after,~
-    code-for-first-col,~
-    code-for-first-row,~
-    code-for-last-col,~
-    code-for-last-row,~
+    code-for-first-col(+),~
+    code-for-first-row(+),~
+    code-for-last-col(+),~
+    code-for-last-row(+),~
     columns-width,~
     corners,~
     create-extra-nodes,~
@@ -10884,9 +10969,9 @@
     t,~
     vlines,~
     xdots/color,~
-    xdots/shorten-start,~
-    xdots/shorten-end,~
-    xdots/shorten~and~
+    xdots/shorten-start(+),~
+    xdots/shorten-end(+),~
+    xdots/shorten(+)~and~
     xdots/line-style.
   }
 \__nicematrix_msg_new:nnn { Unknown~key~for~NiceMatrix }
@@ -10908,10 +10993,10 @@
     cell-space-limits,~
     cell-space-top-limit,~
     code-after,~
-    code-for-first-col,~
-    code-for-first-row,~
-    code-for-last-col,~
-    code-for-last-row,~
+    code-for-first-col(+),~
+    code-for-first-row(+),~
+    code-for-last-col(+),~
+    code-for-last-row(+),~
     columns-type,~
     columns-width,~
     corners,~
@@ -10945,9 +11030,9 @@
     t,~
     vlines,~
     xdots/color,~
-    xdots/shorten-start,~
-    xdots/shorten-end,~
-    xdots/shorten~and~
+    xdots/shorten-start(+),~
+    xdots/shorten-end(+),~
+    xdots/shorten(+)~and~
     xdots/line-style.
   }
 \__nicematrix_msg_new:nnn { Unknown~key~for~NiceTabular }
@@ -10970,10 +11055,10 @@
     cell-space-limits,~
     cell-space-top-limit,~
     code-after,~
-    code-for-first-col,~
-    code-for-first-row,~
-    code-for-last-col,~
-    code-for-last-row,~
+    code-for-first-col(+),~
+    code-for-first-row(+),~
+    code-for-last-col(+),~
+    code-for-last-row(+),~
     columns-width,~
     corners,~
     custom-line,~
@@ -11008,9 +11093,9 @@
     tabularnote,~
     vlines,~
     xdots/color,~
-    xdots/shorten-start,~
-    xdots/shorten-end,~
-    xdots/shorten~and~
+    xdots/shorten-start(+),~
+    xdots/shorten-end(+),~
+    xdots/shorten(+)~and~
     xdots/line-style.
   }
 \__nicematrix_msg_new:nnn { Duplicate~name }

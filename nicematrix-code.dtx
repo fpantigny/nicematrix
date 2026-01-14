@@ -49,7 +49,7 @@ version 2005/12/01 or later.
 %</batchfile>
 %
 %<*driver>
-\documentclass[dvipsnames]{l3doc}% dvipsnames is for xcolor (loaded by Tikz)
+\documentclass[dvipsnames]{l3doc}% dvipsnames is for xcolor (loaded by TikZ)
 \VerbatimFootnotes
 
 \usepackage[luatex]{geometry}
@@ -343,9 +343,9 @@ version 2005/12/01 or later.
       { 
 %    \end{macrocode}
 % In some constructions, we will have to use a |{pgfpicture}| which \emph{must}
-% be replaced by a |{tikzpicture}| if Tikz is loaded. However, this switch
+% be replaced by a |{tikzpicture}| if TikZ is loaded. However, this switch
 % between |{pgfpicture}| and |{tikzpicture}| can't be done dynamically with a
-% conditional because, when the Tikz library |external| is loaded by the user,
+% conditional because, when the TikZ library |external| is loaded by the user,
 % the pair |\tikzpicture|-|\endtikpicture| (or
 % |\begin{tikzpicture}-\end{tikzpicture}|) must be statically ``visible'' (even
 % when externalization is not activated).
@@ -391,7 +391,7 @@ version 2005/12/01 or later.
 %
 % 
 % \bigskip
-% If the final user uses \pkg{nicematrix}, PGF/Tikz will write instruction
+% If the final user uses \pkg{nicematrix}, PGF/TikZ will write instruction
 % |\pgfsyspdfmark| in the |aux| file. If he changes its mind and no longer loads
 % \pkg{nicematrix}, an error may occur at the next compilation because of
 % remanent instructions |\pgfsyspdfmark| in the |aux| file. With the following
@@ -438,7 +438,7 @@ version 2005/12/01 or later.
 %
 %
 % \bigskip
-% In the |aux| file, we will have the references of the PGF/Tikz nodes created
+% In the |aux| file, we will have the references of the PGF/TikZ nodes created
 % by \pkg{nicematrix}. However, when \pkg{booktabs} is used, some nodes (more
 % precisely, some |row| nodes) will be defined twice because their position will
 % be modified. In order to avoid an error message in this case, we will redefine
@@ -724,7 +724,7 @@ version 2005/12/01 or later.
 %
 % \bigskip 
 % The following counter will count the environments |{NiceArray}|. The value of
-% this counter will be used to prefix the names of the Tikz nodes created in the
+% this counter will be used to prefix the names of the TikZ nodes created in the
 % array. 
 %    \begin{macrocode}
 \int_new:N \g_@@_env_int
@@ -1251,7 +1251,7 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % It's possible to use the command |\NotEmpty| to specify explicitly that a
-% cell must be considered as non empty by \pkg{nicematrix} (the Tikz nodes are
+% cell must be considered as non empty by \pkg{nicematrix} (the TikZ nodes are
 % constructed only in the non empty cells).
 %    \begin{macrocode}
 \bool_new:N \g_@@_not_empty_cell_bool
@@ -2414,7 +2414,7 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % The string |\l_@@_name_str| will contain the optional name of the
-% environment: this name can be used to access to the Tikz nodes created in the
+% environment: this name can be used to access to the TikZ nodes created in the
 % array from outside the environment.  
 %    \begin{macrocode}
 \str_new:N \l_@@_name_str
@@ -2504,15 +2504,29 @@ version 2005/12/01 or later.
     nullify .default:n = true , 
     brace-shift .dim_set:N = \l_@@_brace_shift_dim ,
     brace-shift .value_required:n = true ,
+    brace-shift+ .code:n =
+      \dim_add:Nn \l_@@_brace_shift_dim { #1 } ,
+    brace-shift+ .value_required:n = true ,
+    brace-shift~+ .meta:n = { brace-shift+ = #1 } ,
     Vbrace .bool_set:N = \l_@@_Vbrace_bool ,
     shorten-start .code:n = 
       \hook_gput_code:nnn { begindocument } { . } 
         { \dim_set:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
+    shorten-start .value_required:n = true ,        
+    shorten-start+ .code:n = 
+      \hook_gput_code:nnn { begindocument } { . } 
+        { \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
+    shorten-start~+ .meta:n = { shorten-start+ = #1 } ,
+    shorten-start+ .value_required:n = true ,
     shorten-end .code:n = 
       \hook_gput_code:nnn { begindocument } { . } 
         { \dim_set:Nn \l_@@_xdots_shorten_end_dim { #1 } } ,
-    shorten-start .value_required:n = true ,
-    shorten-end .value_required:n = true ,
+    shorten-end .value_required:n = true ,        
+    shorten-end+ .code:n = 
+      \hook_gput_code:nnn { begindocument } { . } 
+        { \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } } ,
+    shorten-end+ .value_required:n = true ,
+    shorten-end~+ .meta:n = { shorten-end+ = #1 } ,    
     shorten .code:n = 
       \hook_gput_code:nnn { begindocument } { . } 
         { 
@@ -2520,6 +2534,13 @@ version 2005/12/01 or later.
           \dim_set:Nn \l_@@_xdots_shorten_end_dim { #1 } 
         } ,
     shorten .value_required:n = true ,
+    shorten+ .code:n = 
+      \hook_gput_code:nnn { begindocument } { . } 
+        { 
+          \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } 
+          \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } 
+        } ,
+    shorten~+ .meta:n = { shorten+ = #1 } ,            
     horizontal-labels .bool_set:N = \l_@@_xdots_h_labels_bool , 
     horizontal-labels .default:n = true , 
     horizontal-label .bool_set:N = \l_@@_xdots_h_labels_bool , 
@@ -2604,15 +2625,30 @@ version 2005/12/01 or later.
     standard-cline .bool_set:N = \l_@@_standard_cline_bool ,
     standard-cline .default:n = true ,
     cell-space-top-limit .dim_set:N = \l_@@_cell_space_top_limit_dim ,
-    cell-space-top-limit .value_required:n = true ,
+    cell-space-top-limit .value_required:n = true ,    
+    cell-space-top-limit+ .code:n =
+      \dim_add:Nn \l_@@_cell_space_top_limit_dim { #1 } ,
+    cell-space-top-limit+ .value_required:n = true ,
+    cell-space-top-limit~+ .meta:n = { cell-space-top-limit+ = #1 } ,
     cell-space-bottom-limit .dim_set:N = \l_@@_cell_space_bottom_limit_dim ,
     cell-space-bottom-limit .value_required:n = true ,
+    cell-space-bottom-limit+ .code:n =
+      \dim_add:Nn \l_@@_cell_space_bottom_limit_dim { #1 } ,
+    cell-space-bottom-limit+ .value_required:n = true ,
+    cell-space-bottom-limit~+ .meta:n = { cell-space-bottom-limit+ = #1 } ,
     cell-space-limits .meta:n = 
       {
         cell-space-top-limit = #1 ,
         cell-space-bottom-limit = #1 ,
       } ,
     cell-space-limits .value_required:n = true ,
+    cell-space-limits+ .meta:n = 
+      {
+        cell-space-top-limit += #1 ,
+        cell-space-bottom-limit += #1 ,
+      } ,
+    cell-space-limits+ .value_required:n = true ,
+    cell-space-limits~+ .meta:n = { cell-space-limits+ = #1 } ,    
     xdots .code:n = \keys_set:nn { nicematrix / xdots } { #1 } , 
     light-syntax .code:n = 
       \bool_set_true:N \l_@@_light_syntax_bool 
@@ -2624,18 +2660,40 @@ version 2005/12/01 or later.
     light-syntax-expanded .value_forbidden:n = true ,
     end-of-row .tl_set:N = \l_@@_end_of_row_tl ,
     end-of-row .value_required:n = true ,
+    
     first-col .code:n = \int_zero:N \l_@@_first_col_int , 
     first-row .code:n = \int_zero:N \l_@@_first_row_int ,
     last-row .int_set:N = \l_@@_last_row_int ,
     last-row .default:n = -1 ,
+
     code-for-first-col .tl_set:N = \l_@@_code_for_first_col_tl ,
     code-for-first-col .value_required:n = true ,
+    code-for-first-col+ .code:n =
+      { \tl_put_right:Nn \l_@@_code_for_first_col_tl { #1 } } ,
+    code-for-first-col+ .value_required:n = true ,
+    code-for-first-col~+ .meta:n = { code-for-first-col+ = #1 } ,
+
     code-for-last-col .tl_set:N = \l_@@_code_for_last_col_tl ,
     code-for-last-col .value_required:n = true ,
+    code-for-last-col+ .code:n =
+      { \tl_put_right:Nn \l_@@_code_for_last_col_tl { #1 } } ,
+    code-for-last-col+ .value_required:n = true ,
+    code-for-last-col~+ .meta:n = { code-for-last-col+ = #1 } ,
+
     code-for-first-row .tl_set:N = \l_@@_code_for_first_row_tl ,
     code-for-first-row .value_required:n = true ,
+    code-for-first-row+ .code:n =
+      { \tl_put_right:Nn \l_@@_code_for_first_row_tl { #1 } } ,
+    code-for-first-row+ .value_required:n = true ,
+    code-for-first-row~+ .meta:n = { code-for-first-row+ = #1 } ,
+    
     code-for-last-row .tl_set:N = \l_@@_code_for_last_row_tl ,
     code-for-last-row .value_required:n = true ,
+    code-for-last-row+ .code:n =
+      { \tl_put_right:Nn \l_@@_code_for_first_col_tl { #1 } } ,
+    code-for-last-row+ .value_required:n = true ,
+    code-for-last-row~+ .meta:n = { code-for-last-row+ = #1 } ,
+    
     hlines .clist_set:N = \l_@@_hlines_clist ,
     vlines .clist_set:N = \l_@@_vlines_clist ,
     hlines .default:n = all ,
@@ -2771,6 +2829,12 @@ version 2005/12/01 or later.
     para .default:n = true ,
     code-before .tl_set:N = \l_@@_notes_code_before_tl ,
     code-before .value_required:n = true ,
+    code-before+ .code:n =
+      \tl_put_right:Nn \l_@@_note_code_before_tl { #1 } ,
+    code-before+ .value_required:n = true ,
+    code-before~+ .code:n =
+      \tl_put_right:Nn \l_@@_note_code_before_tl { #1 } ,
+    code-before~+ .value_required:n = true ,
     code-after .tl_set:N = \l_@@_notes_code_after_tl ,
     code-after .value_required:n = true ,
     bottomrule .bool_set:N = \l_@@_notes_bottomrule_bool ,
@@ -3138,11 +3202,9 @@ version 2005/12/01 or later.
 % the |\everycr| because some packages, like \pkg{arydshln}, create special rows
 % in the |\halign| that we don't want to take into account. 
 %    \begin{macrocode}
-    \int_compare:nNnT { \c@jCol } = { \c_one_int }
-      { 
-        \int_compare:nNnT { \l_@@_first_col_int } = { \c_one_int }
-          { \@@_begin_of_row: }
-      }
+    \if_int_compare:w \c@jCol = \c_one_int 
+      \if_int_compare:w \l_@@_first_col_int = \c_one_int \@@_begin_of_row: \fi
+    \fi:
 %    \end{macrocode}
 % The content of the cell is composed in the box |\l_@@_cell_box|. The
 % |\hbox_set_end:| corresponding to this |\hbox_set:Nw| is in the
@@ -4392,8 +4454,8 @@ version 2005/12/01 or later.
 % \bigskip
 % The following code is a security for the case the user has used \pkg{babel}
 % with the option \pkg{spanish}: in that case, the characters |<| (de code
-% \textsc{ascci} 60) and |>| are activated and Tikz is not able to solve the
-% problem (even with the Tikz library \pkg{babel}).
+% \textsc{ascci} 60) and |>| are activated and TikZ is not able to solve the
+% problem (even with the TikZ library \pkg{babel}).
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_exec_code_before_i:
   {
@@ -4672,7 +4734,7 @@ version 2005/12/01 or later.
     \cs_gset_eq:cN { @@_old_CT@arc@ } \CT@arc@ 
 %    \end{macrocode}
 %
-% We deactivate Tikz externalization because we will use \textsc{pgf} pictures
+% We deactivate TikZ externalization because we will use \textsc{pgf} pictures
 % with the options |overlay| and |remember picture| (or equivalent forms). We
 % deactivate with |\tikzexternaldisable| and not with
 % |\tikzset{external/export=false}| which is \emph{not} equivalent.
@@ -7428,7 +7490,7 @@ version 2005/12/01 or later.
       }
 %    \end{macrocode}
 % We begin a loop over the columns. The integer |\g_tmpa_int| will be the
-% number of the current column. This integer is used for the Tikz nodes.
+% number of the current column. This integer is used for the TikZ nodes.
 %    \begin{macrocode}
     \int_gset_eq:NN \g_tmpa_int \c_one_int
     \bool_if:NTF \g_@@_last_col_found_bool
@@ -8189,7 +8251,7 @@ version 2005/12/01 or later.
 % \medskip
 % The following code is a security for the case the user has used \pkg{babel}
 % with the option \pkg{spanish}: in that case, the characters |>| and |<| are
-% activated and Tikz is not able to solve the problem (even with the Tikz
+% activated and TikZ is not able to solve the problem (even with the TikZ
 % library \pkg{babel}).
 %    \begin{macrocode}
     \int_compare:nNnT { \char_value_catcode:n { 60 } } = { 13 }
@@ -8344,7 +8406,7 @@ version 2005/12/01 or later.
 % We recall that, when externalization is used, |\tikzpicture| and
 % |\endtikzpicture| (or |\pgfpicture| and |\endpgfpicture|) must be directly
 % ``visible''. That's why we have to define the adequate version of
-% |\@@_draw_dotted_lines:| whether Tikz is loaded or not (in that case, only
+% |\@@_draw_dotted_lines:| whether TikZ is loaded or not (in that case, only
 % \textsc{pgf} is loaded).
 %    \begin{macrocode}
 \hook_gput_code:nnn { begindocument } { . }
@@ -8803,7 +8865,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_adjust_to_submatrix:nnnnnn #1 #2 #3 #4 #5 #6
   {
-    \if_int_compare:w #3 > #1 
+    \if_int_compare:w
+    #3 > #1 
     \else:
       \if_int_compare:w #1 > #5 
       \else:
@@ -8876,7 +8939,7 @@ version 2005/12/01 or later.
           }
       }
 %    \end{macrocode}
-% If, in fact, all the cells of the column are empty (no PGF/Tikz nodes in
+% If, in fact, all the cells of the column are empty (no PGF/TikZ nodes in
 % those cells).
 %    \begin{macrocode}
     \dim_compare:nNnT { \l_@@_x_initial_dim } = { \c_max_dim }
@@ -8905,7 +8968,7 @@ version 2005/12/01 or later.
           }
       }
 %    \end{macrocode}
-% If, in fact, all the cells of the columns are empty (no PGF/Tikz nodes in
+% If, in fact, all the cells of the columns are empty (no PGF/TikZ nodes in
 % those cells).
 %    \begin{macrocode}
     \dim_compare:nNnT { \l_@@_x_final_dim } = { - \c_max_dim }
@@ -9570,7 +9633,7 @@ version 2005/12/01 or later.
 %
 % 
 % \bigskip
-% \section{The actual instructions for drawing the dotted lines with Tikz}
+% \section{The actual instructions for drawing the dotted lines with TikZ}
 %
 % The command |\@@_draw_line:| should be used in a |{pgfpicture}|. It has six
 % implicit arguments:
@@ -9600,7 +9663,7 @@ version 2005/12/01 or later.
 % 
 % \medskip
 % We have to do a special construction with |\exp_args:No| to be able to put in
-% the list of options in the correct place in the Tikz instruction.
+% the list of options in the correct place in the TikZ instruction.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_draw_unstandard_dotted_line:
   { 
@@ -9628,7 +9691,7 @@ version 2005/12/01 or later.
 %
 %
 % \bigskip
-% The following Tikz styles are for the three labels (set by the symbols |_|,
+% The following TikZ styles are for the three labels (set by the symbols |_|,
 % |^| and |=|) of a continuous line with a non-standard style.
 %    \begin{macrocode}
 \hook_gput_code:nnn { begindocument } { . }
@@ -10171,7 +10234,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % The command |\@@_Hdotsfor| will be linked to |\Hdotsfor| in
-% |{NiceArrayWithDelims}|. Tikz nodes are created also in the implicit cells of
+% |{NiceArrayWithDelims}|. TikZ nodes are created also in the implicit cells of
 % the |\Hdotsfor| (maybe we should modify that point).
 %
 % \medskip
@@ -10645,13 +10708,27 @@ version 2005/12/01 or later.
   {
     cell-space-top-limit .dim_set:N = \l_tmpa_dim ,
     cell-space-top-limit .value_required:n = true ,
+    cell-space-top-limit+ .code:n =
+      \dim_set:Nn \l_tmpa_dim { \l_@@_cell_space_top_limit_dim + #1 } ,
+    cell-space-top-limit+ .value_required:n = true ,
+    cell-space-top-limit~+ .meta:n = { cell-space-top-limit+ = #1 } ,
     cell-space-bottom-limit .dim_set:N = \l_tmpb_dim ,
     cell-space-bottom-limit .value_required:n = true ,
+    cell-space-bottom-limit+ .code:n =
+      \dim_set:Nn \l_tmpb_dim { \l_@@_cell_space_bottom_limit_dim + #1 } ,
+    cell-space-bottom-limit+ .value_required:n = true ,
+    cell-space-bottom-limit~+ .meta:n = { cell-space-bottom-limit+ = #1 } ,
     cell-space-limits .meta:n = 
       {
         cell-space-top-limit = #1 ,
         cell-space-bottom-limit = #1 ,
       } ,
+    cell-space-limits+ .meta:n = 
+      {
+        cell-space-top-limit += #1 ,
+        cell-space-bottom-limit += #1 ,
+      } ,
+    cell-space-limits~+ .meta:n = { cell-space-limits+ = #1 } ,
     color .tl_set:N = \l_@@_color_tl ,
     color .value_required:n = true ,
     bold .bool_set:N = \l_@@_bold_row_style_bool ,
@@ -12036,7 +12113,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % If the user uses the key |tikz|, the rule (or more precisely: the different
 % sub-rules since a rule may be broken by blocks or others) will be drawn with
-% Tikz. 
+% TikZ. 
 %    \begin{macrocode}
     tikz .code:n = 
       \IfPackageLoadedTF { tikz }
@@ -14711,7 +14788,7 @@ version 2005/12/01 or later.
               { \int_use:N \l_@@_last_row_int }
               { \int_use:N \l_@@_last_col_int }
 %    \end{macrocode}
-% We will have in that last field a list of lists of Tikz keys.
+% We will have in that last field a list of lists of TikZ keys.
 %    \begin{macrocode}
           }
       }
@@ -15599,7 +15676,7 @@ version 2005/12/01 or later.
 % The following command will be used if the key |tikz| has been used for the
 % command |\Block|. 
 
-% |#1| is a \emph{list of lists} of Tikz keys used with the path. 
+% |#1| is a \emph{list of lists} of TikZ keys used with the path. 
 % 
 % \emph{Example}: |{{offset=1pt,draw,red},{offset=2pt,draw,blue}}|
 %
@@ -16613,7 +16690,7 @@ version 2005/12/01 or later.
 % we catch the argument |#1| of |\pgfpointanchor| and we apply to it the command
 % |\@@_pgfpointanchor_i:nn| before passing it to the original |\pgfpointanchor|.
 % We have to act in an expandable way because the command |\pgfpointanchor| is
-% used in names of Tikz nodes which are computed in an expandable way.
+% used in names of TikZ nodes which are computed in an expandable way.
 %
 % The original command |\pgfpointanchor| takes in two arguments: the name of the
 % name and the name of the anchor. However, you don't have to modify the anchor,
@@ -17098,7 +17175,15 @@ version 2005/12/01 or later.
     shorten .code:n = ,
     shorten-start .code:n = , 
     shorten-end .code:n = ,
+    shorten+ .code:n = ,
+    shorten-start+ .code:n = , 
+    shorten-end+ .code:n = ,
+    shorten~+ .code:n = ,
+    shorten-start~+ .code:n = , 
+    shorten-end~+ .code:n = ,
     brace-shift .code:n = ,
+    brace-shift+ .code:n = ,
+    brace-shift~+ .code:n = ,    
     unknown .code:n = \@@_fatal:n { Unknown~key~for~Hbrace } 
   }
 %    \end{macrocode}
@@ -17934,7 +18019,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { bad~option~for~line-style }
   {
     Bad~line~style.\\
-    Since~you~haven't~loaded~Tikz,~the~only~value~you~can~give~to~'line-style'~
+    Since~you~haven't~loaded~TikZ,~the~only~value~you~can~give~to~'line-style'~
     is~'standard'.~That~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -17997,7 +18082,7 @@ version 2005/12/01 or later.
     Unknown~key.\\
     You~have~used~the~key~' \l_keys_key_str '~but~the~only~
     keys~allowed~for~the~commands~ \token_to_str:N \Hbrace \
-    and~ \token_to_str:N \Vbrace \ are:~'brace-shift',~'color',~
+    and~ \token_to_str:N \Vbrace \ are:~'brace-shift(+)',~'color',~
     'horizontal-label(s)',~'shorten'~'shorten-end'~
     and~'shorten-start'.\\
     That~error~is~fatal.
@@ -18571,8 +18656,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { tikz~without~tikz } 
   {
-    Tikz~not~loaded. \\
-    You~can't~use~the~key~'tikz'~here~because~Tikz~is~not~
+    TikZ~not~loaded. \\
+    You~can't~use~the~key~'tikz'~here~because~TikZ~is~not~
     loaded.~If~you~go~on,~that~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -18580,9 +18665,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { tikz~in~custom-line~without~tikz } 
   {
-    Tikz~not~loaded. \\
+    TikZ~not~loaded. \\
     You~have~used~the~key~'tikz'~in~the~definition~of~a~
-    customized~line~(with~'custom-line')~but~tikz~is~not~loaded.~
+    customized~line~(with~'custom-line')~but~TikZ~is~not~loaded.~
     You~can~go~on~but~you~will~have~another~error~if~you~actually~
     use~that~custom~line.
   }
@@ -18591,9 +18676,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { tikz~in~borders~without~tikz }
   {
-    Tikz~not~loaded. \\
+    TikZ~not~loaded. \\
     You~have~used~the~key~'tikz'~in~a~key~'borders'~(of~a~
-    command~' \token_to_str:N \Block ')~but~tikz~is~not~loaded.~
+    command~' \token_to_str:N \Block ')~but~TikZ~is~not~loaded.~
     That~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -18804,7 +18889,7 @@ version 2005/12/01 or later.
     The~available~keys~are~(in~alphabetic~order):~
     bottomrule,~
     code-after,~
-    code-before,~
+    code-before(+),~
     detect-duplicates,~
     enumitem-keys,~
     enumitem-keys-para,~
@@ -18827,9 +18912,9 @@ version 2005/12/01 or later.
   { 
     The~available~keys~are~(in~alphabetic~order):~
     bold,~
-    cell-space-top-limit,~
-    cell-space-bottom-limit,~
-    cell-space-limits,~
+    cell-space-top-limit(+),~
+    cell-space-bottom-limit(+),~
+    cell-space-limits(+),~
     color,~
     fill~(alias:~rowcolor),~
     nb-rows,~
@@ -18853,13 +18938,13 @@ version 2005/12/01 or later.
     allow-duplicate-names,~
     ampersand-in-blocks,~
     caption-above,~
-    cell-space-bottom-limit,~
-    cell-space-limits,~
-    cell-space-top-limit,~
-    code-for-first-col,~
-    code-for-first-row,~
-    code-for-last-col,~
-    code-for-last-row,~
+    cell-space-bottom-limit(+),~
+    cell-space-limits(+),~
+    cell-space-top-limit(+),~
+    code-for-first-col(+),~
+    code-for-first-row(+),~
+    code-for-last-col(+),~
+    code-for-last-row(+),~
     corners,~
     custom-key,~
     create-extra-nodes,~
@@ -18918,10 +19003,10 @@ version 2005/12/01 or later.
     cell-space-limits,~
     cell-space-top-limit,~
     code-after,~
-    code-for-first-col,~
-    code-for-first-row,~
-    code-for-last-col,~
-    code-for-last-row,~
+    code-for-first-col(+),~
+    code-for-first-row(+),~
+    code-for-last-col(+),~
+    code-for-last-row(+),~
     columns-width,~
     corners,~
     create-extra-nodes,~
@@ -18952,9 +19037,9 @@ version 2005/12/01 or later.
     t,~
     vlines,~
     xdots/color,~
-    xdots/shorten-start,~
-    xdots/shorten-end,~
-    xdots/shorten~and~
+    xdots/shorten-start(+),~
+    xdots/shorten-end(+),~
+    xdots/shorten(+)~and~
     xdots/line-style.
   }
 %    \end{macrocode}
@@ -18983,10 +19068,10 @@ version 2005/12/01 or later.
     cell-space-limits,~
     cell-space-top-limit,~
     code-after,~
-    code-for-first-col,~
-    code-for-first-row,~
-    code-for-last-col,~
-    code-for-last-row,~
+    code-for-first-col(+),~
+    code-for-first-row(+),~
+    code-for-last-col(+),~
+    code-for-last-row(+),~
     columns-type,~
     columns-width,~
     corners,~
@@ -19020,9 +19105,9 @@ version 2005/12/01 or later.
     t,~
     vlines,~
     xdots/color,~
-    xdots/shorten-start,~
-    xdots/shorten-end,~
-    xdots/shorten~and~
+    xdots/shorten-start(+),~
+    xdots/shorten-end(+),~
+    xdots/shorten(+)~and~
     xdots/line-style.
   }
 %    \end{macrocode}
@@ -19048,10 +19133,10 @@ version 2005/12/01 or later.
     cell-space-limits,~
     cell-space-top-limit,~
     code-after,~
-    code-for-first-col,~
-    code-for-first-row,~
-    code-for-last-col,~
-    code-for-last-row,~
+    code-for-first-col(+),~
+    code-for-first-row(+),~
+    code-for-last-col(+),~
+    code-for-last-row(+),~
     columns-width,~
     corners,~
     custom-line,~
@@ -19086,9 +19171,9 @@ version 2005/12/01 or later.
     tabularnote,~
     vlines,~
     xdots/color,~
-    xdots/shorten-start,~
-    xdots/shorten-end,~
-    xdots/shorten~and~
+    xdots/shorten-start(+),~
+    xdots/shorten-end(+),~
+    xdots/shorten(+)~and~
     xdots/line-style.
   }
 %    \end{macrocode}

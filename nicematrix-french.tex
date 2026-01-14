@@ -4,11 +4,12 @@
 \usepackage{polyglossia}
 \setmainlanguage{french}
 
+\hfuzz = 1pt
 
 \usepackage{geometry}
 \geometry{left=2.8cm,right=2.8cm,top=2.5cm,bottom=2.5cm,papersize={21cm,29.7cm}}
 
-\usepackage{array}
+
 \usepackage{nicematrix}
 
 \usepackage{tikz}
@@ -314,7 +315,7 @@ fonctionnalités supplémentaires offertes par ces environnements (cela permet
 d'économiser la mémoire et d'accélérer la compilation).}\footnote{Pour accélérer
 les compilations, on peut aussi utiliser ponctuellement la clé |no-cell-nodes| qui
 supprime la création des nœuds PGF-TikZ correspondants aux contenus des cellules mais
-certains fonctionnalités ne seront plus disponibles (cf.~\pageref{no-cell-nodes}).
+certains fonctionnalités ne seront plus disponibles (cf.~p.~\pageref{no-cell-nodes}).
 }
 
 \medskip
@@ -351,43 +352,39 @@ $\begin{pmatrix}
 
 \medskip
 En s'inspirant de l'extension \pkg{cellspace} qui traite de ce problème,
-l'extension \pkg{nicematrix} propose deux clés \Definition{cell-space-top-limit}
-et \Definition{cell-space-bottom-limit} qui sont similaires aux deux paramètres
-|\cellspacetoplimit| et |\cellspacebottomlimit| proposés par \pkg{cellspace}.
+l'extension \pkg{nicematrix} propose deux clés \Definition{cell-space-top-limit}$^+$
+et \Definition{cell-space-bottom-limit}$^+$ qui sont similaires aux deux paramètres
+|\cellspacetoplimit| et |\cellspacebottomlimit| proposés par \pkg{cellspace}.\footnote{On
+  remarquera que ces paramètres s'appliquent aussi aux colonnes de type |S| de
+  \pkg{siunitx} alors que \pkg{cellspace} n'est pas utilisable avec ces
+  colonnes.}
+
+
+\smallskip
+La valeur initiale de ces paramètres vaut $0$ pt.
 
 \index{cellspace@\pkg{cellspace} (extension)}
 
-Il existe aussi une clé \Definition{cell-space-limits} pour régler simultanément
+\smallskip
+Il existe aussi une clé \Definition{cell-space-limits}$^+$ pour régler simultanément
 les deux paramètres.
 
-La valeur initiale de ces paramètres est $0$~pt pour que les environnements de
-\pkg{nicematrix} aient par défaut le même comportement que ceux de \pkg{array}
-et de l'\pkg{amsmath} mais une valeur de $1$~pt serait un bon choix. On
-conseille de régler leurs valeurs avec la commande
-|\NiceMatrixOptions|.\footnote{On remarquera que ces paramètres s'appliquent
-  aussi aux colonnes de type |S| de \pkg{siunitx} alors que \pkg{cellspace}
-  n'est pas utilisable avec ces colonnes.}
+\smallskip
+Ces clés acceptent une syntaxe normale et une syntaxe «additive», c'est-à-dire
+que l'on peut écrire, par exemple, |cell-space-limits = 3pt| ou
+|cell-space-limits += 2pt|.
 
 \medskip
-\begin{Code}
-\NiceMatrixOptions{\emph{cell-space-limits = 1pt}}
-\end{Code}
-
-\medskip
-
 \begin{Code}[width=9cm]
-$\begin{pNiceMatrix}
+$\begin{pNiceMatrix}[\emph{cell-space-limits = 1pt}]
 \frac{1}{2} & -\frac{1}{2} \\
 \frac{1}{3} & \frac{1}{4} \\
 \end{pNiceMatrix}$
 \end{Code}
-\begin{scope}
-\NiceMatrixOptions{ cell-space-limits = 1pt }
-$\begin{pNiceMatrix}[no-cell-nodes]
+$\begin{pNiceMatrix}[no-cell-nodes,cell-space-limits = 1pt]
 \frac{1}{2} & -\frac{1}{2} \\
 \frac{1}{3} & \frac{1}{4} \\
 \end{pNiceMatrix}$
-\end{scope}
 
 \bigskip
 Il est également possible de changer ces paramètres pour certaines rangées du
@@ -2991,9 +2988,10 @@ couples \textsl{clé=valeur}.
 La clé \Definition{nb-rows} indique le nombre de rangées consécutives concernées par
 les spécifications de cette commande (une valeur |*| signifie que toutes les
 rangées restantes seront concernées).
-\item Les clés \Definition{cell-space-top-limit}, \Definition{cell-space-bottom-limit}
-et \Definition{cell-space-limits} sont disponibles avec le même effet que les
-clés globales de même nom (cf. p.~\pageref{cell-space-limits}).
+\item Les clés \Definition{cell-space-top-limit}$^+$,
+\Definition{cell-space-bottom-limit}$^+$ et \Definition{cell-space-limits}$^+$
+sont disponibles avec le même effet que les clés globales de même nom (cf.
+p.~\pageref{cell-space-limits}).
 
 \item 
 \index{rowcolor (clé de \texttt{\textbackslash RowStyle})}
@@ -3449,10 +3447,14 @@ C'est ce que nous ferons dans la suite.
 \index{code-for-last-col}
 
 On peut contrôler l'apparence de ces rangées et colonnes avec les options
-\Definition{code-for-first-row}, \Definition{code-for-last-row},
-\Definition{code-for-first-col} et \Definition{code-for-last-col}. Ces options
-sont des listes de tokens qui seront insérées au début de chaque case de la
-rangée ou de la colonne considérée.
+\Definition{code-for-first-row}$^+$, \Definition{code-for-last-row}$^+$,
+\Definition{code-for-first-col}$^+$ et \Definition{code-for-last-col}$^+$. Ces
+options sont des listes de tokens qui seront insérées au début de chaque case de
+la rangée ou de la colonne considérée. Ces clés ont une syntaxe normale mais
+aussi une syntaxe «additive», ce qui fait que l'on peut écrire, par exemple
+|code-for-first-row = \color{blue}| mais aussi
+|code-for-first-row += \color{blue}| (dans ce cas-là, les tokens sont ajoutés
+à droite de la valeur courante du paramètre).
 
 \bigskip
 \begin{Code}
@@ -3672,6 +3674,7 @@ $\begin{bNiceMatrix}
 \subsection{L'option xdots/nullify}
 
 \index{nullify-dots}
+\label{nullify-dots}
 
 Considérons la matrice suivante qui a été composée classiquement avec
 l'environnement |{pmatrix}| de \pkg{amsmath}.
@@ -3977,6 +3980,7 @@ $\begin{bNiceMatrix}
 \index{shorten-end (clé des lignes pointillées)}
 \index{shorten-start (clé des lignes pointillées)}
 \index{horizontal-label(s) (clé des lignes pointillées)}
+\index{nullify (clé des lignes pointillées)}
 
 
 Les lignes pointillées tracées par |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|,
@@ -3985,12 +3989,13 @@ Les lignes pointillées tracées par |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|,
 par les options suivantes (que l'on met entre crochets après la commande) :
 %
 \begin{itemize}[beginpenalty=10000]
+\item |nullify| ; 
 \item |horizontal-label(s)| ;
 \item |color| ;
 \item |radius| ; 
 \item |shorten-start|, |shorten-end| et |shorten| ;
 \item |inter| ;
-\item |line-style|.
+\item |line-style|
 \end{itemize}
 
 \smallskip
@@ -4004,15 +4009,20 @@ niveau d'un environnement mais elles doivent alors être préfixées par |xdots|
 |\Vdots|, etc.), ce qui fait que leurs noms deviennent :
 %
 \begin{itemize}[beginpenalty=10000]
+\item |xdots/nullify| ; 
 \item |xdots/horizontal-labels| ;
 \item |xdots/color| ;
 \item |xdots/radius| ;
-\item |xdots/shorten-start|, |xdots/shorten-end| et |xdots/shorten| ;
+\item |xdots/shorten-start|$^+$, |xdots/shorten-end|$^+$ et |xdots/shorten|$^+$ ;
 \item |xdots/inter| ; 
 \item |xdots/line-style|.
 \end{itemize}
 %
 Pour la clarté, dans la suite, on utilisera ces noms-là.
+
+\bigskip
+La clé \Definition{xdots/nullify} a déjà été décrite à la partie
+\ref{nullify-dots}, p.~\pageref{nullify-dots}.
 
 \bigskip
 La clé \Definition{xdots/horizontal-labels} demande que les labels (introduits
@@ -4030,15 +4040,19 @@ L'option \Definition{radius} correspond au rayon des points circulaires qui sont
 tracés. La valeur initiale est $0.53$~pt.
 
 \medskip
-Les clés \Definition{xdots/shorten-start} et \Definition{xdots/shorten-end}
+Les clés \Definition{xdots/shorten-start}$^+$ et \Definition{xdots/shorten-end}$^+$
 indiquent la marge qui est laissée aux deux extrémités de la ligne. La clé
-\Definition{xdots/shorten} fixe les deux clés simultanément. La valeur initiale
+\Definition{xdots/shorten}$^+$ fixe les deux clés simultanément. La valeur initiale
 de $0.3$~em (il est conseillé d'utiliser une unité de mesure dépendante de la
 fonte courante).\footnote{En fait, quand on utilise ces clés au niveau de
   |\NiceMatrixOptions| ou bien d'un environnement, seules les extrémités des
   lignes qui s'arrêtent au niveau d'un contenu non vide de case sont concernées.
   Quand on les utilise sur une commande |\Cdots| (ou |\Vdots|, etc.), toutes les 
   extrémités sont concernées.}
+
+Ces clés acceptent une syntaxe normale et une syntaxe «additive», c'est-à-dire
+que l'on peut écrire, par exemple, |xdots/shorten = 6pt| ou |xdots/shorten += 4pt|.
+
 
 \medskip
 L'option \Definition{xdots/inter} indique la distance entre deux points. La
@@ -4181,8 +4195,10 @@ arguments:
 
 \index{brace-shift (clé de \texttt{\textbackslash Hbrace} et \texttt{\textbackslash Vbrace})}
 \nobreak
-Il existe aussi une clé \Definition{brace-shift} pour déplacer l'accolade (et
-son label) vers l'extérieur de la matrice.
+Il existe aussi une clé \Definition{brace-shift}$^+$ pour déplacer l'accolade (et
+son label) vers l'extérieur de la matrice. Cette clé accepte une syntaxe normale
+et une syntaxe «additive», c'est-à-dire que l'on peut écrire, par exemple,
+|brace-shift = 3pt| ou |brace-shift += 2pt|.
 
 
 \item un deuxième argument, obligatoire, qui est le nombre de colonnes (pour
@@ -4436,7 +4452,7 @@ cases adjacentes.
 
 \medskip
 \begin{Code}[width=11cm]
-\NiceMatrixOptions{xdots/shorten = 0.6 em}
+\NiceMatrixOptions{xdots/shorten += 0.3 em}
 \begin{pNiceMatrix}
 I       & 0      & \Cdots  & 0      \\
 0       & I      & \Ddots  & \Vdots \\
@@ -4446,7 +4462,7 @@ I       & 0      & \Cdots  & 0      \\
 \end{pNiceMatrix}
 \end{Code}
 \begin{scope}
-\NiceMatrixOptions{xdots/shorten = 0.6 em}
+\NiceMatrixOptions{xdots/shorten += 0.3 em}
 $\begin{pNiceMatrix}
 I       & 0      & \Cdots  & 0     \\
 0       & I      & \Ddots  & \Vdots\\
@@ -4518,7 +4534,7 @@ colonne avec |@{\hspace{1.5em}}| dans le préambule du tableau.
 
 \medskip
 \begin{Code}[width=15cm]
-\[\begin{NiceArray}{ccc\emph{@{\hspace{1.5em}}}c}[cell-space-limits=2pt,\emph{margin}]
+\[\begin{NiceArray}{ccc\emph{@{\hspace{1.5em}}}c}[cell-space-limits += 2pt, \emph{margin}]
  1           & 1            & 1            & x \\
 \dfrac{1}{4} & \dfrac{1}{2} & \dfrac{1}{4} & y \\
  1           & 2            & 3            & z
@@ -4528,7 +4544,7 @@ colonne avec |@{\hspace{1.5em}}| dans le préambule du tableau.
 \end{NiceArray}\]
 \end{Code}
 \hspace{-4cm}
-$\begin{NiceArray}{ccc@{\hspace{1.5em}}c}[cell-space-limits=2pt,margin]
+$\begin{NiceArray}{ccc@{\hspace{1.5em}}c}[cell-space-limits += 2pt, margin]
  1          & 1           & 1           & x \\
 \dfrac{1}{4} & \dfrac{1}{2} & \dfrac{1}{4} & y \\
  1          & 2           & 3           & z
@@ -4547,14 +4563,14 @@ avec la construction suivante.
 \begin{scope}
 \hfuzz=15cm
 \begin{Code}[width=11cm]
-$\begin{NiceArray}{\emph{(ccc)(c)}}[cell-space-limits=2pt]
+$\begin{NiceArray}{\emph{(ccc)(c)}}[cell-space-limits += 2pt]
  1           & 1            & 1            & x \\
 \dfrac{1}{4} & \dfrac{1}{2} & \dfrac{1}{4} & y \\
  1           & 2            & 3            & z 
 \end{NiceArray}$
 \end{Code}
 \end{scope}
-$\begin{NiceArray}{(ccc)(c)}[cell-space-limits=2pt]
+$\begin{NiceArray}{(ccc)(c)}[cell-space-limits += 2pt]
  1          & 1           & 1           & x \\
 \dfrac{1}{4} & \dfrac{1}{2} & \dfrac{1}{4} & y \\
  1          & 2           & 3           & z 
@@ -5262,7 +5278,7 @@ disponibles dans |\NiceMatrixOptions|. Ces clés ont un nom préfixé par |notes
 \item |notes/label-in-list|
 \item |notes/enumitem-keys|
 \item |notes/enumitem-keys-para|
-\item |notes/code-before|
+\item |notes/code-before|$^+$
 \item |notes/detect-duplicates|
 \end{itemize}
 Pour la commodité, il est aussi possible de fixer ces clés dans
@@ -5388,7 +5404,7 @@ Initialement, le style de liste utilisé est défini par :\quad
 |afterlabel = \nobreak, itemjoin = \quad|
 
 
-\item La clé \Definition{notes/code-before} est une liste de tokens qui seront
+\item La clé \Definition{notes/code-before}$^+$ est une liste de tokens qui seront
 insérés avant la composition de la liste de notes.
 
 Valeur initiale : \textsl{vide}
@@ -5400,6 +5416,10 @@ Si on souhaite, par exemple, que les notes soient composées en gris et en
 \end{Verbatim}
 On peut aussi mettre dans cette clé |\raggedright| ou |\RaggedRight| (cette
 dernière est une commande de \pkg{ragged2e}).
+
+Cette clé admet une syntaxe normale mais aussi une syntaxe «additive», c'est-à-dire
+que l'on peut écrire, par exemple, |notes/code-before += \footnotesize| (les tokens rajoutés
+sont alors rajoutés à \emph{droite} de la valeur courante du paramètre).
 
 \item La clé \Definition{notes/detect-duplicates} active la détection des
 commandes |\tabularnote| avec le même argument.
@@ -7284,7 +7304,7 @@ Un exemple pour le résultant de deux polynômes :
 \medskip
 \begin{Code}
 \setlength{\extrarowheight}{1mm}
-\begin{vNiceArray}{cccc:ccc}[columns-width=6mm]
+\begin{vNiceArray}{cccc:ccc}[columns-width=6mm, xdots/shorten += 3pt]
 a_0   &      &&       &b_0    &      &     \\
 a_1   &\Ddots&&       &b_1    &\Ddots&     \\
 \Vdots&\Ddots&&       &\Vdots &\Ddots&b_0  \\
@@ -7303,7 +7323,7 @@ a_p   &      &&a_0    &       &      &b_1   \\
 
 \begin{scope}
 \setlength{\extrarowheight}{1mm}
-\[\begin{vNiceArray}{cccc:ccc}[columns-width=6mm]
+\[\begin{vNiceArray}{cccc:ccc}[columns-width=6mm, xdots/shorten += 3pt]
 a_0   &      &&       &b_0    &      &     \\
 a_1   &\Ddots&&       &b_1    &\Ddots&     \\
 \Vdots&\Ddots&&       &\Vdots &\Ddots&b_0  \\
@@ -7317,13 +7337,15 @@ a_p   &      &&a_0    &       &      &b_1   \\
 \vspace{2cm}
 \goodbreak
 Un exemple avec un système linéaire. Rappelons que |xdots/nullify|
-annule les espaces horizontaux et verticaux créés par les commands |\Cdots|, |\Vdots|, etc.
+annule les espaces horizontaux et verticaux créés par les commandes |\Cdots|, |\Vdots|, etc.
+
 
 \index{last-col|textit}
 \index{code-for-last-col|textit}
 
 \begin{Verbatim}
-\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col,code-for-last-col=\scriptstyle]
+\begin{pNiceMatrix}%
+  [vlines=-1,xdots/nullify,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
