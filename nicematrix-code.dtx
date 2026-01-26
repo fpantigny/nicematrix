@@ -1109,6 +1109,11 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \bool_new:N \l_@@_bold_row_style_bool
 %    \end{macrocode}
+%
+% \bigskip
+%    \begin{macrocode}
+\clist_new:N \g_@@_cbic_clist
+%    \end{macrocode}
 % 
 % \bigskip
 % The following command will be able to reconstruct the full name of the current
@@ -3200,10 +3205,20 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % Now, we increment the counter of the rows. We don't do this incrementation in
 % the |\everycr| because some packages, like \pkg{arydshln}, create special rows
-% in the |\halign| that we don't want to take into account. 
+% in the |\halign| that we don't want to take into account.
+%
+% Here is a version with the standard syntax of L3.
+%    \begin{Verbatim}[formatcom=\small]
+% \int_compare:nNnT { \c@jCol } = { 1 }
+%   { \int_compare:nNnT \l_@@_first_col_int = { 1 } { \@@_begin_of_row: } }
+%    \end{Verbatim}
+%
+% We will use a version a little more efficient.
 %    \begin{macrocode}
     \if_int_compare:w \c@jCol = \c_one_int 
-      \if_int_compare:w \l_@@_first_col_int = \c_one_int \@@_begin_of_row: \fi
+      \if_int_compare:w \l_@@_first_col_int = \c_one_int
+        \@@_begin_of_row:
+      \fi:
     \fi:
 %    \end{macrocode}
 % The content of the cell is composed in the box |\l_@@_cell_box|. The
@@ -3227,10 +3242,10 @@ version 2005/12/01 or later.
 % The following command will be nullified unless there is a first row. 
 %
 % Here is a version with the standard syntax of L3.
-%    \begin{Verbatim}
+%    \begin{Verbatim}[formatcom=\small]
 % \cs_new_protected:Npn \@@_tuning_first_row:
 %   {
-%     \int_if_zero:nT { \c@iRow }
+%     \int_if_zero:nTF { \c@iRow }
 %       { 
 %         \int_if_zero:nF { \c@jCol } 
 %           { 
@@ -3238,6 +3253,7 @@ version 2005/12/01 or later.
 %             \xglobal \colorlet { nicematrix-first-row } { . }
 %           }
 %       }
+%       { \cs_set_eq:NN \@@_tuning_first_row: \prg_do_nothing: }
 %   }
 %    \end{Verbatim}
 %
@@ -3250,6 +3266,8 @@ version 2005/12/01 or later.
         \l_@@_code_for_first_row_tl 
         \xglobal \colorlet { nicematrix-first-row } { . }
       \fi:
+    \else:
+      \cs_set_eq:NN \@@_tuning_first_row: \prg_do_nothing:
     \fi:
   }
 %    \end{macrocode}
@@ -3257,7 +3275,7 @@ version 2005/12/01 or later.
 %
 % The following command will be nullified unless there is a last row and we
 % know its value (\emph{ie}: |\l_@@_lat_row_int > 0|).
-%    \begin{Verbatim}
+%    \begin{Verbatim}[formatcom=\small]
 % \cs_new_protected:Npn \@@_tuning_last_row:
 %   {
 %     \int_compare:nNnT { \c@iRow } = { \l_@@_last_row_int }
@@ -3334,29 +3352,54 @@ version 2005/12/01 or later.
 % that, at the end of the array, will give information about the vertical
 % dimension of the two first rows and the two last rows. If the user uses the
 % |last-row|, some lines of code will be dynamically added to this command.
+%
+%
+% Here is a version with the standard syntax of L3.
+%    \begin{Verbatim}[formatcom = \small]
+% \cs_new_protected:Npn \@@_update_for_first_and_last_row:
+%   {
+%     \int_if_zero:nTF { \c@iRow }
+%       { 
+%         \dim_compare:nNnT 
+%           { \box_dp:N \l_@@_cell_box } > { \g_@@_dp_row_zero_dim }
+%           { \dim_gset:Nn \g_@@_dp_row_zero_dim { \box_dp:N \l_@@_cell_box } }
+%         \dim_compare:nNnT 
+%           { \box_ht:N \l_@@_cell_box } > { \g_@@_ht_row_zero_dim }
+%           { \dim_gset:Nn \g_@@_ht_row_zero_dim { \box_ht:N \l_@@_cell_box } }
+%       }
+%       {
+%         \int_compare:nNnT { \c@iRow } = { 1 }
+%           { 
+%             \dim_compare:nNnT 
+%               { \box_ht:N \l_@@_cell_box } > { \g_@@_ht_row_one_dim }
+%               { \dim_gset:Nn \g_@@_ht_row_one_dim { \box_ht:N \l_@@_cell_box } }
+%           } 
+%       }
+%   }
+%    \end{Verbatim}
+%
+% We will use a version a little more efficient.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_update_for_first_and_last_row:
   {
-    \int_if_zero:nTF { \c@iRow }
-      { 
-        \dim_compare:nNnT 
-          { \box_dp:N \l_@@_cell_box } > { \g_@@_dp_row_zero_dim }
-          { \dim_gset:Nn \g_@@_dp_row_zero_dim { \box_dp:N \l_@@_cell_box } }
-        \dim_compare:nNnT 
-          { \box_ht:N \l_@@_cell_box } > { \g_@@_ht_row_zero_dim }
-          { \dim_gset:Nn \g_@@_ht_row_zero_dim { \box_ht:N \l_@@_cell_box } }
-      }
-      {
-        \int_compare:nNnT { \c@iRow } = { \c_one_int }
-          { 
-            \dim_compare:nNnT 
-              { \box_ht:N \l_@@_cell_box } > { \g_@@_ht_row_one_dim }
-              { \dim_gset:Nn \g_@@_ht_row_one_dim { \box_ht:N \l_@@_cell_box } }
-          } 
-      }
+    \if_int_compare:w \c@iRow = \c_zero_int 
+      \if_dim:w \box_dp:N \l_@@_cell_box > \g_@@_dp_row_zero_dim 
+        \global \g_@@_dp_row_zero_dim = \box_dp:N \l_@@_cell_box 
+      \fi:
+      \if_dim:w \box_ht:N \l_@@_cell_box > \g_@@_ht_row_zero_dim 
+        \global \g_@@_ht_row_zero_dim = \box_ht:N \l_@@_cell_box 
+      \fi:
+    \else:
+      \if_int_compare:w \c@iRow = \c_one_int 
+        \if_dim:w \box_ht:N \l_@@_cell_box > \g_@@_ht_row_one_dim 
+          \global \g_@@_ht_row_one_dim = \box_ht:N \l_@@_cell_box 
+        \fi:
+      \fi:
+    \fi:
   }
 %    \end{macrocode}
-% 
+%
+% \bigskip
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_rotate_cell_box:
   {
@@ -3387,29 +3430,59 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%
+% \bigskip
+% Here is a version of the command |\@@_adjust_size_box:| with the syntax
+% of standard L3.
+%    \begin{Verbatim}[formatcom=\small]
+% \cs_new_protected:Npn \@@_adjust_size_box:
+%   {
+%     \dim_compare:nNnT { \g_@@_blocks_wd_dim } > { \c_zero_dim }
+%       {
+%         \dim_compare:nNnT \g_@@_blocks_wd_dim > { \box_wd:N \l_@@_cell_box }
+%           { \box_set_wd:Nn \l_@@_cell_box \g_@@_blocks_wd_dim }
+%         \dim_gzero:N \g_@@_blocks_wd_dim 
+%       }
+%     \dim_compare:nNnT { \g_@@_blocks_dp_dim } > { \c_zero_dim }
+%       {
+%         \dim_compare:nNnT \g_@@_blocks_dp_dim > { \box_dp:N \l_@@_cell_box }
+%           { \box_set_dp:Nn \l_@@_cell_box \g_@@_blocks_dp_dim }
+%         \dim_gzero:N \g_@@_blocks_dp_dim 
+%       }
+%     \dim_compare:nNnT { \g_@@_blocks_ht_dim } > { \c_zero_dim }
+%       {
+%         \dim_compare:nNnT \g_@@_blocks_ht_dim > { \box_ht:N \l_@@_cell_box }
+%           { \box_set_ht:Nn \l_@@_cell_box \g_@@_blocks_ht_dim }
+%         \dim_gzero:N \g_@@_blocks_ht_dim 
+%       }
+%   }
+%    \end{Verbatim}
+%
+% Here is a version slightly more efficient.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_adjust_size_box:
+\cs_set_protected:Npn \@@_adjust_size_box:
   {
-    \dim_compare:nNnT { \g_@@_blocks_wd_dim } > { \c_zero_dim }
-      {
-        \box_set_wd:Nn \l_@@_cell_box
-          { \dim_max:nn { \box_wd:N \l_@@_cell_box } { \g_@@_blocks_wd_dim } }
-        \dim_gzero:N \g_@@_blocks_wd_dim 
-      }
-    \dim_compare:nNnT { \g_@@_blocks_dp_dim } > { \c_zero_dim }
-      {
-        \box_set_dp:Nn \l_@@_cell_box
-          { \dim_max:nn { \box_dp:N \l_@@_cell_box } { \g_@@_blocks_dp_dim } }
-        \dim_gzero:N \g_@@_blocks_dp_dim 
-      }
-    \dim_compare:nNnT { \g_@@_blocks_ht_dim } > { \c_zero_dim }
-      {
-        \box_set_ht:Nn \l_@@_cell_box
-          { \dim_max:nn { \box_ht:N \l_@@_cell_box } { \g_@@_blocks_ht_dim } }
-        \dim_gzero:N \g_@@_blocks_ht_dim 
-      }
+    \if_dim:w \g_@@_blocks_wd_dim > \c_zero_dim 
+        \if_dim:w \g_@@_blocks_wd_dim > \box_wd:N \l_@@_cell_box 
+          \box_wd:N \l_@@_cell_box = \g_@@_blocks_wd_dim
+        \fi:
+        \global \g_@@_blocks_wd_dim  = \c_zero_dim 
+    \fi:
+    \if_dim:w \g_@@_blocks_dp_dim > \c_zero_dim 
+        \if_dim:w \g_@@_blocks_dp_dim > \box_dp:N \l_@@_cell_box 
+          \box_dp:N \l_@@_cell_box = \g_@@_blocks_dp_dim
+        \fi
+        \global \g_@@_blocks_dp_dim = \c_zero_dim
+    \fi:
+    \if_dim:w \g_@@_blocks_ht_dim > \c_zero_dim 
+        \if_dim:w \g_@@_blocks_ht_dim > \box_ht:N \l_@@_cell_box 
+          \box_ht:N \l_@@_cell_box = \g_@@_blocks_ht_dim
+        \fi:
+        \global \g_@@_blocks_ht_dim = \c_zero_dim 
+    \fi:
   }
 %    \end{macrocode}
+%
 % 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cell_end:
@@ -3423,6 +3496,39 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%    
+%    \begin{Verbatim}[formatcom=\small]
+% \cs_new_protected:Npn \@@_cell_end_i:
+%   {
+%     \g_@@_cell_after_hook_tl
+%     \bool_if:NT \g_@@_rotate_bool { \@@_rotate_cell_box: }
+%     \@@_adjust_size_box:
+%     \box_set_ht:Nn \l_@@_cell_box
+%       { \box_ht:N \l_@@_cell_box + \l_@@_cell_space_top_limit_dim }
+%     \box_set_dp:Nn \l_@@_cell_box
+%       { \box_dp:N \l_@@_cell_box + \l_@@_cell_space_bottom_limit_dim }
+%     \@@_update_max_cell_width:
+%     \@@_update_for_first_and_last_row:
+%     \bool_if:NTF \g_@@_empty_cell_bool
+%       { \box_use_drop:N \l_@@_cell_box } 
+%       {
+%         \bool_if:NTF \g_@@_not_empty_cell_bool
+%           { \@@_print_node_cell: }
+%           { 
+%             \dim_compare:nNnTF { \box_wd:N \l_@@_cell_box } > { \c_zero_dim }
+%               { \@@_print_node_cell: }
+%               { \box_use_drop:N \l_@@_cell_box } 
+%           }
+%       }
+%     \int_compare:nNnT { \c@jCol } > { \g_@@_col_total_int }
+%       { \int_gset_eq:NN \g_@@_col_total_int \c@jCol }
+%     \bool_gset_false:N \g_@@_empty_cell_bool
+%     \bool_gset_false:N \g_@@_not_empty_cell_bool
+%   } 
+%    \end{Verbatim}
+%
+% \bigskip
+% Here is a version slightly more efficient.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cell_end_i:
   {
@@ -3488,25 +3594,39 @@ version 2005/12/01 or later.
         \bool_if:NTF \g_@@_not_empty_cell_bool
           { \@@_print_node_cell: }
           { 
-            \dim_compare:nNnTF { \box_wd:N \l_@@_cell_box } > { \c_zero_dim }
-              { \@@_print_node_cell: }
-              { \box_use_drop:N \l_@@_cell_box } 
+            \if_dim:w \box_wd:N \l_@@_cell_box > \c_zero_dim 
+              \@@_print_node_cell:
+            \else:
+              \box_use_drop:N \l_@@_cell_box
+            \fi:
           }
       }
-    \int_compare:nNnT { \c@jCol } > { \g_@@_col_total_int }
-      { \int_gset_eq:NN \g_@@_col_total_int \c@jCol }
-    \bool_gset_false:N \g_@@_empty_cell_bool
-    \bool_gset_false:N \g_@@_not_empty_cell_bool
+    \if_int_compare:w \c@jCol  > \g_@@_col_total_int 
+      \global \g_@@_col_total_int = \c@jCol 
+    \fi:
+    \global \let \g_@@_empty_cell_bool \c_false_bool 
+    \global \let \g_@@_not_empty_cell_bool \c_false_bool
   } 
 %    \end{macrocode}
 %
 % \bigskip
 % The following command will be nullified in our redefinition of |\multicolumn|. 
+%    \begin{Verbatim}[formatcom=\small]
+% \cs_new_protected:Npn \@@_update_max_cell_width:
+%   {
+%     \dim_gset:Nn \g_@@_max_cell_width_dim
+%       { \dim_max:nn { \g_@@_max_cell_width_dim } { \box_wd:N \l_@@_cell_box } }
+%   }
+%    \end{Verbatim}
+%
+% We will use the following version, slightly more efficient:
+% \bigskip
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_update_max_cell_width:
   {
-    \dim_gset:Nn \g_@@_max_cell_width_dim
-      { \dim_max:nn { \g_@@_max_cell_width_dim } { \box_wd:N \l_@@_cell_box } }
+    \if_dim:w \box_wd:N \l_@@_cell_box > \g_@@_max_cell_width_dim
+      \g_@@_max_cell_width_dim = \box_wd:N \l_@@_cell_box 
+    \fi:
   }
 %    \end{macrocode}
 % 
@@ -4407,6 +4527,7 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \TikzEveryCell \@@_TikzEveryCell
     \cs_set_eq:NN \EmptyColumn \@@_EmptyColumn:n
     \cs_set_eq:NN \EmptyRow \@@_EmptyRow:n
+    \cs_set_eq:NN \CreateBlocksInColumn \@@_create_blocks_in_col:n 
   }
 %    \end{macrocode}
 %
@@ -5561,6 +5682,7 @@ version 2005/12/01 or later.
           { \str_if_eq:eeTF { \l_@@_vpos_col_str } { p } { t } { b } }
           { #1 }
           {
+            \cs_set_eq:NN \rotate \@@_rotate_p_col:
 %    \end{macrocode}
 % The parameter |\l_@@_hpos_col_str| (as |\l_@@_vpos_col_str|) exists only
 % during the construction of the preamble. During the composition of the array
@@ -8079,6 +8201,11 @@ version 2005/12/01 or later.
           } 
       }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+    \clist_if_empty:NF \g_@@_cbic_clist { \@@_cbic: }
+%    \end{macrocode}
+%
 % We write also the potential content of |\g_@@_pos_of_blocks_seq|. It will be
 % used to recreate the blocks with a name in the |\CodeBefore| and also if the
 % command |\rowcolors| is used with the key |respect-blocks|).
@@ -8198,6 +8325,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \@@_adjust_pos_of_blocks_seq:
 %    \end{macrocode}
+%
 % 
 %    \begin{macrocode}
     \@@_deal_with_rounded_corners:
@@ -8543,7 +8671,7 @@ version 2005/12/01 or later.
 %
 % 
 % \bigskip
-% The command |\@@_find_extremities_of_line:nnnn| takes four arguments:
+% The command |\@@_find_extremities:nnnn| takes four arguments:
 %
 % \begin{itemize}
 % \item the first argument is the row of the cell where the command was issued;
@@ -8566,8 +8694,169 @@ version 2005/12/01 or later.
 % whether the extremities are open or not. 
 % \end{itemize}
 %
+% We provide first a version in the L3 syntax, and, then a version slightly
+% more efficient.
+%    \begin{Verbatim}[formatcom = \small]
+% \cs_new_protected:Npn \@@_find_extremities:nnnn #1 #2 #3 #4
+%   { 
+%     \cs_set:cpn { @@ _ dotted _ #1 - #2 } { }
+%     \int_set:Nn \l_@@_initial_i_int { #1 }
+%     \int_set:Nn \l_@@_initial_j_int { #2 }
+%     \int_set:Nn \l_@@_final_i_int { #1 }
+%     \int_set:Nn \l_@@_final_j_int { #2 }
+%     \bool_set_false:N \l_@@_stop_loop_bool
+%     \bool_do_until:Nn \l_@@_stop_loop_bool 
+%       {
+%         \int_add:Nn \l_@@_final_i_int { #3 }
+%         \int_add:Nn \l_@@_final_j_int { #4 }
+%         \bool_set_false:N \l_@@_final_open_bool
+%         \int_compare:nNnTF { \l_@@_final_i_int } > { \l_@@_row_max_int }
+%           {
+%             \int_compare:nNnTF { #3 }  = { 1 }
+%               { \bool_set_true:N \l_@@_final_open_bool }
+%               {
+%                 \int_compare:nNnT { \l_@@_final_j_int } > { \l_@@_col_max_int }
+%                   { \bool_set_true:N \l_@@_final_open_bool }
+%               }
+%           }
+%           {
+%             \int_compare:nNnTF \l_@@_final_j_int < \l_@@_col_min_int
+%               {
+%                 \int_compare:nNnT { #4 } = { -1 }
+%                   { \bool_set_true:N \l_@@_final_open_bool }
+%               }
+%               {
+%                 \int_compare:nNnT { \l_@@_final_j_int } > { \l_@@_col_max_int }
+%                   {
+%                     \int_compare:nNnT { #4 } = { 1 }
+%                       { \bool_set_true:N \l_@@_final_open_bool }
+%                   }
+%               }
+%           }
+%         \bool_if:NTF \l_@@_final_open_bool 
+%           { 
+%             \int_sub:Nn \l_@@_final_i_int { #3 }
+%             \int_sub:Nn \l_@@_final_j_int { #4 }
+%             \bool_set_true:N \l_@@_stop_loop_bool
+%           }
+%           { 
+%             \cs_if_exist:cTF
+%               { 
+%                 @@ _ dotted _ 
+%                 \int_use:N \l_@@_final_i_int - 
+%                 \int_use:N \l_@@_final_j_int 
+%               }
+%               {
+%                 \int_sub:Nn \l_@@_final_i_int { #3 }
+%                 \int_sub:Nn \l_@@_final_j_int { #4 }
+%                 \bool_set_true:N \l_@@_final_open_bool
+%                 \bool_set_true:N \l_@@_stop_loop_bool
+%               }
+%               { 
+%                 \cs_if_exist:cTF 
+%                   { 
+%                     pgf @ sh @ ns @ \@@_env: 
+%                     - \int_use:N \l_@@_final_i_int 
+%                     - \int_use:N \l_@@_final_j_int 
+%                   }
+%                   { \bool_set_true:N \l_@@_stop_loop_bool }
+%                   { 
+%                     \cs_set_nopar:cpn 
+%                       { 
+%                         @@ _ dotted _
+%                         \int_use:N \l_@@_final_i_int - 
+%                         \int_use:N \l_@@_final_j_int 
+%                       } 
+%                       { }
+%                   }   
+%               }
+%           }
+%        }
+%     \bool_set_false:N \l_@@_stop_loop_bool
+%     \int_set:Nn \l_tmpa_int { \l_@@_col_min_int - 1 }
+%     \bool_do_until:Nn \l_@@_stop_loop_bool 
+%       { 
+%         \int_sub:Nn \l_@@_initial_i_int { #3 }
+%         \int_sub:Nn \l_@@_initial_j_int { #4 }
+%         \bool_set_false:N \l_@@_initial_open_bool
+%         \int_compare:nNnTF { \l_@@_initial_i_int } < { \l_@@_row_min_int }
+%           {
+%             \int_compare:nNnTF { #3} = { 1 }
+%               { \bool_set_true:N \l_@@_initial_open_bool }
+%               {             
+%                 \int_compare:nNnT { \l_@@_initial_j_int } = { \l_tmpa_int }
+%                   { \bool_set_true:N \l_@@_initial_open_bool }
+%               }
+%           }
+%           {
+%             \int_compare:nNnTF { \l_@@_initial_j_int } < { \l_@@_col_min_int }
+%               {
+%                 \int_compare:nNnT { #4 } = { 1 }
+%                   { \bool_set_true:N \l_@@_initial_open_bool }
+%               }
+%               {
+%                 \int_compare:nNnT { \l_@@_initial_j_int } > { \l_@@_col_max_int }
+%                   {
+%                     \int_compare:nNnT { #4 } = { -1 }
+%                       { \bool_set_true:N \l_@@_initial_open_bool }
+%                   }
+%               }
+%           }
+%         \bool_if:NTF \l_@@_initial_open_bool
+%           { 
+%             \int_add:Nn \l_@@_initial_i_int { #3 }
+%             \int_add:Nn \l_@@_initial_j_int { #4 }
+%             \bool_set_true:N \l_@@_stop_loop_bool
+%           }
+%           { 
+%             \cs_if_exist:cTF
+%               { 
+%                 @@ _ dotted _ 
+%                 \int_use:N \l_@@_initial_i_int - 
+%                 \int_use:N \l_@@_initial_j_int 
+%               }
+%               {
+%                 \int_add:Nn \l_@@_initial_i_int { #3 }
+%                 \int_add:Nn \l_@@_initial_j_int { #4 }
+%                 \bool_set_true:N \l_@@_initial_open_bool
+%                 \bool_set_true:N \l_@@_stop_loop_bool
+%               }
+%               {
+%                 \cs_if_exist:cTF 
+%                   { 
+%                     pgf @ sh @ ns @ \@@_env: 
+%                     - \int_use:N \l_@@_initial_i_int 
+%                     - \int_use:N \l_@@_initial_j_int 
+%                   }
+%                   { \bool_set_true:N \l_@@_stop_loop_bool }
+%                   {
+%                     \cs_set_nopar:cpn 
+%                       { 
+%                         @@ _ dotted _ 
+%                         \int_use:N \l_@@_initial_i_int - 
+%                         \int_use:N \l_@@_initial_j_int 
+%                       } 
+%                       { }
+%                   } 
+%               } 
+%           }
+%       }
+%     \seq_gput_right:Ne \g_@@_pos_of_xdots_seq
+%       { 
+%         { \int_use:N \l_@@_initial_i_int }
+%         { \int_min:nn { \l_@@_initial_j_int } { \l_@@_final_j_int } }
+%         { \int_use:N \l_@@_final_i_int }
+%         { \int_max:nn { \l_@@_initial_j_int } { \l_@@_final_j_int } }
+%         { } 
+%       }
+%   } 
+%    \end{Verbatim}
+%
+%
+% \bigskip
+% The following version is slightly more efficient.
 %    \begin{macrocode}       
-\cs_new_protected:Npn \@@_find_extremities_of_line:nnnn #1 #2 #3 #4
+\cs_new_protected:Npn \@@_find_extremities:nnnn #1 #2 #3 #4
   { 
 %    \end{macrocode}
 % First, we declare the current cell as ``dotted'' because we forbide
@@ -8577,51 +8866,46 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % Initialization of variables.
 %    \begin{macrocode}
-    \int_set:Nn \l_@@_initial_i_int { #1 }
-    \int_set:Nn \l_@@_initial_j_int { #2 }
-    \int_set:Nn \l_@@_final_i_int { #1 }
-    \int_set:Nn \l_@@_final_j_int { #2 }
+    \l_@@_initial_i_int = #1 
+     \l_@@_initial_j_int = #2 
+     \l_@@_final_i_int = #1 
+     \l_@@_final_j_int = #2 
 %    \end{macrocode}
 % We will do two loops: one when determining the initial cell and the other
 % when determining the final cell. The boolean |\l_@@_stop_loop_bool| will be
 % used to control these loops. In the first loop, we search the ``final''
 % extremity of the line.
 %    \begin{macrocode}
-    \bool_set_false:N \l_@@_stop_loop_bool
+    \let \l_@@_stop_loop_bool \c_false_bool
     \bool_do_until:Nn \l_@@_stop_loop_bool 
-      { 
-        \int_add:Nn \l_@@_final_i_int { #3 }
-        \int_add:Nn \l_@@_final_j_int { #4 }
-        \bool_set_false:N \l_@@_final_open_bool
+      {
 %    \end{macrocode}
-% 
-% We test if we are still in the matrix. Since this is the core of the loop, we
-% \textbf{optimize} the code by using a TeX-style of conditionals.
+% We test if we are still in the matrix. 
 %    \begin{macrocode}
+        \advance \l_@@_final_i_int by #3 
+        \advance \l_@@_final_j_int by #4 
+        \let \l_@@_final_open_bool \c_false_bool
         \if_int_compare:w \l_@@_final_i_int > \l_@@_row_max_int
           \if_int_compare:w #3  = \c_one_int
-            \bool_set_true:N \l_@@_final_open_bool 
+            \let \l_@@_final_open_bool \c_true_bool
           \else:
             \if_int_compare:w \l_@@_final_j_int > \l_@@_col_max_int
-               \bool_set_true:N \l_@@_final_open_bool 
+               \let \l_@@_final_open_bool \c_true_bool
             \fi:
           \fi:
         \else:
           \if_int_compare:w \l_@@_final_j_int < \l_@@_col_min_int
              \if_int_compare:w #4 = -1 
-                \bool_set_true:N \l_@@_final_open_bool 
+                \let \l_@@_final_open_bool \c_true_bool
              \fi:
           \else:
              \if_int_compare:w \l_@@_final_j_int > \l_@@_col_max_int
                 \if_int_compare:w #4 = \c_one_int
-                   \bool_set_true:N \l_@@_final_open_bool 
+                   \let \l_@@_final_open_bool \c_true_bool
                 \fi:
              \fi:
           \fi:
         \fi:
-%    \end{macrocode}
-% 
-%    \begin{macrocode}
         \bool_if:NTF \l_@@_final_open_bool 
 %    \end{macrocode}
 % If we are outside the matrix, we have found the extremity of the dotted line
@@ -8631,9 +8915,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % We do a step backwards.
 %    \begin{macrocode}  
-            \int_sub:Nn \l_@@_final_i_int { #3 }
-            \int_sub:Nn \l_@@_final_j_int { #4 }
-            \bool_set_true:N \l_@@_stop_loop_bool
+            \advance \l_@@_final_i_int by - #3 
+            \advance \l_@@_final_j_int by - #4 
+            \let \l_@@_stop_loop_bool \c_true_bool
           }
 %    \end{macrocode}
 % If we are in the matrix, we test whether the cell is empty. If it's not the
@@ -8648,10 +8932,10 @@ version 2005/12/01 or later.
                 \int_use:N \l_@@_final_j_int 
               }
               {
-                \int_sub:Nn \l_@@_final_i_int { #3 }
-                \int_sub:Nn \l_@@_final_j_int { #4 }
-                \bool_set_true:N \l_@@_final_open_bool
-                \bool_set_true:N \l_@@_stop_loop_bool
+                \advance \l_@@_final_i_int by - #3 
+                \advance \l_@@_final_j_int by - #4 
+                \let \l_@@_final_open_bool \c_true_bool
+                \let \l_@@_stop_loop_bool \c_true_bool
               }
               { 
                 \cs_if_exist:cTF 
@@ -8660,7 +8944,7 @@ version 2005/12/01 or later.
                     - \int_use:N \l_@@_final_i_int 
                     - \int_use:N \l_@@_final_j_int 
                   }
-                  { \bool_set_true:N \l_@@_stop_loop_bool }
+                  { \let \l_@@_stop_loop_bool \c_true_bool }
 %    \end{macrocode}
 % If the case is empty, we declare that the cell as non-empty. Indeed, we will
 % draw a dotted line and the cell will be on that dotted line. All the cells of
@@ -8688,18 +8972,19 @@ version 2005/12/01 or later.
 % For |\l_@@_initial_i_int| and |\l_@@_initial_j_int| the programmation is
 % similar to the previous one.
 %    \begin{macrocode}
-    \bool_set_false:N \l_@@_stop_loop_bool
+    \let \l_@@_stop_loop_bool \c_false_bool
 %    \end{macrocode}
 % The following line of code is only for efficiency in the following loop.
 %    \begin{macrocode}
-    \int_set:Nn \l_tmpa_int { \l_@@_col_min_int - 1 }
+    \l_tmpa_int = \l_@@_col_min_int
+    \advance \l_tmpa_int by -1 
 %    \end{macrocode}
 %    \begin{macrocode}
     \bool_do_until:Nn \l_@@_stop_loop_bool 
       { 
-        \int_sub:Nn \l_@@_initial_i_int { #3 }
-        \int_sub:Nn \l_@@_initial_j_int { #4 }
-        \bool_set_false:N \l_@@_initial_open_bool
+        \advance \l_@@_initial_i_int by - #3 
+        \advance \l_@@_initial_j_int by - #4 
+        \let \l_@@_initial_open_bool \c_false_bool
 %    \end{macrocode}
 % 
 % We test if we are still in the matrix. Since this is the core of the loop, we
@@ -8707,24 +8992,24 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \if_int_compare:w \l_@@_initial_i_int < \l_@@_row_min_int
           \if_int_compare:w #3 = \c_one_int
-            \bool_set_true:N \l_@@_initial_open_bool 
+            \let \l_@@_initial_open_bool \c_true_bool
           \else:
 %    \end{macrocode}
 % |\l_tmpa_int| contains |\l_@@_col_min_int - 1| (only for efficiency).
 %    \begin{macrocode}
             \if_int_compare:w \l_@@_initial_j_int = \l_tmpa_int
-              \bool_set_true:N \l_@@_initial_open_bool
+              \let \l_@@_initial_open_bool \c_true_bool
             \fi:
           \fi:
         \else:
           \if_int_compare:w \l_@@_initial_j_int < \l_@@_col_min_int
             \if_int_compare:w #4 = \c_one_int
-              \bool_set_true:N \l_@@_initial_open_bool 
+              \let \l_@@_initial_open_bool \c_true_bool
             \fi:
           \else:
             \if_int_compare:w \l_@@_initial_j_int > \l_@@_col_max_int
               \if_int_compare:w #4 = -1 
-                \bool_set_true:N \l_@@_initial_open_bool 
+                \let \l_@@_initial_open_bool \c_true_bool
               \fi:
             \fi:
           \fi:
@@ -8734,9 +9019,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \bool_if:NTF \l_@@_initial_open_bool
           { 
-            \int_add:Nn \l_@@_initial_i_int { #3 }
-            \int_add:Nn \l_@@_initial_j_int { #4 }
-            \bool_set_true:N \l_@@_stop_loop_bool
+            \advance \l_@@_initial_i_int by #3 
+            \advance \l_@@_initial_j_int by #4 
+            \let \l_@@_stop_loop_bool \c_true_bool
           }
           { 
             \cs_if_exist:cTF
@@ -8746,10 +9031,10 @@ version 2005/12/01 or later.
                 \int_use:N \l_@@_initial_j_int 
               }
               {
-                \int_add:Nn \l_@@_initial_i_int { #3 }
-                \int_add:Nn \l_@@_initial_j_int { #4 }
-                \bool_set_true:N \l_@@_initial_open_bool
-                \bool_set_true:N \l_@@_stop_loop_bool
+                \advance \l_@@_initial_i_int by #3 
+                \advance \l_@@_initial_j_int by #4 
+                \let \l_@@_initial_open_bool \c_true_bool
+                \let \l_@@_stop_loop_bool \c_true_bool
               }
               {
                 \cs_if_exist:cTF 
@@ -8758,7 +9043,7 @@ version 2005/12/01 or later.
                     - \int_use:N \l_@@_initial_i_int 
                     - \int_use:N \l_@@_initial_j_int 
                   }
-                  { \bool_set_true:N \l_@@_stop_loop_bool }
+                  { \let \l_@@_stop_loop_bool \c_true_bool }
                   {
                     \cs_set_nopar:cpn 
                       { 
@@ -8790,6 +9075,7 @@ version 2005/12/01 or later.
       }
   } 
 %    \end{macrocode}
+%
 %
 % \medskip
 % If the final user uses the key |xdots/shorten| in |\NiceMatrixOptions| or at the
@@ -8842,7 +9128,7 @@ version 2005/12/01 or later.
 %
 %
 % Here is the programmation of that command with the the standard syntax of L3.
-%    \begin{Verbatim}
+%    \begin{Verbatim}[formatcom=\small]
 % \cs_new_protected:Npn \@@_adjust_to_submatrix:nnnnnn #1 #2 #3 #4 #5 #6
 %   {
 %     \bool_if:nT 
@@ -8865,8 +9151,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_adjust_to_submatrix:nnnnnn #1 #2 #3 #4 #5 #6
   {
-    \if_int_compare:w
-    #3 > #1 
+    \if_int_compare:w #3 > #1 
     \else:
       \if_int_compare:w #1 > #5 
       \else:
@@ -8991,7 +9276,7 @@ version 2005/12/01 or later.
     \@@_adjust_to_submatrix:nn { #1 } { #2 }
     \cs_if_free:cT { @@ _ dotted _ #1 - #2 }
       {
-        \@@_find_extremities_of_line:nnnn { #1 } { #2 } 0 1
+        \@@_find_extremities:nnnn { #1 } { #2 } 0 1
 %    \end{macrocode}
 % The previous command may have changed the current environment by marking some
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
@@ -9089,7 +9374,7 @@ version 2005/12/01 or later.
     \@@_adjust_to_submatrix:nn { #1 } { #2 }
     \cs_if_free:cT { @@ _ dotted _ #1 - #2 }
       {
-        \@@_find_extremities_of_line:nnnn { #1 } { #2 } { 0 } { 1 }
+        \@@_find_extremities:nnnn { #1 } { #2 } { 0 } { 1 }
 %    \end{macrocode}
 % The previous command may have changed the current environment by marking some
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
@@ -9225,7 +9510,7 @@ version 2005/12/01 or later.
     \@@_adjust_to_submatrix:nn { #1 } { #2 }
     \cs_if_free:cT { @@ _ dotted _ #1 - #2 }
       {
-        \@@_find_extremities_of_line:nnnn { #1 } { #2 } { 1 } { 0 }
+        \@@_find_extremities:nnnn { #1 } { #2 } { 1 } { 0 }
 %    \end{macrocode}
 % The previous command may have changed the current environment by marking some
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
@@ -9459,7 +9744,7 @@ version 2005/12/01 or later.
     \@@_adjust_to_submatrix:nn { #1 } { #2 }
     \cs_if_free:cT { @@ _ dotted _ #1 - #2 }
       { 
-        \@@_find_extremities_of_line:nnnn { #1 } { #2 } { 1 } { 1 }
+        \@@_find_extremities:nnnn { #1 } { #2 } { 1 } { 1 }
 %    \end{macrocode}
 % The previous command may have changed the current environment by marking some
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
@@ -9560,7 +9845,7 @@ version 2005/12/01 or later.
     \@@_adjust_to_submatrix:nn { #1 } { #2 }
     \cs_if_free:cT { @@ _ dotted _ #1 - #2 }
       { 
-        \@@_find_extremities_of_line:nnnn { #1 } { #2 } { 1 } { -1 } 
+        \@@_find_extremities:nnnn { #1 } { #2 } { 1 } { -1 } 
 %    \end{macrocode}
 % The previous command may have changed the current environment by marking some
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
@@ -10377,7 +10662,7 @@ version 2005/12/01 or later.
 % \medskip
 % We declare all the cells concerned by the |\Hdotsfor| as ``dotted'' (for the
 % dotted lines created by |\Cdots|, |\Ldots|, etc., this job is done by
-% |\@@_find_extremities_of_line:nnnn|). This declaration is done by defining a
+% |\@@_find_extremities:nnnn|). This declaration is done by defining a
 % special control sequence (to nil).
 %    \begin{macrocode}
     \int_step_inline:nnn { #2 } { #2 + #3 - 1 }
@@ -10496,7 +10781,7 @@ version 2005/12/01 or later.
 % \medskip
 % We declare all the cells concerned by the |\Vdotsfor| as ``dotted'' (for the
 % dotted lines created by |\Cdots|, |\Ldots|, etc., this job is done by
-% |\@@_find_extremities_of_line:nnnn|). This declaration is done by defining a
+% |\@@_find_extremities:nnnn|). This declaration is done by defining a
 % special control sequence (to nil).
 %    \begin{macrocode}
     \int_step_inline:nnn { #1 } { #1 + #3 - 1 }
@@ -10515,6 +10800,13 @@ version 2005/12/01 or later.
     \keys_set:nn { nicematrix / rotate } { #1 }
     \ignorespaces
   }
+%    \end{macrocode}
+%
+% \bigskip
+% The command |\@@_rotate_p_col:| will be linked to |\rotate| in the
+% the cells of the columns of type |p| \emph{and al}.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_rotate_p_col: { \@@_error:n { rotate~in~p~col } }
 %    \end{macrocode}
 %
 % \bigskip
@@ -17430,7 +17722,51 @@ version 2005/12/01 or later.
       }
   }
 %    \end{macrocode}
-% 
+%
+% \bigskip
+% \section{The command \textbackslash CreateBlocksInColumn}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_create_blocks_in_col:n #1
+  { \clist_gput_right:Nn \g_@@_cbic_clist { #1 } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_cbic:
+  {
+    \clist_map_inline:Nn \g_@@_cbic_clist
+      {
+        \cs_set:cpn
+          {
+            pgf @ sh @ ns @ \@@_env:
+            - \int_eval:n { \c@iRow + 1 } - ##1 }
+          { rien }
+%    \end{macrocode}
+% |\l_tmpa_int| will be the first row of the block being created.
+%    \begin{macrocode}
+        \int_set:Nn \l_tmpa_int { 1 }
+        \int_step_inline:nn { \c@iRow + 1 }
+          { 
+            \cs_if_exist:cT 
+              { pgf @ sh @ ns @ \@@_env: - ####1 - ##1 }
+              {
+                \int_compare:nNnT { ####1 } > { \l_tmpa_int + 1 }
+                  {
+                    \seq_gput_right:Ne \g_@@_pos_of_blocks_seq
+                      {
+                        { \int_use:N \l_tmpa_int }
+                        { ##1 }
+                        { \int_eval:n { ####1 - 1 } }
+                        { ##1 }
+                        { }
+                      }
+                  }
+                \int_set:Nn \l_tmpa_int { ####1 }
+              }
+          }
+      }
+  }
+%    \end{macrocode}
 % 
 % \bigskip
 % \section{The command \textbackslash ShowCellNames}
@@ -17688,8 +18024,44 @@ version 2005/12/01 or later.
 % \section{Error messages of the package}
 %
 % \bigskip
-% When there is a unknown key, we try a ``normal form'' of the key and, when
-% that normal form exists, we add that information in the error message.
+% When there is a unknown key, maybe the user has tried to use an inexistent
+% ``additive syntax'' for that key. Of course, in that case, the last character of the
+% name of the key is |+|.
+% 
+% |#1| is a clist of names of sets of keys and |#2| is the error message
+% to send.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_unknown_key:nn #1 #2
+  {
+    \str_if_eq:eeTF 
+      { \str_item:Nn \l_keys_key_str { \str_count:N \l_keys_key_str } }
+      { + }
+      {
+        \str_set:Ne \l_tmpa_str
+          { \str_range:Nnn \l_keys_key_str { 1 } { \str_count:N \l_keys_key_str - 1 } }
+        \bool_set_false:N \l_tmpa_bool 
+        \clist_map_inline:nn { #1 }
+          {
+            \keys_if_exist:neT { ##1 } { \l_tmpa_str } 
+              {
+                \@@_error:n { key~without~+~exists }
+                \bool_set_true:N \l_tmpa_bool
+                \clist_map_break:
+              }
+          }
+        \bool_if:NF \l_tmpa_bool
+          {
+            \str_set:Ne \l_keys_key_str { \tl_trim_right_spaces:V \l_tmpa_str } 
+            \@@_unknown_key_i:nn { #1 } { #2 }
+          } 
+      }
+      { \@@_unknown_key_i:nn { #1 } { #2 } }
+  }
+%    \end{macrocode}
+%
+% \bigskip
+% We try a normalisation of the name of the key, and, when that normal form
+% exists, we add that information in the error message.
 %
 % The normal form is the lower case form of the key, with all the spaces
 % replaced by hyphens (there is never spaces in the keys of \pkg{nicematrix}).
@@ -17697,7 +18069,7 @@ version 2005/12/01 or later.
 % |#1| is a clist of names of sets of keys and |#2| is the error message
 % to send.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_unknown_key:nn #1 #2
+\cs_new_protected:Npn \@@_unknown_key_i:nn #1 #2
   {
     \str_set_eq:NN \l_tmpa_str \l_keys_key_str 
     \str_replace_all:Nnn \l_tmpa_str { ~ } { - }
@@ -17713,6 +18085,15 @@ version 2005/12/01 or later.
           }
       }
     \bool_if:NF \l_tmpa_bool { \@@_error:n { #2 } } 
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { key~without~+~exists }
+  {
+    The~key~'\tl_trim_right_spaces:V \l_tmpa_str'~exists~but~does~not~accept~an~
+    additive~syntax~(with~+=).\\
+    It~will~be~ignored.\\
   }
 %    \end{macrocode}
 %
@@ -17970,6 +18351,16 @@ version 2005/12/01 or later.
     That~command~will~be~ignored.
   }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn{ rotate~in~p~col }
+  {
+    \token_to_str:N \rotate\ forbidden.\\
+    You~should~not~use~\token_to_str:N \rotate\ in~a~column~of~type~'p',~
+    'b',~'m'\IfPackageLoadedTF { varwidth } { ,~'X'~or~'V' } { ~or~'X'}.~
+    If~you~go~on,~maybe~you~won't~have~the~expected~output.
+  }
+%    \end{macrocode}  
 % 
 %    \begin{macrocode}
 \@@_msg_new:nn { TopRule~without~tikz } 

@@ -1,5 +1,4 @@
 % -*- coding: utf-8 ; -*- This file should be compiled with LuaLaTeX only
-
 \documentclass[dvipsnames]{article}
 
 \hfuzz = 1pt
@@ -3907,7 +3906,7 @@ the dotted lines drawn in the exterior rows and columns have a special
 treatment: cf. p.~\pageref{exterior}. 
 
 \bigskip
-The option \Definition{radius} fixes the radius of the dots. The initial value
+The option \Definition{xdots/radius} fixes the radius of the dots. The initial value
 is 0.53~pt.
 
 \bigskip
@@ -4144,6 +4143,12 @@ the section ``Dotted lines that are no longer dotted'',
 p.~\pageref{ex:no-longer-dotted-rules}. 
 
 
+\medskip
+It's also possible to draw braces of the mathematical mode of LaTeX by using the
+commands |\OverBrace| and |\UnderBrace| (cf.~\ref{OverBrace}
+p.~\pageref{OverBrace}) and the command |\SubMatrix| (cf.~\ref{SubMatrix}
+p.~\pageref{sub-matrix}) in the |\CodeAfter|.
+
 
 
 \index{dotted@\textbf{Dotted lines}|)}
@@ -4364,6 +4369,7 @@ cf.~p.~\pageref{parallelization}).
 \subsection{The command \textbackslash SubMatrix in the \textbackslash
 CodeAfter (and the \textbackslash CodeBefore)}
 
+\label{SubMatrix}
 \label{sub-matrix}
 \index{SubMatrix@\texttt{\textbackslash SubMatrix} (command of 
 \texttt{\textbackslash CodeAfter}\newline and 
@@ -4665,6 +4671,10 @@ submatrix to which it is applied.
 \subsection{The commands \textbackslash OverBrace and \textbackslash
 UnderBrace in the \textbackslash CodeAfter}
 
+
+\label{Overbrace}
+\label{OverBrace}
+\label{UnderBrace}
 \index{UncerBrace@\texttt{\textbackslash UnderBrace} (command of 
 \texttt{\textbackslash CodeAfter}\newline and
 \texttt{\textbackslash CodeBefore})}
@@ -4755,6 +4765,14 @@ $\begin{pNiceMatrix}
   \OverBrace[shorten,yshift=3pt]{1-1}{2-3}{A}
   \OverBrace[shorten,yshift=3pt]{1-4}{2-6}{B}
 \end{pNiceMatrix}$
+
+\bigskip
+$\triangleright$\enskip The commands |\OverBrace| and |\UnderBrace| use the
+standard braces of the mathematical mode of LaTeX on which they are based.
+However, \pkg{nicematrix} provides also a command |\Hbrace| which should be used
+directly in the tabular and which draws braces of TikZ (cf.~part.~\ref{Hbrace},
+p.~\pageref{Hbrace}).
+
 
 
 \subsection{The command \textbackslash TikzEveryCell in the \textbackslash
@@ -5523,7 +5541,9 @@ and, therefore, in most cases, we will have a vertical alignment.
 \bigskip
 Caution: the command |\rotate| is designed to be used in a |\Block| or in
 columns of type |l|, |r|, |c|, |w| ou |W|; if it is used in other column types
-(such as |p{...}|), the result will maybe differ from what is expected. 
+(such as |p{...}|), the result will maybe differ from what is expected. In that case,
+it will valuable to consider the command |\rotatebox| of the package \pkg{graphicx}
+(that package is loaded by \pkg{nicematrix}).
 
 \subsection{The option small}
 

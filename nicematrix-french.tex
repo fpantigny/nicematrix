@@ -4036,7 +4036,7 @@ lignes tracées dans les rangées et colonnes extérieures (décrites plus loin)
 bénéficient d'un régime spécial : cf. p.~\pageref{exterior}.
 
 \medskip
-L'option \Definition{radius} correspond au rayon des points circulaires qui sont
+L'option \Definition{xdots/radius} correspond au rayon des points circulaires qui sont
 tracés. La valeur initiale est $0.53$~pt.
 
 \medskip
@@ -4278,7 +4278,17 @@ p.~\pageref{ex:no-longer-dotted-rules}.
 
 \index{Pointillés@\textbf{Pointillés (lignes en ---)}|)}
 
+\medskip
+It's also possible to draw braces of the mathematical mode of LaTeX by using the
+commands |\OverBrace| and |\UnderBrace| (cf.~\ref{OverBrace}
+p.~\pageref{OverBrace}) and the command |\SubMatrix| (cf.~\ref{SubMatrix}
+p.~\pageref{sub-matrix}) in the |\CodeAfter|.
 
+\medskip
+Il est également possible de dessiner des accolades du mode mathématique de
+LaTeX en utilisant les commandes |\OverBrace| et |\UnderBrace|
+(cf.~\ref{OverBrace} p.~\pageref{OverBrace}) et la commande |\SubMatrix|
+(cf.~\ref{SubMatrix} p.~\pageref{sub-matrix}) dans le |\CodeAfter|.
 
 
 
@@ -4502,6 +4512,7 @@ autres lignes diagonales (par défaut, les lignes tracées par |\Ddots| sont
   CodeAfter} (et le \texttt{\textbackslash CodeBefore})}
 
 \label{sub-matrix}
+\label{SubMatrix}
 \index{SubMatrix@\texttt{\textbackslash SubMatrix} (commande du 
 \texttt{\textbackslash CodeAfter}\newline et du 
 \texttt{\textbackslash CodeBefore})|textbf}
@@ -4749,6 +4760,13 @@ Part A              & the first part \\
 \end{NiceTabular} 
 
 
+\medskip
+$\triangleright$\enskip Pour tracer des accolades verticales, \pkg{nicematrix}
+propose aussi une commande |\Vbrace| à utiliser directement dans le tableau et
+qui trace des accolades avec TikZ (alors qu'avec |\SubMatrix|, c'est une
+accolade du mode mathématique de LaTeX qui est utilisée) :
+cf.~\ref{Hbrace},~p.~\pageref{Hbrace}.
+
 
 \vspace{1cm}
 \emph{Attention} : La fonctionnalité suivante est fragile et ne fonctionne pas
@@ -4806,7 +4824,10 @@ Comme on le voit, le tracé effectué par la commande |\MyDraw| est \emph{relati
 \subsection{Les commandes \texttt{\textbackslash OverBrace} et \texttt{\textbackslash
   UnderBrace} dans le \texttt{\textbackslash CodeAfter}}
 
-\index{UncerBrace@\texttt{\textbackslash UnderBrace} (commande du 
+\label{UnderBrace}
+\label{OverBrace}
+
+\index{UnderBrace@\texttt{\textbackslash UnderBrace} (commande du 
 \texttt{\textbackslash CodeAfter}\newline et du
 \texttt{\textbackslash CodeBefore})}
 \index{OverBrace@\texttt{\textbackslash OverBrace} (commande du 
@@ -4897,6 +4918,16 @@ $\begin{pNiceMatrix}
   \OverBrace[shorten,yshift=3pt]{1-1}{2-3}{A}
   \OverBrace[shorten,yshift=3pt]{1-4}{2-6}{B}
 \end{pNiceMatrix}$
+
+
+\bigskip
+$\triangleright$\enskip Les commandes |\OverBrace| et |\UnderBrace| utilisent
+les accolades standard du mode mathématique de LaTeX comme les commandes
+|\overbrace| et |\underbrace| de LaTeX dont elles s'inspirent. Néanmoins,
+\pkg{nicematrix} propose aussi une commande |\Hbrace| à utiliser directement en
+tableau et qui utilise des accolades tracées par TikZ (cf.~partie~\ref{Hbrace},
+p.~\pageref{Hbrace}).
+
 
 
 
@@ -5688,7 +5719,9 @@ ce qui fait que, le plus souvent, on obtiendra un centrage vertical.
 Attention : la commande |\rotate| est prévue pour être utilisée dans un |\Block|
 ou bien dans des colonnes de type |l|, |c|, |r|, |w| ou |W|; si elle est
 utilisée dans un autre type de colonne (commme |p{...}|), les résultats ne
-seront peut-être pas ceux attendus.
+seront peut-être pas ceux attendus. On aura certainement intérêt le cas échéant
+à considérer la commande |\rotatebox| de l'extension \pkg{graphicx} (extension
+chargée par \pkg{nicematrix}).
 
 
 \subsection{L'option small}
