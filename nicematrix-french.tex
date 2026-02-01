@@ -85,18 +85,22 @@
 \dim_new:N \l__pantigny_width_dim 
 
 \keys_define:nn { pantigny }
-  { width .dim_set:N = \l__pantigny_width_dim }
+  {
+    width .dim_set:N = \l__pantigny_width_dim ,
+    annotation .code:n = \PitonOptions { annotation = #1 }
+  }
 
 \NewPitonEnvironment { Code } { O { } }
   { 
     \char_set_catcode_other:N |
     \cs_set_eq:NN \emph \emphase
-    \dim_zero:N \l__pantigny_width_dim 
+    \dim_zero:N \l__pantigny_width_dim
+    \PitonOptions { annotation }
     \keys_set:nn { pantigny } { #1 }
     \color{gray}
     \dim_compare:nNnT \l__pantigny_width_dim > \c_zero_dim 
       { 
-        \PitonOptions { width = \l__pantigny_width_dim } 
+        \PitonOptions { width = \l__pantigny_width_dim  } 
         \begin{minipage}[c]{\l__pantigny_width_dim} 
       }
   }
@@ -1256,6 +1260,58 @@ On a illustré la possibilité de colorier une sous-cellule en utilisant la comm
 |\cellcolor|.
 
 
+\subsection{La clé create-blocks-in-col}
+\index{create-blocks-in-col}
+\label{create-blocks-in-col}
+
+\colorbox{yellow!50}{\textbf{Nouveau 7.6}}\enskip 
+La clé \Definition{create-blocks-in-col} prend en argument une liste de numéros de colonnes
+et pour, chacune de ces colonnes, crée dans celle-ci un bloc pour chaque case non vide
+de la colonne (le bloc en question regroupe la case non vide et toutes les cases vides
+successives situées en-dessous).
+
+Ces blocs seront, comme tous les blocs, respectés par les clés de tracés de
+filets (|vlines|, |hlines|, etc. : cf. partie~\ref{rules}, p.~\pageref{rules})
+et par les commandes de coloriage de cellules (cf.
+partie~\ref{color-in-code-before}, p.~\pageref{color-in-code-before}). C'est là l'intérêt
+d'utiliser cette clé |create-blocks-in-col|.
+
+\bigskip
+\begin{scope}
+\hfuzz=10cm
+\begin{Code}[width=11cm]
+\begin{NiceTabular}{lr}[hvlines,\emph{create-blocks-in-col=1}]
+\rowcolors{blue!10}{}[respect-blocks]
+Pierre    & 12 \\
+          & 13 \\
+Jacques   &  8 \\
+Stéphanie & 18 \\
+          & 17 \\
+          & 15 \\
+Amélie    & 20 \\
+Henri     & 14 \\
+Estelle   & 15 \\
+          & 19
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{lr}[hvlines,baseline=c,create-blocks-in-col=1]
+\rowcolors{blue!10}{}[respect-blocks]
+Pierre    & 12 \\
+          & 13 \\
+Jacques   &  8 \\
+Stéphanie & 18 \\
+          & 17 \\
+          & 15 \\
+Amélie    & 20 \\
+Henri     & 14 \\
+Estelle   & 15 \\
+          & 19
+\end{NiceTabular}
+\end{scope}
+
+
+
+
 \index{Blocs@\textbf{Blocs dans les tableaux}|)}
 
 \section{Les filets horizontaux et verticaux}
@@ -2064,7 +2120,7 @@ lettre «|:|» pour ces filets en pointillés.\footnote{Néanmoins, l'utilisateu
   lignes en tiretés).}
 
 \smallskip
-\begin{Code}
+\begin{Code}[annotation = false]
 \emph{% déjà présent dans nicematrix.sty}
 \NiceMatrixOptions
   { 
@@ -3376,7 +3432,7 @@ Si elle est présente, la «première rangée» (extérieure) est numérotée pa
 (et non $1$). Il en est de même pour la «première colonne».
 
 \begin{Code}
-$\begin{pNiceMatrix}[\emph{first-row,last-row,first-col,last-col},nullify-dots]
+$\begin{pNiceMatrix}[\emph{first-row,last-row,first-col,last-col},xdots/nullify]
        & C_1    & \Cdots &        & C_4    &        \\
 L_1    & a_{11} & a_{12} & a_{13} & a_{14} & L_1    \\
 \Vdots & a_{21} & a_{22} & a_{23} & a_{24} & \Vdots \\
@@ -3386,7 +3442,7 @@ L_4    & a_{41} & a_{42} & a_{43} & a_{44} & L_4    \\
 \end{pNiceMatrix}$
 \end{Code}
 %
-\[\begin{pNiceMatrix}[first-row,last-row=5,first-col,last-col=5,nullify-dots]
+\[\begin{pNiceMatrix}[first-row,last-row=5,first-col,last-col=5,xdots/nullify]
        & C_1    & \Cdots &        & C_4    &        \\
 L_1    & a_{11} & a_{12} & a_{13} & a_{14} & L_1    \\
 \Vdots & a_{21} & a_{22} & a_{23} & a_{24} & \Vdots \\
@@ -3462,7 +3518,7 @@ aussi une syntaxe «additive», ce qui fait que l'on peut écrire, par exemple
                    \emph{code-for-first-col} = \color{blue},
                    \emph{code-for-last-row} = \color{green},
                    \emph{code-for-last-col} = \color{magenta}}
-$\begin{pNiceArray}{cc|cc}[first-row,last-row=5,first-col,last-col,nullify-dots]
+$\begin{pNiceArray}{cc|cc}[first-row,last-row=5,first-col,last-col,xdots/nullify]
        & C_1    & \Cdots &        & C_4    &        \\
 L_1    & a_{11} & a_{12} & a_{13} & a_{14} & L_1    \\
 \Vdots & a_{21} & a_{22} & a_{23} & a_{24} & \Vdots \\
@@ -3479,7 +3535,7 @@ L_4    & a_{41} & a_{42} & a_{43} & a_{44} & L_4    \\
                    code-for-last-row = \color{green},
                    code-for-last-col = \color{magenta}}
 \begin{displaymath}
-\begin{pNiceArray}{cc|cc}[first-row,last-row=5,first-col,last-col,nullify-dots]
+\begin{pNiceArray}{cc|cc}[first-row,last-row=5,first-col,last-col,xdots/nullify]
        & C_1    & \multicolumn{1}{c}{\Cdots} &        & C_4    &        \\
 L_1    & a_{11} & a_{12} & a_{13} & a_{14} & L_1    \\
 \Vdots & a_{21} & a_{22} & a_{23} & a_{24} & \Vdots \\
@@ -3993,7 +4049,7 @@ par les options suivantes (que l'on met entre crochets après la commande) :
 \item |horizontal-label(s)| ;
 \item |color| ;
 \item |radius| ; 
-\item |shorten-start|, |shorten-end| et |shorten| ;
+\item |shorten-start|$^+$, |shorten-end|$^+$ et |shorten|$^+$ ;
 \item |inter| ;
 \item |line-style|
 \end{itemize}
@@ -4043,15 +4099,15 @@ tracés. La valeur initiale est $0.53$~pt.
 Les clés \Definition{xdots/shorten-start}$^+$ et \Definition{xdots/shorten-end}$^+$
 indiquent la marge qui est laissée aux deux extrémités de la ligne. La clé
 \Definition{xdots/shorten}$^+$ fixe les deux clés simultanément. La valeur initiale
-de $0.3$~em (il est conseillé d'utiliser une unité de mesure dépendante de la
-fonte courante).\footnote{En fait, quand on utilise ces clés au niveau de
+de $0.3$~em.\footnote{En fait, quand on utilise ces clés au niveau de
   |\NiceMatrixOptions| ou bien d'un environnement, seules les extrémités des
   lignes qui s'arrêtent au niveau d'un contenu non vide de case sont concernées.
   Quand on les utilise sur une commande |\Cdots| (ou |\Vdots|, etc.), toutes les 
   extrémités sont concernées.}
 
 Ces clés acceptent une syntaxe normale et une syntaxe «additive», c'est-à-dire
-que l'on peut écrire, par exemple, |xdots/shorten = 6pt| ou |xdots/shorten += 4pt|.
+que l'on peut écrire, par exemple, |xdots/shorten = 0.6em| ou |xdots/shorten += 4pt|
+(et on rappelle que la valeur initiale n'est pas nulle !).
 
 
 \medskip
@@ -4076,7 +4132,7 @@ ronds avec TikZ :\newline \small
 \url{https://tex.stackexchange.com/questions/52848}}
 
 
-\begin{Code}[width=9cm]
+\begin{Code}[width=9cm, annotation = false]
 \tikz \draw [dotted] (0,0) -- (5,0) ;
 \end{Code}
 \tikz \draw [dotted] (0,0) -- (5,0) ;
@@ -4096,13 +4152,13 @@ d'options TikZ applicables à un chemin (à l'exception de «|color|»,
 «|shorten >|» et «|shorten <|»).
 
 \medskip
-Voici par exemple une matrice tridiagonale avec le style |loosely dotted|
+Voici par exemple une matrice tridiagonale avec le style |loosely dotted| 
 :
 
 \nobreak
 \medskip
 \begin{Code}
-$\begin{pNiceMatrix}[xdots={nullify,\emph{line-style=loosely dotted}}]
+$\begin{pNiceMatrix}[xdots={nullify, \emph{shorten += 2pt, line-style = loosely dotted}}]
 a      & b      & 0      &        & \Cdots & 0      \\
 b      & a      & b      & \Ddots &        & \Vdots \\
 0      & b      & a      & \Ddots &        &        \\
@@ -4113,7 +4169,7 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 \end{Code}
 
 
-\[\begin{pNiceMatrix}[xdots={nullify,line-style=loosely dotted}]
+\[\begin{pNiceMatrix}[xdots={nullify, shorten +=2pt, line-style = loosely dotted}]
 a      & b      & 0      &        & \Cdots & 0      \\
 b      & a      & b      & \Ddots &        & \Vdots \\
 0      & b      & a      & \Ddots &        &        \\
@@ -4262,7 +4318,7 @@ $\begin{NiceArray}{ccccc}%
 Le style TikZ utilisé par \pkg{nicematrix} pour tracer ces accolades est appelé 
 \Definition{nicematrix/brace}. Voici la valeur initiale de ce style :
 
-\begin{Code}
+\begin{Code}[annotation=false]
 \emph{decoration = { brace , raise = -0.15 em } , }
 \emph{decorate }
 \end{Code}
@@ -4592,7 +4648,8 @@ $\begin{NiceArray}{(ccc)(c)}[cell-space-limits += 2pt]
 \bigskip
 La commande |\SubMatrix| accepte en fait également deux arguments optionnels
 spécifiés par les symboles traditionnels |^| et |_| pour des éléments en
-exposant et en indice (mais aucun espace n'est réservé pour ces éléments).
+exposant et en indice (mais aucun espace n'est réservé pour ces éléments et c'est
+pourquoi, dans l'exemple suivant, on a utilisé |right-margin|.).
 
 \medskip
 \begin{scope}
@@ -4676,10 +4733,10 @@ c & d & \frac{1}{2}c+\frac{1}{4}d \\
 \end{Code}
 \hspace{-4cm}
 $\begin{NiceArray}{cc@{\hspace{5mm}}l}[cell-space-limits=2pt]
-         &   & \frac12 \\
-         &      & \frac14 \\[1mm]
-a & b & \frac12a+\frac14b \\
-c & d & \frac12c+\frac14d \\
+         &   & \frac{1}{2} \\
+         &      & \frac{1}{4} \\[1mm]
+a & b & \frac{1}{2}a+\frac{1}{4}b \\
+c & d & \frac{1}{2}c+\frac{1}{4}d \\
 \CodeAfter
   \SubMatrix({1-3}{2-3})
   \SubMatrix({3-1}{4-2})
@@ -4704,10 +4761,10 @@ c & d & \frac{1}{2}c+\frac{1}{4}d \\
 \end{Code}
 \hspace{-4cm}
 $\begin{NiceArray}{cc@{\hspace{5mm}}l}[cell-space-limits=2pt]
-         &   & \frac12 \\
-         &      & \frac14 \\[1mm]
-a & b & \frac12a+\frac14b \\
-c & d & \frac12c+\frac14d \\
+         &   & \frac{1}{2} \\
+         &      & \frac{1}{4} \\[1mm]
+a & b & \frac{1}{2}a+\frac{1}{4}b \\
+c & d & \frac{1}{2}c+\frac{1}{4}d \\
 \CodeAfter
   \SubMatrix({1-3}{2-3})[slim]
   \SubMatrix({3-1}{4-2})
@@ -5133,7 +5190,8 @@ surprise, cette commande n'est disponible que dans |{NiceTabular}|,
   \texttt{\textbackslash tabularnote})}
 En fait, cette commande n'est disponible que si l'extension \pkg{enumitem} a été
 chargée (avant ou après \pkg{nicematrix}). Les notes sont en effet composées en
-fin de tableau selon un type de liste défini par l'extension \pkg{enumitem}.
+fin de tableau selon un type de liste défini par l'extension \pkg{enumitem}. Si
+\pkg{enumitem} n'a pas été chargée, une erreur sera levée à l'utilisation de |\tabularnote|.
 
 \medskip
 \begin{Code}
@@ -5318,7 +5376,7 @@ paires \textsl{clé=valeur} où le nom des clés n'a plus à être préfixé par
 |notes|:
 \begin{center}
 \small
-\begin{Code}
+\begin{Code}[annotation=false]
 \NiceMatrixOptions
   {
     \emph{notes} =
@@ -5381,7 +5439,7 @@ Valeur initiale : |\textsuperscript{#1}|
 Pour la composition du français, il est de tradition de mettre un petit espace
 avant l'appel de note. On peut faire ce réglage de la manière suivante :
 
-\begin{Code}
+\begin{Code}[annotation = false]
 \NiceMatrixOptions{notes/label-in-tabular = \,\textsuperscript{#1}}
 \end{Code}
 
@@ -5397,7 +5455,7 @@ Pour la composition du français, on ne compose pas les labels des notes en
 lettres supérieures dans la liste des notes. On pourra donc prendre le réglage
 suivant :
 
-\begin{Code}
+\begin{Code}[annotation = false]
 \NiceMatrixOptions{notes/label-in-list = #1.\nobreak\hspace{0.25em}}
 \end{Code}
 
@@ -5474,7 +5532,7 @@ ou |{NiceTabularX}| dans un environnement |{threeparttable}| de l'extension
 éponyme, vous devez patcher l'environnement |{threeparttable}| avec le code
 suivant.
 
-\begin{Code}
+\begin{Code}[annotation=false]
 \makeatletter
 \AddToHook{env/threeparttable/begin}
   {\TPT@hookin{NiceTabular}\TPT@hookin{NiceTabular*}\TPT@hookin{NiceTabularX}}
@@ -6134,7 +6192,7 @@ sont tracés en utilisant un style \textsc{pgf} spécifique. Ce style est nommé
 |nicematrix/cell-node| et sa définition dans le fichier source |nicematrix.sty|
 est la suivante :
 
-\begin{Code}
+\begin{Code}[annotation = false]
 \pgfset 
   { 
     \emph{nicematrix / cell-node} /.style = 
@@ -6178,6 +6236,7 @@ cas des colonnes de type |p|, |m| ou |b| dans lesquelles les nœuds ont toujours
 une largeur égale à la largeur de la colonne. Dans l'exemple suivant, la
 commande |\lipsum| est fournie par l'extension éponyme.
 
+\medskip
 \begin{Code}
 \begin{NiceTabular}{V{10cm}}
 \bfseries \large 
@@ -6351,7 +6410,7 @@ et ne correspondent donc pas nécessairement aux cases délimitées par des file
 Voici un tableau qui a été composé de la manière suivante :
 
 \medskip
-\begin{Code}
+\begin{Code}[annotation = false]
 \large
 \begin{NiceTabular}{w{l}{2cm}ll}[hvlines]
 fraise & amande & abricot \\
@@ -6922,7 +6981,7 @@ caractère~|<|.
 Par exemple, pour l'espagnol, il vaut mieux désactiver au chargement les
 abréviations avec :
 
-\begin{Code}
+\begin{Code}[annotation = false]
 \usepackage[spanish,es-noshorthands]{babel}
 \end{Code}
 
@@ -6941,7 +7000,7 @@ parade simple qui consiste à écrire:\footnote{Voir
   \url{https://tex.stackexchange.com/questions/528975}}
 
 \nobreak
-\begin{Code}
+\begin{Code}[annotation = false]
 \let\TeXyear\year
 \documentclass{IEEEaccess}
 \let\year\TeXyear
@@ -7462,7 +7521,7 @@ On peut même tracer des lignes continues.\footnote{Dans ce document, la
   sur la forme des pointes de flèches.}
 
 \medskip
-\begin{Code}
+\begin{Code}[annotation = false]
 \NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
 \end{Code}
 \begin{Code}[width=11cm]
@@ -8246,7 +8305,9 @@ a & a     & a         & L_3
 Dans l'exemple suivant, on illustre le produit mathématique de deux matrices.
 
 L'ensemble de la figure est un environnement |{NiceArray}| et les trois paires
-de parenthèses ont été rajoutées avec |\SubMatrix| dans le |\CodeBefore|.
+de parenthèses ont été rajoutées avec |\SubMatrix| dans le |\CodeBefore| (le
+fait de les mettre dans le |\CodeBefore| et non le |\CodeAfter| permet de
+limiter à la matrice produit $C$ les lignes pointillées qui y sont spécifiées).
 
 
 \tikzset{highlight/.style={rectangle,
@@ -8430,6 +8491,5 @@ TeX Live sont également disponibles sur le serveur \textsc{svn} de TeX Live :
 % LaTeX-verbatim-environments-local: ("Code")
 % fill-column: 80
 % End:
-
 
 

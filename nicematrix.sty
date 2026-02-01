@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.5a}
-\def\myfiledate{2026/01/05}
+\def\myfileversion{7.6}
+\def\myfiledate{2026/02/01}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -175,15 +175,15 @@
   }
 \hook_gput_code:nnn { begindocument } { . }
   {
-   \cs_set_protected:Npe \__nicematrix_everycr:
+    \cs_set_protected:Npe \__nicematrix_everycr:
       {
         \IfPackageLoadedTF { colortbl } { \CT@everycr } { \everycr }
           { \noalign { \__nicematrix_in_everycr: } }
       }
     \IfPackageLoadedTF { colortbl }
       {
-        \cs_set_eq:NN \__nicematrix_old_cellcolor: \cellcolor
-        \cs_set_eq:NN \__nicematrix_old_rowcolor: \rowcolor
+        \cs_new_eq:NN \__nicematrix_old_cellcolor: \cellcolor
+        \cs_new_eq:NN \__nicematrix_old_rowcolor: \rowcolor
         \cs_new_protected:Npn \__nicematrix_revert_colortbl:
           {
             \hook_gput_code:nnn { env / tabular / begin } { nicematrix }
@@ -1029,6 +1029,8 @@
   }
 \keys_define:nn { nicematrix / environments }
   {
+    create-blocks-in-col .code:n = \__nicematrix_create_blocks_in_col:n { #1 } ,
+    create-blocks-in-col .value_required:n = true ,
     corners .clist_set:N = \l__nicematrix_corners_clist ,
     corners .default:n = { NW , SW , NE , SE } ,
     code-before .code:n =
@@ -1458,7 +1460,7 @@
 \cs_new_protected:Npn \__nicematrix_update_max_cell_width:
   {
     \if_dim:w \box_wd:N \l__nicematrix_cell_box > \g__nicematrix_max_cell_width_dim
-      \g__nicematrix_max_cell_width_dim = \box_wd:N \l__nicematrix_cell_box
+      \global \g__nicematrix_max_cell_width_dim = \box_wd:N \l__nicematrix_cell_box
     \fi:
   }
 \cs_new_protected:Npn \__nicematrix_cell_end_for_w_s:
@@ -1564,8 +1566,8 @@
   }
 \cs_generate_variant:Nn \__nicematrix_array:n { o }
 \bool_if:NTF \c__nicematrix_revtex_bool
-  { \cs_set_eq:NN \__nicematrix_old_ialign: \ialign }
-  { \cs_set_eq:cN { __nicematrix_old_ar@ialign: } \ar@ialign }
+  { \cs_new_eq:NN \__nicematrix_old_ialign: \ialign }
+  { \cs_new_eq:cN { __nicematrix_old_ar@ialign: } \ar@ialign }
 \cs_new_protected:Npn \__nicematrix_create_row_node:
   {
     \int_compare:nNnT { \c@iRow } > { \g__nicematrix_last_row_node_int }
@@ -1891,7 +1893,6 @@
     \cs_set_eq:NN \TikzEveryCell \__nicematrix_TikzEveryCell
     \cs_set_eq:NN \EmptyColumn \__nicematrix_EmptyColumn:n
     \cs_set_eq:NN \EmptyRow \__nicematrix_EmptyRow:n
-    \cs_set_eq:NN \CreateBlocksInColumn \__nicematrix_create_blocks_in_col:n
   }
 \cs_new_protected:Npn \__nicematrix_exec_code_before:
   {
@@ -2472,8 +2473,8 @@
     \str_set:Nn \l__nicematrix_vpos_col_str { #1 }
     \__nicematrix_make_preamble_ii_i:n
   }
-\cs_set_eq:NN \__nicematrix_b: \__nicematrix_p:
-\cs_set_eq:NN \__nicematrix_m: \__nicematrix_p:
+\cs_new_eq:NN \__nicematrix_b: \__nicematrix_p:
+\cs_new_eq:NN \__nicematrix_m: \__nicematrix_p:
 \cs_new_protected:Npn \__nicematrix_make_preamble_ii_i:n #1
   {
     \str_if_eq:nnTF { #1 } { [ }
@@ -5295,7 +5296,7 @@
    \bool_gset_true:N \g__nicematrix_empty_cell_bool
    \hspace
   }
-\cs_set_eq:NN \__nicematrix_old_multicolumn: \multicolumn
+\cs_new_eq:NN \__nicematrix_old_multicolumn: \multicolumn
 \cs_new:Npn \__nicematrix_Hdotsfor:
   {
     \bool_lazy_and:nnTF
@@ -6235,7 +6236,7 @@
         \rowcolor { nocolor } { ##1 }
       }
   }
-\cs_set_eq:NN \OnlyMainNiceMatrix \use:n
+\cs_new_eq:NN \OnlyMainNiceMatrix \use:n
 \cs_new_protected:Npn \__nicematrix_OnlyMainNiceMatrix:n #1
   {
     \int_if_zero:nTF { \l__nicematrix_first_col_int }
@@ -9843,6 +9844,7 @@
               }
           }
       }
+    \clist_gclear:N \g__nicematrix_cbic_clist
   }
 \NewDocumentCommand \__nicematrix_ShowCellNames { }
  {
@@ -11245,7 +11247,6 @@
 \__nicematrix_define_com:NNN v  |  |
 \__nicematrix_define_com:NNN V  \|  \|
 \__nicematrix_define_com:NNN B  \{  \}
-
 \endinput
 %%
 %% End of file `nicematrix.sty'.

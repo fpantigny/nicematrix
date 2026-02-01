@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.5a}
-\def\myfiledate{2026/01/05}
+\def\myfileversion{7.6}
+\def\myfiledate{2026/02/01}
 %
 %
 %<*batchfile>  
@@ -460,7 +460,7 @@ version 2005/12/01 or later.
     \cs_set_protected:Npn \pgfutil@check@rerun ##1 ##2
       {
 %    \end{macrocode}
-% |\str_if_eq:ee(TF)| is faster than |\str_if_eq:nn(TF)|.
+% |\str_if_eq:ee(TF)| is slightly faster than |\str_if_eq:nn(TF)|.
 %    \begin{macrocode}
         \str_if_eq:eeF { nm- } { \tl_range:nnn { ##1 } { 1 } { 3 } }
           { \@@_old_pgfutil@check@rerun { ##1 } { ##2 } }
@@ -470,19 +470,20 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % We have to know whether \pkg{colortbl} is loaded in particular for the
-% redefinition of |\everycr|.
+% redefinition of |\everycr|. The command |\@@_everycr:| will be used only
+% in |\@@_some_initialization:|, itself in |\ar@ialign|.
 %    \begin{macrocode}
 \hook_gput_code:nnn { begindocument } { . } 
-  { 
-   \cs_set_protected:Npe \@@_everycr:
+  {
+    \cs_set_protected:Npe \@@_everycr:
       {
         \IfPackageLoadedTF { colortbl } { \CT@everycr } { \everycr }
           { \noalign { \@@_in_everycr: } }
       }
     \IfPackageLoadedTF { colortbl }
       {
-        \cs_set_eq:NN \@@_old_cellcolor: \cellcolor
-        \cs_set_eq:NN \@@_old_rowcolor: \rowcolor
+        \cs_new_eq:NN \@@_old_cellcolor: \cellcolor
+        \cs_new_eq:NN \@@_old_rowcolor: \rowcolor
         \cs_new_protected:Npn \@@_revert_colortbl:
           {
             \hook_gput_code:nnn { env / tabular / begin } { nicematrix }
@@ -2772,7 +2773,9 @@ version 2005/12/01 or later.
 % by the command |\NiceMatrixOptions|). 
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / environments } 
-  { 
+  {
+    create-blocks-in-col .code:n = \@@_create_blocks_in_col:n { #1 } ,
+    create-blocks-in-col .value_required:n = true ,
     corners .clist_set:N = \l_@@_corners_clist , 
     corners .default:n = { NW , SW , NE , SE } ,
     code-before .code:n = 
@@ -3625,7 +3628,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_update_max_cell_width:
   {
     \if_dim:w \box_wd:N \l_@@_cell_box > \g_@@_max_cell_width_dim
-      \g_@@_max_cell_width_dim = \box_wd:N \l_@@_cell_box 
+      \global \g_@@_max_cell_width_dim = \box_wd:N \l_@@_cell_box 
     \fi:
   }
 %    \end{macrocode}
@@ -3835,17 +3838,17 @@ version 2005/12/01 or later.
 %
 % \medskip
 % We keep in memory the standard version of |\ar@ialign| because we will redefine
-% |\ialign| in the environment |{NiceArrayWithDelims}| but restore the standard
+% |\ar@ialign| in the environment |{NiceArrayWithDelims}| but restore the standard
 % version for use in the cells of the array. However, it seems that RevTeX goes on
 % with a redefinition of |array| which uses |\ialign|.
 %    \begin{macrocode}
 \bool_if:NTF \c_@@_revtex_bool 
-  { \cs_set_eq:NN \@@_old_ialign: \ialign }  
+  { \cs_new_eq:NN \@@_old_ialign: \ialign }  
 %    \end{macrocode}
 % We use here a |\cs_set_eq:cN| instead of a |\cs_set_eq:NN| in order to avoid a
 % message when |explcheck| is used on |nicematrix.sty|.
 %    \begin{macrocode}
-  { \cs_set_eq:cN { @@_old_ar@ialign: } \ar@ialign }
+  { \cs_new_eq:cN { @@_old_ar@ialign: } \ar@ialign }
 %    \end{macrocode}
 %
 % 
@@ -4113,7 +4116,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % After its first use, the definition of |\ar@ialign| will revert
-% automatically to its default definition. With this programmation, we will
+% automatically to its default definition. With that programmation, we will
 % have, in the cells of the array, a clean version of |\ar@ialign|. We use
 % |\cs_set_eq:Nc| instead of |\cs_set_eq:NN| in order to avoid a message when
 % |explcheck| is used on |nicematrix.sty|.
@@ -4527,7 +4530,6 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \TikzEveryCell \@@_TikzEveryCell
     \cs_set_eq:NN \EmptyColumn \@@_EmptyColumn:n
     \cs_set_eq:NN \EmptyRow \@@_EmptyRow:n
-    \cs_set_eq:NN \CreateBlocksInColumn \@@_create_blocks_in_col:n 
   }
 %    \end{macrocode}
 %
@@ -5612,8 +5614,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \@@_make_preamble_ii_i:n 
   }
-\cs_set_eq:NN \@@_b: \@@_p:
-\cs_set_eq:NN \@@_m: \@@_p:
+\cs_new_eq:NN \@@_b: \@@_p:
+\cs_new_eq:NN \@@_m: \@@_p:
 %    \end{macrocode}
 % 
 %    \begin{macrocode}
@@ -10512,7 +10514,7 @@ version 2005/12/01 or later.
 % We will patch the environment |{tabular}| to go back to the previous value of
 % |\multicolumn|.
 %    \begin{macrocode}
-\cs_set_eq:NN \@@_old_multicolumn: \multicolumn
+\cs_new_eq:NN \@@_old_multicolumn: \multicolumn
 %    \end{macrocode}
 % 
 %
@@ -12164,7 +12166,7 @@ version 2005/12/01 or later.
 %
 % That's why we provide first a global definition of |\OnlyMainNiceMatrix|.
 %    \begin{macrocode}
-\cs_set_eq:NN \OnlyMainNiceMatrix \use:n
+\cs_new_eq:NN \OnlyMainNiceMatrix \use:n
 %    \end{macrocode}
 %
 % \medskip
@@ -17765,6 +17767,7 @@ version 2005/12/01 or later.
               }
           }
       }
+    \clist_gclear:N \g_@@_cbic_clist
   }
 %    \end{macrocode}
 % 
@@ -19669,5 +19672,3 @@ version 2005/12/01 or later.
 % Local Variables:
 % fill-column: 80
 % End:
-
-

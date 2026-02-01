@@ -78,13 +78,17 @@
 \dim_new:N \l__pantigny_width_dim 
 
 \keys_define:nn { pantigny }
-  { width .dim_set:N = \l__pantigny_width_dim }
+  {
+    width .dim_set:N = \l__pantigny_width_dim ,
+    annotation .code:n = \PitonOptions { annotation = #1 }
+  }
 
 \NewPitonEnvironment { Code } { O { } }
   { 
     \char_set_catcode_other:N |
     \cs_set_eq:NN \emph \emphase
-    \dim_zero:N \l__pantigny_width_dim 
+    \dim_zero:N \l__pantigny_width_dim
+    \PitonOptions { annotation }
     \keys_set:nn { pantigny } { #1 }
     \color{gray}
     \dim_compare:nNnT \l__pantigny_width_dim > \c_zero_dim 
@@ -182,7 +186,7 @@ distribution such as MiKTeX, TeX Live or MacTeX.
 \emph{Remark}
 
 \nobreak
-If you use LaTeX via Internet with, for example, Overleaf of TeXPage, you
+If you use LaTeX via Internet with, for example, Overleaf or TeXPage, you
 can upload the file |nicematrix.sty| in the repertory of your 
 project in order to take full advantage of the latest version de
 \pkg{nicematrix}.\footnote{The latest version of the file
@@ -207,7 +211,7 @@ final user only has to load the package with |\usepackage{nicematrix}|.
 The idea of \pkg{nicematrix} is to create \textsc{pgf} nodes under the cells and
 the positions of the rules of the tabular created by \pkg{array} and to use
 these nodes to develop new features. As usual with \textsc{pgf}, the coordinates
-of these nodes are written in the |aux| to be used on the next compilation and
+of these nodes are written in the |aux| file to be used on the next compilation and
 that's why \pkg{nicematrix} may need \textbf{several compilations}\footnote{If
   you use Overleaf, Overleaf will do automatically a sufficient number of
   compilations (by using |latexmk|).}. One must not use the command |\nofiles|
@@ -1191,6 +1195,54 @@ We have illustrated the fact that it's possible to color the background of a sub
 of the block by using the key |\cellcolor|.
 
 
+\subsection{The key create-blocks-in-col}
+\index{create-blocks-in-col}
+\label{create-blocks-in-col}
+
+\colorbox{yellow!50}{\textbf{New 7.6}}\enskip
+The key \Definition{create-blocks-in-col} takes in as argument a list of numbers of columns
+and, for each of those columns, creates within that column a block for each non-empty cell
+(that block will enclose that non-empty cell and all the following empty cells in the column).
+
+These blocks will be, as all the blocks, taken into account for the rules (drawn by |vlines|,
+|hlines|, etc.: cf. part~\ref{rules}, p.~\pageref{rules}) and the commands that color the
+background of the cells (cf. part~\ref{color-in-code-before}, p.~\pageref{color-in-code-before}).
+That the point using the key |create-blocks-in-col|.
+
+\bigskip
+\begin{scope}
+\hfuzz=10cm
+\begin{Code}[width=11cm]
+\begin{NiceTabular}{lr}[hvlines,\emph{create-blocks-in-col=1}]
+\rowcolors{blue!10}{}[respect-blocks]
+John      & 12 \\
+          & 13 \\
+Steph     &  8 \\
+Sarach    & 18 \\
+          & 17 \\
+          & 15 \\
+Ashley    & 20 \\
+Henry     & 14 \\
+Madison   & 15 \\
+          & 19
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{lr}[hvlines,baseline=c,create-blocks-in-col=1]
+\rowcolors{blue!10}{}[respect-blocks]
+John      & 12 \\
+          & 13 \\
+Steph     &  8 \\
+Sarah     & 18 \\
+          & 17 \\
+          & 15 \\
+Ashley    & 20 \\
+Henry     & 14 \\
+Madison   & 15 \\
+          & 19
+\end{NiceTabular}
+\end{scope}
+
+
 
 \index{Blocks@\textbf{Blocks in the tabulars}|)}
 
@@ -1984,7 +2036,7 @@ letter ``|:|'' for those dotted rules.\footnote{However, it's possible to
   switch to dashed lines).}
 
 \smallskip
-\begin{Code}
+\begin{Code}[annotation = false]
 \NiceMatrixOptions \emph{% \textsl{yet present in nicematrix.sty}}
   { 
     custom-line = 
@@ -3912,8 +3964,7 @@ is 0.53~pt.
 \bigskip
 The keys \Definition{xdots/shorten-start}$^+$ and \Definition{xdots/shorten-end}$^+$ fix
 the margin at the extremities of the line. The key |xdots/shorten|$^+$ fixes both
-parameters. The initial value is 0.3~em (it is recommended to use a unit of
-length dependent of the current font).\footnote{In fact, when 
+parameters. The initial value is 0.3~em.\footnote{In fact, when 
   |xdots/shorten|, |xdots/shorten-start| and |xdots/shorten-end| are used in
   |\NiceMatrixOptions| or at the level of an environment (such as
   |{pNiceMatrix}|), those keys only apply to the extremeties of dotted lines
@@ -3923,8 +3974,8 @@ length dependent of the current font).\footnote{In fact, when
 
 \medskip
 These keys have a normal syntax but also a ``additive'' syntax. That means that
-it's possible to write, for example, |xdots/shorten = 6pt| but also
-|xdots/shorten += 3pt|.
+it's possible to write, for example, |xdots/shorten = 0.6em| but also
+|xdots/shorten += 3pt| (ant we remind that the initial value is \emph{not} zero!).
 
 \bigskip
 The option \Definition{xdots/inter} fixes the length between the dots. The
@@ -3971,7 +4022,7 @@ Here is for example a tridiagonal matrix with the style |loosely dotted|:
 \nobreak
 \medskip
 \begin{Code}
-\[\begin{pNiceMatrix}[xdots={nullify,\emph{line-style=loosely dotted}}]
+\[\begin{pNiceMatrix}[xdots={nullify, \emph{shorten += 2pt, line-style = loosely dotted}}]
 a      & b      & 0      &        & \Cdots & 0      \\ 
 b      & a      & b      & \Ddots &        & \Vdots \\
 0      & b      & a      & \Ddots &        &        \\
@@ -3982,7 +4033,7 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 \end{Code}
 
 
-\[\begin{pNiceMatrix}[xdots={nullify,line-style=loosely dotted}]
+\[\begin{pNiceMatrix}[xdots={nullify, shorten += 2pt, line-style = loosely dotted}]
 a      & b      & 0      &        & \Cdots & 0      \\ 
 b      & a      & b      & \Ddots &        & \Vdots \\
 0      & b      & a      & \Ddots &        &        \\
@@ -4128,7 +4179,7 @@ $\begin{NiceArray}{ccccc}%
 The TikZ style used by \pkg{nicematrix} to draw those braces is called
 \Definition{nicematrix/brace}. Here is the initial value of that style:
 
-\begin{Code}
+\begin{Code}[annotation = false]
 \emph{decoration = { brace , raise = -0.15 em } , }
 \emph{decorate }
 \end{Code}
@@ -4449,7 +4500,8 @@ $\begin{NiceArray}{(ccc)(c)}[cell-space-limits += 2pt]
 \bigskip
 In fact, the command |\SubMatrix| also takes in two optional arguments
 specified by the traditional symbols |^| and |_| for material in superscript
-and subscript (but no space is reserved for that material).
+and subscript (but no space is reserved for that material and that's why, in the
+following example, you have used the key |right-margin|).
 
 \medskip
 \begin{scope}
@@ -4966,7 +5018,7 @@ In fact, this command is available only if the extension \pkg{enumitem}
 \index{enumitem@\pkg{enumitem} (package required to use\newline \texttt{\textbackslash tabularnote})} has
 been loaded (before or after \pkg{nicematrix}). Indeed, the notes are composed
 at the end of the array with a type of list provided by the package
-\pkg{enumitem}. 
+\pkg{enumitem}. If \pkg{enumitem} has not been loaded, an error will be raise.
 
 
 
@@ -5296,7 +5348,7 @@ If you wish to use an environment |{NiceTabular}|, |{NiceTabular*}| or
 |{NiceTabularX}| in an environment |{threeparttable}| of the eponymous package,
 you have to patch |{threeparttable}| with the following code.
 
-\begin{Code}
+\begin{Code}[annotation = false]
 \makeatletter
 \AddToHook{env/threeparttable/begin}
   {\TPT@hookin{NiceTabular}\TPT@hookin{NiceTabular*}\TPT@hookin{NiceTabularX}}
@@ -5945,7 +5997,7 @@ Since those nodes are PGF nodes, one won't be surprised to learn that they are
 drawn by using a specific PGF style. That style is called |nicematrix/cell-node|
 and its definition in the source file |nicematrix.sty| is as follows:
 
-\begin{Code}
+\begin{Code}[annotation = false]
 \pgfset 
   { 
     \emph{nicematrix / cell-node} /.style = 
@@ -7998,7 +8050,9 @@ In the following example, we illustrate the mathematical product of two
 matrices. 
 
 The whole figure is an environment |{NiceArray}| and the three pairs of
-parenthesis have been added with |\SubMatrix| in the |\CodeBefore|.
+parenthesis have been added with |\SubMatrix| in the |\CodeBefore| (since you have put
+these |\SubMatrix| in the |\CodeBefore| --- and not the |\CodeAfter| --- the dotted lines
+specified in the the matrix product $C$ will be limited to that matrix).
 
 \tikzset{highlight/.style={rectangle,
                            fill=red!15,
@@ -8161,6 +8215,17 @@ also available on the
 \small
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
+
+\subsection*{Changes between version 7.5 and 7.6}
+
+New key |create-blocks-in-col|
+
+\smallskip
+An ``additive syntax'' has been added for several keys: |cell-space-limits|, 
+|xdots/brace-shift|, |xdots/shorten|, |notes/code-before|, |code-for-first-row|, etc.
+
+That means that it's possible to write, for example :\enskip
+|cell-space-limits += 3pt|.
 
 \subsection*{Changes between version 7.4 and 7.5}
 
