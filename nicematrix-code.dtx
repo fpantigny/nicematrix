@@ -1,8 +1,8 @@
 % \iffalse meta-comment  
 %
 % This file should be compiled with $lualatex$.
-%
-% Copyright (C) 2018-206 by F. Pantigny
+%x
+% Copyright (C) 2018-2026 by F. Pantigny
 % ------------------------------------------
 %
 % This file may be distributed and/or modified under the
@@ -3236,17 +3236,18 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \@@_tuning_first_row:
-    \@@_tuning_last_row: 
+    \@@_tuning_exterior_rows:
     \g_@@_row_style_tl
   }
 %    \end{macrocode}
 %
-% The following command will be nullified unless there is a first row. 
-%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_tuning_exterior_rows: { }
+%    \end{macrocode}
+% 
 % Here is a version with the standard syntax of L3.
 %    \begin{Verbatim}[formatcom=\small]
-% \cs_new_protected:Npn \@@_tuning_first_row:
+% \cs_new_protected:Npn \@@_tuning_first_last_row:
 %   {
 %     \int_if_zero:nTF { \c@iRow }
 %       { 
@@ -3256,13 +3257,13 @@ version 2005/12/01 or later.
 %             \xglobal \colorlet { nicematrix-first-row } { . }
 %           }
 %       }
-%       { \cs_set_eq:NN \@@_tuning_first_row: \prg_do_nothing: }
+%       { \cs_gset_eq:NN \@@_tuning_exterior_rows: \@@_tuning_last_row:  }
 %   }
 %    \end{Verbatim}
 %
 % We will use a version a little more efficient.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_tuning_first_row:
+\cs_new_protected:Npn \@@_tuning_first_last_row:
   {
     \if_int_compare:w \c@iRow = \c_zero_int 
       \if_int_compare:w \c@jCol > \c_zero_int 
@@ -3270,7 +3271,7 @@ version 2005/12/01 or later.
         \xglobal \colorlet { nicematrix-first-row } { . }
       \fi:
     \else:
-      \cs_set_eq:NN \@@_tuning_first_row: \prg_do_nothing:
+      \cs_gset_eq:NN \@@_tuning_exterior_rows: \@@_tuning_last_row:
     \fi:
   }
 %    \end{macrocode}
@@ -4185,10 +4186,12 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \rowcolor \@@_rowcolor_tabular
     \cs_set_eq:NN \rowcolors \@@_rowcolors_tabular
     \cs_set_eq:NN \rowlistcolors \@@_rowlistcolors_tabular
-    \int_compare:nNnT { \l_@@_first_row_int } > { \c_zero_int }
-      { \cs_set_eq:NN \@@_tuning_first_row: \prg_do_nothing: }
-    \int_compare:nNnT { \l_@@_last_row_int } < { \c_zero_int }
-      { \cs_set_eq:NN \@@_tuning_last_row: \prg_do_nothing: }
+    \int_if_zero:nTF \l_@@_first_row_int
+      { \cs_gset_eq:NN \@@_tuning_exterior_rows: \@@_tuning_first_last_row: }
+      {
+        \int_compare:nNnT { \l_@@_last_row_int } > { \c_zero_int }
+          { \cs_gset_eq:NN \@@_tuning_exterior_rows: \@@_tuning_last_row: }        
+      }
     \bool_if:NT \l_@@_renew_dots_bool { \@@_renew_dots: }
 %    \end{macrocode}
 % We redefine |\multicolumn| and, since we want |\multicolumn| to be available
@@ -11548,9 +11551,10 @@ version 2005/12/01 or later.
   {
 %    \end{macrocode}
 %
-% The group is for the options. |\l_@@_colors_seq| will be the list of colors.
+% |\l_@@_colors_seq| will be the list of colors.
 %    \begin{macrocode}
-    \group_begin:
+    \pgfpicture
+    \pgf@relevantforpicturesizefalse
     \seq_clear_new:N \l_@@_colors_seq
     \seq_set_split:Nnn \l_@@_colors_seq { , } { #3 }
     \tl_clear_new:N \l_@@_cols_tl
@@ -11565,7 +11569,7 @@ version 2005/12/01 or later.
     \bool_if:NT \l_@@_respect_blocks_bool
       {
 %    \end{macrocode}
-% We don't want to take into account a block which is completely in the ``first
+% We don't want to take into account a block which is entirely in the ``first
 % column'' (number~$0$) or in the ``last column'' and that's why we filter
 % the sequence of the blocks (in the sequence |\l_tmpa_seq|).
 %    \begin{macrocode}
@@ -11573,8 +11577,6 @@ version 2005/12/01 or later.
         \seq_set_filter:NNn \l_tmpa_seq \l_tmpb_seq
           { \@@_not_in_exterior_p:nnnnn ##1 }
       }
-    \pgfpicture
-    \pgf@relevantforpicturesizefalse
 %    \end{macrocode}
 % |#2| is the list of intervals of rows.
 %    \begin{macrocode}
@@ -11638,7 +11640,6 @@ version 2005/12/01 or later.
           }
       }
     \endpgfpicture
-    \group_end:
   }
 %    \end{macrocode}
 %
@@ -18022,6 +18023,25 @@ version 2005/12/01 or later.
       }
   }
 %    \end{macrocode}
+%
+% \bigskip
+% \section{Compatibility with threeparttable}
+%
+%
+%    \begin{macrocode}
+\AtBeginDocument
+  {
+    \IfPackageLoadedT { threeparttable }
+      {
+        \AddToHook { env / threeparttable / begin }
+          {
+            \TPT@hookin { NiceTabular }
+            \TPT@hookin { NiceTabular* }
+            \TPT@hookin { NiceTabularX }            
+          }
+      }
+  }
+%    \end{macrocode}
 % 
 % \bigskip
 % \section{Error messages of the package}
@@ -18170,7 +18190,8 @@ version 2005/12/01 or later.
   {
     Misuse~of~Hline. \\
     Error~in~your~row~ \int_eval:n { \c@iRow }. \\
-    \token_to_str:N \Hline\ must~be~used~only~at~the~beginning~of~a~row.\\
+    \token_to_str:N \Hline\ (like \token_to_strN \hline)~must~be~used~only~
+    at~the~beginning~of~a~row.\\
     That~error~is~fatal.
   }
 %    \end{macrocode}
@@ -18198,7 +18219,10 @@ version 2005/12/01 or later.
   {
     Bad~use~of~\token_to_str:N \cellcolor \\
     You~can't~use~\token_to_str:N \cellcolor\ in~\token_to_str:N \Block\
-    (except~in~a~sub-block).\\
+    \bool_if:NTF \l_@@_amp_in_blocks_bool
+      { (but~you~could~use~it~in~a~sub-block~since~'&-in-blocks'~is~in~force) }
+      { (it's~possible~in~a~sub-block~when~'&-in-blocks'~is~in~force) }
+    .~Here,~you~should~use~the~key~'fill'~of~the~block.\\
     That~command~will~be~ignored.
   }
 %    \end{macrocode}
@@ -18226,7 +18250,12 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { invalid~weight }
   {
     Unknown~key.\\
-    The~key~' \l_keys_key_str '~of~your~column~X~is~unknown~and~will~be~ignored. 
+    The~key~' \l_keys_key_str '~of~your~column~X~is~unknown~and~will~be~ignored.~
+    The~available~keys~are:~l,~c,~r,~t~(=p),~m,~b,~V~
+    \IfPackageLoadedTF { varwidth }
+      { (since~'varwidth'~is~loaded)~}
+      { (if~you~load~'varwidth')~}
+    and~real~numbers~for~the~weight~of~the~X~column.
   }  
 %    \end{macrocode}
 %
@@ -18315,7 +18344,8 @@ version 2005/12/01 or later.
   {
     Erroneous~use.\\
     You~can't~use~the~command~#1 in~the~first~column~(number~0)~of~the~array.\\
-    That~command~will~be~ignored.
+    That~command~will~be~ignored.\\
+    You~can~try~to~delete~the~key~'first-col'.
   }
 %    \end{macrocode}
 % 
@@ -18324,7 +18354,8 @@ version 2005/12/01 or later.
   {
     Erroneous~use.\\
     You~can't~use~the~command~#1 in~the~last~column~(exterior)~of~the~array.\\
-    That~command~will~be~ignored.
+    That~command~will~be~ignored.\\
+    You~can~try~to~delete~the~key~'last-col'.    
   }
 %    \end{macrocode}
 %
@@ -18333,7 +18364,8 @@ version 2005/12/01 or later.
   {
     Erroneous~use.\\
     You~can't~use~the~command~#1 in~the~first~row~(number~0)~of~the~array.\\
-    That~command~will~be~ignored.
+    That~command~will~be~ignored.\\
+    You~can~try~to~delete~the~key~'first-row'.
   }
 %    \end{macrocode}
 % 
@@ -18342,7 +18374,8 @@ version 2005/12/01 or later.
   {
     Erroneous~use.\\
     You~can't~use~the~command~#1 in~the~last~row~(exterior)~of~the~array.\\
-    That~command~will~be~ignored.
+    That~command~will~be~ignored.\\
+    You~can~try~to~delete~the~key~'last-row'. 
   }
 %    \end{macrocode}
 %
@@ -18369,7 +18402,8 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { TopRule~without~tikz } 
   {
     Erroneous~use.\\
-    You~can't~use~the~command~ #1 because~'tikz'~is~not~loaded.\\
+    You~can't~use~the~command~ #1 because~TikZ~is~not~loaded.\\
+    You~should~load~TikZ~with~\token_to_str:N \usepackage \{tikz\}.\\
     That~command~will~be~ignored.
   }
 %    \end{macrocode}
@@ -18396,7 +18430,8 @@ version 2005/12/01 or later.
   {
     Double~delimiter.\\
     You~can't~put~a~second~closing~delimiter~"#1"~just~after~a~first~closing~
-    delimiter.~This~delimiter~will~be~ignored.
+    delimiter.~This~delimiter~will~be~ignored.\\
+    You~can~try~to~use~\token_to_str:N \SubMatrix\ in~the~\token_to_str:N \CodeAfter.
   }
 %    \end{macrocode}
 %
@@ -18414,7 +18449,8 @@ version 2005/12/01 or later.
   {
     Bad~line~style.\\
     Since~you~haven't~loaded~TikZ,~the~only~value~you~can~give~to~'line-style'~
-    is~'standard'.~That~key~will~be~ignored.
+    is~'standard'.~That~key~will~be~ignored.\\
+    You~can~load~TikZ~with~\token_to_str:N \usepackage \{tikz\}.\\
   }
 %    \end{macrocode}
 % 
@@ -18423,7 +18459,8 @@ version 2005/12/01 or later.
   {
     Incompatible~keys.\\
     You~can't~use~the~key~'corners'~here~because~the~key~'no-cell-nodes'~
-    is~in~force.\\
+    is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
+    is~to~speed-up~compilation).\\
     If~you~go~on,~that~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -18433,7 +18470,8 @@ version 2005/12/01 or later.
   {
     Incompatible~keys.\\
     You~can't~create~'extra~nodes'~here~because~the~key~'no-cell-nodes'~
-    is~in~force.\\
+    is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
+    is~to~speed-up~compilation).\\
     If~you~go~on,~those~extra~nodes~won't~be~created.
   }
 %    \end{macrocode}
@@ -18443,7 +18481,7 @@ version 2005/12/01 or later.
   {
     Identical~tabular~notes.\\
     You~can't~put~several~notes~with~the~same~content~in~
-    \token_to_str:N \caption \ (but~you~can~in~the~main~tabular).\\
+    \token_to_str:N \caption \ (but~it's~possible~in~the~main~tabular).\\
     If~you~go~on,~the~output~will~probably~be~erroneous.
   }
 %    \end{macrocode}
@@ -18663,7 +18701,8 @@ version 2005/12/01 or later.
   {
     siunitx~not~loaded\\
     You~can't~use~the~columns~'S'~because~'siunitx'~is~not~loaded.\\
-    That~error~is~fatal.
+    That~error~is~fatal.\\
+    You~can~load~'siunitx'~with~\token_to_str:N \usepackage \{siunitx\}.\\    
   }
 %    \end{macrocode}
 % 
@@ -18883,7 +18922,8 @@ version 2005/12/01 or later.
   {
     TikZ~not~loaded.\\
     You~can't~use~ \token_to_str:N \TikzEveryCell \
-    because~you~have~not~loaded~tikz.~
+    because~you~have~not~loaded~tikz.\\
+    You~can~load~'tikz'~with~\token_to_str:N \usepackage \{tikz\}.\\    
     This~command~will~be~ignored.
   }
 %    \end{macrocode}
@@ -18893,7 +18933,8 @@ version 2005/12/01 or later.
   {
     TikZ~not~loaded.\\
     You~can't~use~the~key~'tikz'~for~the~command~' \token_to_str:N
-    \Block '~because~you~have~not~loaded~tikz.~
+    \Block '~because~you~have~not~loaded~tikz.\\
+    You~can~load~'tikz'~with~\token_to_str:N \usepackage \{tikz\}.\\        
     This~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -18903,7 +18944,7 @@ version 2005/12/01 or later.
   {
     Bad~argument.\\
     The~first~mandatory~argument~of~\token_to_str:N \Block\ must~
-    be~of~the~form~'i-j'~(or~completely~empty)~and~you~have~used:~
+    be~of~the~form~'i-j'~(or~totally~empty)~and~you~have~used:~
     '#1'. \\
     If~you~go~on,~the~\token_to_str:N \Block\ will~be~mono-cell~(as~if~
     the~argument~was~empty).
@@ -19403,6 +19444,7 @@ version 2005/12/01 or later.
     code-for-last-row(+),~
     columns-width,~
     corners,~
+    create-blocks-in-col,~
     create-extra-nodes,~
     create-medium-nodes,~
     create-large-nodes,~
@@ -19469,6 +19511,7 @@ version 2005/12/01 or later.
     columns-type,~
     columns-width,~
     corners,~
+    create-blocks-in-col,~
     create-extra-nodes,~
     create-medium-nodes,~
     create-large-nodes,~
@@ -19534,6 +19577,7 @@ version 2005/12/01 or later.
     columns-width,~
     corners,~
     custom-line,~
+    create-blocks-in-col,~
     create-extra-nodes,~
     create-medium-nodes,~
     create-large-nodes,~

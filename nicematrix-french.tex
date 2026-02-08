@@ -2585,39 +2585,36 @@ cf.~p.~\pageref{Block}).
 
 \vspace{1cm}
 
+\bigskip
 \begin{scope}
 \hfuzz=10cm
 \begin{Code}[width=11cm]
-\begin{NiceTabular}{lr}[hvlines]
-\CodeBefore
-  \emph{\rowcolors{1}{blue!10}{}[respect-blocks]}
-\Body
-\Block{2-1}{Pierre}    & 12 \\
-                       & 13 \\
-Jacques                &  8 \\
-\Block{3-1}{Stéphanie} & 18 \\
-                       & 17 \\
-                       & 15 \\
-Amélie                 & 20 \\
-Henri                  & 14 \\
-\Block{2-1}{Estelle}   & 15 \\
-                       & 19
+\begin{NiceTabular}{lr}[hvlines,create-blocks-in-col=1]
+\emph{\rowcolors{blue!10}{}[respect-blocks]}
+Pierre    & 12 \\
+          & 13 \\
+Jacques   &  8 \\
+Stéphanie & 18 \\
+          & 17 \\
+          & 15 \\
+Amélie    & 20 \\
+Henri     & 14 \\
+Estelle   & 15 \\
+          & 19
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{lr}[hvlines,baseline=c]
-\CodeBefore
-  \rowcolors{1}{blue!10}{}[respect-blocks]
-\Body
-\Block{2-1}{Pierre}    & 12 \\
-                       & 13 \\
-Jacques                &  8 \\
-\Block{3-1}{Stéphanie} & 18 \\
-                       & 17 \\
-                       & 15 \\
-Amélie                 & 20 \\
-Henri                  & 14 \\
-\Block{2-1}{Estelle}   & 15 \\
-                       & 19
+\begin{NiceTabular}{lr}[hvlines,baseline=c,create-blocks-in-col=1]
+\rowcolors{blue!10}{}[respect-blocks]
+Pierre    & 12 \\
+          & 13 \\
+Jacques   &  8 \\
+Stéphanie & 18 \\
+          & 17 \\
+          & 15 \\
+Amélie    & 20 \\
+Henri     & 14 \\
+Estelle   & 15 \\
+          & 19
 \end{NiceTabular}
 \end{scope}
 
@@ -2715,7 +2712,7 @@ utilise la clé |corners| pour demander de considérer le coin \emph{north east}
 \medskip
 \index{corners (clé d'un environnement)|textit}
 \begin{Code}[width=15cm]
-\begin{NiceTabular}{cccccc}
+\begin{NiceTabular}{cccccc}%
  [\emph{corners=NE},margin,hvlines,first-row,first-col]
 \CodeBefore
   \emph{\rowlistcolors{1}{blue!15, }}
@@ -3357,21 +3354,21 @@ celles proposées par l'environnement |{tabularx}| de l'extension éponyme.
 
 La valeur requise par la largeur du tableau peut être passée en argument de la
 clé \Definition{width} (dans |{NiceTabular}| ou dans |\NiceMatrixOptions|). La
-valeur initiale de ce paramètre est |\linewidth| (et non |\textwidth|).
+valeur initiale de ce paramètre est |\linewidth| de LaTeX (et non |\textwidth|).
 
 Pour se rapprocher davantage de l'environnement |{tabularx}|, \pkg{nicematrix}
 propose aussi un environnement \Definition{\{NiceTabularX\}} avec une syntaxe
 similaire à celle de |{tabularx}|, c'est-à-dire que la largeur voulue pour le
 tableau est spécifiée en premier argument (obligatoire).
 
-
+\medskip
 Comme avec les extensions \pkg{tabu}\footnote{L'extension \pkg{tabu} est
   maintenant considérée comme obsolète.} et \pkg{tabularray}, le spécificateur |X|
 accepte entre crochets un argument optionnel qui est une liste de clés.
 \begin{itemize}[beginpenalty=10000]
 \item On peut spécifier un poids pour la colonne en mettant directement un
 nombre positif comme argument du spécificateur |X|. Par exemple, une colonne
-|X[2]| aura une largeur double de celle d'une colonne |X| (qui a un poids de
+|X[0.5]| aura une largeur moitié de celle d'une colonne |X| (qui a un poids de
 1).\footnote{Les valeurs négatives pour les poids, comme proposées par
   \pkg{tabu} (maintenant obsolète), ne sont \emph{pas} prises en charge par
   \pkg{nicematrix}. Si une telle valeur est utilisée, une erreur sera levée.}
@@ -5523,26 +5520,6 @@ Valeur initiale : |true|
 Pour un exemple de personnalisation des notes de tableau, voir p.~\pageref{ex:notes}.
 
 
-\subsection{Utilisation de \{NiceTabular\} avec \texorpdfstring{\pkg{threeparttable}}{threeparttable}}
-
-\index{threeparttable@\pkg{threeparttable} (extension)}
-
-Si vous souhaitez utiliser les environnements |{NiceTabular}|, |{NiceTabular*}|
-ou |{NiceTabularX}| dans un environnement |{threeparttable}| de l'extension
-éponyme, vous devez patcher l'environnement |{threeparttable}| avec le code
-suivant.
-
-\begin{Code}[annotation=false]
-\makeatletter
-\AddToHook{env/threeparttable/begin}
-  {\TPT@hookin{NiceTabular}\TPT@hookin{NiceTabular*}\TPT@hookin{NiceTabularX}}
-\makeatother
-\end{Code}
-
-Néanmoins, les fonctionnalités proposées par \pkg{nicematrix} rendent peu utile
-l'utilisation de \pkg{threeparttable} en conjonction avec \pkg{nicematrix} (voir
-la clé |caption| à la partie \ref{s:caption}, p.~\pageref{s:caption}).
-
 
 \section{Autres fonctionnalités}
 
@@ -6860,7 +6837,7 @@ a+b    &        &        & \Vdots \\
 a+b    & \Cdots & a+b    & 1
 \end{pNiceMatrix}$
 
-\medskip
+\bigskip
 Il est possible de désactiver la parallélisation avec l'option
 \Definition{parallelize-diags} mise à |false|: 
 
@@ -7553,11 +7530,10 @@ Si on veut mettre les labels sur les flèches, il convient d'utiliser le
 caractère spécial~«|:|» au lieu de~«|^|»:
 
 \medskip
-\begin{Code}
-\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
-\end{Code}
 \begin{Code}[width=11cm]
-$\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
+$\begin{pNiceArray}{ccc|cc}%
+  [ first-row,last-col, margin ,
+    xdots={horizontal-labels,line-style = <->} ]
 \emph{\Hdotsfor{3}:{3}} & \emph{\Hdotsfor{2}:{2}} \\
 2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}:{3}} \\
 1 & 1 & 1 & 1 & 1 \\

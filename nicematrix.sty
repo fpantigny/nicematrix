@@ -1307,11 +1307,11 @@
     \fi:
     \hbox_set:Nw \l__nicematrix_cell_box
     \__nicematrix_tuning_not_tabular_begin:
-    \__nicematrix_tuning_first_row:
-    \__nicematrix_tuning_last_row:
+    \__nicematrix_tuning_exterior_rows:
     \g__nicematrix_row_style_tl
   }
-\cs_new_protected:Npn \__nicematrix_tuning_first_row:
+\cs_new_protected:Npn \__nicematrix_tuning_exterior_rows: { }
+\cs_new_protected:Npn \__nicematrix_tuning_first_last_row:
   {
     \if_int_compare:w \c@iRow = \c_zero_int
       \if_int_compare:w \c@jCol > \c_zero_int
@@ -1319,7 +1319,7 @@
         \xglobal \colorlet { nicematrix-first-row } { . }
       \fi:
     \else:
-      \cs_set_eq:NN \__nicematrix_tuning_first_row: \prg_do_nothing:
+      \cs_gset_eq:NN \__nicematrix_tuning_exterior_rows: \__nicematrix_tuning_last_row:
     \fi:
   }
 \cs_new_protected:Npn \__nicematrix_tuning_last_row:
@@ -1740,10 +1740,12 @@
     \cs_set_eq:NN \rowcolor \__nicematrix_rowcolor_tabular
     \cs_set_eq:NN \rowcolors \__nicematrix_rowcolors_tabular
     \cs_set_eq:NN \rowlistcolors \__nicematrix_rowlistcolors_tabular
-    \int_compare:nNnT { \l__nicematrix_first_row_int } > { \c_zero_int }
-      { \cs_set_eq:NN \__nicematrix_tuning_first_row: \prg_do_nothing: }
-    \int_compare:nNnT { \l__nicematrix_last_row_int } < { \c_zero_int }
-      { \cs_set_eq:NN \__nicematrix_tuning_last_row: \prg_do_nothing: }
+    \int_if_zero:nTF \l__nicematrix_first_row_int
+      { \cs_gset_eq:NN \__nicematrix_tuning_exterior_rows: \__nicematrix_tuning_first_last_row: }
+      {
+        \int_compare:nNnT { \l__nicematrix_last_row_int } > { \c_zero_int }
+          { \cs_gset_eq:NN \__nicematrix_tuning_exterior_rows: \__nicematrix_tuning_last_row: }
+      }
     \bool_if:NT \l__nicematrix_renew_dots_bool { \__nicematrix_renew_dots: }
     \cs_set_eq:NN \multicolumn \__nicematrix_multicolumn:nnn
     \hook_gput_code:nnn { env / tabular / begin } { nicematrix }
@@ -5900,7 +5902,8 @@
   }
 \NewDocumentCommand \__nicematrix_rowlistcolors { O { } m m O { } }
   {
-    \group_begin:
+    \pgfpicture
+    \pgf@relevantforpicturesizefalse
     \seq_clear_new:N \l__nicematrix_colors_seq
     \seq_set_split:Nnn \l__nicematrix_colors_seq { , } { #3 }
     \tl_clear_new:N \l__nicematrix_cols_tl
@@ -5914,8 +5917,6 @@
         \seq_set_filter:NNn \l_tmpa_seq \l_tmpb_seq
           { \__nicematrix_not_in_exterior_p:nnnnn ##1 }
       }
-    \pgfpicture
-    \pgf@relevantforpicturesizefalse
     \clist_map_inline:nn { #2 }
       {
         \tl_set:Nn \l_tmpa_tl { ##1 }
@@ -5958,7 +5959,6 @@
           }
       }
     \endpgfpicture
-    \group_end:
   }
 \cs_new:Npn \__nicematrix_color_index:n #1
   {
@@ -10018,6 +10018,17 @@
           { \__nicematrix_error:n { underscore~after~nicematrix } }
       }
   }
+\AtBeginDocument
+  {
+    \IfPackageLoadedT { threeparttable }
+      {
+        \AddToHook { env / threeparttable / begin }
+          {
+            \TPT@hookin { NiceTabular }
+            \TPT@hookin { NiceTabular* }
+          }
+      }
+  }
 \cs_new_protected:Npn \__nicematrix_unknown_key:nn #1 #2
   {
     \str_if_eq:eeTF
@@ -10109,7 +10120,8 @@
   {
     Misuse~of~Hline. \\
     Error~in~your~row~ \int_eval:n { \c@iRow }. \\
-    \token_to_str:N \Hline\ must~be~used~only~at~the~beginning~of~a~row.\\
+    \token_to_str:N \Hline\ (like \token_to_strN \hline)~must~be~used~only~
+    at~the~beginning~of~a~row.\\
     That~error~is~fatal.
   }
 \__nicematrix_msg_new:nn { hvlines,~rounded-corners~and~corners }
@@ -10128,7 +10140,10 @@
   {
     Bad~use~of~\token_to_str:N \cellcolor \\
     You~can't~use~\token_to_str:N \cellcolor\ in~\token_to_str:N \Block\
-    (except~in~a~sub-block).\\
+    \bool_if:NTF \l__nicematrix_amp_in_blocks_bool
+      { (but~you~could~use~it~in~a~sub-block~since~'&-in-blocks'~is~in~force) }
+      { (it's~possible~in~a~sub-block~when~'&-in-blocks'~is~in~force) }
+    .~Here,~you~should~use~the~key~'fill'~of~the~block.\\
     That~command~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { rowcolor~in~Block }
@@ -10147,7 +10162,12 @@
 \__nicematrix_msg_new:nn { invalid~weight }
   {
     Unknown~key.\\
-    The~key~' \l_keys_key_str '~of~your~column~X~is~unknown~and~will~be~ignored.
+    The~key~' \l_keys_key_str '~of~your~column~X~is~unknown~and~will~be~ignored.~
+    The~available~keys~are:~l,~c,~r,~t~(=p),~m,~b,~V~
+    \IfPackageLoadedTF { varwidth }
+      { (since~'varwidth'~is~loaded)~}
+      { (if~you~load~'varwidth')~}
+    and~real~numbers~for~the~weight~of~the~X~column.
   }
 \__nicematrix_msg_new:nn { last~col~not~used }
   {
@@ -10211,25 +10231,29 @@
   {
     Erroneous~use.\\
     You~can't~use~the~command~#1 in~the~first~column~(number~0)~of~the~array.\\
-    That~command~will~be~ignored.
+    That~command~will~be~ignored.\\
+    You~can~try~to~delete~the~key~'first-col'.
   }
 \__nicematrix_msg_new:nn { in~last~col }
   {
     Erroneous~use.\\
     You~can't~use~the~command~#1 in~the~last~column~(exterior)~of~the~array.\\
-    That~command~will~be~ignored.
+    That~command~will~be~ignored.\\
+    You~can~try~to~delete~the~key~'last-col'.
   }
 \__nicematrix_msg_new:nn { in~first~row }
   {
     Erroneous~use.\\
     You~can't~use~the~command~#1 in~the~first~row~(number~0)~of~the~array.\\
-    That~command~will~be~ignored.
+    That~command~will~be~ignored.\\
+    You~can~try~to~delete~the~key~'first-row'.
   }
 \__nicematrix_msg_new:nn { in~last~row }
   {
     Erroneous~use.\\
     You~can't~use~the~command~#1 in~the~last~row~(exterior)~of~the~array.\\
-    That~command~will~be~ignored.
+    That~command~will~be~ignored.\\
+    You~can~try~to~delete~the~key~'last-row'.
   }
 \__nicematrix_msg_new:nn { TopRule~without~booktabs }
   {
@@ -10247,7 +10271,8 @@
 \__nicematrix_msg_new:nn { TopRule~without~tikz }
   {
     Erroneous~use.\\
-    You~can't~use~the~command~ #1 because~'tikz'~is~not~loaded.\\
+    You~can't~use~the~command~ #1 because~TikZ~is~not~loaded.\\
+    You~should~load~TikZ~with~\token_to_str:N \usepackage \{tikz\}.\\
     That~command~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { caption~outside~float }
@@ -10265,7 +10290,8 @@
   {
     Double~delimiter.\\
     You~can't~put~a~second~closing~delimiter~"#1"~just~after~a~first~closing~
-    delimiter.~This~delimiter~will~be~ignored.
+    delimiter.~This~delimiter~will~be~ignored.\\
+    You~can~try~to~use~\token_to_str:N \SubMatrix\ in~the~\token_to_str:N \CodeAfter.
   }
 \__nicematrix_msg_new:nn { delimiter~after~opening }
   {
@@ -10277,27 +10303,30 @@
   {
     Bad~line~style.\\
     Since~you~haven't~loaded~TikZ,~the~only~value~you~can~give~to~'line-style'~
-    is~'standard'.~That~key~will~be~ignored.
+    is~'standard'.~That~key~will~be~ignored.\\
+    You~can~load~TikZ~with~\token_to_str:N \usepackage \{tikz\}.\\
   }
 \__nicematrix_msg_new:nn { corners~with~no-cell-nodes }
   {
     Incompatible~keys.\\
     You~can't~use~the~key~'corners'~here~because~the~key~'no-cell-nodes'~
-    is~in~force.\\
+    is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
+    is~to~speed-up~compilation).\\
     If~you~go~on,~that~key~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { extra-nodes~with~no-cell-nodes }
   {
     Incompatible~keys.\\
     You~can't~create~'extra~nodes'~here~because~the~key~'no-cell-nodes'~
-    is~in~force.\\
+    is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
+    is~to~speed-up~compilation).\\
     If~you~go~on,~those~extra~nodes~won't~be~created.
   }
 \__nicematrix_msg_new:nn { Identical~notes~in~caption }
   {
     Identical~tabular~notes.\\
     You~can't~put~several~notes~with~the~same~content~in~
-    \token_to_str:N \caption \ (but~you~can~in~the~main~tabular).\\
+    \token_to_str:N \caption \ (but~it's~possible~in~the~main~tabular).\\
     If~you~go~on,~the~output~will~probably~be~erroneous.
   }
 \__nicematrix_msg_new:nn { tabularnote~below~the~tabular }
@@ -10457,7 +10486,8 @@
   {
     siunitx~not~loaded\\
     You~can't~use~the~columns~'S'~because~'siunitx'~is~not~loaded.\\
-    That~error~is~fatal.
+    That~error~is~fatal.\\
+    You~can~load~'siunitx'~with~\token_to_str:N \usepackage \{siunitx\}.\\
   }
 \__nicematrix_msg_new:nn { Invalid~name }
   {
@@ -10618,21 +10648,23 @@
   {
     TikZ~not~loaded.\\
     You~can't~use~ \token_to_str:N \TikzEveryCell \
-    because~you~have~not~loaded~tikz.~
+    because~you~have~not~loaded~tikz.\\
+    You~can~load~'tikz'~with~\token_to_str:N \usepackage \{tikz\}.\\
     This~command~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { tikz~key~without~tikz }
   {
     TikZ~not~loaded.\\
     You~can't~use~the~key~'tikz'~for~the~command~' \token_to_str:N
-    \Block '~because~you~have~not~loaded~tikz.~
+    \Block '~because~you~have~not~loaded~tikz.\\
+    You~can~load~'tikz'~with~\token_to_str:N \usepackage \{tikz\}.\\
     This~key~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { Bad~argument~for~Block }
   {
     Bad~argument.\\
     The~first~mandatory~argument~of~\token_to_str:N \Block\ must~
-    be~of~the~form~'i-j'~(or~completely~empty)~and~you~have~used:~
+    be~of~the~form~'i-j'~(or~totally~empty)~and~you~have~used:~
     '#1'. \\
     If~you~go~on,~the~\token_to_str:N \Block\ will~be~mono-cell~(as~if~
     the~argument~was~empty).
@@ -11025,6 +11057,7 @@
     code-for-last-row(+),~
     columns-width,~
     corners,~
+    create-blocks-in-col,~
     create-extra-nodes,~
     create-medium-nodes,~
     create-large-nodes,~
@@ -11084,6 +11117,7 @@
     columns-type,~
     columns-width,~
     corners,~
+    create-blocks-in-col,~
     create-extra-nodes,~
     create-medium-nodes,~
     create-large-nodes,~
@@ -11146,6 +11180,7 @@
     columns-width,~
     corners,~
     custom-line,~
+    create-blocks-in-col,~
     create-extra-nodes,~
     create-medium-nodes,~
     create-large-nodes,~

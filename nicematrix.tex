@@ -2482,43 +2482,39 @@ Madison & 15
 \end{NiceTabular}
 \end{scope}
 
-\vspace{1cm}
+
+\bigskip
 \begin{scope}
 \hfuzz=10cm
-\begin{Code}[width=10cm]
-\begin{NiceTabular}{lr}[hvlines]
-\CodeBefore
-  \emph{\rowcolors{1}{blue!10}{}[respect-blocks]}
-\Body
-\Block{2-1}{John}    & 12 \\
-                     & 13 \\
-Steph                &  8 \\
-\Block{3-1}{Sarah}   & 18 \\
-                     & 17 \\
-                     & 15 \\
-Ashley               & 20 \\
-Henry                & 14 \\
-\Block{2-1}{Madison} & 15 \\
-                     & 19
+\begin{Code}[width=11cm]
+\begin{NiceTabular}{lr}[hvlines,create-blocks-in-col=1]
+\emph{\rowcolors{blue!10}{}[respect-blocks]}
+John      & 12 \\
+          & 13 \\
+Steph     &  8 \\
+Sarach    & 18 \\
+          & 17 \\
+          & 15 \\
+Ashley    & 20 \\
+Henry     & 14 \\
+Madison   & 15 \\
+          & 19
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{lr}[hvlines,baseline=c]
-\CodeBefore
-  \rowcolors{1}{blue!10}{}[respect-blocks]
-\Body
-\Block{2-1}{John}    & 12 \\
-                     & 13 \\
-Steph                &  8 \\
-\Block{3-1}{Sarah}   & 18 \\
-                     & 17 \\
-                     & 15 \\
-Ashley               & 20 \\
-Henry                & 14 \\
-\Block{2-1}{Madison} & 15 \\
-                     & 19
+\begin{NiceTabular}{lr}[hvlines,baseline=c,create-blocks-in-col=1]
+\rowcolors{blue!10}{}[respect-blocks]
+John      & 12 \\
+          & 13 \\
+Steph     &  8 \\
+Sarah     & 18 \\
+          & 17 \\
+          & 15 \\
+Ashley    & 20 \\
+Henry     & 14 \\
+Madison   & 15 \\
+          & 19
 \end{NiceTabular}
 \end{scope}
-
 
 
 
@@ -3235,23 +3231,22 @@ by the environment |{tabularx}| of the eponymous package.
 
 The required width of the tabular may be specified with the key
 \Definition{width} (in |{NiceTabular}| or in |\NiceMatrixOptions|). The initial
-value of this parameter is |\linewidth| (and not |\textwidth|).
+value of this parameter is |\linewidth| of LaTeX (and not |\textwidth|).
 
 For sake of similarity with the environment |{tabularx}|, \pkg{nicematrix} also
 provides an environment \Definition{\{NiceTabularX\}} with a syntax similar to
 the syntax of |{tabularx}|, that is to say with a first mandatory argument which
 is the width of the tabular.
 
+\medskip
 As with the packages \pkg{tabu}\footnote{The extension \pkg{tabu} is now
 considered as deprecated.} and \pkg{tabularray}, the specifier |X| takes
 in an optional argument (between square brackets) which is a list of keys.
 \begin{itemize}
-\item It's possible to give a weight for the column by providing a positive
-number directly as argument of the specifier |X|. For example, a column
-|X[2]| will have a width double of the width of a column~|X| (which has a
-weight equal to $1$).\footnote{The negative values of the weight, as provided
-by \pkg{tabu} (which is now obsolete), are \emph{not} supported by \pkg{nicematrix}.
-If such a value is used, an error will be raised.}
+\item It's possible to give a weight for the column by providing a positive number
+directly as argument of the specifier |X|. For example, a column |X[0.5]| will
+have a width equal to the half of the width of a column~|X| (which has a weight
+equal to $1$).\footnote{The negative values of the weight, as provided by \pkg{tabu} (which is now obsolete), are \emph{not} supported by \pkg{nicematrix}. If such a value is used, an error will be raised.}
 \item It's possible to specify an horizontal alignment with one of the
 letters |l|, |c| and |r| (which insert respectively |\raggedright|,
 |\centering| and |\raggedleft| followed by |\arraybackslash|).\footnote{In fact,
@@ -5338,28 +5333,6 @@ Initial value : |true|
 
 \bigskip
 For an example of customisation of the tabular notes, see p.~\pageref{ex:notes}.
-
-
-\subsection{Use of \{NiceTabular\} with threeparttable}
-
-\index{threeparttable@\pkg{threeparttable} (package)}
-
-If you wish to use an environment |{NiceTabular}|, |{NiceTabular*}| or
-|{NiceTabularX}| in an environment |{threeparttable}| of the eponymous package,
-you have to patch |{threeparttable}| with the following code.
-
-\begin{Code}[annotation = false]
-\makeatletter
-\AddToHook{env/threeparttable/begin}
-  {\TPT@hookin{NiceTabular}\TPT@hookin{NiceTabular*}\TPT@hookin{NiceTabularX}}
-\makeatother
-\end{Code}
-
-Nevertheless, the use of \pkg{threeparttable} in conjunction with
-\pkg{nicematrix} seems rather point-less because of the functionalities
-provided by \pkg{nicematrix} (see the key |caption| in the section
-\ref{s:caption}, p.~\pageref{s:caption}).
-
 
 
 \section{Other features}
