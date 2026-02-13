@@ -53,7 +53,10 @@
   {
     \bool_if:NTF \g__nicematrix_messages_for_Overleaf_bool
       { \msg_new:nnn { nicematrix } { #1 } { #2 \\ #3 } }
-      { \msg_new:nnnn { nicematrix } { #1 } { #2 } { #3 } }
+      {
+        \msg_new:nnnn { nicematrix } { #1 } { #2 } { #3 }
+        \msg_new:nnn { nicematrix } { #1~+ } { #3 }
+      }
   }
 \cs_new_protected:Npn \__nicematrix_error_or_warning:n
   {
@@ -162,7 +165,14 @@
 \hook_gput_code:nnn { begindocument } { . }
   {
     \IfPackageLoadedT { booktabs }
-      { \iow_now:Nn \@mainaux { \nicematrix@redefine@check@rerun } }
+      {
+        \iow_now:Nn \@mainaux
+          {
+            \ExplSyntaxOn
+            \cs_if_exist_use:NT \nicematrix@redefine@check@rerun
+            \ExplSyntaxOff
+          }
+      }
   }
 \cs_set_protected:Npn \nicematrix@redefine@check@rerun
   {
@@ -383,6 +393,7 @@
 \str_new:N \g__nicematrix_com_or_env_str
 \str_gset:Nn \g__nicematrix_com_or_env_str { environment }
 \bool_new:N \l__nicematrix_bold_row_style_bool
+\bool_new:N \l__nicematrix_do_not_print_notes_bool
 \clist_new:N \g__nicematrix_cbic_clist
 \cs_new:Npn \__nicematrix_full_name_env:
   {
@@ -390,7 +401,9 @@
       { command \space \c_backslash_str \g__nicematrix_name_env_str }
       { environment \space \{ \g__nicematrix_name_env_str \} }
   }
-\tl_new:N \g__nicematrix_cell_after_hook_tl % 2025/03/22
+\tl_new:N \g__nicematrix_cell_after_hook_tl
+\cs_new_protected:Npn \__nicematrix_put_in_cell_after_hook:n
+  { \tl_gput_right:Nn \g__nicematrix_cell_after_hook_tl }
 \tl_new:N \l__nicematrix_code_tl
 \tl_new:N \l__nicematrix_pgf_node_code_tl
 \tl_new:N \g__nicematrix_pre_code_before_tl
@@ -578,7 +591,7 @@
             label =
               \__nicematrix_notes_label_in_list:n { \__nicematrix_notes_style:n { tabularnotes*i } }
           }
-        \NewDocumentCommand \tabularnote { o m }
+        \NewDocumentCommand { \tabularnote } { o m }
           {
             \bool_lazy_or:nnT { \cs_if_exist_p:N \@captype } { \l__nicematrix_in_env_bool }
               {
@@ -586,9 +599,17 @@
                   { \__nicematrix_error:n { tabularnote~forbidden } }
                   {
                     \bool_if:NTF \l__nicematrix_in_caption_bool
-                      \__nicematrix_tabularnote_caption:nn
-                      \__nicematrix_tabularnote:nn
-                    { #1 } { #2 }
+                      {
+                        \tl_if_novalue:nTF { #1 }
+                          { \__nicematrix_tabularnote_caption:nn { #1 } }
+                          { \__nicematrix_tabularnote_caption:nn { \exp_not:n { #1 } } }
+                      }
+                      {
+                        \tl_if_novalue:nTF { #1 }
+                          { \__nicematrix_tabularnote:nn { #1 } }
+                          { \__nicematrix_tabularnote:nn { \exp_not:n { #1 } } }
+                      }
+                    { #2 }
                   }
               }
           }
@@ -818,7 +839,7 @@
     shorten-start+ .code:n =
       \hook_gput_code:nnn { begindocument } { . }
         { \dim_add:Nn \l__nicematrix_xdots_shorten_start_dim { #1 } } ,
-    shorten-start~+ .meta:n = { shorten-start+ = #1 } ,
+    shorten-start~+ .meta:n = { shorten-start += #1 } ,
     shorten-start+ .value_required:n = true ,
     shorten-end .code:n =
       \hook_gput_code:nnn { begindocument } { . }
@@ -828,7 +849,7 @@
       \hook_gput_code:nnn { begindocument } { . }
         { \dim_add:Nn \l__nicematrix_xdots_shorten_end_dim { #1 } } ,
     shorten-end+ .value_required:n = true ,
-    shorten-end~+ .meta:n = { shorten-end+ = #1 } ,
+    shorten-end~+ .meta:n = { shorten-end += #1 } ,
     shorten .code:n =
       \hook_gput_code:nnn { begindocument } { . }
         {
@@ -883,6 +904,12 @@
   }
 \keys_define:nn { nicematrix / Global }
   {
+    brace-shift .dim_set:N = \l__nicematrix_brace_shift_dim ,
+    brace-shift .value_required:n = true ,
+    brace-shift+ .code:n =
+      \dim_add:Nn \l__nicematrix_brace_shift_dim { #1 } ,
+    brace-shift+ .value_required:n = true ,
+    brace-shift~+ .meta:n = { brace-shift+ = #1 } ,
     caption-above .code:n = \__nicematrix_error_or_warning:n { caption-above~in~env } ,
     show-cell-names .code = \__nicematrix_error_or_warning:n { show-cell-names } ,
     color-inside .code:n = \__nicematrix_fatal:n { key~color-inside } ,
@@ -1162,6 +1189,8 @@
   }
 \keys_define:nn { nicematrix / NiceMatrixOptions }
   {
+    do-not-print-notes .bool_set:N = \l__nicematrix_do_not_print_notes_bool ,
+    do-not-print-notes .default:n = true ,
     delimiters / color .tl_set:N = \l__nicematrix_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l__nicematrix_delimiters_max_width_bool ,
@@ -1221,7 +1250,10 @@
     delimiters .value_required:n = true ,
     small .bool_set:N = \l__nicematrix_small_bool ,
     small .value_forbidden:n = true ,
-    unknown .code:n = \__nicematrix_error:n { Unknown~key~for~NiceMatrix }
+    unknown .code:n =
+      \__nicematrix_unknown_key:nn
+        { nicematrix / Global , nicematrix / environments , nicematrix / NiceMatrix }
+        { Unknown~key~for~NiceMatrix }
   }
 \keys_define:nn { nicematrix / NiceArray }
   {
@@ -1261,6 +1293,8 @@
   }
 \keys_define:nn { nicematrix / NiceTabular }
   {
+    do-not-print-notes .bool_set:N = \l__nicematrix_do_not_print_notes_bool ,
+    do-not-print-notes .default:n = true ,
     width .code:n = \dim_set:Nn \l__nicematrix_width_dim { #1 }
                     \bool_set_true:N \l__nicematrix_width_used_bool ,
     width .value_required:n = true ,
@@ -3006,6 +3040,10 @@
   { __nicematrix _ \token_to_str:N \hline : }
 \cs_set_eq:cc { __nicematrix _ \token_to_str:N & : }
   { __nicematrix _ \token_to_str:N \hline : }
+\cs_new_protected:cpn { __nicematrix _ \token_to_str:N \linewidth : }
+  { \__nicematrix_fatal:n { NiceTabularX~probably~required } }
+\cs_set_eq:cc { __nicematrix _ \token_to_str:N \textwidth : }
+  { __nicematrix _ \token_to_str:N \linewidth : }
 \cs_new:Npn \__nicematrix_multicolumn:nnn #1 #2 #3
   {
     \multispan { #1 }
@@ -3264,7 +3302,10 @@
         { ! \seq_if_empty_p:N \g__nicematrix_notes_in_caption_seq }
         { ! \tl_if_empty_p:o \g__nicematrix_tabularnote_tl }
       }
-      \__nicematrix_insert_tabularnotes:
+      {
+        \bool_if:NF \l__nicematrix_do_not_print_notes_bool
+          { \NiceTabularNotes }
+      }
     \cs_set_eq:NN \tabularnote \__nicematrix_tabularnote_error:n
     \bool_if:NF \l__nicematrix_caption_above_bool { \__nicematrix_insert_caption: }
     \end { minipage }
@@ -3301,7 +3342,7 @@
     \__nicematrix_error_or_warning:n { tabularnote~below~the~tabular }
     \cs_gset:Npn \__nicematrix_tabularnote_error:n ##1 { }
   }
-\cs_new_protected:Npn \__nicematrix_insert_tabularnotes:
+\NewDocumentCommand \NiceTabularNotes { }
   {
     \seq_gconcat:NNN \g__nicematrix_notes_seq \g__nicematrix_notes_in_caption_seq \g__nicematrix_notes_seq
     \int_set:Nn \c@tabularnote { \seq_count:N \g__nicematrix_notes_seq }
@@ -5654,7 +5695,7 @@
       {
         \__nicematrix_put_in_row_style:e
           {
-            \tl_gput_right:Nn \exp_not:N \g__nicematrix_cell_after_hook_tl
+            \__nicematrix_put_in_cell_after_hook:n
               {
                 \dim_set:Nn \l__nicematrix_cell_space_top_limit_dim
                   { \dim_use:N \l_tmpa_dim }
@@ -5665,7 +5706,7 @@
       {
         \__nicematrix_put_in_row_style:e
           {
-            \tl_gput_right:Nn \exp_not:N \g__nicematrix_cell_after_hook_tl
+            \__nicematrix_put_in_cell_after_hook:n
               {
                 \dim_set:Nn \l__nicematrix_cell_space_bottom_limit_dim
                   { \dim_use:N \l_tmpb_dim }
@@ -8835,7 +8876,7 @@
 \cs_new_protected:Npn \__nicematrix_dotfill_i:
   {
     \dim_compare:nNnT { \box_wd:N \l__nicematrix_cell_box } = { \c_zero_dim }
-       { \__nicematrix_old_dotfill: }
+      { \__nicematrix_old_dotfill: }
   }
 \cs_new_protected:Npn \__nicematrix_diagbox:nn #1 #2
   {
@@ -10018,7 +10059,7 @@
           { \__nicematrix_error:n { underscore~after~nicematrix } }
       }
   }
-\AtBeginDocument
+\hook_gput_code:nnn { begindocument } { . }
   {
     \IfPackageLoadedT { threeparttable }
       {
@@ -10026,6 +10067,7 @@
           {
             \TPT@hookin { NiceTabular }
             \TPT@hookin { NiceTabular* }
+            \TPT@hookin { NiceTabularX }
           }
       }
   }
@@ -10070,7 +10112,12 @@
             \clist_map_break:
           }
       }
-    \bool_if:NF \l_tmpa_bool { \__nicematrix_error:n { #2 } }
+    \bool_if:NF \l_tmpa_bool
+      {
+        \__nicematrix_error:n { #2 }
+        \bool_if:NF \g__nicematrix_messages_for_Overleaf_bool
+          { \msg_info:nn { nicematrix } { #2~+ } }
+      }
   }
 \__nicematrix_msg_new:nn { key~without~+~exists }
   {
@@ -10120,7 +10167,7 @@
   {
     Misuse~of~Hline. \\
     Error~in~your~row~ \int_eval:n { \c@iRow }. \\
-    \token_to_str:N \Hline\ (like \token_to_strN \hline)~must~be~used~only~
+    \token_to_str:N \Hline\ (like \token_to_str:N \hline)~must~be~used~only~
     at~the~beginning~of~a~row.\\
     That~error~is~fatal.
   }
@@ -10134,6 +10181,12 @@
   {
     \token_to_str:N \Body\ alone. \\
     You~have~used~\token_to_str:N \Body\ without~\token_to_str:N \CodeBefore.\\
+    That~error~is~fatal.
+  }
+\__nicematrix_msg_new:nn { NiceTabularX~probably~required }
+  {
+    Incorrect~syntax.\\
+    You~probably~want~to~use~\{NiceTabularX\}.\\
     That~error~is~fatal.
   }
 \__nicematrix_msg_new:nn { cellcolor~in~Block }
@@ -10196,7 +10249,8 @@
     (excepted~the~potential~exterior~columns)~is~fixed~by~the~
     LaTeX~counter~'MaxMatrixCols'.~
     Its~current~value~is~ \int_use:N \c@MaxMatrixCols \
-    (use~ \token_to_str:N \setcounter \ to~change~that~value).~
+    (use~ \token_to_str:N \setcounter \ to~change~that~value).\\
+    But,~maybe,~you~have~forgotten~a~\token_to_str:N \\. \\
     This~error~is~fatal.
   }
 \__nicematrix_msg_new:nn { too~many~cols~for~array }
@@ -10273,6 +10327,8 @@
     Erroneous~use.\\
     You~can't~use~the~command~ #1 because~TikZ~is~not~loaded.\\
     You~should~load~TikZ~with~\token_to_str:N \usepackage \{tikz\}.\\
+    \IfPackageLoadedF { booktabs }
+      { You~should~also~load~'booktabs'.\\ }
     That~command~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { caption~outside~float }
@@ -10763,7 +10819,8 @@
   {
     enumitem~not~loaded. \\
     You~can't~use~the~command~ \token_to_str:N \tabularnote \
-    ~because~you~haven't~loaded~'enumitem'. \\
+    ~because~you~haven't~loaded~'enumitem'.~We~should~load~it~
+    (before~or~after~'nicematrix').\\
     All~the~commands~ \token_to_str:N \tabularnote \ will~be~
     ignored~in~the~document.
   }
@@ -11282,6 +11339,7 @@
 \__nicematrix_define_com:NNN v  |  |
 \__nicematrix_define_com:NNN V  \|  \|
 \__nicematrix_define_com:NNN B  \{  \}
+
 \endinput
 %%
 %% End of file `nicematrix.sty'.

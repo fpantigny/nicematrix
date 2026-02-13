@@ -196,7 +196,15 @@ version 2005/12/01 or later.
   {
     \bool_if:NTF \g_@@_messages_for_Overleaf_bool
       { \msg_new:nnn { nicematrix } { #1 } { #2 \\ #3 } }
-      { \msg_new:nnnn { nicematrix } { #1 } { #2 } { #3 } }
+      {
+        \msg_new:nnnn { nicematrix } { #1 } { #2 } { #3 }
+%    \end{macrocode}
+% We keep also in memory in another message the complement of information
+% (generally the list of the available keys) in order to write it the |log| file
+% in all circunstancies (it will be useful for the AI of some systems such as Prism).
+%    \begin{macrocode}
+        \msg_new:nnn { nicematrix } { #1~+ } { #3 } 
+      }
   }
 %    \end{macrocode}
 % 
@@ -447,7 +455,14 @@ version 2005/12/01 or later.
 \hook_gput_code:nnn { begindocument } { . } 
   {     
     \IfPackageLoadedT { booktabs } 
-      { \iow_now:Nn \@mainaux { \nicematrix@redefine@check@rerun } }
+      {
+        \iow_now:Nn \@mainaux
+          {
+            \ExplSyntaxOn
+            \cs_if_exist_use:NT \nicematrix@redefine@check@rerun
+            \ExplSyntaxOff 
+          }
+      }
   }
 \cs_set_protected:Npn \nicematrix@redefine@check@rerun
   {
@@ -1113,6 +1128,12 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
+\bool_new:N \l_@@_do_not_print_notes_bool
+%    \end{macrocode}
+%
+% \bigskip
+% |\g_@@_cbic_clist| is for |create-blocks-in-column|
+%    \begin{macrocode}
 \clist_new:N \g_@@_cbic_clist
 %    \end{macrocode}
 % 
@@ -1133,7 +1154,12 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 %    \begin{macrocode}
-\tl_new:N \g_@@_cell_after_hook_tl % 2025/03/22
+\tl_new:N \g_@@_cell_after_hook_tl
+%    \end{macrocode}
+% The argument is given by curryfication.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_put_in_cell_after_hook:n
+  { \tl_gput_right:Nn \g_@@_cell_after_hook_tl }
 %    \end{macrocode}
 % 
 % \bigskip
@@ -1956,17 +1982,29 @@ version 2005/12/01 or later.
 % That's why we program |\tabularnote| to be no-op excepted in a floating
 % environment or in an environment of \pkg{nicematrix}.
 %    \begin{macrocode}
-        \NewDocumentCommand \tabularnote { o m }
+        \NewDocumentCommand { \tabularnote } { o m }
           {
             \bool_lazy_or:nnT { \cs_if_exist_p:N \@captype } { \l_@@_in_env_bool }
               { 
                 \bool_lazy_and:nnTF { ! \l_@@_tabular_bool } { \l_@@_in_env_bool }
                   { \@@_error:n { tabularnote~forbidden } }
                   {
+%    \end{macrocode}
+% The second argument of |\@@_tabularnote_caption:nn| ou |\@@_tabularnote:nn| is provided
+% by curryfication.
+%    \begin{macrocode}
                     \bool_if:NTF \l_@@_in_caption_bool
-                      \@@_tabularnote_caption:nn
-                      \@@_tabularnote:nn 
-                    { #1 } { #2 } 
+                      {
+                        \tl_if_novalue:nTF { #1 }
+                          { \@@_tabularnote_caption:nn { #1 } }
+                          { \@@_tabularnote_caption:nn { \exp_not:n { #1 } } } 
+                      }
+                      {
+                        \tl_if_novalue:nTF { #1 }
+                          { \@@_tabularnote:nn { #1 } }
+                          { \@@_tabularnote:nn { \exp_not:n { #1 } } } 
+                      }
+                    { #2 }
                   }
               }
           }
@@ -2084,7 +2122,7 @@ version 2005/12/01 or later.
         \int_gdecr:N \c@tabularnote
         \int_set_eq:NN \l_tmpa_int \c@tabularnote
 %    \end{macrocode}
-% The following line is only to avoid error messages for multipy defined labels
+% The following line is only to avoid error messages for multiply defined labels
 % when the package \pkg{hyperref} is used.
 %    \begin{macrocode}
         \int_gincr:N \g_@@_tabularnote_int
@@ -2522,7 +2560,7 @@ version 2005/12/01 or later.
     shorten-start+ .code:n = 
       \hook_gput_code:nnn { begindocument } { . } 
         { \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
-    shorten-start~+ .meta:n = { shorten-start+ = #1 } ,
+    shorten-start~+ .meta:n = { shorten-start += #1 } ,
     shorten-start+ .value_required:n = true ,
     shorten-end .code:n = 
       \hook_gput_code:nnn { begindocument } { . } 
@@ -2532,7 +2570,7 @@ version 2005/12/01 or later.
       \hook_gput_code:nnn { begindocument } { . } 
         { \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } } ,
     shorten-end+ .value_required:n = true ,
-    shorten-end~+ .meta:n = { shorten-end+ = #1 } ,    
+    shorten-end~+ .meta:n = { shorten-end += #1 } ,    
     shorten .code:n = 
       \hook_gput_code:nnn { begindocument } { . } 
         { 
@@ -2611,6 +2649,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Global }
   {
+    brace-shift .dim_set:N = \l_@@_brace_shift_dim ,
+    brace-shift .value_required:n = true ,
+    brace-shift+ .code:n =
+      \dim_add:Nn \l_@@_brace_shift_dim { #1 } ,
+    brace-shift+ .value_required:n = true ,
+    brace-shift~+ .meta:n = { brace-shift+ = #1 } ,
     caption-above .code:n = \@@_error_or_warning:n { caption-above~in~env } , 
     show-cell-names .code = \@@_error_or_warning:n { show-cell-names } ,
     color-inside .code:n = \@@_fatal:n { key~color-inside } ,
@@ -2943,7 +2987,9 @@ version 2005/12/01 or later.
 % |\NiceMatrixOptions|.    
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / NiceMatrixOptions }
-  { 
+  {
+    do-not-print-notes .bool_set:N = \l_@@_do_not_print_notes_bool ,
+    do-not-print-notes .default:n = true ,
     delimiters / color .tl_set:N = \l_@@_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l_@@_delimiters_max_width_bool ,
@@ -3052,7 +3098,10 @@ version 2005/12/01 or later.
     delimiters .value_required:n = true , 
     small .bool_set:N = \l_@@_small_bool ,
     small .value_forbidden:n = true ,
-    unknown .code:n = \@@_error:n { Unknown~key~for~NiceMatrix } 
+    unknown .code:n = 
+      \@@_unknown_key:nn
+        { nicematrix / Global , nicematrix / environments , nicematrix / NiceMatrix }
+        { Unknown~key~for~NiceMatrix }
   }
 %    \end{macrocode}
 %
@@ -3119,6 +3168,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / NiceTabular }
   {
+    do-not-print-notes .bool_set:N = \l_@@_do_not_print_notes_bool ,
+    do-not-print-notes .default:n = true ,
 %    \end{macrocode}
 %  The dimension |width| will be used if at least a column of type |X| is used.
 %  If there is no column of type |X|, an error will be raised.
@@ -6571,7 +6622,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %  \medskip
-% The following lines try to catch some errors (when the final user has
+% The following lines try to catch some errors (when the final user has, for example,
 % forgotten the preamble of its environment). 
 %    \begin{macrocode}
 \cs_new_protected:cpn { @@ _ \token_to_str:N \hline : } 
@@ -6587,7 +6638,11 @@ version 2005/12/01 or later.
 \cs_set_eq:cc { @@ _ \token_to_str:N \diagbox : } 
   { @@ _ \token_to_str:N \hline : }
 \cs_set_eq:cc { @@ _ \token_to_str:N & : } 
-  { @@ _ \token_to_str:N \hline : } 
+  { @@ _ \token_to_str:N \hline : }
+\cs_new_protected:cpn { @@ _ \token_to_str:N \linewidth : }
+  { \@@_fatal:n { NiceTabularX~probably~required } }
+\cs_set_eq:cc { @@ _ \token_to_str:N \textwidth : }
+  { @@ _ \token_to_str:N \linewidth : }
 %    \end{macrocode}
 % 
 % \bigskip
@@ -7031,7 +7086,10 @@ version 2005/12/01 or later.
         { ! \seq_if_empty_p:N \g_@@_notes_in_caption_seq }
         { ! \tl_if_empty_p:o \g_@@_tabularnote_tl } 
       }
-      \@@_insert_tabularnotes:
+      {
+        \bool_if:NF \l_@@_do_not_print_notes_bool
+          { \NiceTabularNotes }
+      }
     \cs_set_eq:NN \tabularnote \@@_tabularnote_error:n
     \bool_if:NF \l_@@_caption_above_bool { \@@_insert_caption: }
     \end { minipage }
@@ -7102,7 +7160,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_insert_tabularnotes:
+\NewDocumentCommand \NiceTabularNotes { }
   {
     \seq_gconcat:NNN \g_@@_notes_seq \g_@@_notes_in_caption_seq \g_@@_notes_seq  
     \int_set:Nn \c@tabularnote { \seq_count:N \g_@@_notes_seq }
@@ -10825,7 +10883,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% \section{The command \textbackslash line accessible in code-after}
+% \section{The command \textbackslash line accessible in \textbackslash CodeAfter}
 %
 % In the |\CodeAfter|, the command |\@@_line:nn| will be linked to |\line|. This
 % command takes two arguments which are the specifications of two cells in the
@@ -11095,7 +11153,7 @@ version 2005/12/01 or later.
       {
         \@@_put_in_row_style:e 
           {
-            \tl_gput_right:Nn \exp_not:N \g_@@_cell_after_hook_tl 
+            \@@_put_in_cell_after_hook:n
               { 
 %    \end{macrocode}
 % It's not possible to change the following code by using |\dim_set_eq:NN|
@@ -11113,7 +11171,7 @@ version 2005/12/01 or later.
       {
         \@@_put_in_row_style:e
           {
-            \tl_gput_right:Nn \exp_not:N \g_@@_cell_after_hook_tl 
+            \@@_put_in_cell_after_hook:n
               { 
                 \dim_set:Nn \l_@@_cell_space_bottom_limit_dim 
                   { \dim_use:N \l_tmpb_dim } 
@@ -16238,7 +16296,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_dotfill_i: 
   { 
     \dim_compare:nNnT { \box_wd:N \l_@@_cell_box } = { \c_zero_dim } 
-       { \@@_old_dotfill: } 
+      { \@@_old_dotfill: } 
   }
 %    \end{macrocode}
 % 
@@ -16258,15 +16316,10 @@ version 2005/12/01 or later.
           { \int_use:N \c@iRow } 
           { \int_use:N \c@jCol } 
           { \int_use:N \c@iRow } 
-          { \int_use:N \c@jCol } 
+          { \int_use:N \c@jCol }
 %    \end{macrocode}
-% |\g_@@_row_style_tl| contains several instructions of the form:
-% 
-% \qquad |\@@_if_row_less_than:nn { number } { instructions }|
-%
-% The command |\@@_if_row_less:nn| is fully expandable and, thus, the
-% instructions will be inserted in the |\g_@@_pre_code_after_tl| only if
-% |\diagbox| is used in a row which is the scope of that chunk of instructions.
+% The expansion done on |\g_@@_row_style_tl| will result in the fact that you
+% take into account the current number of row and number of column.
 %    \begin{macrocode}
           { \g_@@_row_style_tl \exp_not:n { #1 } } 
           { \g_@@_row_style_tl \exp_not:n { #2 } }
@@ -18029,7 +18082,7 @@ version 2005/12/01 or later.
 %
 %
 %    \begin{macrocode}
-\AtBeginDocument
+\hook_gput_code:nnn { begindocument } { . }
   {
     \IfPackageLoadedT { threeparttable }
       {
@@ -18107,7 +18160,20 @@ version 2005/12/01 or later.
             \clist_map_break:
           }
       }
-    \bool_if:NF \l_tmpa_bool { \@@_error:n { #2 } } 
+    \bool_if:NF \l_tmpa_bool
+      {
+        \@@_error:n { #2 }
+%    \end{macrocode}
+%
+% If |messages-for-Overleaf| is not in force, the list of the available keys is
+% not written in the main error message but only in the complement (if the final user
+% presses |H|). That's why we write, in all circunstancies, the list of the
+% available keys in order to facilitate the work of the systems which analyze the error
+% by IA (such as Prism).
+%    \begin{macrocode}
+        \bool_if:NF \g_@@_messages_for_Overleaf_bool
+          { \msg_info:nn { nicematrix } { #2~+ } }
+      } 
   }
 %    \end{macrocode}
 %
@@ -18190,7 +18256,7 @@ version 2005/12/01 or later.
   {
     Misuse~of~Hline. \\
     Error~in~your~row~ \int_eval:n { \c@iRow }. \\
-    \token_to_str:N \Hline\ (like \token_to_strN \hline)~must~be~used~only~
+    \token_to_str:N \Hline\ (like \token_to_str:N \hline)~must~be~used~only~
     at~the~beginning~of~a~row.\\
     That~error~is~fatal.
   }
@@ -18214,6 +18280,15 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\@@_msg_new:nn { NiceTabularX~probably~required }
+  {
+    Incorrect~syntax.\\
+    You~probably~want~to~use~\{NiceTabularX\}.\\
+    That~error~is~fatal.
+  }
+%    \end{macrocode}
+% 
 %    \begin{macrocode}
 \@@_msg_new:nn { cellcolor~in~Block } 
   {
@@ -18294,7 +18369,8 @@ version 2005/12/01 or later.
     (excepted~the~potential~exterior~columns)~is~fixed~by~the~
     LaTeX~counter~'MaxMatrixCols'.~
     Its~current~value~is~ \int_use:N \c@MaxMatrixCols \ 
-    (use~ \token_to_str:N \setcounter \ to~change~that~value).~
+    (use~ \token_to_str:N \setcounter \ to~change~that~value).\\
+    But,~maybe,~you~have~forgotten~a~\token_to_str:N \\. \\
     This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -18404,6 +18480,8 @@ version 2005/12/01 or later.
     Erroneous~use.\\
     You~can't~use~the~command~ #1 because~TikZ~is~not~loaded.\\
     You~should~load~TikZ~with~\token_to_str:N \usepackage \{tikz\}.\\
+    \IfPackageLoadedF { booktabs }
+      { You~should~also~load~'booktabs'.\\ }
     That~command~will~be~ignored.
   }
 %    \end{macrocode}
@@ -19082,7 +19160,8 @@ version 2005/12/01 or later.
   {
     enumitem~not~loaded. \\
     You~can't~use~the~command~ \token_to_str:N \tabularnote \ 
-    ~because~you~haven't~loaded~'enumitem'. \\
+    ~because~you~haven't~loaded~'enumitem'.~We~should~load~it~
+    (before~or~after~'nicematrix').\\
     All~the~commands~ \token_to_str:N \tabularnote \ will~be~
     ignored~in~the~document.
   }
@@ -19716,3 +19795,4 @@ version 2005/12/01 or later.
 % Local Variables:
 % fill-column: 80
 % End:
+
