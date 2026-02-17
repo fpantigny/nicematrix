@@ -1172,9 +1172,9 @@ be prefered.
   & \Block{1-5}{the five first
                  natural numbers} \\ 
 3 & \Block{1-5}{one & two & three} \\
-4 & \Block{1-5}{one& two & three & four} \\
-5 & one & two & three
-  & \cellcolor{red!15} four & five \\
+4 & \Block{1-5}{one& two &
+       \cellcolor{red!15} three & four} \\
+5 & one & two & three & four & five \\
 \end{NiceTabular}
 \end{Code}
 %
@@ -1182,8 +1182,8 @@ be prefered.
    [hvlines,ampersand-in-blocks,no-cell-nodes]
   & \Block{1-5}{the five first natural numbers} \\ 
 3 & \Block{1-5}{one & two & three} \\
-4 & \Block{1-5}{one& two & three & four} \\
-5 & one & two & three & \cellcolor{red!15} four & five \\
+4 & \Block{1-5}{one& two & \cellcolor{red!15} three & four} \\
+5 & one & two & three & four & five \\
 \end{NiceTabular}
 
 \medskip
@@ -1921,7 +1921,7 @@ between both rules above the cell not colored by the color of the cell).
   {
     custom-line = 
      {
-       command = DoubleRule , 
+       command = \DoubleRule , 
        multiplicity = 2 , 
        sep-color = white
      }
@@ -1933,7 +1933,7 @@ between both rules above the cell not colored by the color of the cell).
   {
     custom-line = 
      {
-       command = DoubleRule , 
+       command = \DoubleRule , 
        multiplicity = 2 , 
        \emph{sep-color = white}
      }
@@ -2014,6 +2014,34 @@ seven & eight & nine
 \end{NiceTabular}
 \end{scope}
 
+\medskip
+\colorbox{yellow!50}{\bfseries New 7.6}
+
+\nobreak
+\smallskip
+In fact, \pkg{nicematrix} defines by default the commands
+\DefinitionCommand{hdashedline} and \DefinitionCommand{cdashedline} and the
+letter ``|;|'' for dashed rules. They are available when TikZ is loaded. 
+
+\medskip
+\begin{Code}[annotation = false]
+\NiceMatrixOptions \emph{% \textsl{yet present in nicematrix.sty}}
+  { 
+    custom-line = 
+      { 
+        letter = ; , 
+        command = \hdashedline , 
+        ccommand = \cdashedline ,
+        tikz = densely~dashed ,
+        total-width = \pgflinewidth
+      }
+  } 
+\end{Code}
+
+
+
+
+
 \bigskip
 \item \emph{Third possibility} : the key \Definition{dotted}
 \label{dotted}
@@ -2042,9 +2070,9 @@ letter ``|:|'' for those dotted rules.\footnote{However, it's possible to
     custom-line = 
       { 
         letter = : , 
-        command = hdottedline , 
-        ccommand = cdottedline ,
-        \emph{dotted} 
+        command = \hdottedline , 
+        ccommand = \cdottedline ,
+        dotted 
       }
   } 
 \end{Code}
@@ -2254,7 +2282,8 @@ the extension \pkg{xcolor};
 a specification of opacity of the form \texttt{opacity =
   \textsl{value}}.\footnote{Caution: that feature creates instructions of
   transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
-  support such instructions. The opacity is applied by using |\pgfsetfillopacity|.} 
+  support such instructions. The opacity is applied by using |\pgfsetfillopacity|
+  of \textsc{pgf}.} 
 \end{itemize}
 
 \bigskip
@@ -3839,6 +3868,12 @@ $\begin{pmatrix}
 \end{pmatrix}$
 \end{scope}
 
+\bigskip
+However, one should note that the environments of \pkg{nicematrix} can't be
+nested, and, therefore, it's not possible to use |renew-matrix| if we have, for
+example, an environment |{pmatrix}| nested within another environment |{pmatrix}|.
+
+
 \subsection{The labels of the dotted lines}
 
 
@@ -5175,6 +5210,7 @@ Wallis & John & 87 \\
 \index{enumitem-keys-para (subkey of ``notes'')}
 \index{code-before!subkey of ``notes''}
 \index{detect-duplicates (subkey of ``notes'')}
+\index{no-print (subkey of ``notes'')}
 
 
 The tabular notes can be customized with a set of keys available in
@@ -5188,6 +5224,7 @@ The tabular notes can be customized with a set of keys available in
 \item |notes/enumitem-keys| 
 \item |notes/enumitem-keys-para| 
 \item |notes/code-before|
+\item |notex/no-print|
 \end{itemize}
 For sake of commodity, it is also possible to set these keys in
 |\NiceMatrixOptions| via a key |notes| which takes in as value a list of 
@@ -5326,7 +5363,17 @@ on the \emph{right} of the current value of the parameter |notes/code-before|.
 \item The key \Definition{notes/detect-duplicates} activates the detection of
 the commands |\tabularnotes| with the same argument.
 
-Initial value : |true|
+Initial value: |true|
+
+\item \colorbox{yellow!50}{\bfseries New 7.7}
+
+\indexcommand{NiceTabularNotes}
+When the key \Definition{notes/no-print} is in force, the notes are \emph{not} composed
+by \pkg{nicematrix} under the tabular. However, the final user may use the
+command \DefinitionCommand{NiceTabularNotes} in order to insert these notes where he wishes
+(after the composition of the tabular).
+
+Initial value: |false|
 \end{itemize}
 
 \index{nota@\textbf{Notes in the tabulars}|)}
@@ -7137,20 +7184,28 @@ Dupont & Chantal & January 15, 1998 \\
 
 \index{dotted@\textbf{Dotted lines}|textit}
 
-An example with the resultant of two polynoms:
+An example with the resultant of two polynoms (this example requires TikZ
+for the dashed rule specified by the letter |;| in the preamble of the array).
+
 
 \nobreak
 \bigskip
+\begin{Verbatim}[formatcom=\footnotesize\color{gray}]
+\usepackage{tikz}      % in the preamble
+\end{Verbatim}
+
+\nobreak
+\medskip
 \begin{BVerbatim}
 \setlength{\extrarowheight}{1mm}
-\[\begin{vNiceArray}{cccc:ccc}[columns-width=6mm, xdots/shorten += 3pt]
+\[\begin{vNiceArray}{cccc;ccc}[columns-width=6mm, xdots/shorten += 3pt]
 a_0   &      &&       &b_0    &      &     \\
 a_1   &\Ddots&&       &b_1    &\Ddots&     \\
 \Vdots&\Ddots&&       &\Vdots &\Ddots&b_0  \\
 a_p   &      &&a_0    &       &      &b_1   \\
       &\Ddots&&a_1    &b_q    &      &\Vdots\\
       &      &&\Vdots &       &\Ddots&      \\
-      &      &&a_p     &       &      &b_q    
+      &      &&a_p    &       &      &b_q    
 \end{vNiceArray}\]
 \end{BVerbatim}
 
@@ -7159,7 +7214,7 @@ a_p   &      &&a_0    &       &      &b_1   \\
 
 \begin{scope}
 \setlength{\extrarowheight}{1mm}
-\[\begin{vNiceArray}{cccc:ccc}[columns-width=6mm, xdots/shorten += 3pt]
+\[\begin{vNiceArray}{cccc;ccc}[columns-width=6mm, xdots/shorten += 3pt]
 a_0   &      &&       &b_0    &      &     \\
 a_1   &\Ddots&&       &b_1    &\Ddots&     \\
 \Vdots&\Ddots&&       &\Vdots &\Ddots&b_0  \\
@@ -7255,7 +7310,7 @@ not longer dotted (TikZ should be loaded).
 \end{pNiceMatrix}\]
 \end{scope}
 
-\pagebreak
+\vspace{1cm}
 In fact, it's even possible to draw solid lines with the commands |\Cdots|,
 |\Vdots|, etc.\footnote{In this document, the TikZ library \pkg{arrows.meta}
 has been loaded, which impacts the shape of the arrow tips.}
@@ -7326,7 +7381,7 @@ If one prefers the braces of the library \pkg{decorations.pathreplacing} of TikZ
 best way is to use the commands |\Hbrace| and |\Vbrace| provided by
 \pkg{nicematrix} (cf. p.~\pageref{Hbrace}).\footnote{Remark that those commands are
 available only if TikZ has been loaded with the library
-\pkg{decorations.pathreplacing}: |\usepackage{TikZ}|
+\pkg{decorations.pathreplacing}: |\usepackage{tikz}|
 |\usetikzlibrary{decorations.pathreplacing}|.}
 
 \medskip

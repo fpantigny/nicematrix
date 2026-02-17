@@ -393,7 +393,7 @@
 \str_new:N \g__nicematrix_com_or_env_str
 \str_gset:Nn \g__nicematrix_com_or_env_str { environment }
 \bool_new:N \l__nicematrix_bold_row_style_bool
-\bool_new:N \l__nicematrix_do_not_print_notes_bool
+\bool_new:N \l__nicematrix_notes_no_print_bool
 \clist_new:N \g__nicematrix_cbic_clist
 \cs_new:Npn \__nicematrix_full_name_env:
   {
@@ -1095,6 +1095,8 @@
   { \__nicematrix_error:nn { Duplicate~name } { #1 } }
 \keys_define:nn { nicematrix / notes }
   {
+    no-print .bool_set:N = \l__nicematrix_notes_no_print_bool ,
+    no-print .default:n = true ,
     para .bool_set:N = \l__nicematrix_notes_para_bool ,
     para .default:n = true ,
     code-before .tl_set:N = \l__nicematrix_notes_code_before_tl ,
@@ -1189,8 +1191,6 @@
   }
 \keys_define:nn { nicematrix / NiceMatrixOptions }
   {
-    do-not-print-notes .bool_set:N = \l__nicematrix_do_not_print_notes_bool ,
-    do-not-print-notes .default:n = true ,
     delimiters / color .tl_set:N = \l__nicematrix_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l__nicematrix_delimiters_max_width_bool ,
@@ -1293,8 +1293,6 @@
   }
 \keys_define:nn { nicematrix / NiceTabular }
   {
-    do-not-print-notes .bool_set:N = \l__nicematrix_do_not_print_notes_bool ,
-    do-not-print-notes .default:n = true ,
     width .code:n = \dim_set:Nn \l__nicematrix_width_dim { #1 }
                     \bool_set_true:N \l__nicematrix_width_used_bool ,
     width .value_required:n = true ,
@@ -2745,6 +2743,7 @@
   }
 \cs_new_protected:Npn \__nicematrix_make_preamble_w_ii:nnnn #1 #2 #3 #4
   {
+    \setlength { \l_tmpa_dim } { #4 }
     \tl_gput_right:No \g__nicematrix_array_preamble_tl \g__nicematrix_pre_cell_tl
     \tl_gclear:N \g__nicematrix_pre_cell_tl
     \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
@@ -3303,8 +3302,9 @@
         { ! \tl_if_empty_p:o \g__nicematrix_tabularnote_tl }
       }
       {
-        \bool_if:NF \l__nicematrix_do_not_print_notes_bool
-          { \NiceTabularNotes }
+        \bool_if:NTF \l__nicematrix_notes_no_print_bool
+          { \cs_gset_eq:NN \NiceTabularNotes \__nicematrix_tabular_notes: }
+          { \__nicematrix_tabular_notes: }
       }
     \cs_set_eq:NN \tabularnote \__nicematrix_tabularnote_error:n
     \bool_if:NF \l__nicematrix_caption_above_bool { \__nicematrix_insert_caption: }
@@ -3342,8 +3342,12 @@
     \__nicematrix_error_or_warning:n { tabularnote~below~the~tabular }
     \cs_gset:Npn \__nicematrix_tabularnote_error:n ##1 { }
   }
-\NewDocumentCommand \NiceTabularNotes { }
+\cs_set_protected:Npn \__nicematrix_tabular_notes_error:
+  { \__nicematrix_error:n { Bad~use~of~NiceTabularNotes } }
+\cs_set_eq:NN \NiceTabularNotes \__nicematrix_tabular_notes_error:
+\cs_set_protected:Npn \__nicematrix_tabular_notes:
   {
+    \cs_gset_eq:NN \NiceTabularNotes \__nicematrix_tabular_notes_error:
     \seq_gconcat:NNN \g__nicematrix_notes_seq \g__nicematrix_notes_in_caption_seq \g__nicematrix_notes_seq
     \int_set:Nn \c@tabularnote { \seq_count:N \g__nicematrix_notes_seq }
     \skip_vertical:N 0.65ex
@@ -3917,6 +3921,11 @@
   { \endNiceArray }
 \cs_new_protected:Npn \__nicematrix_NotEmpty:
   { \bool_gset_true:N \g__nicematrix_not_empty_cell_bool }
+\cs_set_protected:Npn \__nicematrix_renew_matrix:
+  {
+    \tl_map_inline:nn { pvVbB }
+      { \RenewEnvironmentCopy { ##1matrix } { ##1NiceMatrix } }
+  }
 \NewDocumentEnvironment { NiceTabular } { O { } m ! O { } }
   {
     \dim_compare:nNnT { \l__nicematrix_width_dim } = { \c_zero_dim }
@@ -6968,7 +6977,7 @@
   }
 \cs_new_protected:Npn \__nicematrix_c_custom_line:n #1
   {
-    \exp_args:Nc \NewExpandableDocumentCommand
+    \exp_args:Nc \DeclareExpandableDocumentCommand
       { nicematrix - \l__nicematrix_ccommand_str }
       { O { } m }
       {
@@ -7047,7 +7056,34 @@
     \__nicematrix_rec_preamble:n #1
   }
 \__nicematrix_custom_line:n
-  { letter = : , command = hdottedline , ccommand = cdottedline, dotted }
+  { letter = : , command = \hdottedline , ccommand = \cdottedline, dotted }
+\hook_gput_code:nnn { begindocument } { . }
+  {
+    \IfPackageLoadedT { tikz }
+      {
+        \cs_if_exist:cTF { tikz@library@decorations@loaded }
+          {
+            \__nicematrix_custom_line:n
+              {
+                letter = ; ,
+                command = \hdashedline ,
+                ccommand = \cdashedline ,
+                tikz = { dash~pattern = on~4~pt~off~2pt, dash~expand~off } ,
+                total-width = \pgflinewidth
+              }
+          }
+          {
+            \__nicematrix_custom_line:n
+              {
+                letter = ; ,
+                command = \hdashedline ,
+                ccommand = \cdashedline ,
+                tikz = { dash~pattern = on~4~pt~off~2pt } ,
+                total-width = \pgflinewidth
+              }
+          }
+      }
+  }
 \cs_new_protected:Npn \__nicematrix_test_hline_in_block:nnnnn #1 #2 #3 #4 #5
   {
     \int_compare:nNnT { \l_tmpa_tl } > { #1 }
@@ -8783,24 +8819,6 @@
     \pgfusepathqfill
     \endpgfpicture
   }
-\cs_set_protected:Npn \__nicematrix_renew_matrix:
-  {
-    \RenewDocumentEnvironment { pmatrix } { }
-      { \pNiceMatrix }
-      { \endpNiceMatrix }
-    \RenewDocumentEnvironment { vmatrix } { }
-      { \vNiceMatrix }
-      { \endvNiceMatrix }
-    \RenewDocumentEnvironment { Vmatrix } { }
-      { \VNiceMatrix }
-      { \endVNiceMatrix }
-    \RenewDocumentEnvironment { bmatrix } { }
-      { \bNiceMatrix }
-      { \endbNiceMatrix }
-    \RenewDocumentEnvironment { Bmatrix } { }
-      { \BNiceMatrix }
-      { \endBNiceMatrix }
-  }
 \keys_define:nn { nicematrix / Auto }
   {
     columns-type .tl_set:N = \l__nicematrix_columns_type_tl ,
@@ -10275,6 +10293,13 @@
     The~columns~you~did~not~used~won't~be~created.\\
     You~won't~have~similar~warning~till~the~end~of~the~document.
   }
+\__nicematrix_msg_new:nn { Bad~use~of~NiceTabularNotes }
+  {
+    Bad~use~of~\token_to_str:N \NiceTabularNotes \\
+    \token_to_str:N~\NiceTabularNotes\ should~be~used~only~
+    after~at~tabular~which~uses~`notes/no-print`. \\
+    That~command~will~be~ignored.
+  }
 \__nicematrix_msg_new:nn { empty~preamble }
   {
     Empty~preamble.\\
@@ -10865,7 +10890,11 @@
 \__nicematrix_msg_new:nn { Yet~in~env }
   {
     Nested~environments.\\
-    Environments~of~nicematrix~can't~be~nested.\\
+    Environments~of~nicematrix~can't~be~nested.~However~you~
+    can~insert,~for~example,~a~\{tabular\}~in~a~\{NiceTabular\}~
+    or~a~\{NiceTabular\}~in~a~\{tabular\}.~You~can~also~compose~
+    an~environment~of~nicematrix~in~a~box~of~LaTeX~and~insert~
+    that~box~in~another~environment~of~nicematrix.\\
     This~error~is~fatal.
   }
 \__nicematrix_msg_new:nn { Outside~math~mode }
@@ -11326,13 +11355,15 @@
   {
     Invalid~column~number.\\
     A~color~instruction~in~the~ \token_to_str:N \CodeBefore \
-    specifies~a~column~which~is~outside~the~array.~It~will~be~ignored.
+    specifies~a~column~which~is~outside~the~array.~It~will~be~ignored.\\
+    Maybe~this~is~a~spurious~error~due~to~an~incorrect~'aux'~file.
   }
 \__nicematrix_msg_new:nn { Invalid~row~number }
   {
     Invalid~row~number.\\
     A~color~instruction~in~the~ \token_to_str:N \CodeBefore \
-    specifies~a~row~which~is~outside~the~array.~It~will~be~ignored.
+    specifies~a~row~which~is~outside~the~array.~It~will~be~ignored.\\
+    Maybe~this~is~a~spurious~error~due~to~an~incorrect~'aux'~file.
   }
 \__nicematrix_define_com:NNN p  (  )
 \__nicematrix_define_com:NNN b  [  ]

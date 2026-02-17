@@ -642,7 +642,7 @@ la clé \Definition{opacity} fixe l'opacité de la couleur de remplissage donné
 par |fill| ;\footnote{Attention : cette fonctionnalité génère des
   instructions de transparence dans le \textsc{pdf} résultant et certains
   lecteurs de \textsc{pdf} n'acceptent pas la transparence. L'application de
-  l'opacité est faite par |\pgfsetfillopacity|}
+  l'opacité est faite par |\pgfsetfillopacity| de \textsc{pgf}.}
 \item \index{draw (clé de \texttt{\textbackslash Block})}
 la clé \Definition{draw} prend en argument une couleur et trace le cadre
 avec cette couleur (la valeur par défaut de cette clé est la couleur courante
@@ -1237,9 +1237,9 @@ préféré le codage suivant :
   & \Block{1-5}{les cinq premiers 
                  entiers naturels} \\ 
 3 & \Block{1-5}{un & deux & trois} \\
-4 & \Block{1-5}{un&deux&trois&quatre} \\
-5 & un & deux & trois
-  & \cellcolor{red!15} quatre & cinq \\
+4 & \Block{1-5}{un&deux
+     &\cellcolor{red!15}trois&quatre} \\
+5 & un & deux & trois & quatre & cinq \\
 \end{NiceTabular}
 \end{Code}
 %
@@ -1247,8 +1247,8 @@ préféré le codage suivant :
    [hvlines,ampersand-in-blocks,no-cell-nodes]
   & \Block{1-5}{les cinq premiers entiers naturels} \\ 
 3 & \Block{1-5}{un & deux & trois} \\
-4 & \Block{1-5}{un& deux & trois & quatre} \\
-5 & un & deux & trois & \cellcolor{red!15} quatre & cinq \\
+4 & \Block{1-5}{un& deux & \cellcolor{red!15} trois & quatre} \\
+5 & un & deux & trois & quatre & cinq \\
 \end{NiceTabular}
 
 \medskip
@@ -2093,6 +2093,38 @@ sept & huit & neuf
 \end{center}
 
 \medskip
+\colorbox{yellow!50}{\bfseries Nouveau 7.6}
+
+\nobreak
+\smallskip
+L'extension \pkg{nicematrix} prédéfinit les commandes
+\DefinitionCommande{hdashedline} et \DefinitionCommande{cdashedline} et la
+lettre «|;|» pour des filets en tiretés. Elles sont disponibles quand TikZ est chargé.
+
+\indexcommand{hdashedline}
+\indexcommand{cdashedline}
+
+\medskip
+\begin{Code}[annotation = false]
+\emph{% déjà présent dans nicematrix.sty}
+\NiceMatrixOptions
+  { 
+    custom-line = 
+      {
+        letter = ; ,
+        command = \hdashedline ,
+        ccommand = \cdashedline ,
+        tikz = densely~dashed ,
+        total-width = \pgflinewidth
+      }
+  } 
+\end{Code}
+
+
+
+
+
+\medskip
 \item \emph{Troisième possibilité} : la clé \Definition{dotted}
 
 \label{dotted}
@@ -2116,8 +2148,7 @@ L'extension \pkg{nicematrix} prédéfinit en fait les commandes
 \DefinitionCommande{hdottedline} et \DefinitionCommande{cdottedline} et la
 lettre «|:|» pour ces filets en pointillés.\footnote{Néanmoins, l'utilisateur
   peut écraser ces définitions de |\hdottedline|, |\cdottedline| et de «|:|»
-  avec |custom-line| s'il le souhaite (par exemple pour les remplacer par des
-  lignes en tiretés).}
+  avec |custom-line| s'il le souhaite.}
 
 \smallskip
 \begin{Code}[annotation = false]
@@ -2127,8 +2158,8 @@ lettre «|:|» pour ces filets en pointillés.\footnote{Néanmoins, l'utilisateu
     custom-line = 
       { 
         letter = : , 
-        command = hdottedline , 
-        ccommand = cdottedline ,
+        command = \hdottedline , 
+        ccommand = \cdottedline ,
         dotted 
       }
   } 
@@ -3971,6 +4002,12 @@ $\begin{pmatrix}
 \end{pmatrix}$
 \end{scope}
 
+\bigskip
+Néanmoins, on remarquera que les environnements de \pkg{nicematrix} ne peuvent
+pas être imbriqués et, par conséquent, on ne peut pas utiliser |renew-matrix| si
+on a, par exemple, des matrices |{pmatrix}| imbriquées dans d'autres matrices
+|{pmatrix}|.
+
 
 \subsection{Les labels des lignes en pointillés}
 
@@ -5179,15 +5216,15 @@ L'extension \pkg{nicematrix} propose aussi une commande
 composées à la fin du tableau avec une longueur pour les lignes de texte égale à
 la largeur du tableau (hors éventuelles colonnes extérieures spécifiées par
 |first-col| et |last-col|: cf.~\ref{exterior}, p.~\pageref{exterior}). Sans
-surprise, cette commande n'est disponible que dans |{NiceTabular}|,
-|{NiceTabular*}| et |{NiceTabularX}|.
+surprise, cette commande n'est disponible que dans les environnements de tableaux
+|{NiceTabular}|, |{NiceTabular*}| et |{NiceTabularX}|.
 
 
 \index{enumitem@\pkg{enumitem} (extension requise pour utiliser\newline
   \texttt{\textbackslash tabularnote})}
 En fait, cette commande n'est disponible que si l'extension \pkg{enumitem} a été
 chargée (avant ou après \pkg{nicematrix}). Les notes sont en effet composées en
-fin de tableau selon un type de liste défini par l'extension \pkg{enumitem}. Si
+fin de tableau selon un type de liste défini par cette extension \pkg{enumitem}. Si
 \pkg{enumitem} n'a pas été chargée, une erreur sera levée à l'utilisation de |\tabularnote|.
 
 \medskip
@@ -5352,6 +5389,7 @@ Wallis & John & 87 \\
 \index{enumitem-keys-para (sous-clé de «notes»)}
 \index{code-before!sous-clé de «notes»}
 \index{detect-duplicates (sous-clé de «notes»)}
+\index{no-print (sous-clé de «notes»)}
 
 
 Les notes de tableau peuvent être personnalisées grâce à un ensemble de clés
@@ -5366,6 +5404,7 @@ disponibles dans |\NiceMatrixOptions|. Ces clés ont un nom préfixé par |notes
 \item |notes/enumitem-keys-para|
 \item |notes/code-before|$^+$
 \item |notes/detect-duplicates|
+\item |notes/no-print|
 \end{itemize}
 Pour la commodité, il est aussi possible de fixer ces clés dans
 |\NiceMatrixOptions| via une clé |notes| qui prend en argument une liste de
@@ -5508,9 +5547,22 @@ que l'on peut écrire, par exemple, |notes/code-before += \footnotesize| (les to
 sont alors rajoutés à \emph{droite} de la valeur courante du paramètre).
 
 \item La clé \Definition{notes/detect-duplicates} active la détection des
-commandes |\tabularnote| avec le même argument.
+commandes |\tabularnote| qui ont le même argument (et alors une seule note est écrite sous le
+tableau correspondant à plusieurs appels de notes).
 
 Valeur initiale : |true|
+
+
+\item \colorbox{yellow!50}{\bfseries Nouveau 7.7}
+
+\indexcommand{NiceTabularNotes}
+
+Quand la clé \Definition{notes/no-print} est utilisée, les notes ne sont
+\emph{pas composées} par \pkg{nicematrix}. Néanmoins, l'utilisateur final peut
+utiliser la commande \DefinitionCommande{NiceTabularNotes} pour les insérer à
+l'endroit souhaité (après la composition du tableau).
+
+Valeur initiale : |false|
 \end{itemize}
 
 \index{nota@\textbf{Notes dans les tableaux}|)}
@@ -7367,13 +7419,21 @@ Dupont & Chantal & 15 janvier 1998 \\
 \index{Pointillés@\textbf{Pointillés (lignes en ---)}|textit}
 
 
-Un exemple pour le résultant de deux polynômes :
+Un exemple pour le résultant de deux polynômes (cet exemple nécessite que
+TikZ soit chargé pour que la lettre |;| soit disponible).
+
+\nobreak
+\medskip
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz} % dans le préambule
+\end{Verbatim}
+
 
 \nobreak
 \medskip
 \begin{Code}
 \setlength{\extrarowheight}{1mm}
-\begin{vNiceArray}{cccc:ccc}[columns-width=6mm, xdots/shorten += 3pt]
+\begin{vNiceArray}{cccc;ccc}[columns-width=6mm, xdots/shorten += 3pt]
 a_0   &      &&       &b_0    &      &     \\
 a_1   &\Ddots&&       &b_1    &\Ddots&     \\
 \Vdots&\Ddots&&       &\Vdots &\Ddots&b_0  \\
@@ -7392,7 +7452,7 @@ a_p   &      &&a_0    &       &      &b_1   \\
 
 \begin{scope}
 \setlength{\extrarowheight}{1mm}
-\[\begin{vNiceArray}{cccc:ccc}[columns-width=6mm, xdots/shorten += 3pt]
+\[\begin{vNiceArray}{cccc;ccc}[columns-width=6mm, xdots/shorten += 3pt]
 a_0   &      &&       &b_0    &      &     \\
 a_1   &\Ddots&&       &b_1    &\Ddots&     \\
 \Vdots&\Ddots&&       &\Vdots &\Ddots&b_0  \\
@@ -7563,7 +7623,7 @@ Si on préfère des accolades comme celles proposées par la bibliothèque
 |\Hbrace| et |\Vbrace| proposées par \pkg{nicematrix} (cf.
 p.~\pageref{Hbrace}).\footnote{Ces commandes ne sont disponibles que si TikZ a
   été chargée ainsi que la bibliothèque \pkg{decorations.pathreplacing} de TikZ
-  : |\usepackage{TikZ}| |\usetikzlibrary{decorations.pathreplacing}|.}
+  : |\usepackage{tikz}| |\usetikzlibrary{decorations.pathreplacing}|.}
 
 
 \medskip
