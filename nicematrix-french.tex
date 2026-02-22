@@ -644,12 +644,9 @@ par |fill| ;\footnote{Attention : cette fonctionnalité génère des
   lecteurs de \textsc{pdf} n'acceptent pas la transparence. L'application de
   l'opacité est faite par |\pgfsetfillopacity| de \textsc{pgf}.}
 \item \index{draw (clé de \texttt{\textbackslash Block})}
-la clé \Definition{draw} prend en argument une couleur et trace le cadre
-avec cette couleur (la valeur par défaut de cette clé est la couleur courante
-des filets du tableau) ;
-\item \index{color!clé de \texttt{\textbackslash Block}} 
-la clé \Definition{color} prend en argument une couleur et l'applique au
-contenu et trace également le cadre avec cette couleur ;
+la clé \Definition{draw} trace le cadre du bloc avec la couleur courante
+pour les filets (si on veut une autre couleur, il est possible de la passer comme
+valeur de la clé |draw|) ; 
 \item \index{vlines!clé de \texttt{\textbackslash Block}}
 \index{hvlines!clé de
   \texttt{\textbackslash Block}}
@@ -660,8 +657,8 @@ tracent les filets correspondants dans le bloc\footnote{Néanmoins, les filets n
   \pkg{nicematrix}: les filets ne sont pas tracés dans les blocs, sauf s'ils
   possèdent la clé |transparent| (cf.
   section~\ref{rules} p.~\pageref{rules}).} ;
-\item \index{line-width (clé de \texttt{\textbackslash Block})}
-la clé \Definition{line-width} fixe la largeur utilisée pour tracer les
+\item \index{rules/width (clé de \texttt{\textbackslash Block})}
+la clé \Definition{rules/width} fixe la largeur utilisée pour tracer les
 filets (n'a d'intérêt que si |draw|, |hvlines|,
 |hlines| ou |vlines| est utilisée) ;
 \item \index{rounded-corners!clé de \texttt{\textbackslash Block}}
@@ -670,7 +667,11 @@ la clé \Definition{rounded-corners} impose des coins arrondis (pour le
 cadre dessiné par |draw| et le fond dessiné par |fill|)
 avec un rayon égal à la valeur de cette clé (la valeur par défaut est
 4~pt\footnote{Cette valeur par défaut est la valeur initiale des \emph{rounded
-    corners} de TikZ.}). 
+    corners} de TikZ.}) ;
+\item \index{color!clé de \texttt{\textbackslash Block}}
+la clé \Definition{color} a un comportement un peu particulier pour des
+raisons historiques: elle prend en argument une couleur et l'applique au
+contenu et trace également le cadre avec cette couleur (son emploi est déconseillé).
 \end{itemize}
 
 \medskip
@@ -2093,7 +2094,7 @@ sept & huit & neuf
 \end{center}
 
 \medskip
-\colorbox{yellow!50}{\bfseries Nouveau 7.6}
+\colorbox{yellow!50}{\bfseries Nouveau 7.7}
 
 \nobreak
 \smallskip
@@ -2114,12 +2115,15 @@ lettre «|;|» pour des filets en tiretés. Elles sont disponibles quand TikZ es
         letter = ; ,
         command = \hdashedline ,
         ccommand = \cdashedline ,
-        tikz = densely~dashed ,
+        tikz = { dash pattern = on 4 pt off 2pt, dash expand off } ,
         total-width = \pgflinewidth
       }
   } 
 \end{Code}
 
+\smallskip
+En fait, si la librairie TikZ \pkg{decorations} est chargée (avec
+|\usetikzlibrary{decorations}|), la clé |dash expand off| est ajoutée).
 
 
 
@@ -3381,11 +3385,18 @@ l'extension \pkg{array} (elle-même chargée par \pkg{nicematrix}).
 \index{width!clé de \texttt{\{NiceTabular\}}}
 
 L'environnement |{NiceTabular}| propose aussi des colonnes |X| similaires à
-celles proposées par l'environnement |{tabularx}| de l'extension éponyme.
+celles proposées par l'environnement |{tabularx}| de l'extension
+éponyme.\footnote{L'environnement |{tabularx}| capte son contenu comme un
+  argument et le compose plusieurs fois pour calculer la largeur des colonnes.
+  De son côté, |{NiceTabular}| ne capte pas son contenu comme argument (sauf
+  quand la clé |light-syntax| est utilisée) et ne compose qu'une seule fois le
+  tableau mais écrit des informations sur le fichier |aux|, nécessitant ainsi
+  plusieurs compilations.}
 
 La valeur requise par la largeur du tableau peut être passée en argument de la
 clé \Definition{width} (dans |{NiceTabular}| ou dans |\NiceMatrixOptions|). La
-valeur initiale de ce paramètre est |\linewidth| de LaTeX (et non |\textwidth|).
+valeur initiale de ce paramètre est le paramètre |\linewidth| de LaTeX (et non
+|\textwidth|).
 
 Pour se rapprocher davantage de l'environnement |{tabularx}|, \pkg{nicematrix}
 propose aussi un environnement \Definition{\{NiceTabularX\}} avec une syntaxe
@@ -3393,16 +3404,13 @@ similaire à celle de |{tabularx}|, c'est-à-dire que la largeur voulue pour le
 tableau est spécifiée en premier argument (obligatoire).
 
 \medskip
-Comme avec les extensions \pkg{tabu}\footnote{L'extension \pkg{tabu} est
-  maintenant considérée comme obsolète.} et \pkg{tabularray}, le spécificateur |X|
-accepte entre crochets un argument optionnel qui est une liste de clés.
+Le spécificateur |X| accepte entre crochets un argument optionnel qui est une
+liste de clés.
 \begin{itemize}[beginpenalty=10000]
 \item On peut spécifier un poids pour la colonne en mettant directement un
 nombre positif comme argument du spécificateur |X|. Par exemple, une colonne
 |X[0.5]| aura une largeur moitié de celle d'une colonne |X| (qui a un poids de
-1).\footnote{Les valeurs négatives pour les poids, comme proposées par
-  \pkg{tabu} (maintenant obsolète), ne sont \emph{pas} prises en charge par
-  \pkg{nicematrix}. Si une telle valeur est utilisée, une erreur sera levée.}
+1).
 \item On peut spécifier l'alignement horizontal avec une des lettres |l|, |c| et
 |r| (qui insèrent respectivement |\raggedright|, |\centering| et |\raggedleft|
 suivi de |\arraybackslash|).\footnote{En fait, quand \pkg{ragged2e} est chargée,
@@ -4248,8 +4256,8 @@ $\begin{bNiceMatrix}[margin,hvlines]
 \label{Hbrace}
 \indexcommand{Hbrace}
 \indexcommand{Vbrace}
-\index{brace (nicematrix/brace est un style TikZ\newline utilisé par \textbackslash
-  Hbrace et \textbackslash Vbrace)}
+\index{brace (nicematrix/brace est un style TikZ\newline utilisé par
+  \texttt{\textbackslash Hbrace} et \texttt{\textbackslash Vbrace})}
 
 
 \smallskip
@@ -5170,7 +5178,10 @@ Voir table \ref{t:tabularnote}, p.~\pageref{t:tabularnote}, un exemple
 d'utilisation des clés |caption| et |label|.
 
 \smallskip
-Ces fonctionnalités sont compatibles avec l'extension \pkg{caption}.
+Ces fonctionnalités sont compatibles avec l'extension \pkg{caption}. Par
+exemple, il est possible d'utiliser le réglage
+|\captionsetup{justification=raggedright,singlelinecheck=false}| pour avoir la
+légende alignée à gauche, même si la légende est courte.
 
 \subsection{Les notes de pied de page}
 

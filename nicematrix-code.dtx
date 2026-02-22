@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.6}
-\def\myfiledate{2026/02/01}
+\def\myfileversion{7.7}
+\def\myfiledate{2026/02/22}
 %
 %
 %<*batchfile>  
@@ -215,8 +215,8 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_error_or_warning:n 
   { 
     \bool_if:NTF \g_@@_messages_for_Overleaf_bool 
-      { \@@_warning:n } 
-      { \@@_error:n } 
+      \@@_warning:n 
+      \@@_error:n 
   }
 %    \end{macrocode}
 % 
@@ -303,6 +303,8 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % \section{Technical  definitions}
+%
+% Here are definitions that have been added to the LaTeX kernel in February 2006.
 %
 % 
 % The following constants are defined only for efficiency in the tests.
@@ -492,7 +494,7 @@ version 2005/12/01 or later.
   {
     \cs_set_protected:Npe \@@_everycr:
       {
-        \IfPackageLoadedTF { colortbl } { \CT@everycr } { \everycr }
+        \IfPackageLoadedTF { colortbl } \CT@everycr \everycr
           { \noalign { \@@_in_everycr: } }
       }
     \IfPackageLoadedTF { colortbl }
@@ -517,8 +519,8 @@ version 2005/12/01 or later.
         \cs_new_protected:Npn \@@_replace_columncolor:
           {
             \tl_replace_all:Nnn \g_@@_array_preamble_tl 
-              { \columncolor } 
-              { \@@_columncolor_preamble }
+              \columncolor 
+              \@@_columncolor_preamble
 %    \end{macrocode}
 % |\@@_column_preamble|, despite its name, will be defined with
 % |\NewDocumentCommand| because it takes in an optional argument between square
@@ -539,7 +541,7 @@ version 2005/12/01 or later.
         \def \arrayrulecolor #1 # { \CT@arc { #1 } }
         \def \CT@arc #1 #2
           {
-            \dim_compare:nNnT { \baselineskip } = { \c_zero_dim } { \noalign }
+            \dim_compare:nNnT \baselineskip = \c_zero_dim { \noalign }
               { \cs_gset_nopar:Npn \CT@arc@ { \color #1 { #2 } } } 
           }
 %    \end{macrocode}
@@ -548,7 +550,7 @@ version 2005/12/01 or later.
         \def \doublerulesepcolor #1 # { \CT@drs { #1 } }
         \def \CT@drs #1 #2 
           {
-            \dim_compare:nNnT { \baselineskip } = { \c_zero_dim } { \noalign }
+            \dim_compare:nNnT \baselineskip = \c_zero_dim { \noalign }
               { \cs_gset:Npn \CT@drsc@ { \color #1 { #2 } } }
           }
         \def \hline
@@ -573,8 +575,8 @@ version 2005/12/01 or later.
 \cs_set_nopar:Npn \@@_standard_cline: #1 { \@@_standard_cline:w #1 \q_stop }
 \cs_set_nopar:Npn \@@_standard_cline:w #1-#2 \q_stop
   {
-    \int_if_zero:nT { \l_@@_first_col_int } { \omit & }
-    \int_compare:nNnT { #1 } > { \c_one_int }
+    \int_if_zero:nT \l_@@_first_col_int { \omit & }
+    \int_compare:nNnT { #1 } > 1
       { \multispan { \int_eval:n { #1 - 1 } } & }
     \multispan { \int_eval:n { #2 - #1 + 1 } } 
     { 
@@ -1136,6 +1138,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \clist_new:N \g_@@_cbic_clist
 %    \end{macrocode}
+%
 % 
 % \bigskip
 % The following command will be able to reconstruct the full name of the current
@@ -1146,7 +1149,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new:Npn \@@_full_name_env:
   { 
-    \str_if_eq:eeTF { \g_@@_com_or_env_str } { command }
+    \str_if_eq:eeTF \g_@@_com_or_env_str { command }
       { command \space \c_backslash_str \g_@@_name_env_str }
       { environment \space \{ \g_@@_name_env_str \} }
   }
@@ -1352,8 +1355,8 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % We also manage a sequence of the \emph{positions} of the blocks. In that
 % sequence, each block is represented by only five components:
-% |{|\textsl{imin}|}{|\textsl{jmin}|}{|\textsl{imax}|}{|\textsl{jmax}|}{|%
-% \textsl{name}|}|. A block with the key |hvlines| won't appear in that
+% |{|\textsl{imin}|}{|\textsl{jmin}|}{|\textsl{imax}|}{|\textsl{jmax}|}{|\textsl{name}|}|.
+% A block with the key |hvlines| won't appear in that
 % sequence (otherwise, the lines in that block would not be drawn!).
 %    \begin{macrocode}
 \seq_new:N \g_@@_pos_of_blocks_seq
@@ -1481,7 +1484,7 @@ version 2005/12/01 or later.
 % The following counters will be used when drawing the rules.
 %    \begin{macrocode}
 \int_new:N \l_@@_start_int
-\int_set_eq:NN \l_@@_start_int \c_one_int
+\int_set:Nn \l_@@_start_int 1
 \int_new:N \l_@@_end_int 
 \int_new:N \l_@@_local_start_int 
 \int_new:N \l_@@_local_end_int 
@@ -1656,7 +1659,7 @@ version 2005/12/01 or later.
 % the value will be~$0$. 
 %    \begin{macrocode}
 \int_new:N \l_@@_first_row_int
-\int_set_eq:NN \l_@@_first_row_int \c_one_int
+\int_set:Nn \l_@@_first_row_int 1
 %    \end{macrocode}
 %
 % \medskip
@@ -1666,7 +1669,7 @@ version 2005/12/01 or later.
 % the value will be~$0$. 
 %    \begin{macrocode}
 \int_new:N \l_@@_first_col_int
-\int_set_eq:NN \l_@@_first_col_int \c_one_int
+\int_set:Nn \l_@@_first_col_int 1
 %    \end{macrocode}
 % 
 % \medskip
@@ -1793,7 +1796,7 @@ version 2005/12/01 or later.
                     \def \l_tmpa_tl { ##1 } 
                     \def \l_tmpb_tl { ##1 } 
                   }
-                \int_step_inline:nnn { \l_tmpa_tl } { \l_tmpb_tl }
+                \int_step_inline:nnn \l_tmpa_tl \l_tmpb_tl
                   { \clist_put_right:Nn \l_tmpa_clist { ####1 } }
               }
           }
@@ -1984,9 +1987,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \NewDocumentCommand { \tabularnote } { o m }
           {
-            \bool_lazy_or:nnT { \cs_if_exist_p:N \@captype } { \l_@@_in_env_bool }
+            \bool_lazy_or:nnT \l_@@_in_env_bool { \cs_if_exist_p:N \@captype } 
               { 
-                \bool_lazy_and:nnTF { ! \l_@@_tabular_bool } { \l_@@_in_env_bool }
+                \bool_lazy_and:nnTF \l_@@_in_env_bool  { ! \l_@@_tabular_bool } 
                   { \@@_error:n { tabularnote~forbidden } }
                   {
 %    \end{macrocode}
@@ -2073,10 +2076,10 @@ version 2005/12/01 or later.
                 \seq_map_break: 
               }
           }
-        \int_if_zero:nF { \l_tmpa_int }
+        \int_if_zero:nF \l_tmpa_int 
           { \int_add:Nn \l_tmpa_int { \g_@@_notes_caption_int } }
       }
-    \int_if_zero:nT { \l_tmpa_int }
+    \int_if_zero:nT \l_tmpa_int 
       {
         \seq_gput_right:Nn \g_@@_notes_seq { { #1 } { #2 } } 
         \tl_if_novalue:nT { #1 } { \int_gincr:N \c@tabularnote }
@@ -2089,9 +2092,9 @@ version 2005/12/01 or later.
               {
                 \int_eval:n 
                   { 
-                    \int_if_zero:nTF { \l_tmpa_int }
-                      { \c@tabularnote }
-                      { \l_tmpa_int }
+                    \int_if_zero:nTF \l_tmpa_int 
+                      \c@tabularnote 
+                      \l_tmpa_int 
                   }
               }
           }
@@ -2127,12 +2130,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \int_gincr:N \g_@@_tabularnote_int
         \refstepcounter { tabularnote } 
-        \int_compare:nNnT { \l_tmpa_int } = { \c@tabularnote }
+        \int_compare:nNnT \l_tmpa_int = \c@tabularnote 
           { \int_gincr:N \c@tabularnote }
         \seq_clear:N \l_@@_notes_labels_seq 
         \bool_lazy_or:nnTF
-          { \str_if_eq_p:ee \l_@@_hpos_cell_tl { c } }
-          { \str_if_eq_p:ee \l_@@_hpos_cell_tl { r } }
+          { \str_if_eq_p:ee c \l_@@_hpos_cell_tl }
+          { \str_if_eq_p:ee r \l_@@_hpos_cell_tl }
           {
             \hbox_overlap_right:n { \box_use:N \l_tmpa_box }
 %    \end{macrocode}
@@ -2161,7 +2164,7 @@ version 2005/12/01 or later.
   {
     \bool_if:NTF \g_@@_caption_finished_bool
       {
-        \int_compare:nNnT { \c@tabularnote } = { \g_@@_notes_caption_int }
+        \int_compare:nNnT \c@tabularnote = \g_@@_notes_caption_int 
           { \int_gzero:N \c@tabularnote }
 %    \end{macrocode}
 % Now, we try to detect duplicate notes in the caption.
@@ -2978,7 +2981,7 @@ version 2005/12/01 or later.
         nicematrix / environments ,
       } ,
     pNiceArray / xdots .inherit:n = nicematrix / xdots ,
-    pNiceArray / rules .inherit:n = nicematrix / rules ,
+    pNiceArray / rules .inherit:n = nicematrix / rules 
   }
 %    \end{macrocode}
 % 
@@ -3246,7 +3249,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \cs_set_eq:NN \CodeAfter \@@_CodeAfter_i:
 %    \end{macrocode}
-% The following link is donce only to have a better error message when |\Hline|
+% The following link is done only to have a better error message when |\Hline|
 % is used in another place than the beginning of a line.
 %    \begin{macrocode}
     \cs_set_eq:NN \Hline \@@_Hline_in_cell:
@@ -3468,7 +3471,7 @@ version 2005/12/01 or later.
           } 
       }
       {
-        \int_compare:nNnT { \c@iRow } = { \l_@@_last_row_int }
+        \int_compare:nNnT \c@iRow = \l_@@_last_row_int 
           { 
             \vbox_set_top:Nn \l_@@_cell_box 
               { 
@@ -3645,7 +3648,7 @@ version 2005/12/01 or later.
       { \box_use_drop:N \l_@@_cell_box } 
       {
         \bool_if:NTF \g_@@_not_empty_cell_bool
-          { \@@_print_node_cell: }
+          \@@_print_node_cell: 
           { 
             \if_dim:w \box_wd:N \l_@@_cell_box > \c_zero_dim 
               \@@_print_node_cell:
@@ -3730,8 +3733,8 @@ version 2005/12/01 or later.
       { 
         __siunitx_table_align_ 
         \bool_if:NTF \l__siunitx_table_text_bool
-          { \l__siunitx_table_align_text_tl }
-          { \l__siunitx_table_align_number_tl }
+          \l__siunitx_table_align_text_tl 
+          \l__siunitx_table_align_number_tl 
         :n 
       } 
       { #1 }
@@ -3849,7 +3852,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_instruction_of_type:nnn #1 #2 #3
   { 
-    \bool_if:nTF { #1 } { \tl_gput_left:ce } { \tl_gput_right:ce }
+    \bool_if:nTF { #1 } \tl_gput_left:ce \tl_gput_right:ce 
       { g_@@_ #2 _ lines _ tl }
       { 
         \use:c { @@ _ draw _ #2 : nnn }
@@ -3865,8 +3868,8 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_array:n
   {
     \dim_set:Nn \col@sep
-      { \bool_if:NTF \l_@@_tabular_bool { \tabcolsep } { \arraycolsep } }
-    \dim_compare:nNnTF { \l_@@_tabular_width_dim } = { \c_zero_dim }
+      { \bool_if:NTF \l_@@_tabular_bool \tabcolsep \arraycolsep }
+    \dim_compare:nNnTF \l_@@_tabular_width_dim = \c_zero_dim 
       { \def \@halignto { } }
       { \cs_set_nopar:Npe \@halignto { to \dim_use:N \l_@@_tabular_width_dim } }
 %    \end{macrocode}
@@ -3881,7 +3884,7 @@ version 2005/12/01 or later.
 % fully expandable and we need something fully expandable here.
 % |\str_if_eq:ee(TF)| is faster than |\str_if_eq:nn(TF)|.
 %    \begin{macrocode}
-    [ \str_if_eq:eeTF { \l_@@_baseline_tl } { c } { c } { t } ]
+    [ \str_if_eq:eeTF \l_@@_baseline_tl  { c } { c } { t } ]
   }
 \cs_generate_variant:Nn \@@_array:n { o }
 %    \end{macrocode}
@@ -3907,7 +3910,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_create_row_node:
   {
-    \int_compare:nNnT { \c@iRow } > { \g_@@_last_row_node_int }
+    \int_compare:nNnT \c@iRow > \g_@@_last_row_node_int 
       { 
         \int_gset_eq:NN \g_@@_last_row_node_int \c@iRow
         \@@_create_row_node_i: 
@@ -3966,7 +3969,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \clist_if_empty:NF \l_@@_hlines_clist 
           {
-            \str_if_eq:eeF { \l_@@_hlines_clist } { all }
+            \str_if_eq:eeF \l_@@_hlines_clist { all }
               { 
                 \clist_if_in:NeT 
                   \l_@@_hlines_clist 
@@ -3978,9 +3981,9 @@ version 2005/12/01 or later.
 % row'' and that we are before that ``first row'', i.e. just before the
 % beginning of the array. 
 %    \begin{macrocode}
-                \int_compare:nNnT { \c@iRow } > { -1 }
+                \int_compare:nNnT \c@iRow > { -1 }
                   {
-                    \int_compare:nNnF { \c@iRow } = { \l_@@_last_row_int }
+                    \int_compare:nNnF \c@iRow = \l_@@_last_row_int 
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -4238,7 +4241,7 @@ version 2005/12/01 or later.
     \int_if_zero:nTF \l_@@_first_row_int
       { \cs_gset_eq:NN \@@_tuning_exterior_rows: \@@_tuning_first_last_row: }
       {
-        \int_compare:nNnT { \l_@@_last_row_int } > { \c_zero_int }
+        \int_compare:nNnT \l_@@_last_row_int > \c_zero_int 
           { \cs_gset_eq:NN \@@_tuning_exterior_rows: \@@_tuning_last_row: }        
       }
     \bool_if:NT \l_@@_renew_dots_bool { \@@_renew_dots: }
@@ -4264,8 +4267,8 @@ version 2005/12/01 or later.
       {
         \tl_if_empty:NF \l_@@_note_in_caption_tl
           { 
-            \int_gset:Nn \g_@@_notes_caption_int { \l_@@_note_in_caption_tl }
-            \int_gset:Nn \c@tabularnote { \l_@@_note_in_caption_tl } 
+            \int_gset:Nn \g_@@_notes_caption_int \l_@@_note_in_caption_tl 
+            \int_gset:Nn \c@tabularnote \l_@@_note_in_caption_tl 
           }
       }
 %    \end{macrocode}
@@ -4350,7 +4353,7 @@ version 2005/12/01 or later.
       }
       { 
         \dim_gset:Nn \l_@@_left_delim_dim 
-          { 2 \bool_if:NTF \l_@@_tabular_bool { \tabcolsep } { \arraycolsep } }
+          { 2 \bool_if:NTF \l_@@_tabular_bool \tabcolsep \arraycolsep }
         \dim_gset_eq:NN \l_@@_right_delim_dim \l_@@_left_delim_dim 
       }
   }
@@ -4379,9 +4382,9 @@ version 2005/12/01 or later.
 % exterior row) and |\g_@@_col_total_int| is the number of the last column (with
 % potentially a last exterior column).
 %    \begin{macrocode}
-    \int_compare:nNnT \l_@@_last_row_int > 0
+    \int_compare:nNnT \l_@@_last_row_int > \c_zero_int
       { \int_set:Nn \c@iRow { \l_@@_last_row_int - 1 } }
-    \int_compare:nNnT \l_@@_last_col_int > 0
+    \int_compare:nNnT \l_@@_last_col_int > \c_zero_int
       { \int_set:Nn \c@jCol { \l_@@_last_col_int - 1 } }
     \bool_if:NT \g_@@_aux_found_bool
       {
@@ -4401,13 +4404,13 @@ version 2005/12/01 or later.
 % user have used one of those keys without value, we provide now the right value
 % as read on the |aux| file (of course, it's possible only after the first compilation).
 %    \begin{macrocode}
-    \int_compare:nNnT { \l_@@_last_row_int } = { -1 }
+    \int_compare:nNnT \l_@@_last_row_int = { -1 }
       {
         \bool_set_true:N \l_@@_last_row_without_value_bool
         \bool_if:NT \g_@@_aux_found_bool
           { \int_set:Nn \l_@@_last_row_int { \seq_item:Nn \g_@@_size_seq { 3 } } }   
       }
-    \int_compare:nNnT { \l_@@_last_col_int } = { -1 }
+    \int_compare:nNnT \l_@@_last_col_int = { -1 }
       {
         \bool_if:NT \g_@@_aux_found_bool
           { \int_set:Nn \l_@@_last_col_int { \seq_item:Nn \g_@@_size_seq { 6 } } }   
@@ -4418,13 +4421,13 @@ version 2005/12/01 or later.
 % If there is an exterior row, we patch a command used in |\@@_cell_begin:| in order to
 % keep track of some dimensions needed to the construction of that ``last row''.
 %    \begin{macrocode}
-    \int_compare:nNnT { \l_@@_last_row_int } > { -2 }
+    \int_compare:nNnT \l_@@_last_row_int > { -2 }
       {
         \tl_put_right:Nn \@@_update_for_first_and_last_row:
           {
-            \dim_compare:nNnT { \g_@@_ht_last_row_dim } < { \box_ht:N \l_@@_cell_box }
+            \dim_compare:nNnT \g_@@_ht_last_row_dim < { \box_ht:N \l_@@_cell_box }
               { \dim_gset:Nn \g_@@_ht_last_row_dim { \box_ht:N \l_@@_cell_box } }
-            \dim_compare:nNnT { \g_@@_dp_last_row_dim } < { \box_dp:N \l_@@_cell_box }
+            \dim_compare:nNnT \g_@@_dp_last_row_dim < { \box_dp:N \l_@@_cell_box }
               { \dim_gset:Nn \g_@@_dp_last_row_dim { \box_dp:N \l_@@_cell_box } }
           }
       }
@@ -4439,7 +4442,7 @@ version 2005/12/01 or later.
 % \bigskip
 % Now the |\CodeBefore|.
 %   \begin{macrocode}
-    \bool_if:NT \l_@@_code_before_bool { \@@_exec_code_before: }
+    \bool_if:NT \l_@@_code_before_bool \@@_exec_code_before: 
 %    \end{macrocode}
 % 
 % \interitem
@@ -4522,7 +4525,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % First, the recreation of the |row| nodes.
 %    \begin{macrocode}
-    \int_step_inline:nnn { \l_@@_first_row_int } { \g_@@_row_total_int + 1 }
+    \int_step_inline:nnn \l_@@_first_row_int { \g_@@_row_total_int + 1 }
       {
         \pgfsys@getposition { \@@_env: - row - ##1 } \@@_node_position:
         \pgfcoordinate { \@@_env: - row - ##1 }
@@ -4531,7 +4534,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % Now, the recreation of the |col| nodes.
 %    \begin{macrocode}
-    \int_step_inline:nnn { \l_@@_first_col_int } { \g_@@_col_total_int + 1 }
+    \int_step_inline:nnn \l_@@_first_col_int { \g_@@_col_total_int + 1 }
       {
         \pgfsys@getposition { \@@_env: - col - ##1 } \@@_node_position:
         \pgfcoordinate { \@@_env: - col - ##1 }
@@ -4543,7 +4546,7 @@ version 2005/12/01 or later.
 % Now, the creation of the cell nodes |(i-j)|, and, maybe also the ``medium
 % nodes'' and the ``large nodes''.
 %    \begin{macrocode}
-    \bool_if:NT \g_@@_create_cell_nodes_bool { \@@_recreate_cell_nodes: }
+    \bool_if:NT \g_@@_create_cell_nodes_bool \@@_recreate_cell_nodes: 
     \endpgfpicture
 %    \end{macrocode}
 %
@@ -4739,12 +4742,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_recreate_cell_nodes:
   {
-    \int_step_inline:nnn { \l_@@_first_row_int } { \g_@@_row_total_int }
+    \int_step_inline:nnn \l_@@_first_row_int \g_@@_row_total_int 
       {
         \pgfsys@getposition { \@@_env: - ##1 - base } \@@_node_position: 
         \pgfcoordinate { \@@_env: - row - ##1 - base }
           { \pgfpointdiff \@@_picture_position: \@@_node_position: }
-        \int_step_inline:nnn { \l_@@_first_col_int } { \g_@@_col_total_int }
+        \int_step_inline:nnn \l_@@_first_col_int \g_@@_col_total_int 
           {
             \cs_if_exist:cT
               { pgf @ sys @ pdf @ mark @ pos @ \@@_env: - ##1 - ####1 - NW }
@@ -4771,13 +4774,13 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_create_aliases_last:
   {
-    \int_step_inline:nn { \c@iRow }
+    \int_step_inline:nn \c@iRow 
       { 
         \pgfnodealias 
           { \@@_env: - ##1 - last } 
           { \@@_env: - ##1 - \int_use:N \c@jCol } 
       }
-    \int_step_inline:nn { \c@jCol }
+    \int_step_inline:nn \c@jCol 
       { 
         \pgfnodealias 
           { \@@_env: - last - ##1 } 
@@ -4893,8 +4896,8 @@ version 2005/12/01 or later.
     \str_if_empty:NT \g_@@_name_env_str 
       { \str_gset:Nn \g_@@_name_env_str { NiceArrayWithDelims } } 
     \bool_if:NTF \l_@@_tabular_bool 
-      { \mode_leave_vertical: }
-      { \@@_test_if_math_mode: }
+      \mode_leave_vertical: 
+      \@@_test_if_math_mode: 
     \bool_if:NT \l_@@_in_env_bool { \@@_fatal:n { Yet~in~env } } 
     \bool_set_true:N \l_@@_in_env_bool
 %    \end{macrocode}
@@ -4999,7 +5002,7 @@ version 2005/12/01 or later.
 % command |\@@_CodeBefore_Body:w|. After that job, the command |\@@_CodeBefore_Body:w|
 % will go on with |\@@_pre_array:|.
 %    \begin{macrocode}
-    \bool_if:nTF { #6 } { \@@_CodeBefore_Body:w } { \@@_pre_array: }
+    \bool_if:nTF { #6 } \@@_CodeBefore_Body:w \@@_pre_array: 
   }
 %    \end{macrocode}
 % 
@@ -5034,8 +5037,8 @@ version 2005/12/01 or later.
 % |X|-column of weight~$x$, the width will be |\l_@@_X_columns_dim| multiplied
 % by~$x$. 
 %    \begin{macrocode}
-    \fp_compare:nNnT { \g_@@_total_X_weight_fp } > { \c_zero_fp }
-      { \@@_compute_width_X: }
+    \fp_compare:nNnT \g_@@_total_X_weight_fp > \c_zero_fp 
+      \@@_compute_width_X: 
 %    \end{macrocode}
 % 
 % \bigskip
@@ -5043,11 +5046,11 @@ version 2005/12/01 or later.
 % given value is correct (since we have just constructed the array, we know the
 % actual number of rows of the array).
 %    \begin{macrocode}
-    \int_compare:nNnT { \l_@@_last_row_int } > { -2 }
+    \int_compare:nNnT \l_@@_last_row_int > { -2 }
       {
         \bool_if:NF \l_@@_last_row_without_value_bool
           {
-            \int_compare:nNnF { \l_@@_last_row_int } = { \c@iRow }
+            \int_compare:nNnF \l_@@_last_row_int = \c@iRow 
               { 
                 \@@_error:n { Wrong~last~row } 
                 \int_set_eq:NN \l_@@_last_row_int \c@iRow
@@ -5066,7 +5069,7 @@ version 2005/12/01 or later.
     \bool_if:NTF \g_@@_last_col_found_bool 
       { \int_gdecr:N \c@jCol } 
       {
-        \int_compare:nNnT { \l_@@_last_col_int } > { -1 }
+        \int_compare:nNnT \l_@@_last_col_int > { -1 }
           { \@@_error:n { last~col~not~used } }
       }
 %    \end{macrocode}
@@ -5075,7 +5078,7 @@ version 2005/12/01 or later.
 % same principle.
 %    \begin{macrocode}
     \int_gset_eq:NN \g_@@_row_total_int \c@iRow
-    \int_compare:nNnT { \l_@@_last_row_int } > { -1 } 
+    \int_compare:nNnT \l_@@_last_row_int > { -1 } 
       { \int_gdecr:N \c@iRow } 
 %    \end{macrocode}
 %
@@ -5086,7 +5089,7 @@ version 2005/12/01 or later.
 % column'' has been constructed in an overlapping position and that we have
 % computed its width in |\g_@@_width_first_col_dim|: see p.~\pageref{overlap-left}). 
 %    \begin{macrocode}
-    \int_if_zero:nT { \l_@@_first_col_int }
+    \int_if_zero:nT \l_@@_first_col_int 
       { \skip_horizontal:N \g_@@_width_first_col_dim }
 %    \end{macrocode}
 %
@@ -5095,12 +5098,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \bool_if:nTF { ! \g_@@_delims_bool }
       { 
-        \str_if_eq:eeTF { \l_@@_baseline_tl } { c }
-          { \@@_use_arraybox_with_notes_c: }
+        \str_if_eq:eeTF c \l_@@_baseline_tl 
+          \@@_use_arraybox_with_notes_c: 
           {
-            \str_if_eq:eeTF { \l_@@_baseline_tl } { b }
-              { \@@_use_arraybox_with_notes_b: }
-              { \@@_use_arraybox_with_notes: }
+            \str_if_eq:eeTF b \l_@@_baseline_tl 
+              \@@_use_arraybox_with_notes_b:
+              \@@_use_arraybox_with_notes: 
           }
       } 
 %    \end{macrocode}
@@ -5110,7 +5113,7 @@ version 2005/12/01 or later.
 % |first-row| is used).
 %    \begin{macrocode}
       {
-        \int_if_zero:nTF { \l_@@_first_row_int }
+        \int_if_zero:nTF \l_@@_first_row_int 
           { 
             \dim_set_eq:NN \l_tmpa_dim \g_@@_dp_row_zero_dim 
             \dim_add:Nn \l_tmpa_dim \g_@@_ht_row_zero_dim 
@@ -5125,7 +5128,7 @@ version 2005/12/01 or later.
 % the user have not set the value with the option |last row| (and we are in the
 % first compilation).} 
 %    \begin{macrocode}
-        \int_compare:nNnTF { \l_@@_last_row_int } > { -2 }
+        \int_compare:nNnTF \l_@@_last_row_int > { -2 }
           {
             \dim_set_eq:NN \l_tmpb_dim \g_@@_ht_last_row_dim 
             \dim_add:Nn \l_tmpb_dim \g_@@_dp_last_row_dim 
@@ -5174,11 +5177,7 @@ version 2005/12/01 or later.
 % when the option |delimiters/max-width| is used.
 %    \begin{macrocode}
         \bool_if:NTF \l_@@_delimiters_max_width_bool 
-          { 
-            \@@_put_box_in_flow_bis:nn 
-              { \g_@@_left_delim_tl }
-              { \g_@@_right_delim_tl }
-          } 
+          { \@@_put_box_in_flow_bis:nn \g_@@_left_delim_tl \g_@@_right_delim_tl } 
           \@@_put_box_in_flow: 
       } 
 %    \end{macrocode}
@@ -5191,7 +5190,7 @@ version 2005/12/01 or later.
       { \skip_horizontal:N \g_@@_width_last_col_dim }
     \bool_if:NT \l_@@_preamble_bool
       {
-        \int_compare:nNnT { \c@jCol } < { \g_@@_static_num_of_col_int }
+        \int_compare:nNnT \c@jCol < \g_@@_static_num_of_col_int 
           { \@@_err_columns_not_used: }
       }
     \@@_after_array:
@@ -5256,9 +5255,7 @@ version 2005/12/01 or later.
 % be considered as correct even though the tabular has not (of course) a width equal
 % to |\l_@@_width_dim|
 %    \begin{macrocode}
-            \bool_lazy_and:nnTF
-              { \g_@@_V_of_X_bool }
-              { \l_@@_X_columns_aux_bool }
+            \bool_lazy_and:nnTF \g_@@_V_of_X_bool \l_@@_X_columns_aux_bool 
               { \dim_use:N \l_@@_X_columns_dim }
               {
                 \dim_compare:nNnTF 
@@ -5335,7 +5332,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \int_zero:N \l_tmpa_int
     \tl_gclear:N \g_@@_array_preamble_tl 
-    \str_if_eq:eeTF { \l_@@_vlines_clist } { all }
+    \str_if_eq:eeTF \l_@@_vlines_clist { all }
       { 
         \tl_gset:Nn \g_@@_array_preamble_tl 
           { ! { \skip_horizontal:N \arrayrulewidth } }
@@ -5391,7 +5388,7 @@ version 2005/12/01 or later.
 % \bigskip
 % We complete the preamble with the potential ``exterior columns'' (on both sides).
 %    \begin{macrocode}
-    \int_if_zero:nTF { \l_@@_first_col_int }
+    \int_if_zero:nTF \l_@@_first_col_int 
       { \tl_gput_left:No \g_@@_array_preamble_tl \c_@@_preamble_first_col_tl }
       {
         \bool_if:NF \g_@@_delims_bool 
@@ -5406,7 +5403,7 @@ version 2005/12/01 or later.
               }
           }
       }
-    \int_compare:nNnTF { \l_@@_last_col_int } > { -1 }
+    \int_compare:nNnTF \l_@@_last_col_int > { -1 }
       { \tl_gput_right:No \g_@@_array_preamble_tl \c_@@_preamble_last_col_tl }
       { 
         \bool_if:NF \g_@@_delims_bool 
@@ -5433,7 +5430,7 @@ version 2005/12/01 or later.
 % Moreover, when |{NiceTabular*}| is used, the mechanism can't be used for technical reasons.
 % We test that situation with |\l_@@_tabular_width_dim|.
 %    \begin{macrocode}
-        \dim_compare:nNnT { \l_@@_tabular_width_dim } = { \c_zero_dim }
+        \dim_compare:nNnT \l_@@_tabular_width_dim = \c_zero_dim 
           {
             \tl_gput_right:Nn \g_@@_array_preamble_tl
               { > { \@@_err_too_many_cols: } l }
@@ -5482,7 +5479,6 @@ version 2005/12/01 or later.
       }
   }
 %    \end{macrocode}
-%
 %
 % 
 % \bigskip
@@ -5733,7 +5729,7 @@ version 2005/12/01 or later.
     \use:e
       { 
         \@@_make_preamble_ii_vi:nnnnnnnn
-          { \str_if_eq:eeTF { \l_@@_vpos_col_str } { p } { t } { b } }
+          { \str_if_eq:eeTF p \l_@@_vpos_col_str { t } { b } }
           { #1 }
           {
             \cs_set_eq:NN \rotate \@@_rotate_p_col:
@@ -5743,7 +5739,7 @@ version 2005/12/01 or later.
 % itself, you will have, in each cell, the parameter |\l_@@_hpos_cell_tl| which
 % will provide the horizontal alignment of the column to which belongs the cell.
 %    \begin{macrocode}
-            \str_if_eq:eeTF { \l_@@_hpos_col_str } { j }
+            \str_if_eq:eeTF \l_@@_hpos_col_str { j }
               { \tl_clear:N \exp_not:N \l_@@_hpos_cell_tl } 
               {
 %    \end{macrocode}
@@ -5774,9 +5770,9 @@ version 2005/12/01 or later.
               }
             #3
           }
-          { \str_if_eq:eeT { \l_@@_vpos_col_str } { m } \@@_center_cell_box: }
-          { \str_if_eq:eeT { \l_@@_hpos_col_str } { si } \siunitx_cell_begin:w }
-          { \str_if_eq:eeT { \l_@@_hpos_col_str } { si } \siunitx_cell_end: }
+          { \str_if_eq:eeT \l_@@_vpos_col_str { m } \@@_center_cell_box: }
+          { \str_if_eq:eeT \l_@@_hpos_col_str { si } \siunitx_cell_begin:w }
+          { \str_if_eq:eeT \l_@@_hpos_col_str { si } \siunitx_cell_end: }
           { #2 }
           {         
             \str_case:onF \l_@@_hpos_col_str 
@@ -5828,7 +5824,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_ii_vi:nnnnnnnn #1 #2 #3 #4 #5 #6 #7 #8
   {
-    \str_if_eq:eeTF { \l_@@_hpos_col_str } { si }
+    \str_if_eq:eeTF \l_@@_hpos_col_str { si }
       { 
         \tl_gput_right:Nn \g_@@_array_preamble_tl 
           { > \@@_test_if_empty_for_S: } 
@@ -5912,10 +5908,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \group_align_safe_begin:
     \peek_meaning:NTF & 
-      { \@@_the_cell_is_empty: }
+      \@@_the_cell_is_empty: 
       { 
         \peek_meaning:NTF \\
-          { \@@_the_cell_is_empty: }
+          \@@_the_cell_is_empty:
           { 
             \peek_meaning:NTF \crcr
               \@@_the_cell_is_empty: 
@@ -5933,10 +5929,10 @@ version 2005/12/01 or later.
   {
     \group_align_safe_begin:
     \peek_meaning:NTF & 
-      { \@@_the_cell_is_empty_varwidth: }
+      \@@_the_cell_is_empty_varwidth: 
       { 
         \peek_meaning:NTF \\
-          { \@@_the_cell_is_empty_varwidth: }
+          \@@_the_cell_is_empty_varwidth: 
           { 
             \peek_meaning:NTF \crcr
               \@@_the_cell_is_empty_varwidth: 
@@ -6056,7 +6052,7 @@ version 2005/12/01 or later.
         \@@_make_preamble_ii_iv:nnn { \dim_use:N \l_tmpa_dim } { minipage } { } 
       }
   }
-%    \end{macrocode}
+%    \end{macrocod}
 % 
 % \medskip
 % For |w| and |W|
@@ -6071,14 +6067,26 @@ version 2005/12/01 or later.
 %
 % |#3| is the type of horizontal alignment (|c|, |l|, |r| or |s|);
 %
-% |#4| is the width of the column.
+% |#4| is the width of the column. It is provided by curryfication.
 %
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_make_preamble_w:nnnn #1 #2 #3 #4
-  {  
+\cs_new_protected:Npn \@@_make_preamble_w:nnnn #1 #2 #3 
+  {
+    \tl_if_in:nnTF { clrs } { #3 }
+      { \@@_make_preamble_w_i:nnnn { #1 } { #2 } { #3 } }
+      {
+        \@@_error:nn { Invalid~argument~for~w } { #3 }
+        \@@_make_preamble_w_i:nnnn { #1 } { #2 } { c } 
+      }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_make_preamble_w_i:nnnn #1 #2 #3 #4
+  {
     \str_if_eq:nnTF { #3 } { s }
-      { \@@_make_preamble_w_i:nnnn { #1 } { #4 } }
-      { \@@_make_preamble_w_ii:nnnn { #1 } { #2 } { #3 } { #4 } }
+      { \@@_make_preamble_w_ii:nnnn { #1 } { #4 } }
+      { \@@_make_preamble_w_iii:nnnn { #1 } { #2 } { #3 } { #4 } }
   }
 %    \end{macrocode}
 % 
@@ -6090,7 +6098,7 @@ version 2005/12/01 or later.
 %
 % |#2| is the width of the column.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_make_preamble_w_i:nnnn #1 #2 
+\cs_new_protected:Npn \@@_make_preamble_w_ii:nnnn #1 #2 
   {
     \tl_gput_right:No \g_@@_array_preamble_tl \g_@@_pre_cell_tl 
     \tl_gclear:N \g_@@_pre_cell_tl
@@ -6124,7 +6132,7 @@ version 2005/12/01 or later.
 % Then, the most important version, for the horizontal alignments types of |c|,
 % |l| and |r| (and not |s|).
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_make_preamble_w_ii:nnnn #1 #2 #3 #4
+\cs_new_protected:Npn \@@_make_preamble_w_iii:nnnn #1 #2 #3 #4
   {
     \tl_gput_right:No \g_@@_array_preamble_tl \g_@@_pre_cell_tl 
     \tl_gclear:N \g_@@_pre_cell_tl
@@ -6167,7 +6175,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_special_W:
   {
-    \dim_compare:nNnT { \box_wd:N \l_@@_cell_box } > { \l_@@_col_width_dim }
+    \dim_compare:nNnT { \box_wd:N \l_@@_cell_box } > \l_@@_col_width_dim 
       { \@@_warning:n { W~warning } }
   }
 %    \end{macrocode}
@@ -6224,8 +6232,8 @@ version 2005/12/01 or later.
             \tl_gput_right:Ne \g_@@_cell_after_hook_tl 
               { 
                 \bool_if:NTF \l__siunitx_table_text_bool 
-                  { \bool_set_true:N }
-                  { \bool_set_false:N }
+                  \bool_set_true:N 
+                  \bool_set_false:N 
                 \l__siunitx_table_text_bool 
               }
             \@@_cell_end: 
@@ -6250,7 +6258,7 @@ version 2005/12/01 or later.
 % If we are before the column 1 and not in |{NiceArray}|, we reserve space for
 % the left delimiter. 
 %    \begin{macrocode}
-    \int_if_zero:nTF { \c@jCol }
+    \int_if_zero:nTF \c@jCol
       { 
         \tl_if_eq:NNTF \g_@@_left_delim_tl \c_@@_dot_tl
           { 
@@ -6307,7 +6315,7 @@ version 2005/12/01 or later.
     \tl_if_in:nnTF { ) ] \} } { #2 }
       { \@@_make_preamble_v:nnn #1 #2 }
       { 
-        \str_if_eq:nnTF { \s_stop } { #2 }
+        \str_if_eq:nnTF \s_stop { #2 }
           {
             \tl_if_eq:NNTF \g_@@_right_delim_tl \c_@@_dot_tl
               { \tl_gset:Nn \g_@@_right_delim_tl { #1 } }
@@ -6334,7 +6342,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_v:nnn #1 #2 #3
   {
-    \str_if_eq:nnTF { \s_stop } { #3 }
+    \str_if_eq:nnTF \s_stop { #3 }
       {
         \tl_if_eq:NNTF \g_@@_right_delim_tl \c_@@_dot_tl
           {
@@ -6380,7 +6388,7 @@ version 2005/12/01 or later.
         \str_if_eq:nnTF { #1 } { @ }
           { \@@_rec_preamble_after_col_ii:n }
           {
-            \str_if_eq:eeTF { \l_@@_vlines_clist } { all }
+            \str_if_eq:eeTF \l_@@_vlines_clist { all }
               { 
                 \tl_gput_right:Nn \g_@@_array_preamble_tl 
                   { ! { \skip_horizontal:N \arrayrulewidth } }
@@ -6413,7 +6421,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_rec_preamble_after_col_ii:n #1
   {
-    \str_if_eq:eeTF { \l_@@_vlines_clist } { all }
+    \str_if_eq:eeTF \l_@@_vlines_clist { all }
       { 
         \tl_gput_right:Nn \g_@@_array_preamble_tl 
           { @ { #1 \skip_horizontal:N \arrayrulewidth } }
@@ -6692,7 +6700,7 @@ version 2005/12/01 or later.
 % Now, we do a treatment specific to \pkg{nicematrix} which has no equivalent
 % in the original definition of |\multicolumn|.
 %    \begin{macrocode}
-    \int_compare:nNnT { #1 } > { \c_one_int }
+    \int_compare:nNnT { #1 } > 1
       {
         \seq_gput_left:Ne \g_@@_multicolumn_cells_seq
           { \int_use:N \c@iRow - \int_eval:n { \c@jCol + 1 } }
@@ -6700,13 +6708,13 @@ version 2005/12/01 or later.
         \seq_gput_right:Ne \g_@@_pos_of_blocks_seq
           { 
             { 
-              \int_if_zero:nTF { \c@jCol }
+              \int_if_zero:nTF \c@jCol 
                 { \int_eval:n { \c@iRow + 1 } }
                 { \int_use:N \c@iRow }
             } 
             { \int_eval:n { \c@jCol + 1 } }
             { 
-              \int_if_zero:nTF { \c@jCol }
+              \int_if_zero:nTF \c@jCol 
                 { \int_eval:n { \c@iRow + 1 } }
                 { \int_use:N \c@iRow }
             } 
@@ -6749,7 +6757,7 @@ version 2005/12/01 or later.
 % We add some lines.
 %    \begin{macrocode}
     \int_gadd:Nn \c@jCol { #1 - 1 }
-    \int_compare:nNnT { \c@jCol } > { \g_@@_col_total_int }
+    \int_compare:nNnT \c@jCol > \g_@@_col_total_int 
       { \int_gset_eq:NN \g_@@_col_total_int \c@jCol } 
     \ignorespaces
   }
@@ -6909,7 +6917,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_make_m_preamble_x:n #1
   {
     \str_if_eq:nnTF { #1 } { < } 
-      { \@@_make_m_preamble_ix:n }
+      \@@_make_m_preamble_ix:n 
       { \@@_make_m_preamble:n { #1 } }
   }
 %    \end{macrocode}
@@ -6936,9 +6944,9 @@ version 2005/12/01 or later.
   { 
     \box_set_ht:Nn \l_tmpa_box { \box_ht:N \l_tmpa_box + \l_tmpa_dim } 
     \box_set_dp:Nn \l_tmpa_box { \box_dp:N \l_tmpa_box + \l_tmpb_dim } 
-    \str_if_eq:eeTF { \l_@@_baseline_tl } { c }
-      { \box_use_drop:N \l_tmpa_box } 
-      { \@@_put_box_in_flow_i: }
+    \str_if_eq:eeTF \l_@@_baseline_tl { c }
+      { \box_use_drop:N \l_tmpa_box }
+      \@@_put_box_in_flow_i: 
   }
 %    \end{macrocode}
 %
@@ -6963,28 +6971,28 @@ version 2005/12/01 or later.
           \int_set:Nn \l_tmpa_int 
             { \str_range:Nnn \l_@@_baseline_tl { 6 } { -1 } }
           \bool_lazy_or:nnT
-            { \int_compare_p:nNn { \l_tmpa_int } < { 1 } }
-            { \int_compare_p:nNn { \l_tmpa_int } > { \c@iRow + 1 } }
+            { \int_compare_p:nNn \l_tmpa_int < { 1 } }
+            { \int_compare_p:nNn \l_tmpa_int > { \c@iRow + 1 } }
             { 
               \@@_error:n { bad~value~for~baseline-line }
-              \int_set_eq:NN \l_tmpa_int \c_one_int
+              \int_set:Nn \l_tmpa_int 1
             }
           \@@_qpoint:n { row - \int_use:N \l_tmpa_int }
         }
         {
-          \str_if_eq:eeTF { \l_@@_baseline_tl } { t }
-            { \int_set_eq:NN \l_tmpa_int \c_one_int }
+          \str_if_eq:eeTF t \l_@@_baseline_tl 
+            { \int_set:Nn \l_tmpa_int 1 }
             {  
-              \str_if_eq:onTF \l_@@_baseline_tl  { b }
+              \str_if_eq:eeTF b \l_@@_baseline_tl  
                 { \int_set_eq:NN \l_tmpa_int \c@iRow }
                 { \int_set:Nn \l_tmpa_int \l_@@_baseline_tl }
             }
           \bool_lazy_or:nnT
-            { \int_compare_p:nNn { \l_tmpa_int } < { \l_@@_first_row_int } }
-            { \int_compare_p:nNn { \l_tmpa_int } > { \g_@@_row_total_int } }
+            { \int_compare_p:nNn \l_tmpa_int < \l_@@_first_row_int } 
+            { \int_compare_p:nNn \l_tmpa_int > \g_@@_row_total_int }
             { 
               \@@_error:n { bad~value~for~baseline }
-              \int_set_eq:NN \l_tmpa_int \c_one_int
+              \int_set:Nn \l_tmpa_int 1
             }
           \@@_qpoint:n { row - \int_use:N \l_tmpa_int - base }
 %    \end{macrocode}
@@ -7017,7 +7025,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \bool_if:NT \l_@@_NiceMatrix_without_vlines_bool
       {
-        \int_compare:nNnT { \c@jCol } > { \c_one_int }
+        \int_compare:nNnT \c@jCol > 1
           {
             \box_set_wd:Nn \l_@@_the_array_box
               { \box_wd:N \l_@@_the_array_box - \arraycolsep }
@@ -7044,7 +7052,7 @@ version 2005/12/01 or later.
 % tabular notes for which the command |\tabularnote| has been used without its
 % optional argument (between square brackets).
 %    \begin{macrocode}
-            \int_compare:nNnT { \g_@@_notes_caption_int } > { \c_zero_int }
+            \int_compare:nNnT \g_@@_notes_caption_int > \c_zero_int 
               {
                 \tl_gput_right:Ne \g_@@_aux_tl
                   {
@@ -7087,7 +7095,7 @@ version 2005/12/01 or later.
       {
         \bool_if:NTF \l_@@_notes_no_print_bool
           { \cs_gset_eq:NN \NiceTabularNotes \@@_tabular_notes: }
-          { \@@_tabular_notes: }
+          \@@_tabular_notes: 
       }
     \cs_set_eq:NN \tabularnote \@@_tabularnote_error:n
     \bool_if:NF \l_@@_caption_above_bool { \@@_insert_caption: }
@@ -7127,7 +7135,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \IfPackageLoadedT { floatrow } { \cs_set_eq:NN \@makecaption \FR@makecaption } 
     \tl_if_empty:NTF \l_@@_short_caption_tl 
-      { \caption }
+      \caption 
       { \caption [ \l_@@_short_caption_tl ] }
       { \l_@@_caption_tl } 
 %    \end{macrocode}
@@ -7190,7 +7198,7 @@ version 2005/12/01 or later.
 % the |\unskip| are designed to give the ability to put a |\bottomrule| at the
 % end of the notes with a good vertical space.
 %    \begin{macrocode}
-    \int_compare:nNnT { \c@tabularnote } > { \c_zero_int }
+    \int_compare:nNnT \c@tabularnote > \c_zero_int 
       {
         \bool_if:NTF \l_@@_notes_para_bool
           {
@@ -7268,7 +7276,7 @@ version 2005/12/01 or later.
       \dim_gsub:Nn \g_tmpa_dim \pgf@y
     \endpgfpicture
     \dim_gadd:Nn \g_tmpa_dim \arrayrulewidth 
-    \int_if_zero:nT { \l_@@_first_row_int }
+    \int_if_zero:nT \l_@@_first_row_int 
       {
         \dim_gadd:Nn \g_tmpa_dim \g_@@_ht_row_zero_dim 
         \dim_gadd:Nn \g_tmpa_dim \g_@@_dp_row_zero_dim 
@@ -7285,7 +7293,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % We convert a value of |t| to a value of |1|.
 %    \begin{macrocode}
-    \str_if_eq:eeT { \l_@@_baseline_tl } { t } 
+    \str_if_eq:eeT \l_@@_baseline_tl { t } 
       { \tl_set:Nn \l_@@_baseline_tl { 1 } } 
 %    \end{macrocode}
 % Now, we convert the value of |\l_@@_baseline_tl| (which should represent an
@@ -7308,8 +7316,8 @@ version 2005/12/01 or later.
       {
         \int_set:Nn \l_tmpa_int \l_@@_baseline_tl
         \bool_lazy_or:nnT
-          { \int_compare_p:nNn { \l_tmpa_int } < { \l_@@_first_row_int } }
-          { \int_compare_p:nNn { \l_tmpa_int } > { \g_@@_row_total_int } }
+          { \int_compare_p:nNn \l_tmpa_int < \l_@@_first_row_int }
+          { \int_compare_p:nNn \l_tmpa_int > \g_@@_row_total_int } 
           { 
             \@@_error:n { bad~value~for~baseline }
             \int_set:Nn \l_tmpa_int 1
@@ -7319,7 +7327,7 @@ version 2005/12/01 or later.
     \dim_gsub:Nn \g_tmpa_dim \pgf@y
     \endpgfpicture
     \dim_gadd:Nn \g_tmpa_dim \arrayrulewidth
-    \int_if_zero:nT { \l_@@_first_row_int }
+    \int_if_zero:nT \l_@@_first_row_int 
       {
         \dim_gadd:Nn \g_tmpa_dim \g_@@_ht_row_zero_dim 
         \dim_gadd:Nn \g_tmpa_dim \g_@@_dp_row_zero_dim 
@@ -7380,7 +7388,7 @@ version 2005/12/01 or later.
     \skip_horizontal:n { \l_@@_left_delim_dim - \l_@@_real_left_delim_dim }
     \@@_put_box_in_flow:
     \skip_horizontal:n { \l_@@_right_delim_dim - \l_@@_real_right_delim_dim }
-  }
+  } 
 %    \end{macrocode}
 % 
 % \interitem
@@ -7402,7 +7410,7 @@ version 2005/12/01 or later.
     \peek_remove_spaces:n
       {
         \peek_meaning:NTF \end 
-          { \@@_analyze_end:Nn }
+          \@@_analyze_end:Nn 
           { 
             \@@_transform_preamble: 
 %    \end{macrocode}
@@ -7479,8 +7487,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \tl_set_rescan:Nno \l_@@_end_of_row_tl { } \l_@@_end_of_row_tl
     \bool_if:NTF \l_@@_light_syntax_expanded_bool
-      { \seq_set_split:Nee }
-      { \seq_set_split:Non }
+      \seq_set_split:Nee 
+      \seq_set_split:Non 
       \l_@@_rows_seq \l_@@_end_of_row_tl { #1 }
 %    \end{macrocode}
 % We delete the last row if it is empty.
@@ -7494,7 +7502,7 @@ version 2005/12/01 or later.
 % value. We do it, and so, if the token list |\l_@@_code_for_last_row_tl| is not
 % empty, we will use directly where it should be.
 %    \begin{macrocode}
-    \int_compare:nNnT { \l_@@_last_row_int } = { -1 }
+    \int_compare:nNnT \l_@@_last_row_int = { -1 }
       { \int_set:Nn \l_@@_last_row_int { \seq_count:N \l_@@_rows_seq } }
 %    \end{macrocode}
 %
@@ -7525,7 +7533,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \int_compare:nNnT { \l_@@_last_col_int } = { -1 }
+    \int_compare:nNnT \l_@@_last_col_int = { -1 }
       { 
         \int_set:Nn \l_@@_last_col_int 
           { \l_@@_nb_cols_int - 1 + \l_@@_first_col_int }
@@ -7554,11 +7562,7 @@ version 2005/12/01 or later.
     \seq_clear_new:N \l_@@_cells_seq
     \seq_set_split:Nnn \l_@@_cells_seq { ~ } { #1 }
     \int_set:Nn \l_@@_nb_cols_int
-      {
-        \int_max:nn
-          { \l_@@_nb_cols_int }
-          { \seq_count:N \l_@@_cells_seq }
-      }
+      { \int_max:nn \l_@@_nb_cols_int { \seq_count:N \l_@@_cells_seq } }
     \seq_pop_left:NN \l_@@_cells_seq \l_tmpa_tl
     \tl_build_put_right:No \l_@@_new_body_tl \l_tmpa_tl
     \seq_map_inline:Nn \l_@@_cells_seq 
@@ -7575,7 +7579,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_analyze_end:Nn #1 #2
   {
-    \str_if_eq:eeT { \g_@@_name_env_str } { #2 }
+    \str_if_eq:eeT \g_@@_name_env_str { #2 }
       { \@@_fatal:n { empty~environment } }
 %    \end{macrocode}
 % We reput in the stream the |\end{...}| we have extracted and the user will
@@ -7594,7 +7598,7 @@ version 2005/12/01 or later.
 \cs_new:Npn \@@_create_col_nodes:
   {
     \crcr
-    \int_if_zero:nT { \l_@@_first_col_int }
+    \int_if_zero:nT \l_@@_first_col_int 
       { 
         \omit 
         \hbox_overlap_left:n
@@ -7621,7 +7625,7 @@ version 2005/12/01 or later.
 % First, we put a |col| node on the left of the first column (of course, we
 % have to do that \emph{after} the |\omit|).
 %    \begin{macrocode}
-    \int_if_zero:nTF { \l_@@_first_col_int }
+    \int_if_zero:nTF \l_@@_first_col_int 
       {
         \@@_mark_position:n { 1 }
         \pgfpicture 
@@ -7662,10 +7666,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \skip_gset:Nn \g_tmpa_skip { 0 pt~plus 1 fill } 
     \bool_if:NF \l_@@_auto_columns_width_bool
-      { \dim_compare:nNnT { \l_@@_columns_width_dim } > { \c_zero_dim } }
+      { \dim_compare:nNnT \l_@@_columns_width_dim > \c_zero_dim }
       {
         \bool_lazy_and:nnTF 
-          { \l_@@_auto_columns_width_bool }
+          \l_@@_auto_columns_width_bool 
           { \bool_not_p:n \l_@@_block_auto_columns_width_bool }
           { \skip_gadd:Nn \g_tmpa_skip \g_@@_max_cell_width_dim } 
           { \skip_gadd:Nn \g_tmpa_skip \l_@@_columns_width_dim } 
@@ -7686,7 +7690,7 @@ version 2005/12/01 or later.
 % We begin a loop over the columns. The integer |\g_tmpa_int| will be the
 % number of the current column. This integer is used for the TikZ nodes.
 %    \begin{macrocode}
-    \int_gset_eq:NN \g_tmpa_int \c_one_int
+    \int_gset:Nn \g_tmpa_int 1 
     \bool_if:NTF \g_@@_last_col_found_bool
       { \prg_replicate:nn { \int_max:nn { \g_@@_col_total_int - 3 } { 0 } } }
       { \prg_replicate:nn { \int_max:nn { \g_@@_col_total_int - 2 } { 0 } } }
@@ -7844,11 +7848,11 @@ version 2005/12/01 or later.
 % We insert |\l_@@_code_for_first_col_tl|... but we don't insert it in the
 % potential ``first row'' and in the potential ``last row''.
 %    \begin{macrocode}
-        \int_compare:nNnT { \c@iRow } > { \c_zero_int }
+        \int_compare:nNnT \c@iRow > \c_zero_int 
           {
             \bool_lazy_or:nnT
-              { \int_compare_p:nNn { \l_@@_last_row_int } < { \c_zero_int } }
-              { \int_compare_p:nNn { \c@iRow } < { \l_@@_last_row_int } }
+              { \int_compare_p:nNn \l_@@_last_row_int < \c_zero_int }
+              { \int_compare_p:nNn \c@iRow < \l_@@_last_row_int }
               { 
                 \l_@@_code_for_first_col_tl 
                 \xglobal \colorlet { nicematrix-first-col } { . }
@@ -7872,15 +7876,15 @@ version 2005/12/01 or later.
 % after the construction of the array.
 %    \begin{macrocode}
         \dim_gset:Nn \g_@@_width_first_col_dim
-          { \dim_max:nn { \g_@@_width_first_col_dim } { \box_wd:N \l_@@_cell_box } }
+          { \dim_max:nn \g_@@_width_first_col_dim { \box_wd:N \l_@@_cell_box } }
 %    \end{macrocode}
 % The content of the cell is inserted in an overlapping position.
 % \label{overlap-left}
 %    \begin{macrocode}
         \hbox_overlap_left:n
           { 
-            \dim_compare:nNnTF { \box_wd:N \l_@@_cell_box } > { \c_zero_dim }
-              { \@@_node_cell: }
+            \dim_compare:nNnTF { \box_wd:N \l_@@_cell_box } > \c_zero_dim 
+              \@@_node_cell: 
               { \box_use_drop:N \l_@@_cell_box } 
             \skip_horizontal:N \l_@@_left_delim_dim
             \skip_horizontal:N \l_@@_left_margin_dim 
@@ -7921,11 +7925,11 @@ version 2005/12/01 or later.
 % We insert |\l_@@_code_for_last_col_tl|... but we don't insert it in the
 % potential ``first row'' and in the potential ``last row''.
 %    \begin{macrocode}
-        \int_compare:nNnT { \c@iRow } > { \c_zero_int }
+        \int_compare:nNnT \c@iRow > \c_zero_int 
           {
             \bool_lazy_or:nnT
-              { \int_compare_p:nNn { \l_@@_last_row_int } < { \c_zero_int } }
-              { \int_compare_p:nNn { \c@iRow } < { \l_@@_last_row_int } }
+              { \int_compare_p:nNn \l_@@_last_row_int < \c_zero_int }
+              { \int_compare_p:nNn \c@iRow < \l_@@_last_row_int } 
               { 
                 \l_@@_code_for_last_col_tl 
                 \xglobal \colorlet { nicematrix-last-col } { . }
@@ -7945,7 +7949,7 @@ version 2005/12/01 or later.
 % after the construction of the array.
 %    \begin{macrocode}
         \dim_gset:Nn \g_@@_width_last_col_dim
-          { \dim_max:nn { \g_@@_width_last_col_dim } { \box_wd:N \l_@@_cell_box } }
+          { \dim_max:nn \g_@@_width_last_col_dim { \box_wd:N \l_@@_cell_box } }
         \skip_horizontal:n { -2 \col@sep }
 %    \end{macrocode}
 % The content of the cell is inserted in an overlapping position.
@@ -7953,7 +7957,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \hbox_overlap_right:n
           { 
-            \dim_compare:nNnT { \box_wd:N \l_@@_cell_box } > { \c_zero_dim }
+            \dim_compare:nNnT { \box_wd:N \l_@@_cell_box } > \c_zero_dim 
               {
                 \skip_horizontal:N \l_@@_right_delim_dim 
                 \skip_horizontal:N \l_@@_right_margin_dim 
@@ -8056,7 +8060,7 @@ version 2005/12/01 or later.
       {
         \bool_gset_true:N \g_@@_delims_bool 
         \str_gset:Nn \g_@@_name_env_str { #1 NiceMatrix } 
-        \int_if_zero:nT { \l_@@_last_col_int }
+        \int_if_zero:nT \l_@@_last_col_int 
           {  
             \bool_set_true:N \l_@@_last_col_without_value_bool
             \int_set:Nn \l_@@_last_col_int { -1 }
@@ -8074,15 +8078,15 @@ version 2005/12/01 or later.
 \NewDocumentEnvironment { NiceMatrix } { ! O { } }
   {
     \str_gset:Nn \g_@@_name_env_str { NiceMatrix } 
-    \int_if_zero:nT { \l_@@_last_col_int }
+    \int_if_zero:nT \l_@@_last_col_int 
       {  
         \bool_set_true:N \l_@@_last_col_without_value_bool
         \int_set:Nn \l_@@_last_col_int { -1 }
       }                
     \keys_set:nn { nicematrix / NiceMatrix } { #1 }
     \bool_lazy_or:nnT
+      \l_@@_except_borders_bool     
       { \clist_if_empty_p:N \l_@@_vlines_clist }
-      { \l_@@_except_borders_bool }
       { \bool_set_true:N \l_@@_NiceMatrix_without_vlines_bool }
     \@@_begin_of_NiceMatrix:no { } { \l_@@_columns_type_tl }
   }
@@ -8120,7 +8124,7 @@ version 2005/12/01 or later.
 % If the dimension |\l_@@_width_dim| is equal to $0$~pt, that means that it has
 % not been set by a previous use of |\NiceMatrixOptions|.
 %    \begin{macrocode}
-    \dim_compare:nNnT { \l_@@_width_dim } = { \c_zero_dim }
+    \dim_compare:nNnT\l_@@_width_dim = \c_zero_dim 
       { \dim_set_eq:NN \l_@@_width_dim \linewidth }
     \str_gset:Nn \g_@@_name_env_str { NiceTabular }
     \keys_set:nn { nicematrix / NiceTabular } { #1 , #3 }
@@ -8207,7 +8211,7 @@ version 2005/12/01 or later.
   {
     \bool_lazy_all:nT 
       {
-        { \dim_compare_p:nNn { \l_@@_tab_rounded_corners_dim } > { \c_zero_dim } }
+        { \dim_compare_p:nNn \l_@@_tab_rounded_corners_dim > \c_zero_dim } 
         { \l_@@_hvlines_bool }
         { ! \g_@@_delims_bool }
         { ! \l_@@_except_borders_bool }  
@@ -8218,13 +8222,12 @@ version 2005/12/01 or later.
           { \@@_error:n { hvlines,~rounded-corners~and~corners } }
         \tl_gput_right:Nn \g_@@_pre_code_after_tl
           {
-            \@@_stroke_block:nnn
+            \@@_stroke_block:nnnnn
               {
                 rounded-corners = \dim_use:N \l_@@_tab_rounded_corners_dim ,
                 draw = \l_@@_rules_color_tl
               }
-              { 1-1 }
-              { \int_use:N \c@iRow - \int_use:N \c@jCol }
+              { 1 } { 1 } { \int_use:N \c@iRow } { \int_use:N \c@jCol }
           }
       }
   }
@@ -8292,6 +8295,9 @@ version 2005/12/01 or later.
     \clist_if_empty:NF \g_@@_cbic_clist { \@@_cbic: }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+%    \end{macrocode}
+% 
 % We write also the potential content of |\g_@@_pos_of_blocks_seq|. It will be
 % used to recreate the blocks with a name in the |\CodeBefore| and also if the
 % command |\rowcolors| is used with the key |respect-blocks|).
@@ -8390,7 +8396,7 @@ version 2005/12/01 or later.
       { 
         \bool_if:NTF \l_@@_no_cell_nodes_bool
           { \@@_error:n { corners~with~no-cell-nodes } }
-          { \@@_compute_corners: }
+          \@@_compute_corners:
       }
 %    \end{macrocode}
 %
@@ -8471,6 +8477,7 @@ version 2005/12/01 or later.
     \int_compare:nNnT { \char_value_catcode:n { 60 } } = { 13 }
       { \@@_rescan_for_spanish:N \g_nicematrix_code_after_tl }
 %    \end{macrocode}
+%
 % \medskip
 % And here's the |\CodeAfter|. Since the |\CodeAfter| may begin with an
 % ``argument'' between square brackets of the options, we extract and treat that
@@ -8559,13 +8566,13 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_create_alias_nodes: 
   {
-    \int_step_inline:nn { \c@iRow }
+    \int_step_inline:nn \c@iRow 
       { 
         \pgfnodealias 
           { \l_@@_name_str - ##1 - last } 
           { \@@_env: - ##1 - \int_use:N \c@jCol } 
       }
-    \int_step_inline:nn { \c@jCol }
+    \int_step_inline:nn \c@jCol
       { 
         \pgfnodealias 
           { \l_@@_name_str - last - ##1 } 
@@ -8695,7 +8702,7 @@ version 2005/12/01 or later.
   {
     \pgfpicture
     \pgfrememberpicturepositiononpagetrue
-    \int_step_inline:nn { \int_max:nn { \c@iRow } { \c@jCol } }
+    \int_step_inline:nn { \int_max:nn \c@iRow \c@jCol }
       {
         \@@_qpoint:n { col - \int_min:nn { ##1 } { \c@jCol + 1 } } 
         \dim_set_eq:NN \l_tmpa_dim \pgf@x
@@ -8720,15 +8727,15 @@ version 2005/12/01 or later.
 % Now, the last node. Of course, that is only a |coordinate| because there is
 % not |.5| anchor for that node.
 %    \begin{macrocode}
-    \int_set:Nn \l_tmpa_int { \int_max:nn { \c@iRow } { \c@jCol } + 1 }
-    \@@_qpoint:n { row - \int_min:nn { \l_tmpa_int } { \c@iRow + 1 } } 
+    \int_set:Nn \l_tmpa_int { 1 + \int_max:nn \c@iRow \c@jCol } % modified
+    \@@_qpoint:n { row - \int_min:nn \l_tmpa_int { \c@iRow + 1 } } 
     \dim_set_eq:NN \l_tmpa_dim \pgf@y 
-    \@@_qpoint:n { col - \int_min:nn { \l_tmpa_int } { \c@jCol + 1 } } 
+    \@@_qpoint:n { col - \int_min:nn \l_tmpa_int { \c@jCol + 1 } } 
     \pgfcoordinate 
       { \@@_env: - \int_use:N \l_tmpa_int } { \pgfpoint \pgf@x \l_tmpa_dim }  
     \pgfnodealias 
       { \@@_env: - last }
-      { \@@_env: - \int_eval:n { \int_max:nn { \c@iRow } { \c@jCol } + 1 } }
+      { \@@_env: - \int_eval:n { 1 + \int_max:nn \c@iRow \c@jCol } }
     \str_if_empty:NF \l_@@_name_str
       { 
         \pgfnodealias 
@@ -9154,9 +9161,9 @@ version 2005/12/01 or later.
 % Be careful: with |\Iddots|, |\l_@@_final_j_int| is inferior to
 % |\l_@@_initial_j_int|. That's why we use |\int_min:nn| and |\int_max:nn|.
 %    \begin{macrocode}
-        { \int_min:nn { \l_@@_initial_j_int } { \l_@@_final_j_int } }
+        { \int_min:nn \l_@@_initial_j_int \l_@@_final_j_int }
         { \int_use:N \l_@@_final_i_int }
-        { \int_max:nn { \l_@@_initial_j_int } { \l_@@_final_j_int } }
+        { \int_max:nn \l_@@_initial_j_int \l_@@_final_j_int } 
         { } 
       }
   } 
@@ -9297,7 +9304,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_open_x_initial_dim:
   {
     \dim_set_eq:NN \l_@@_x_initial_dim \c_max_dim
-    \int_step_inline:nnn { \l_@@_first_row_int } { \g_@@_row_total_int }
+    \int_step_inline:nnn \l_@@_first_row_int \g_@@_row_total_int 
       {
         \cs_if_exist:cT 
           { pgf @ sh @ ns @ \@@_env: - ##1 - \int_use:N \l_@@_initial_j_int }
@@ -9306,14 +9313,14 @@ version 2005/12/01 or later.
               { \@@_env: - ##1 - \int_use:N \l_@@_initial_j_int } 
               { west }
             \dim_set:Nn \l_@@_x_initial_dim
-              { \dim_min:nn { \l_@@_x_initial_dim } { \pgf@x } }
+              { \dim_min:nn \l_@@_x_initial_dim \pgf@x } 
           }
       }
 %    \end{macrocode}
 % If, in fact, all the cells of the column are empty (no PGF/TikZ nodes in
 % those cells).
 %    \begin{macrocode}
-    \dim_compare:nNnT { \l_@@_x_initial_dim } = { \c_max_dim }
+    \dim_compare:nNnT \l_@@_x_initial_dim = \c_max_dim 
       {
         \@@_qpoint:n { col - \int_use:N \l_@@_initial_j_int } 
         \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x 
@@ -9326,7 +9333,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_open_x_final_dim:
   {
     \dim_set:Nn \l_@@_x_final_dim { - \c_max_dim }
-    \int_step_inline:nnn { \l_@@_first_row_int } { \g_@@_row_total_int }
+    \int_step_inline:nnn \l_@@_first_row_int \g_@@_row_total_int 
       {
         \cs_if_exist:cT 
           { pgf @ sh @ ns @ \@@_env: - ##1 - \int_use:N \l_@@_final_j_int }
@@ -9334,7 +9341,7 @@ version 2005/12/01 or later.
             \pgfpointanchor 
               { \@@_env: - ##1 - \int_use:N \l_@@_final_j_int } 
               { east } 
-            \dim_compare:nNnT { \pgf@x } > { \l_@@_x_final_dim }
+            \dim_compare:nNnT \pgf@x > \l_@@_x_final_dim 
               { \dim_set_eq:NN \l_@@_x_final_dim \pgf@x }
           }
       }
@@ -9342,7 +9349,7 @@ version 2005/12/01 or later.
 % If, in fact, all the cells of the columns are empty (no PGF/TikZ nodes in
 % those cells).
 %    \begin{macrocode}
-    \dim_compare:nNnT { \l_@@_x_final_dim } = { - \c_max_dim }
+    \dim_compare:nNnT \l_@@_x_final_dim = { - \c_max_dim }
       {
         \@@_qpoint:n { col - \int_eval:n { \l_@@_final_j_int + 1 } }
         \dim_set_eq:NN \l_@@_x_final_dim \pgf@x 
@@ -9380,7 +9387,7 @@ version 2005/12/01 or later.
 % be (after the construction of the array) the number of that ``last row'' even
 % if the option |last-row| has been used without value.
 %    \begin{macrocode}
-                  \int_compare:nNnT { #1 } = { \l_@@_last_row_int }
+                  \int_compare:nNnT { #1 } = \l_@@_last_row_int 
                     { \color { nicematrix-last-row } }
                 }
               \keys_set:nn { nicematrix / xdots } { #3 }
@@ -9432,7 +9439,7 @@ version 2005/12/01 or later.
       {
         \l_@@_initial_open_bool
         \l_@@_final_open_bool
-        { \int_compare_p:nNn { \l_@@_initial_i_int } = { \l_@@_last_row_int } }
+        { \int_compare_p:nNn \l_@@_initial_i_int = \l_@@_last_row_int } 
       }
       {
         \dim_add:Nn \l_@@_y_initial_dim \c_@@_shift_Ldots_last_row_dim
@@ -9460,7 +9467,7 @@ version 2005/12/01 or later.
     \@@_adjust_to_submatrix:nn { #1 } { #2 }
     \cs_if_free:cT { @@ _ dotted _ #1 - #2 }
       {
-        \@@_find_extremities:nnnn { #1 } { #2 } { 0 } { 1 }
+        \@@_find_extremities:nnnn { #1 } { #2 } 0 1 
 %    \end{macrocode}
 % The previous command may have changed the current environment by marking some
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
@@ -9478,7 +9485,7 @@ version 2005/12/01 or later.
 % be (after the construction of the array) the number of that ``last row'' even
 % if the option |last-row| has been used without value.
 %    \begin{macrocode}
-                  \int_compare:nNnT { #1 } = { \l_@@_last_row_int }
+                  \int_compare:nNnT { #1 } = \l_@@_last_row_int 
                     { \color { nicematrix-last-row } }
                 }
               \keys_set:nn { nicematrix / xdots } { #3 }
@@ -9506,14 +9513,12 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_actually_draw_Cdots:
   {
     \bool_if:NTF \l_@@_initial_open_bool
-      { \@@_open_x_initial_dim: }
+      \@@_open_x_initial_dim: 
       { \@@_set_initial_coords_from_anchor:n { mid~east } }
     \bool_if:NTF \l_@@_final_open_bool
-      { \@@_open_x_final_dim: }
+      \@@_open_x_final_dim: 
       { \@@_set_final_coords_from_anchor:n { mid~west } }
-    \bool_lazy_and:nnTF
-      { \l_@@_initial_open_bool }
-      { \l_@@_final_open_bool }
+    \bool_lazy_and:nnTF \l_@@_initial_open_bool \l_@@_final_open_bool 
       {
         \@@_qpoint:n { row - \int_use:N \l_@@_initial_i_int }
         \dim_set_eq:NN \l_tmpa_dim \pgf@y
@@ -9535,7 +9540,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_open_y_initial_dim:
   {
     \dim_set:Nn \l_@@_y_initial_dim { - \c_max_dim }
-    \int_step_inline:nnn { \l_@@_first_col_int } { \g_@@_col_total_int }
+    \int_step_inline:nnn \l_@@_first_col_int \g_@@_col_total_int 
       {
         \cs_if_exist:cT 
           { pgf @ sh @ ns @ \@@_env: - \int_use:N \l_@@_initial_i_int - ##1 }
@@ -9543,11 +9548,11 @@ version 2005/12/01 or later.
             \pgfpointanchor 
               { \@@_env: - \int_use:N \l_@@_initial_i_int - ##1 } 
               { north }
-            \dim_compare:nNnT { \pgf@y } > { \l_@@_y_initial_dim }
+            \dim_compare:nNnT \pgf@y > \l_@@_y_initial_dim 
               { \dim_set_eq:NN \l_@@_y_initial_dim \pgf@y }
           }
       }
-    \dim_compare:nNnT { \l_@@_y_initial_dim } = { - \c_max_dim }
+    \dim_compare:nNnT \l_@@_y_initial_dim = { - \c_max_dim }
       {
         \@@_qpoint:n { row - \int_use:N \l_@@_initial_i_int - base }
         \dim_set:Nn \l_@@_y_initial_dim 
@@ -9567,7 +9572,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_open_y_final_dim:
   {
     \dim_set_eq:NN \l_@@_y_final_dim \c_max_dim
-    \int_step_inline:nnn { \l_@@_first_col_int } { \g_@@_col_total_int }
+    \int_step_inline:nnn \l_@@_first_col_int \g_@@_col_total_int 
       {
         \cs_if_exist:cT 
           { pgf @ sh @ ns @ \@@_env: - \int_use:N \l_@@_final_i_int - ##1 }
@@ -9575,11 +9580,11 @@ version 2005/12/01 or later.
             \pgfpointanchor 
               { \@@_env: - \int_use:N \l_@@_final_i_int - ##1 } 
               { south }
-            \dim_compare:nNnT { \pgf@y } < { \l_@@_y_final_dim }
+            \dim_compare:nNnT \pgf@y < \l_@@_y_final_dim 
               { \dim_set_eq:NN \l_@@_y_final_dim \pgf@y }
           }
       }
-    \dim_compare:nNnT { \l_@@_y_final_dim } = { \c_max_dim }
+    \dim_compare:nNnT \l_@@_y_final_dim = \c_max_dim 
       {
         \@@_qpoint:n { row - \int_use:N \l_@@_final_i_int - base }
         \dim_set:Nn \l_@@_y_final_dim 
@@ -9596,7 +9601,7 @@ version 2005/12/01 or later.
     \@@_adjust_to_submatrix:nn { #1 } { #2 }
     \cs_if_free:cT { @@ _ dotted _ #1 - #2 }
       {
-        \@@_find_extremities:nnnn { #1 } { #2 } { 1 } { 0 }
+        \@@_find_extremities:nnnn { #1 } { #2 } 1 0 
 %    \end{macrocode}
 % The previous command may have changed the current environment by marking some
 % cells as ``dotted'', but, fortunately, it is outside the group for the options
@@ -9609,14 +9614,14 @@ version 2005/12/01 or later.
               \int_if_zero:nTF { #2 } 
                 { \color { nicematrix-first-col } }
                 {
-                  \int_compare:nNnT { #2 } = { \l_@@_last_col_int }
+                  \int_compare:nNnT { #2 } = \l_@@_last_col_int 
                     { \color { nicematrix-last-col } }
                 }
               \keys_set:nn { nicematrix / xdots } { #3 }
               \@@_color:o \l_@@_xdots_color_tl
               \bool_if:NTF \l_@@_Vbrace_bool
-                { \@@_actually_draw_Vbrace: }
-                { \@@_actually_draw_Vdots: }
+                \@@_actually_draw_Vbrace: 
+                \@@_actually_draw_Vdots: 
               \group_end:                
           }
       }
@@ -9642,9 +9647,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_actually_draw_Vdots:
   {
-    \bool_lazy_and:nnTF { \l_@@_initial_open_bool } { \l_@@_final_open_bool }
-      { \@@_actually_draw_Vdots_i: }
-      { \@@_actually_draw_Vdots_ii: }
+    \bool_lazy_and:nnTF \l_@@_initial_open_bool \l_@@_final_open_bool 
+      \@@_actually_draw_Vdots_i: 
+      \@@_actually_draw_Vdots_ii: 
     \dim_set_eq:NN \l_@@_x_final_dim \l_@@_x_initial_dim 
     \@@_draw_line:
   }
@@ -9658,7 +9663,7 @@ version 2005/12/01 or later.
   {
     \@@_open_y_initial_dim: 
     \@@_open_y_final_dim: 
-    \int_if_zero:nTF { \l_@@_initial_j_int }
+    \int_if_zero:nTF \l_@@_initial_j_int 
 %    \end{macrocode}
 % We have a dotted line open on both sides in the ``first column''.
 %    \begin{macrocode}
@@ -9670,11 +9675,8 @@ version 2005/12/01 or later.
       } 
       {
         \bool_lazy_and:nnTF
-          { \int_compare_p:nNn { \l_@@_last_col_int } > { -2 } }
-          {
-            \int_compare_p:nNn 
-              { \l_@@_initial_j_int } = { \g_@@_col_total_int } 
-          }
+          { \int_compare_p:nNn \l_@@_last_col_int > { -2 } }
+          { \int_compare_p:nNn \l_@@_initial_j_int = \g_@@_col_total_int }
 %    \end{macrocode}
 % We have a dotted line open on both sides and which is in the ``last column''.
 %    \begin{macrocode}
@@ -9717,10 +9719,7 @@ version 2005/12/01 or later.
             \@@_set_initial_coords_from_anchor:n { south~west } 
             \@@_set_final_coords_from_anchor:n { north~west } 
             \bool_set:Nn \l_tmpa_bool 
-              { 
-                \dim_compare_p:nNn 
-                  { \l_@@_x_initial_dim } = { \l_@@_x_final_dim } 
-              }
+              { \dim_compare_p:nNn \l_@@_x_initial_dim = \l_@@_x_final_dim }
           }
       }
 %    \end{macrocode}
@@ -9736,18 +9735,18 @@ version 2005/12/01 or later.
       { 
         \@@_set_initial_coords_from_anchor:n { south } 
         \bool_if:NTF \l_@@_final_open_bool
-          { \@@_open_y_final_dim: }
+          \@@_open_y_final_dim: 
 %    \end{macrocode}
 % Now the case where both extremities are closed. The first conditional tests
 % whether the column is of type |c| or may be considered as if.
 %    \begin{macrocode}      
           { 
             \@@_set_final_coords_from_anchor:n { north } 
-            \dim_compare:nNnF { \l_@@_x_initial_dim } = { \l_@@_x_final_dim }
+            \dim_compare:nNnF \l_@@_x_initial_dim = \l_@@_x_final_dim 
               { 
                 \dim_set:Nn \l_@@_x_initial_dim
                   { 
-                    \bool_if:NTF \l_tmpa_bool { \dim_min:nn } { \dim_max:nn }
+                    \bool_if:NTF \l_tmpa_bool \dim_min:nn \dim_max:nn 
                       \l_@@_x_initial_dim \l_@@_x_final_dim
                   }
               }
@@ -9774,10 +9773,10 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_actually_draw_Vbrace:
   {
     \bool_if:NTF \l_@@_initial_open_bool
-      { \@@_open_y_initial_dim: }
+      \@@_open_y_initial_dim: 
       { \@@_set_initial_coords_from_anchor:n { south } }
     \bool_if:NTF \l_@@_final_open_bool
-      { \@@_open_y_final_dim: }
+      \@@_open_y_final_dim: 
       { \@@_set_final_coords_from_anchor:n { north } }
 %    \end{macrocode}
 % Now, we have the correct values for the $y$-values of both extremities of the brace.
@@ -9787,7 +9786,7 @@ version 2005/12/01 or later.
 % \medskip
 % If we are in the first (exterior) column, the brace must be drawn right flush.
 %    \begin{macrocode}
-    \int_if_zero:nTF { \l_@@_initial_j_int }
+    \int_if_zero:nTF \l_@@_initial_j_int 
       {
         \@@_qpoint:n { col - 1 }
         \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
@@ -9814,7 +9813,7 @@ version 2005/12/01 or later.
 % \bigskip
 %    \begin{macrocode}
 \cs_new:Npn \@@_colsep:
-  { \bool_if:NTF \l_@@_tabular_bool { \tabcolsep } { \arraycolsep } }
+  { \bool_if:NTF \l_@@_tabular_bool \tabcolsep \arraycolsep }
 %    \end{macrocode}
 % 
 % \interitem
@@ -9887,7 +9886,7 @@ version 2005/12/01 or later.
 % We test if the diagonal line is the first one (the counter |\g_@@_ddots_int|
 % is created for this usage). 
 %    \begin{macrocode}
-        \int_compare:nNnTF { \g_@@_ddots_int } = { \c_one_int }
+        \int_compare:nNnTF \g_@@_ddots_int = 1
 %    \end{macrocode}
 % If the diagonal line is the first one, we have no adjustment of the line to do
 % but we store the $\Delta_x$ and the $\Delta_y$ of the line because these
@@ -9905,7 +9904,7 @@ version 2005/12/01 or later.
 % extremity of the line by modifying the coordinate |\l_@@_x_initial_dim|.
 %    \begin{macrocode}
           { 
-            \dim_compare:nNnF { \g_@@_delta_x_one_dim } = { \c_zero_dim }
+            \dim_compare:nNnF \g_@@_delta_x_one_dim = \c_zero_dim 
               {
                 \dim_set:Nn \l_@@_y_final_dim          
                   { 
@@ -9979,7 +9978,7 @@ version 2005/12/01 or later.
     \bool_if:NT \l_@@_parallelize_diags_bool
       { 
         \int_gincr:N \g_@@_iddots_int
-        \int_compare:nNnTF { \g_@@_iddots_int } = { \c_one_int }
+        \int_compare:nNnTF \g_@@_iddots_int = 1
           { 
             \dim_gset:Nn \g_@@_delta_x_two_dim 
               { \l_@@_x_final_dim - \l_@@_x_initial_dim }
@@ -9987,7 +9986,7 @@ version 2005/12/01 or later.
               { \l_@@_y_final_dim - \l_@@_y_initial_dim }
           }
           { 
-            \dim_compare:nNnF { \g_@@_delta_x_two_dim } = { \c_zero_dim }
+            \dim_compare:nNnF \g_@@_delta_x_two_dim = \c_zero_dim 
               {
                 \dim_set:Nn \l_@@_y_final_dim
                   { 
@@ -10025,10 +10024,10 @@ version 2005/12/01 or later.
     \pgfrememberpicturepositiononpagetrue
     \pgf@relevantforpicturesizefalse
     \bool_lazy_or:nnTF
+      \l_@@_dotted_bool     
       { \tl_if_eq_p:NN \l_@@_xdots_line_style_tl \c_@@_standard_tl }
-      { \l_@@_dotted_bool }
-      { \@@_draw_standard_dotted_line: }
-      { \@@_draw_unstandard_dotted_line: }
+      \@@_draw_standard_dotted_line: 
+      \@@_draw_unstandard_dotted_line: 
   }
 %    \end{macrocode}
 % 
@@ -10117,9 +10116,9 @@ version 2005/12/01 or later.
 % we should also write something in the |aux| file to say that one more
 % compilation should be done.
 %    \begin{macrocode}
-    \dim_compare:nNnT { \l_@@_l_dim } < { \c_@@_max_l_dim }
+    \dim_compare:nNnT \l_@@_l_dim < \c_@@_max_l_dim 
       {
-        \dim_compare:nNnT { \l_@@_l_dim }  > { 1 pt } 
+        \dim_compare:nNnT \l_@@_l_dim  > { 1 pt } 
           \@@_draw_unstandard_dotted_line_i:
       }
 %    \end{macrocode}
@@ -10163,7 +10162,7 @@ version 2005/12/01 or later.
     \use:e
       {
         \exp_not:N \begin { scope }
-          [ shift = {(\dim_use:N \l_tmpa_dim,\dim_use:N \l_tmpb_dim)} ]
+          [ shift = {(\dim_use:N \l_tmpa_dim, \dim_use:N \l_tmpb_dim)} ]
       }
     \draw 
       [ #1 ]
@@ -10244,9 +10243,9 @@ version 2005/12/01 or later.
 % we should also write something in the |aux| file to say that one more
 % compilation should be done.
 %    \begin{macrocode}
-    \dim_compare:nNnT { \l_@@_l_dim } < { \c_@@_max_l_dim }
+    \dim_compare:nNnT \l_@@_l_dim < \c_@@_max_l_dim 
       {
-        \dim_compare:nNnT { \l_@@_l_dim }  > { 1 pt } 
+        \dim_compare:nNnT \l_@@_l_dim > { 1 pt } 
           { \@@_draw_standard_dotted_line_i: }
       }
     \group_end:
@@ -10280,7 +10279,7 @@ version 2005/12/01 or later.
             - \l_@@_xdots_shorten_start_dim 
             - \l_@@_xdots_shorten_end_dim
           } 
-          { \l_@@_xdots_inter_dim }
+          \l_@@_xdots_inter_dim 
       }
 %    \end{macrocode}
 %
@@ -10326,11 +10325,11 @@ version 2005/12/01 or later.
           { 2 \l_@@_l_dim } 
       }
     \pgf@relevantforpicturesizefalse
-    \int_step_inline:nnn { \c_zero_int } { \l_tmpa_int }
+    \int_step_inline:nnn \c_zero_int \l_tmpa_int 
       { 
         \pgfpathcircle 
           { \pgfpoint \l_@@_x_initial_dim \l_@@_y_initial_dim } 
-          { \l_@@_xdots_radius_dim }
+          \l_@@_xdots_radius_dim 
         \dim_add:Nn \l_@@_x_initial_dim \l_tmpa_dim
         \dim_add:Nn \l_@@_y_initial_dim \l_tmpb_dim
       }
@@ -10444,14 +10443,13 @@ version 2005/12/01 or later.
 % document (and that's why we are in a |\AtBeginDocument|).
 %    \begin{macrocode}
     \tl_set_rescan:Nnn \l_@@_argspec_tl { } { m  E { _ ^ : } { { } { } { } } }
-    \cs_new_protected:Npn \@@_Ldots:
-      { \@@_collect_options:n { \@@_Ldots_i } }
+    \cs_new_protected:Npn \@@_Ldots: { \@@_collect_options:n { \@@_Ldots_i } }
     \exp_args:NNo \NewDocumentCommand \@@_Ldots_i \l_@@_argspec_tl
       { 
-        \int_if_zero:nTF { \c@jCol }
+        \int_if_zero:nTF \c@jCol 
           { \@@_error:nn { in~first~col } { \Ldots } }
           { 
-            \int_compare:nNnTF { \c@jCol } = { \l_@@_last_col_int }
+            \int_compare:nNnTF \c@jCol = \l_@@_last_col_int 
               { \@@_error:nn { in~last~col } { \Ldots } }
               { 
                 \@@_instruction_of_type:nnn { \c_false_bool } { Ldots } 
@@ -10466,14 +10464,13 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
-    \cs_new_protected:Npn \@@_Cdots: 
-      { \@@_collect_options:n { \@@_Cdots_i } }
+    \cs_new_protected:Npn \@@_Cdots: { \@@_collect_options:n { \@@_Cdots_i } }
     \exp_args:NNo \NewDocumentCommand \@@_Cdots_i \l_@@_argspec_tl
       { 
-        \int_if_zero:nTF { \c@jCol }
+        \int_if_zero:nTF \c@jCol 
           { \@@_error:nn { in~first~col } { \Cdots } }
           { 
-            \int_compare:nNnTF { \c@jCol } = { \l_@@_last_col_int }
+            \int_compare:nNnTF \c@jCol = \l_@@_last_col_int 
               { \@@_error:nn { in~last~col } { \Cdots } }
               { 
                 \@@_instruction_of_type:nnn { \c_false_bool } { Cdots } 
@@ -10488,14 +10485,13 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
-    \cs_new_protected:Npn \@@_Vdots: 
-      { \@@_collect_options:n { \@@_Vdots_i } }
+    \cs_new_protected:Npn \@@_Vdots: { \@@_collect_options:n { \@@_Vdots_i } }
     \exp_args:NNo \NewDocumentCommand \@@_Vdots_i \l_@@_argspec_tl
       {
-        \int_if_zero:nTF { \c@iRow }
+        \int_if_zero:nTF \c@iRow
           { \@@_error:nn { in~first~row } { \Vdots } }
           { 
-            \int_compare:nNnTF { \c@iRow } = { \l_@@_last_row_int }
+            \int_compare:nNnTF \c@iRow = \l_@@_last_row_int 
               { \@@_error:nn { in~last~row } { \Vdots } }
               { 
                 \@@_instruction_of_type:nnn { \c_false_bool } { Vdots } 
@@ -10511,8 +10507,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 %    \begin{macrocode}
-    \cs_new_protected:Npn \@@_Ddots: 
-      { \@@_collect_options:n { \@@_Ddots_i } }
+    \cs_new_protected:Npn \@@_Ddots: { \@@_collect_options:n { \@@_Ddots_i } }
     \exp_args:NNo \NewDocumentCommand \@@_Ddots_i \l_@@_argspec_tl
       { 
         \int_case:nnF \c@iRow
@@ -10614,8 +10609,8 @@ version 2005/12/01 or later.
 \cs_new:Npn \@@_Hdotsfor:
   {
     \bool_lazy_and:nnTF
-      { \int_if_zero_p:n { \c@jCol } }
-      { \int_if_zero_p:n { \l_@@_first_col_int } }
+      { \int_if_zero_p:n \c@jCol }
+      { \int_if_zero_p:n \l_@@_first_col_int } 
       { 
         \bool_if:NTF \g_@@_after_col_zero_bool 
           {        
@@ -10689,9 +10684,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % For the column, it's a bit more complicated.
 %    \begin{macrocode}
-    \int_compare:nNnTF { #2 } = { \c_one_int }
+    \int_compare:nNnTF { #2 } = 1
       { 
-        \int_set_eq:NN \l_@@_initial_j_int \c_one_int
+        \int_set:Nn \l_@@_initial_j_int 1
         \bool_set_true:N \l_@@_initial_open_bool
       }
       {
@@ -10707,7 +10702,7 @@ version 2005/12/01 or later.
             \bool_set_true:N \l_@@_initial_open_bool
           }
       }
-    \int_compare:nNnTF { #2 + #3 -1 } = { \c@jCol }
+    \int_compare:nNnTF { #2 + #3 -1 } = \c@jCol 
       { 
         \int_set:Nn \l_@@_final_j_int { #2 + #3 - 1 }
         \bool_set_true:N \l_@@_final_open_bool
@@ -10735,7 +10730,7 @@ version 2005/12/01 or later.
         \int_if_zero:nTF { #1 } 
           { \color { nicematrix-first-row } }
           { 
-            \int_compare:nNnT { #1 } = { \g_@@_row_total_int }
+            \int_compare:nNnT { #1 } = \g_@@_row_total_int 
               { \color { nicematrix-last-row } }
           }
         \keys_set:nn { nicematrix / xdots } { #4 }
@@ -10806,9 +10801,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % For the row, it's a bit more complicated.
 %    \begin{macrocode}
-    \int_compare:nNnTF { #1 } = { \c_one_int }
+    \int_compare:nNnTF { #1 } = 1
       {
-        \int_set_eq:NN \l_@@_initial_i_int \c_one_int
+        \int_set:Nn \l_@@_initial_i_int 1
         \bool_set_true:N \l_@@_initial_open_bool
       }
       {
@@ -10824,7 +10819,7 @@ version 2005/12/01 or later.
             \bool_set_true:N \l_@@_initial_open_bool
           }
       }
-    \int_compare:nNnTF { #1 + #3 - 1 } = { \c@iRow }
+    \int_compare:nNnTF { #1 + #3 - 1 } = \c@iRow 
       {
         \int_set:Nn \l_@@_final_i_int { #1 + #3 - 1 }
         \bool_set_true:N \l_@@_final_open_bool
@@ -10852,14 +10847,14 @@ version 2005/12/01 or later.
         \int_if_zero:nTF { #2 } 
           { \color { nicematrix-first-col } }
           { 
-            \int_compare:nNnT { #2 } = { \g_@@_col_total_int }
+            \int_compare:nNnT { #2 } = \g_@@_col_total_int 
               { \color { nicematrix-last-col } }
           }
         \keys_set:nn { nicematrix / xdots } { #4 }
         \@@_color:o \l_@@_xdots_color_tl
         \bool_if:NTF \l_@@_Vbrace_bool
-          { \@@_actually_draw_Vbrace: }
-          { \@@_actually_draw_Vdots: }
+          \@@_actually_draw_Vbrace: 
+          \@@_actually_draw_Vdots: 
         \group_end:
       }
 %    \end{macrocode}
@@ -11048,8 +11043,8 @@ version 2005/12/01 or later.
 %
 % However, both arguments are implicit because they are taken by curryfication.
 %    \begin{macrocode}
-\cs_new:Npn \@@_if_row_less_than:nn { \int_compare:nNnT { \c@iRow } < }  
-\cs_new:Npn \@@_if_col_greater_than:nn { \int_compare:nNnF { \c@jCol } < }
+\cs_new:Npn \@@_if_row_less_than:nn { \int_compare:nNnT \c@iRow < }  
+\cs_new:Npn \@@_if_col_greater_than:nn { \int_compare:nNnF \c@jCol < }
 %    \end{macrocode}
 % 
 % \bigskip
@@ -11073,7 +11068,7 @@ version 2005/12/01 or later.
           { 
             \exp_not:N 
             \@@_if_col_greater_than:nn
-              { \int_eval:n { \c@jCol } }
+              { \int_use:N \c@jCol }
               { \exp_not:n { #1 } \scan_stop: }
           }
       }
@@ -11143,7 +11138,7 @@ version 2005/12/01 or later.
     \tl_clear:N \l_@@_fill_tl 
     \tl_clear:N \l_@@_opacity_tl
     \tl_clear:N \l_@@_color_tl
-    \int_set_eq:NN \l_@@_key_nb_rows_int \c_one_int
+    \int_set:Nn \l_@@_key_nb_rows_int 1
     \dim_zero:N \l_@@_rounded_corners_dim 
     \dim_zero:N \l_tmpa_dim
     \dim_zero:N \l_tmpb_dim 
@@ -11172,7 +11167,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % |\l_tmpa_dim| is the value of the key |cell-space-top-limit| of |\RowStyle|.
 %    \begin{macrocode}
-    \dim_compare:nNnT { \l_tmpa_dim } > { \c_zero_dim }
+    \dim_compare:nNnT \l_tmpa_dim > \c_zero_dim 
       {
         \@@_put_in_row_style:e 
           {
@@ -11190,7 +11185,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % |\l_tmpb_dim| is the value of the key |cell-space-bottom-limit| of |\RowStyle|.
 %    \begin{macrocode}
-    \dim_compare:nNnT { \l_tmpb_dim } > { \c_zero_dim }
+    \dim_compare:nNnT \l_tmpb_dim > \c_zero_dim 
       {
         \@@_put_in_row_style:e
           {
@@ -11310,7 +11305,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
           { \str_if_eq:eeT { #1 } { ##2 } { \int_set:Nn \l_tmpa_int { ##1 } } }
       }
-    \int_if_zero:nTF { \l_tmpa_int }
+    \int_if_zero:nTF \l_tmpa_int 
 %    \end{macrocode}
 % First, the case where the color is a \emph{new} color (not in the sequence).
 %    \begin{macrocode}
@@ -11334,18 +11329,14 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_clip_with_rounded_corners:
   { 
-    \dim_compare:nNnT { \l_@@_tab_rounded_corners_dim } > { \c_zero_dim }
+    \dim_compare:nNnT \l_@@_tab_rounded_corners_dim > \c_zero_dim 
       {
 %    \end{macrocode}
 % The TeX group is for |\pgfsetcornersarced| (whose scope is the TeX scope).
 %    \begin{macrocode}
         \group_begin:
         \pgfsetcornersarced
-          {
-            \pgfpoint
-              { \l_@@_tab_rounded_corners_dim } 
-              { \l_@@_tab_rounded_corners_dim }
-          }
+          { \pgfpoint \l_@@_tab_rounded_corners_dim \l_@@_tab_rounded_corners_dim }
 %    \end{macrocode}
 % Because we want \pkg{nicematrix} compatible with arrays constructed by
 % \pkg{array}, the nodes for the rows and columns (that is to say the nodes
@@ -11361,13 +11352,13 @@ version 2005/12/01 or later.
               { 
                 \pgfpointadd
                   { \@@_qpoint:n { row-1 } }
-                  { \pgfpoint { 0.5 \arrayrulewidth } { \c_zero_dim } }
+                  { \pgfpoint { 0.5 \arrayrulewidth } \c_zero_dim }
               }
               { 
                 \pgfpointadd
                   {
                     \@@_qpoint:n 
-                      { \int_eval:n { \int_max:nn { \c@iRow } { \c@jCol } + 1 } } 
+                      { \int_eval:n { 1 + \int_max:nn \c@iRow \c@jCol } } 
                   }
                   { \pgfpoint \c_zero_dim { 0.5 \arrayrulewidth } }
               }
@@ -11379,7 +11370,7 @@ version 2005/12/01 or later.
                 \pgfpointadd
                   {
                     \@@_qpoint:n 
-                      { \int_eval:n { \int_max:nn { \c@iRow } { \c@jCol } + 1 } } 
+                      { \int_eval:n { 1 + \int_max:nn \c@iRow \c@jCol } } 
                   }
                   { \pgfpoint \c_zero_dim \arrayrulewidth } 
               }
@@ -11410,7 +11401,7 @@ version 2005/12/01 or later.
     \@@_clip_with_rounded_corners:
     \seq_map_indexed_inline:Nn \g_@@_colors_seq
       {
-        \int_compare:nNnTF { ##1 } = { \c_one_int }
+        \int_compare:nNnTF { ##1 } = 1
           { 
             \cs_set_eq:NN \@@_cartesian_path:n \@@_cartesian_path_nocolor:n 
             \use:c { g_@@_color _ 1 _tl }
@@ -11437,7 +11428,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_color_opacity:
   {
     \peek_meaning:NTF [
-      { \@@_color_opacity:w }
+      \@@_color_opacity:w 
       { \@@_color_opacity:w [ ] }
   }
 %    \end{macrocode}
@@ -11457,7 +11448,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \tl_if_empty:NF \l_tmpa_tl { \exp_args:No \pgfsetfillopacity \l_tmpa_tl }
     \tl_if_empty:NTF \l_tmpb_tl 
-      { \@declaredcolor }
+      \@declaredcolor 
       { \use:e { \exp_not:N \@undeclaredcolor [ \l_tmpb_tl ] } }
   }
 %    \end{macrocode}
@@ -11573,9 +11564,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \NewDocumentCommand \@@_chessboardcolors { O { } m m  }
   {
-    \int_step_inline:nn { \c@iRow }
+    \int_step_inline:nn \c@iRow
       {
-        \int_step_inline:nn { \c@jCol }
+        \int_step_inline:nn \c@jCol 
           {
             \int_if_even:nTF { ####1 + ##1 }
               { \@@_cellcolor [ #1 ] { #2 } }
@@ -11646,7 +11637,7 @@ version 2005/12/01 or later.
 % colors (modulo the length of the list).
 %    \begin{macrocode}
     \int_zero_new:N \l_@@_color_int
-    \int_set_eq:NN \l_@@_color_int \c_one_int 
+    \int_set:Nn \l_@@_color_int 1
     \bool_if:NT \l_@@_respect_blocks_bool
       {
 %    \end{macrocode}
@@ -11654,8 +11645,8 @@ version 2005/12/01 or later.
 % column'' (number~$0$) or in the ``last column'' and that's why we filter
 % the sequence of the blocks (in the sequence |\l_tmpa_seq|).
 %    \begin{macrocode}
-        \seq_set_eq:NN \l_tmpb_seq \g_@@_pos_of_blocks_seq 
-        \seq_set_filter:NNn \l_tmpa_seq \l_tmpb_seq
+        % modified 2026-02-18
+        \seq_set_filter:NNn \l_tmpa_seq \g_@@_pos_of_blocks_seq  
           { \@@_not_in_exterior_p:nnnnn ##1 }
       }
 %    \end{macrocode}
@@ -11674,7 +11665,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \int_set:Nn \l_tmpa_int \l_tmpa_tl
         \int_set:Nn \l_@@_color_int 
-          { \bool_if:NTF \l_@@_rowcolors_restart_bool { 1 } { \l_tmpa_tl } }
+          { \bool_if:NTF \l_@@_rowcolors_restart_bool { 1 } \l_tmpa_tl }
         \int_set:Nn \l_@@_tmpc_int \l_tmpb_tl
         \int_do_until:nNnn \l_tmpa_int > \l_@@_tmpc_int
           {
@@ -11754,7 +11745,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_rowcolors_i:nnnnn #1 #2 #3 #4 #5
   { 
-    \int_compare:nNnT { #3 } > { \l_tmpb_int }
+    \int_compare:nNnT { #3 } > \l_tmpb_int 
       { \int_set:Nn \l_tmpb_int { #3 } }
   }
 %    \end{macrocode}
@@ -11765,11 +11756,11 @@ version 2005/12/01 or later.
 \prg_new_conditional:Nnn \@@_not_in_exterior:nnnnn { p }
   {
     \int_if_zero:nTF { #4 }
-      { \prg_return_false: }
+      \prg_return_false: 
       { 
-        \int_compare:nNnTF { #2 } > { \c@jCol }
-          { \prg_return_false: }
-          { \prg_return_true: }
+        \int_compare:nNnTF { #2 } > \c@jCol 
+          \prg_return_false: 
+          \prg_return_true: 
       }
   }
 %    \end{macrocode}
@@ -11780,12 +11771,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \prg_new_conditional:Nnn \@@_intersect_our_row:nnnnn { p }
   {
-    \int_compare:nNnTF { #1 } > { \l_tmpa_int }
-      { \prg_return_false: }
+    \int_compare:nNnTF { #1 } > \l_tmpa_int 
+      \prg_return_false: 
       {
-        \int_compare:nNnTF { \l_tmpa_int } > { #3 }
-          { \prg_return_false: }
-          { \prg_return_true: }
+        \int_compare:nNnTF \l_tmpa_int > { #3 }
+          \prg_return_false: 
+          \prg_return_true: 
       }
   }
 %    \end{macrocode}
@@ -11803,7 +11794,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cartesian_path_normal:n #1 
   { 
-    \dim_compare:nNnTF { #1 } = { \c_zero_dim }
+    \dim_compare:nNnTF { #1 } = \c_zero_dim 
       {
         \bool_if:NTF \l_@@_nocolor_used_bool 
           { \@@_cartesian_path_normal_ii: }
@@ -11841,25 +11832,25 @@ version 2005/12/01 or later.
         \tl_if_empty:NTF \l_tmpa_tl 
           { \def \l_tmpa_tl { 1 } }  
           {
-            \str_if_eq:eeT { \l_tmpa_tl } { * }
+            \str_if_eq:eeT \l_tmpa_tl { * }
               { \def \l_tmpa_tl { 1 } }  
           }
-        \int_compare:nNnT { \l_tmpa_tl } > { \g_@@_col_total_int }
+        \int_compare:nNnT \l_tmpa_tl > \g_@@_col_total_int 
           { \@@_error:n { Invalid~col~number } }
         \tl_if_empty:NTF \l_tmpb_tl 
           { \tl_set:No \l_tmpb_tl { \int_use:N \c@jCol } }
           { 
-            \str_if_eq:eeT { \l_tmpb_tl } { * }
+            \str_if_eq:eeT \l_tmpb_tl { * }
               { \tl_set:No \l_tmpb_tl { \int_use:N \c@jCol } }
           }
-        \int_compare:nNnT { \l_tmpb_tl } > { \g_@@_col_total_int }
+        \int_compare:nNnT \l_tmpb_tl > \g_@@_col_total_int 
           { \tl_set:No \l_tmpb_tl { \int_use:N \g_@@_col_total_int } }
 %    \end{macrocode}
 % |\l_@@_tmpc_tl| will contain the number of column.
 %    \begin{macrocode}
         \tl_set_eq:NN \l_@@_tmpc_tl \l_tmpa_tl
         \@@_qpoint:n { col - \l_tmpa_tl }
-        \int_compare:nNnTF { \l_@@_first_col_int } = { \l_tmpa_tl }
+        \int_compare:nNnTF \l_@@_first_col_int = \l_tmpa_tl 
           { \dim_set:Nn \l_@@_tmpc_dim { \pgf@x - 0.5 \arrayrulewidth } }
           { \dim_set:Nn \l_@@_tmpc_dim { \pgf@x + 0.5 \arrayrulewidth } }
         \@@_qpoint:n { col - \int_eval:n { \l_tmpb_tl + 1 }  }
@@ -11877,18 +11868,18 @@ version 2005/12/01 or later.
             \tl_if_empty:NTF \l_tmpa_tl 
               { \def \l_tmpa_tl { 1 } }  
               {
-                \str_if_eq:eeT { \l_tmpa_tl } { * }
+                \str_if_eq:eeT \l_tmpa_tl { * }
                   { \def \l_tmpa_tl { 1 } }  
               }
             \tl_if_empty:NTF \l_tmpb_tl
               { \tl_set:No \l_tmpb_tl { \int_use:N \c@iRow } }
               {
-                \str_if_eq:eeT { \l_tmpb_tl } { * }
+                \str_if_eq:eeT \l_tmpb_tl { * }
                   { \tl_set:No \l_tmpb_tl { \int_use:N \c@iRow } }
               }
-            \int_compare:nNnT { \l_tmpa_tl } > { \g_@@_row_total_int }
+            \int_compare:nNnT \l_tmpa_tl > \g_@@_row_total_int 
               { \@@_error:n { Invalid~row~number } }
-            \int_compare:nNnT { \l_tmpb_tl } > { \g_@@_row_total_int }
+            \int_compare:nNnT \l_tmpb_tl > \g_@@_row_total_int 
               { \tl_set:No \l_tmpb_tl { \int_use:N \g_@@_row_total_int } }
 %    \end{macrocode}
 % Now, the numbers of both rows are in |\l_tmpa_tl| and |\l_tmpb_tl|.
@@ -11923,7 +11914,7 @@ version 2005/12/01 or later.
     \clist_map_inline:Nn \l_@@_cols_tl
       {
         \@@_qpoint:n { col - ##1 }
-        \int_compare:nNnTF { \l_@@_first_col_int } = { ##1 }
+        \int_compare:nNnTF \l_@@_first_col_int = { ##1 }
           { \dim_set:Nn \l_@@_tmpc_dim { \pgf@x - 0.5 \arrayrulewidth } }
           { \dim_set:Nn \l_@@_tmpc_dim { \pgf@x + 0.5 \arrayrulewidth } }
         \@@_qpoint:n { col - \int_eval:n { ##1 + 1 }  }
@@ -12006,16 +11997,16 @@ version 2005/12/01 or later.
           { \@@_cut_on_hyphen:w ##1 \q_stop }  
           { \@@_cut_on_hyphen:w ##1 - ##1 \q_stop }  
         \bool_lazy_or:nnT
-          { \str_if_eq_p:ee { \l_tmpa_tl } { * } }
+          { \str_if_eq_p:ee \l_tmpa_tl { * } }
           { \tl_if_blank_p:o \l_tmpa_tl }
           { \def \l_tmpa_tl { 1 } }  
         \bool_lazy_or:nnT
-          { \str_if_eq_p:ee { \l_tmpb_tl } { * } }
+          { \str_if_eq_p:ee \l_tmpb_tl { * } }
           { \tl_if_blank_p:o \l_tmpb_tl }
           { \tl_set:No \l_tmpb_tl { \int_use:N #2 } }
-        \int_compare:nNnT { \l_tmpb_tl } > { #2 }
+        \int_compare:nNnT \l_tmpb_tl > { #2 }
           { \tl_set:No \l_tmpb_tl { \int_use:N #2 } }
-        \int_step_inline:nnn { \l_tmpa_tl } { \l_tmpb_tl }
+        \int_step_inline:nnn \l_tmpa_tl \l_tmpb_tl
           { \clist_put_right:Nn #1 { ####1 } }
       }
   }
@@ -12130,7 +12121,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_rowlistcolors_tabular:nnnn #1 #2 #3 #4
   {
-    \int_compare:nNnTF { #1 } = { \c@iRow }
+    \int_compare:nNnTF { #1 } = \c@iRow 
 %    \end{macrocode}
 % We (temporary) keep in memory in |\g_tmpa_seq| the instructions which will
 % still be in force after the current instruction (because they have been issued
@@ -12185,7 +12176,7 @@ version 2005/12/01 or later.
 % With the following line, we test whether the cell is the first one we
 % encounter in its column (don't forget that some rows may be incomplete).
 %    \begin{macrocode}
-    \int_compare:nNnT { \c@jCol } > { \g_@@_col_total_int }
+    \int_compare:nNnT \c@jCol > \g_@@_col_total_int 
       {
 %    \end{macrocode}
 % You use |gput_left| because we want the specification of colors for the
@@ -12259,14 +12250,14 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_OnlyMainNiceMatrix:n #1
   { 
-    \int_if_zero:nTF { \l_@@_first_col_int }
+    \int_if_zero:nTF \l_@@_first_col_int 
       { \@@_OnlyMainNiceMatrix_i:n { #1 } }
       { 
-        \int_if_zero:nTF { \c@jCol }
+        \int_if_zero:nTF \c@jCol 
           {
-            \int_compare:nNnF { \c@iRow } = { -1 }
+            \int_compare:nNnF \c@iRow = { -1 }
               { 
-                \int_compare:nNnF { \c@iRow } = { \l_@@_last_row_int - 1 } 
+                \int_compare:nNnF \c@iRow = { \l_@@_last_row_int - 1 } 
                   { #1 } 
               }  
           }
@@ -12284,11 +12275,11 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_OnlyMainNiceMatrix_i:n #1
   {
-    \int_if_zero:nF { \c@iRow }
+    \int_if_zero:nF \c@iRow 
       { 
-        \int_compare:nNnF { \c@iRow } = { \l_@@_last_row_int }
+        \int_compare:nNnF \c@iRow = \l_@@_last_row_int 
           { 
-            \int_compare:nNnT { \c@jCol } > { \c_zero_int }
+            \int_compare:nNnT \c@jCol > \c_zero_int 
               { \bool_if:NF \l_@@_in_last_col_bool { #1 } }
           } 
       }
@@ -12486,23 +12477,32 @@ version 2005/12/01 or later.
     color .value_required:n = true ,
     sep-color .code:n = \@@_set_CTdrsc:n { #1 } ,
     sep-color .value_required:n = true ,
-%    \end{macrocode}
-% If the user uses the key |tikz|, the rule (or more precisely: the different
-% sub-rules since a rule may be broken by blocks or others) will be drawn with
-% TikZ. 
-%    \begin{macrocode}
-    tikz .code:n = 
-      \IfPackageLoadedTF { tikz }
-        { \clist_put_right:Nn \l_@@_tikz_rule_tl { #1 } }
-        { \@@_error:n { tikz~without~tikz } } ,
-    tikz .value_required:n = true ,
     total-width .dim_set:N = \l_@@_rule_width_dim ,
     total-width .value_required:n = true ,
     width .meta:n = { total-width = #1 } ,
     unknown .code:n =
       \@@_unknown_key:nn
         { nicematrix / RulesBis }
-        { Unknown~key~for~RulesBis }
+        { Unknown~key~for~RulesBis } ,
+    tikz .value_required:n = true 
+  }
+%    \end{macrocode}
+%
+% If the user uses the key |tikz|, the rule (or more precisely: the different
+% sub-rules since a rule may be broken by blocks or others) will be drawn with
+% TikZ. 
+%    \begin{macrocode}
+\hook_gput_code:nnn { begindocument } { . }
+  {
+    \IfPackageLoadedTF { tikz }
+      {
+        \keys_define:nn { nicematrix / RulesBis }
+          { tikz .code:n = \clist_put_right:Nn \l_@@_tikz_rule_tl { #1 } }
+      }
+      {
+        \keys_define:nn { nicematrix / RulesBis }
+          { tikz .code:n = \@@_error:n { tikz~without~tikz } } 
+      }
   }
 %    \end{macrocode}
 % 
@@ -12525,7 +12525,7 @@ version 2005/12/01 or later.
 % specified in the preamble of the environment (for instance, a preamble of
 % \verb+|c|c|c|+ but only two columns used).
 %    \begin{macrocode}
-    \int_compare:nNnT { \l_@@_position_int } < { \c@jCol + 2 }
+    \int_compare:nNnT \l_@@_position_int < { \c@jCol + 2 }
       \@@_vline_i:
     \group_end:
   }
@@ -12534,6 +12534,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_vline_i:
   {
+    \tl_clear:N \l_@@_tikz_rule_tl 
+    \keys_set:no { nicematrix / RulesBis } \l_@@_other_keys_tl 
 %    \end{macrocode}
 % |\l_tmpa_tl| is the number of row and |\l_tmpb_tl| the number of column. When
 % we have found a row corresponding to a rule to draw, we note its number in
@@ -12560,10 +12562,10 @@ version 2005/12/01 or later.
           { \@@_test_vline_in_block:nnnnn ##1 }
         \seq_map_inline:Nn \g_@@_pos_of_stroken_blocks_seq
           { \@@_test_vline_in_stroken_block:nnnn ##1 }
-        \clist_if_empty:NF \l_@@_corners_clist { \@@_test_in_corner_v: }
+        \clist_if_empty:NF \l_@@_corners_clist \@@_test_in_corner_v: 
         \bool_if:NTF \g_tmpa_bool
           { 
-            \int_if_zero:nT { \l_@@_local_start_int }
+            \int_if_zero:nT \l_@@_local_start_int 
 %    \end{macrocode}
 % We keep in memory that we have a rule to draw. |\l_@@_local_start_int| will be 
 % the starting row of the rule that we will have to draw.
@@ -12571,7 +12573,7 @@ version 2005/12/01 or later.
               { \int_set:Nn \l_@@_local_start_int \l_tmpa_tl }
           }
           {
-            \int_compare:nNnT { \l_@@_local_start_int } > { \c_zero_int }
+            \int_compare:nNnT \l_@@_local_start_int > \c_zero_int
               { 
                 \int_set:Nn \l_@@_local_end_int { \l_tmpa_tl - 1 } 
                 \@@_vline_ii: 
@@ -12579,7 +12581,7 @@ version 2005/12/01 or later.
               }
           }
       }
-    \int_compare:nNnT { \l_@@_local_start_int } > { \c_zero_int }
+    \int_compare:nNnT \l_@@_local_start_int > \c_zero_int 
       { 
         \int_set_eq:NN \l_@@_local_end_int \l_@@_end_int 
         \@@_vline_ii:
@@ -12591,7 +12593,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_in_corner_v:
    {
-     \int_compare:nNnTF { \l_tmpb_tl } = { \c@jCol + 1 } 
+     \int_compare:nNnTF \l_tmpb_tl = { \c@jCol + 1 }
        {
          \@@_if_in_corner:nT { \l_tmpa_tl - \int_eval:n { \l_tmpb_tl - 1 } }
            { \bool_set_false:N \g_tmpa_bool }
@@ -12599,7 +12601,7 @@ version 2005/12/01 or later.
        {
          \@@_if_in_corner:nT { \l_tmpa_tl - \l_tmpb_tl }
            { 
-             \int_compare:nNnTF { \l_tmpb_tl } = { \c_one_int }
+             \int_compare:nNnTF \l_tmpb_tl = 1
                { \bool_set_false:N \g_tmpa_bool }
                {
                  \@@_if_in_corner:nT 
@@ -12615,14 +12617,14 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_vline_ii:
   {
-    \tl_clear:N \l_@@_tikz_rule_tl 
-    \keys_set:no { nicematrix / RulesBis } \l_@@_other_keys_tl 
+    % \tl_clear:N \l_@@_tikz_rule_tl 
+    % \keys_set:no { nicematrix / RulesBis } \l_@@_other_keys_tl 
     \bool_if:NTF \l_@@_dotted_bool
-      { \@@_vline_iv: }
+      \@@_vline_iv: 
       {
         \tl_if_empty:NTF \l_@@_tikz_rule_tl
-          { \@@_vline_iii: } 
-          { \@@_vline_v: }
+          \@@_vline_iii: 
+          \@@_vline_v: 
       }
   }
 %    \end{macrocode}
@@ -12651,7 +12653,7 @@ version 2005/12/01 or later.
     \dim_set_eq:NN \l_@@_tmpc_dim \pgf@y
     \bool_lazy_all:nT
       {
-        { \int_compare_p:nNn { \l_@@_multiplicity_int } > { \c_one_int } }
+        { \int_compare_p:nNn \l_@@_multiplicity_int > 1 }
         { \cs_if_exist_p:N \CT@drsc@ } 
         { ! \tl_if_blank_p:o \CT@drsc@ }
       }
@@ -12750,18 +12752,14 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_draw_vlines:
   {
     \int_step_inline:nnn 
+      { \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 2 1 }
       { 
-        \bool_lazy_or:nnTF { \g_@@_delims_bool } { \l_@@_except_borders_bool }
-          { 2 } 
-          { 1 } 
-       }
-      { 
-        \bool_lazy_or:nnTF { \g_@@_delims_bool } { \l_@@_except_borders_bool }
-          { \c@jCol }
+        \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 
+          \c@jCol 
           { \int_eval:n { \c@jCol + 1 } } 
       }
       { 
-        \str_if_eq:eeF { \l_@@_vlines_clist } { all }
+        \str_if_eq:eeF \l_@@_vlines_clist { all }
           { \clist_if_in:NnT \l_@@_vlines_clist { ##1 } }
           { \@@_vline:n { position = ##1 , total-width = \arrayrulewidth } }
       }
@@ -12792,7 +12790,9 @@ version 2005/12/01 or later.
 %
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_hline_i:
-  { 
+  {
+    \tl_clear:N \l_@@_tikz_rule_tl 
+    \keys_set:no { nicematrix / RulesBis } \l_@@_other_keys_tl 
 %    \end{macrocode}
 % |\l_tmpa_tl| is the number of row and |\l_tmpb_tl| the number of column. When
 % we have found a column corresponding to a rule to draw, we note its number in
@@ -12826,7 +12826,7 @@ version 2005/12/01 or later.
          \clist_if_empty:NF \l_@@_corners_clist { \@@_test_in_corner_h: }
          \bool_if:NTF \g_tmpa_bool
            { 
-             \int_if_zero:nT { \l_@@_local_start_int }
+             \int_if_zero:nT \l_@@_local_start_int 
 %    \end{macrocode}
 % We keep in memory that we have a rule to draw. |\l_@@_local_start_int| will be
 % the starting row of the rule that we will have to draw.
@@ -12834,7 +12834,7 @@ version 2005/12/01 or later.
                { \int_set:Nn \l_@@_local_start_int \l_tmpb_tl }
            }
            {
-             \int_compare:nNnT { \l_@@_local_start_int } > { \c_zero_int }
+             \int_compare:nNnT \l_@@_local_start_int > \c_zero_int 
                { 
                  \int_set:Nn \l_@@_local_end_int { \l_tmpb_tl - 1 }  
                  \@@_hline_ii:
@@ -12842,7 +12842,7 @@ version 2005/12/01 or later.
                }
            }
       }
-    \int_compare:nNnT { \l_@@_local_start_int } > { \c_zero_int }
+    \int_compare:nNnT \l_@@_local_start_int > \c_zero_int 
       { 
         \int_set_eq:NN \l_@@_local_end_int \l_@@_end_int
         \@@_hline_ii:
@@ -12854,7 +12854,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_in_corner_h:
    {
-     \int_compare:nNnTF { \l_tmpa_tl } = { \c@iRow + 1 }
+     \int_compare:nNnTF \l_tmpa_tl = { \c@iRow + 1 }
        {
          \@@_if_in_corner:nT { \int_eval:n { \l_tmpa_tl - 1 } - \l_tmpb_tl }
            { \bool_set_false:N \g_tmpa_bool }
@@ -12862,7 +12862,7 @@ version 2005/12/01 or later.
        {
          \@@_if_in_corner:nT { \l_tmpa_tl - \l_tmpb_tl }
            { 
-             \int_compare:nNnTF { \l_tmpa_tl } = { \c_one_int }
+             \int_compare:nNnTF \l_tmpa_tl = 1
                { \bool_set_false:N \g_tmpa_bool }
                {
                  \@@_if_in_corner:nT 
@@ -12879,14 +12879,14 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_hline_ii:
   {
-    \tl_clear:N \l_@@_tikz_rule_tl 
-    \keys_set:no { nicematrix / RulesBis } \l_@@_other_keys_tl 
+    % \tl_clear:N \l_@@_tikz_rule_tl 
+    % \keys_set:no { nicematrix / RulesBis } \l_@@_other_keys_tl 
     \bool_if:NTF \l_@@_dotted_bool
-      { \@@_hline_iv: }
+      \@@_hline_iv: 
       {
         \tl_if_empty:NTF \l_@@_tikz_rule_tl
-          { \@@_hline_iii: }
-          { \@@_hline_v: }
+          \@@_hline_iii: 
+          \@@_hline_v: 
       }
   }
 %    \end{macrocode}
@@ -12914,7 +12914,7 @@ version 2005/12/01 or later.
     \dim_set_eq:NN \l_@@_tmpc_dim \pgf@x
     \bool_lazy_all:nT
       { 
-        { \int_compare_p:nNn { \l_@@_multiplicity_int } > { \c_one_int } }
+        { \int_compare_p:nNn \l_@@_multiplicity_int > 1 }
         { \cs_if_exist_p:N \CT@drsc@ } 
         { ! \tl_if_blank_p:o \CT@drsc@ }
       }
@@ -13005,7 +13005,7 @@ version 2005/12/01 or later.
     \dim_set_eq:NN \l_@@_y_final_dim \l_@@_y_initial_dim
     \@@_qpoint:n { col - \int_use:N \l_@@_local_start_int }
     \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
-    \int_compare:nNnT { \l_@@_local_start_int } = { \c_one_int }
+    \int_compare:nNnT \l_@@_local_start_int = 1
       {
         \dim_sub:Nn \l_@@_x_initial_dim \l_@@_left_margin_dim 
         \bool_if:NF \g_@@_delims_bool 
@@ -13020,7 +13020,7 @@ version 2005/12/01 or later.
       }        
     \@@_qpoint:n { col - \int_eval:n { \l_@@_local_end_int + 1 } }
     \dim_set_eq:NN \l_@@_x_final_dim \pgf@x
-    \int_compare:nNnT { \l_@@_local_end_int } = { \c@jCol }
+    \int_compare:nNnT \l_@@_local_end_int = \c@jCol 
       {
         \dim_add:Nn \l_@@_x_final_dim \l_@@_right_margin_dim 
         \bool_if:NF \g_@@_delims_bool 
@@ -13077,12 +13077,12 @@ version 2005/12/01 or later.
     \int_step_inline:nnn 
       { \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 2 1 }
       { 
-        \bool_lazy_or:nnTF { \g_@@_delims_bool } { \l_@@_except_borders_bool }
-          { \c@iRow }
+        \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 
+          \c@iRow 
           { \int_eval:n { \c@iRow + 1 } } 
       }
       { 
-        \str_if_eq:eeF { \l_@@_hlines_clist } { all }
+        \str_if_eq:eeF \l_@@_hlines_clist { all }
           { \clist_if_in:NnT \l_@@_hlines_clist { ##1 } }
           { \@@_hline:n { position = ##1 , total-width = \arrayrulewidth } }
       }
@@ -13231,7 +13231,7 @@ version 2005/12/01 or later.
       }
     \bool_if:NT \l_@@_dotted_rule_bool
       { 
-        \int_compare:nNnT { \l_@@_multiplicity_int } > { \c_one_int }
+        \int_compare:nNnT \l_@@_multiplicity_int > 1
           { \@@_error:n { key~multiplicity~with~dotted } }
       }
     \str_if_empty:NF \l_@@_letter_str 
@@ -13500,13 +13500,13 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_hline_in_block:nnnnn #1 #2 #3 #4 #5
   {
-    \int_compare:nNnT { \l_tmpa_tl } > { #1 } 
+    \int_compare:nNnT \l_tmpa_tl > { #1 } 
       {
-        \int_compare:nNnT { \l_tmpa_tl } < { #3 + 1 } 
+        \int_compare:nNnT \l_tmpa_tl < { #3 + 1 } 
           { 
-            \int_compare:nNnT { \l_tmpb_tl } > { #2 - 1 } 
+            \int_compare:nNnT \l_tmpb_tl > { #2 - 1 } 
               { 
-                \int_compare:nNnT { \l_tmpb_tl } < { #4 + 1 } 
+                \int_compare:nNnT \l_tmpb_tl < { #4 + 1 } 
                   { \bool_gset_false:N \g_tmpa_bool }
               }
           }
@@ -13518,13 +13518,13 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_vline_in_block:nnnnn #1 #2 #3 #4 #5
   {
-    \int_compare:nNnT { \l_tmpa_tl } > { #1 - 1 } 
+    \int_compare:nNnT \l_tmpa_tl > { #1 - 1 } 
       { 
-        \int_compare:nNnT { \l_tmpa_tl } < { #3 + 1 } 
+        \int_compare:nNnT \l_tmpa_tl < { #3 + 1 } 
           { 
-            \int_compare:nNnT { \l_tmpb_tl } > { #2 } 
+            \int_compare:nNnT \l_tmpb_tl > { #2 } 
               { 
-                \int_compare:nNnT { \l_tmpb_tl } < { #4 + 1 } 
+                \int_compare:nNnT \l_tmpb_tl < { #4 + 1 } 
                   { \bool_gset_false:N \g_tmpa_bool }
               }
           }
@@ -13535,14 +13535,14 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_hline_in_stroken_block:nnnn #1 #2 #3 #4
   {
-    \int_compare:nNnT { \l_tmpb_tl } > { #2 - 1 } 
+    \int_compare:nNnT \l_tmpb_tl > { #2 - 1 } 
       { 
-        \int_compare:nNnT { \l_tmpb_tl } < { #4 + 1 } 
+        \int_compare:nNnT \l_tmpb_tl < { #4 + 1 } 
           {
-            \int_compare:nNnTF { \l_tmpa_tl } = { #1 } 
+            \int_compare:nNnTF \l_tmpa_tl = { #1 } 
               { \bool_gset_false:N \g_tmpa_bool }
               { 
-                \int_compare:nNnT { \l_tmpa_tl } = { #3 + 1 } 
+                \int_compare:nNnT \l_tmpa_tl = { #3 + 1 } 
                   { \bool_gset_false:N \g_tmpa_bool }
               }
           }
@@ -13553,14 +13553,14 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_vline_in_stroken_block:nnnn #1 #2 #3 #4
   {
-    \int_compare:nNnT { \l_tmpa_tl } > { #1 - 1 } 
+    \int_compare:nNnT \l_tmpa_tl > { #1 - 1 } 
       {
-        \int_compare:nNnT { \l_tmpa_tl } < { #3 + 1 } 
+        \int_compare:nNnT \l_tmpa_tl < { #3 + 1 } 
           {
-            \int_compare:nNnTF { \l_tmpb_tl } = { #2 } 
+            \int_compare:nNnTF \l_tmpb_tl = { #2 } 
               { \bool_gset_false:N \g_tmpa_bool }
               { 
-                \int_compare:nNnT { \l_tmpb_tl } = { #4 + 1 } 
+                \int_compare:nNnT \l_tmpb_tl = { #4 + 1 } 
                   { \bool_gset_false:N \g_tmpa_bool }
               }
           }
@@ -13641,8 +13641,8 @@ version 2005/12/01 or later.
   {
     \cs_if_exist:cTF 
       { @@ _ block _ \int_eval:n { #1 } - \int_eval:n { #2 } }
-      { \prg_return_true: }
-      { \prg_return_false: }
+      \prg_return_true: 
+      \prg_return_false: 
   }
 %    \end{macrocode}
 % 
@@ -13714,13 +13714,13 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % Now, we loop over the rows.
 %    \begin{macrocode}
-    \int_step_inline:nnnn { #1 } { #3 } { \l_@@_last_empty_row_int }
+    \int_step_inline:nnnn { #1 } { #3 } \l_@@_last_empty_row_int 
       {
 %    \end{macrocode}
 % We treat the row number |##1| with another loop.
 %    \begin{macrocode}
         \bool_set_false:N \l_tmpa_bool
-        \int_step_inline:nnnn { #2 } { #4 } { \l_@@_last_empty_column_int }
+        \int_step_inline:nnnn { #2 } { #4 } \l_@@_last_empty_column_int 
           {
             \bool_lazy_or:nnTF
               { \cs_if_exist_p:c { pgf @ sh @ ns @ \@@_env: - ##1 - ####1 } }
@@ -13953,11 +13953,11 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
                 \pgfpointanchor { \@@_env: - \@@_i: - \@@_j: } { north~east }
                 \dim_set:cn { l_@@_row _ \@@_i: _ max_dim }
-                  { \dim_max:vn { l_@@_row _ \@@_i: _ max_dim } { \pgf@y } }
+                  { \dim_max:vn { l_@@_row _ \@@_i: _ max_dim } \pgf@y }
                 \seq_if_in:NeF \g_@@_multicolumn_cells_seq { \@@_i: - \@@_j: }
                   { 
                     \dim_set:cn { l_@@_column _ \@@_j: _ max_dim }
-                      { \dim_max:vn { l_@@_column _ \@@_j: _max_dim } { \pgf@x } }
+                      { \dim_max:vn { l_@@_column _ \@@_j: _max_dim } \pgf@x }
                   } 
               }
           }
@@ -14062,8 +14062,8 @@ version 2005/12/01 or later.
 %     \begin{macrocode}
 \cs_new_protected:Npn \@@_computations_for_large_nodes:
   {
-    \int_set_eq:NN \l_@@_first_row_int \c_one_int
-    \int_set_eq:NN \l_@@_first_col_int \c_one_int
+    \int_set:Nn \l_@@_first_row_int 1
+    \int_set:Nn \l_@@_first_col_int 1
 %    \end{macrocode}
 % We have to change the values of all the dimensions
 % \texttt{l_@@_row_\textsl{i}_min_dim}, \texttt{l_@@_row_\textsl{i}_max_dim},
@@ -14146,13 +14146,13 @@ version 2005/12/01 or later.
               }
           }
       }
-    \int_step_inline:nn { \c@iRow }
+    \int_step_inline:nn \c@iRow 
       { 
         \pgfnodealias 
           { \@@_env: - ##1 - last \l_@@_suffix_tl } 
           { \@@_env: - ##1 - \int_use:N \c@jCol \l_@@_suffix_tl } 
       }
-    \int_step_inline:nn { \c@jCol }
+    \int_step_inline:nn \c@jCol 
       { 
         \pgfnodealias 
           { \@@_env: - last - ##1 \l_@@_suffix_tl } 
@@ -14248,6 +14248,9 @@ version 2005/12/01 or later.
     v-center .meta:n = m ,
     p .code:n = \bool_set_true:N \l_@@_p_block_bool , 
     p .value_forbidden:n = true ,
+    respect-arraystretch .code:n = 
+      \cs_set_eq:NN \@@_reset_arraystretch: \prg_do_nothing: ,
+    respect-arraystretch .value_forbidden:n = true , 
     color .code:n = 
       \@@_color:n { #1 }
       \tl_set_rescan:Nnn 
@@ -14255,9 +14258,6 @@ version 2005/12/01 or later.
         { \char_set_catcode_other:N ! }
         { #1 } ,
     color .value_required:n = true ,
-    respect-arraystretch .code:n = 
-      \cs_set_eq:NN \@@_reset_arraystretch: \prg_do_nothing: ,
-    respect-arraystretch .value_forbidden:n = true , 
   }
 %    \end{macrocode}
 %
@@ -14282,7 +14282,7 @@ version 2005/12/01 or later.
 % (that is to say a block of only one cell).
 %    \begin{macrocode}
     \tl_if_blank:nTF { #2 } 
-      { \@@_Block_ii:nnnnn \c_one_int \c_one_int } 
+      { \@@_Block_ii:nnnnn 1 1 } 
       {
         \tl_if_in:nnTF { #2 } { - }
           {
@@ -14292,7 +14292,7 @@ version 2005/12/01 or later.
           }
           {
             \@@_error:nn { Bad~argument~for~Block } { #2 }
-            \@@_Block_ii:nnnnn \c_one_int \c_one_int
+            \@@_Block_ii:nnnnn 1 1
           }
       }
     { #1 } { #3 } { #4 } 
@@ -14352,7 +14352,7 @@ version 2005/12/01 or later.
 % \medskip
 % If the block is mono-column.
 %    \begin{macrocode}
-    \int_compare:nNnTF { \l_tmpb_int } = { \c_one_int }
+    \int_compare:nNnTF \l_tmpb_int = 1
       {
         \tl_if_empty:NTF \l_@@_hpos_cell_tl
           { \str_set_eq:NN \l_@@_hpos_block_str \c_@@_c_str }
@@ -14472,7 +14472,7 @@ version 2005/12/01 or later.
 % |\documentclass|).
 %    \begin{macrocode}
         \tl_if_empty:NTF \l_@@_color_tl
-          { \int_compare:nNnT { #2 } = { \c_one_int } { \set@color } }
+          { \int_compare:nNnT { #2 } = 1 { \set@color } }
           { \@@_color:o \l_@@_color_tl }
 %    \end{macrocode}
 % If the block is mono-row, we use |\g_@@_row_style_tl| even if it has yet been
@@ -14480,9 +14480,9 @@ version 2005/12/01 or later.
 % because we want to be able to take into account a potential instruction of
 % color of the font in |\g_@@_row_style_tl|.
 %    \begin{macrocode}
-        \int_compare:nNnT { #1 } = { \c_one_int }
+        \int_compare:nNnT { #1 } = 1
           {
-            \int_if_zero:nTF { \c@iRow }
+            \int_if_zero:nTF \c@iRow 
               { 
 %    \end{macrocode}
 %
@@ -14514,7 +14514,7 @@ version 2005/12/01 or later.
                 \l_@@_code_for_first_row_tl
               }
               {
-                \int_compare:nNnT { \c@iRow } = { \l_@@_last_row_int }
+                \int_compare:nNnT \c@iRow = \l_@@_last_row_int 
                   {
                     \cs_set_eq:NN \Block \@@_NullBlock:
                     \l_@@_code_for_last_row_tl
@@ -14551,15 +14551,12 @@ version 2005/12/01 or later.
           { 
             \bool_lazy_all:nTF
               {
-                { \int_compare_p:nNn { #2 } = { \c_one_int } }
+                { \int_compare_p:nNn { #2 } = 1 }
 %    \end{macrocode}
 % Remind that, when the column has not a fixed width, the dimension
 % |\l_@@_col_width_dim| has the conventional value of $-1$~cm.
 %    \begin{macrocode}
-                { 
-                  ! \dim_compare_p:nNn 
-                      { \l_@@_col_width_dim } < { \c_zero_dim } 
-                } 
+                { ! \dim_compare_p:nNn \l_@@_col_width_dim < \c_zero_dim } 
                 { ! \g_@@_rotate_bool } 
               }
 %    \end{macrocode}
@@ -14632,12 +14629,12 @@ version 2005/12/01 or later.
 % If we are in a mono-column block, we take into account the width of that block
 % for the width of the column.
 %    \begin{macrocode}
-    \int_compare:nNnT { #2 } = { \c_one_int }
+    \int_compare:nNnT { #2 } = 1
       {
         \dim_gset:Nn \g_@@_blocks_wd_dim
           {
             \dim_max:nn
-              { \g_@@_blocks_wd_dim }
+              \g_@@_blocks_wd_dim 
               {
                 \box_wd:c 
                   { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box } 
@@ -14651,13 +14648,13 @@ version 2005/12/01 or later.
 % Remind that if the user has not used a key for the vertical position of the block,
 % then |\l_@@_vpos_block_str| remains empty.
 %    \begin{macrocode}
-    \int_compare:nNnT { #1 } = { \c_one_int } 
+    \int_compare:nNnT { #1 } = 1
       {
         \bool_lazy_any:nT
           {
             { \str_if_empty_p:N \l_@@_vpos_block_str }
-            { \str_if_eq_p:ee { \l_@@_vpos_block_str } { t } }
-            { \str_if_eq_p:ee { \l_@@_vpos_block_str } { b } }
+            { \str_if_eq_p:ee t \l_@@_vpos_block_str }
+            { \str_if_eq_p:ee b \l_@@_vpos_block_str }
           }
           { \@@_adjust_blocks_ht_dp: }
       }
@@ -14682,7 +14679,7 @@ version 2005/12/01 or later.
               \bool_if:NTF \g_@@_rotate_c_bool 
                 { m }
                 { 
-                  \int_compare:nNnT { \c@iRow } = { \l_@@_last_row_int }  
+                  \int_compare:nNnT \c@iRow = \l_@@_last_row_int
                     { T } 
                 }
             }
@@ -14703,7 +14700,7 @@ version 2005/12/01 or later.
     \dim_gset:Nn \g_@@_blocks_ht_dim
       {
         \dim_max:nn
-          { \g_@@_blocks_ht_dim }
+          \g_@@_blocks_ht_dim 
           {
             \box_ht:c 
               { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box } 
@@ -14712,7 +14709,7 @@ version 2005/12/01 or later.
     \dim_gset:Nn \g_@@_blocks_dp_dim
       {
         \dim_max:nn
-          { \g_@@_blocks_dp_dim }
+          \g_@@_blocks_dp_dim 
           {
             \box_dp:c 
               { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box } 
@@ -14730,14 +14727,14 @@ version 2005/12/01 or later.
         \str_set:Ne \l_@@_hpos_block_str  
           {
             \bool_if:NTF \g_@@_rotate_c_bool 
-              { c }
+              c
               { 
                 \str_case:onF \l_@@_vpos_block_str
                   { b l B l t r T r }
                   { 
-                    \int_compare:nNnTF { \c@iRow } = { \l_@@_last_row_int } 
-                      { r } 
-                      { l } 
+                    \int_compare:nNnTF \c@iRow = \l_@@_last_row_int
+                      r 
+                      l
                   }  
               }
           }
@@ -14755,7 +14752,7 @@ version 2005/12/01 or later.
     \box_grotate:cn  
       { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box }
       { 90 } 
-    \int_compare:nNnT { \c@iRow } = { \l_@@_last_row_int }
+    \int_compare:nNnT \c@iRow = \l_@@_last_row_int 
       {
         \vbox_gset_top:cn
           { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box }
@@ -14950,6 +14947,11 @@ version 2005/12/01 or later.
     vlines .default:n = true , 
     hlines .bool_set:N = \l_@@_hlines_block_bool,
     hlines .default:n = true , 
+    rules/width .dim_set:N = \arrayrulewidth ,
+    rules/width .value_required:n = true ,
+%    \end{macrocode}
+% The key |line-width| is now deprecated (replaced by |rules/width|).
+%    \begin{macrocode}
     line-width .dim_set:N = \l_@@_line_width_dim ,
     line-width .value_required:n = true ,
 %    \end{macrocode}
@@ -14992,6 +14994,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% 
 % \bigskip
 % The command |\@@_draw_blocks:| will draw all the blocks. This command is used
 % after the construction of the array. We have to revert to a clean version of
@@ -15036,10 +15039,10 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \int_compare:nNnTF { \l_@@_last_col_int } > { \g_@@_col_total_int }
+    \int_compare:nNnTF \l_@@_last_col_int > \g_@@_col_total_int 
       {
         \bool_lazy_and:nnTF
-          { \l_@@_preamble_bool }
+          \l_@@_preamble_bool 
           { 
             \int_compare_p:n 
              { \l_@@_last_col_int <= \g_@@_static_num_of_col_int } 
@@ -15052,7 +15055,7 @@ version 2005/12/01 or later.
           { \msg_error:nnnn { nicematrix } { Block~too~large~1 } { #1 } { #2 } }
       } 
       {  
-        \int_compare:nNnTF { \l_@@_last_row_int } > { \g_@@_row_total_int }
+        \int_compare:nNnTF \l_@@_last_row_int > \g_@@_row_total_int 
           { \msg_error:nnnn { nicematrix } { Block~too~large~1 } { #1 } { #2 } } 
           { 
             \@@_Block_v:nneenn 
@@ -15098,39 +15101,34 @@ version 2005/12/01 or later.
 %
 %    \begin{macrocode}
     \bool_lazy_and:nnT 
-      { \l_@@_vlines_block_bool }
+      \l_@@_vlines_block_bool 
       { ! \l_@@_ampersand_bool }
       {
         \tl_gput_right:Ne \g_nicematrix_code_after_tl
-          { 
-            \@@_vlines_block:nnn
-              { \exp_not:n { #5 } } 
-              { #1 - #2 } 
-              { \int_use:N \l_@@_last_row_int - \int_use:N \l_@@_last_col_int } 
+          {
+            \@@_vlines_block:nnnnn
+              { \dim_use:N \arrayrulewidth }  
+              { #1 } { #2 } { #3 } { #4 } 
           }  
       }
     \bool_if:NT \l_@@_hlines_block_bool
       {
         \tl_gput_right:Ne \g_nicematrix_code_after_tl
           { 
-            \@@_hlines_block:nnn
-              { \exp_not:n { #5 } } 
-              { #1 - #2 } 
-              { \int_use:N \l_@@_last_row_int - \int_use:N \l_@@_last_col_int } 
+            \@@_hlines_block:nnnnn
+              { \dim_use:N \arrayrulewidth }
+              { #1 } { #2 } { #3 } { #4 } 
           }  
       }
-    \bool_if:NF \l_@@_transparent_bool 
-      { 
-         \bool_lazy_and:nnF { \l_@@_vlines_block_bool } { \l_@@_hlines_block_bool }
-           {
 %    \end{macrocode}
 % The sequence of the positions of the blocks (excepted the blocks with the key
 % |hvlines|) will be used when drawing the rules (in fact, there is also the
 % |\multicolumn| and the |\diagbox| in that sequence).
 %    \begin{macrocode}
-            \seq_gput_left:Ne \g_@@_pos_of_blocks_seq 
-              { { #1 } { #2 } { #3 } { #4 } { \l_@@_block_name_str } }  
-           }
+    \bool_if:NF \l_@@_transparent_bool 
+      { 
+        \seq_gput_left:Ne \g_@@_pos_of_blocks_seq 
+          { { #1 } { #2 } { #3 } { #4 } { \l_@@_block_name_str } }  
       }
 %    \end{macrocode}
 %
@@ -15140,16 +15138,14 @@ version 2005/12/01 or later.
       {
         \bool_lazy_or:nnT \l_@@_hlines_block_bool \l_@@_vlines_block_bool 
           { \@@_error:n { hlines~with~color } }
-        \tl_gput_right:Ne \g_nicematrix_code_after_tl
+        \tl_gput_right:Nn \g_nicematrix_code_after_tl
           { 
-            \@@_stroke_block:nnn
+            \@@_stroke_block:nnnnn
 %    \end{macrocode}
 % |#5| are the options
 %    \begin{macrocode}
-              { \exp_not:n { #5 } } 
-              { #1 - #2 } 
-              { \int_use:N \l_@@_last_row_int - \int_use:N \l_@@_last_col_int } 
-          }  
+              { #5 } { #1 } { #2 } { #3 } { #4 }
+           }  
         \seq_gput_right:Nn \g_@@_pos_of_stroken_blocks_seq 
           { { #1 } { #2 } { #3 } { #4 } }
       }
@@ -15158,12 +15154,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \clist_if_empty:NF \l_@@_borders_clist
       {
-        \tl_gput_right:Ne \g_nicematrix_code_after_tl
+        \tl_gput_right:Nn \g_nicematrix_code_after_tl
           { 
-            \@@_stroke_borders_block:nnn
-              { \exp_not:n { #5 } } 
-              { #1 - #2 } 
-              { \int_use:N \l_@@_last_row_int - \int_use:N \l_@@_last_col_int } 
+            \@@_stroke_borders_block:nnnnn
+              { #5 } { #1 } { #2 } { #3 } { #4 }
           }  
       }
 %    \end{macrocode}
@@ -15176,7 +15170,7 @@ version 2005/12/01 or later.
           { 
             \@@_exp_color_arg:No \@@_roundedrectanglecolor \l_@@_fill_tl
               { #1 - #2 } 
-              { \int_use:N \l_@@_last_row_int - \int_use:N \l_@@_last_col_int } 
+              { #3 - #4 } 
               { \dim_use:N \l_@@_rounded_corners_dim }
           }  
       }
@@ -15189,10 +15183,7 @@ version 2005/12/01 or later.
           {
             \@@_block_tikz:nnnnn
               { \seq_use:Nn \l_@@_tikz_seq { , } }
-              { #1 }
-              { #2 }
-              { \int_use:N \l_@@_last_row_int }
-              { \int_use:N \l_@@_last_col_int }
+              { #1 } { #2 } { #3 } { #4 }
 %    \end{macrocode}
 % We will have in that last field a list of lists of TikZ keys.
 %    \begin{macrocode}
@@ -15207,10 +15198,7 @@ version 2005/12/01 or later.
         \tl_gput_right:Ne \g_@@_pre_code_after_tl    
           { 
             \@@_actually_diagbox:nnnnnn 
-              { #1 } 
-              { #2 }
-              { \int_use:N \l_@@_last_row_int } 
-              { \int_use:N \l_@@_last_col_int } 
+              { #1 } { #2 } { #3 } { #4 } 
               { \exp_not:n { ##1 } } 
               { \exp_not:n { ##2 } }
           }
@@ -15321,7 +15309,7 @@ version 2005/12/01 or later.
 % the columns involved in at least one cell of the block. That's why we have to
 % do a loop over the rows of the array.
 %    \begin{macrocode}
-        \int_step_inline:nnn { \l_@@_first_row_int } { \g_@@_row_total_int }
+        \int_step_inline:nnn \l_@@_first_row_int \g_@@_row_total_int 
           {
 %    \end{macrocode}
 % We recall that, when a cell is empty, no (normal) node is created in that
@@ -15342,13 +15330,13 @@ version 2005/12/01 or later.
 % value |\c_max_dim|. In that case, you use for |\l_tmpb_dim| the value of the
 % position of the vertical rule. 
 %    \begin{macrocode}
-        \dim_compare:nNnT { \l_tmpb_dim } = { \c_max_dim }
+        \dim_compare:nNnT \l_tmpb_dim = \c_max_dim 
           {
             \@@_qpoint:n { col - #2 } 
             \dim_set_eq:NN \l_tmpb_dim \pgf@x
           }
         \dim_set:Nn \l_@@_tmpd_dim { - \c_max_dim }
-        \int_step_inline:nnn { \l_@@_first_row_int } { \g_@@_row_total_int }
+        \int_step_inline:nnn \l_@@_first_row_int \g_@@_row_total_int 
           {
             \cs_if_exist:cT
               { pgf @ sh @ ns @ \@@_env: - ##1 - \int_use:N \l_@@_last_col_int } 
@@ -15359,11 +15347,11 @@ version 2005/12/01 or later.
                       { \@@_env: - ##1 - \int_use:N \l_@@_last_col_int }  
                       { east } 
                     \dim_set:Nn \l_@@_tmpd_dim 
-                      { \dim_max:nn { \l_@@_tmpd_dim } { \pgf@x } }
+                      { \dim_max:nn \l_@@_tmpd_dim \pgf@x } 
                   }
               }
           }
-        \dim_compare:nNnT { \l_@@_tmpd_dim } = { - \c_max_dim }
+        \dim_compare:nNnT \l_@@_tmpd_dim = { - \c_max_dim }
           {
             \@@_qpoint:n { col - \int_eval:n { \l_@@_last_col_int + 1 } } 
             \dim_set_eq:NN \l_@@_tmpd_dim \pgf@x
@@ -15408,12 +15396,9 @@ version 2005/12/01 or later.
       \int_set:Nn \l_@@_split_int { \seq_count:N \l_tmpa_seq }
 %    \end{macrocode}
 % The following counters will be used to send information to |\cellcolor|
-% if the user uses that command in a subcell.
+% if the user uses that command in a subcell. We use locally counters
+% that have another signification in the main environment (maybe we should change that).
 %    \begin{macrocode}
-      \int_zero_new:N \l_@@_first_row_int 
-      \int_zero_new:N \l_@@_first_col_int
-      \int_zero_new:N \l_@@_last_row_int
-      \int_zero_new:N \l_@@_last_col_int
       \int_set:Nn \l_@@_first_row_int { #1 }
       \int_set:Nn \l_@@_first_col_int { #2 }
       \int_set:Nn \l_@@_last_row_int { #3 }
@@ -15434,8 +15419,8 @@ version 2005/12/01 or later.
       \dim_set:Nn \l_tmpb_dim 
         { ( \pgf@x - \l_tmpa_dim ) / \int_use:N \l_@@_split_int }
       \bool_lazy_or:nnT 
-        { \l_@@_vlines_block_bool }
-        { \str_if_eq_p:ee { \l_@@_vlines_clist } { all } }
+        \l_@@_vlines_block_bool 
+        { \str_if_eq_p:ee \l_@@_vlines_clist { all } }
         {
           \int_step_inline:nn { \l_@@_split_int - 1 } 
             { 
@@ -15462,13 +15447,13 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-      \str_if_eq:eeTF { \l_@@_vpos_block_str } { T }
+      \str_if_eq:eeTF \l_@@_vpos_block_str T 
         {
           \pgfpointanchor { \@@_env: -  #1 - #2 - block } { north }
           \dim_set_eq:NN \l_@@_tmpc_dim \pgf@y                   
         }
         {
-          \str_if_eq:eeTF { \l_@@_vpos_block_str } { B }
+          \str_if_eq:eeTF \l_@@_vpos_block_str B 
             {
               \pgfpointanchor { \@@_env: -  #1 - #2 - block } { south }
               \dim_set_eq:NN \l_@@_tmpc_dim \pgf@y                   
@@ -15476,13 +15461,13 @@ version 2005/12/01 or later.
             {
               \bool_lazy_or:nnTF
                 { \int_compare_p:nNn { #1 } = { #3 } }
-                { \str_if_eq_p:ee { \l_@@_vpos_block_str } { t } }
+                { \str_if_eq_p:ee \l_@@_vpos_block_str t }
                 {
                   \@@_qpoint:n { row - #1 - base }
                   \dim_set:Nn \l_@@_tmpc_dim { \pgf@y - 0.5 \arrayrulewidth }
                 }
                 {
-                  \str_if_eq:eeTF { \l_@@_vpos_block_str } { b }
+                  \str_if_eq:eeTF \l_@@_vpos_block_str b
                     {
                       \@@_qpoint:n { row - #3 - base }
                       \dim_set:Nn \l_@@_tmpc_dim { \pgf@y - 0.5 \arrayrulewidth }
@@ -15494,7 +15479,7 @@ version 2005/12/01 or later.
                 }
             }
         }
-      \int_step_inline:nn { \l_@@_split_int }
+      \int_step_inline:nn \l_@@_split_int 
         { 
           \group_begin:
 %    \end{macrocode}
@@ -15502,7 +15487,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
           \int_set:Nn \l_@@_split_i_int { ##1 }
           \dim_set:Nn \col@sep
-            { \bool_if:NTF \l_@@_tabular_bool { \tabcolsep } { \arraycolsep } }
+            { \bool_if:NTF \l_@@_tabular_bool \tabcolsep \arraycolsep }
           \pgftransformshift
             {
               \pgfpoint
@@ -15521,7 +15506,7 @@ version 2005/12/01 or later.
           \pgfnode 
             { rectangle }
             {
-              \str_if_eq:eeTF { \l_@@_vpos_block_str } { T } 
+              \str_if_eq:eeTF T \l_@@_vpos_block_str 
                 {
                   \str_case:on \l_@@_hpos_block_str
                     {
@@ -15531,7 +15516,7 @@ version 2005/12/01 or later.
                     }
                 }
                 {
-                  \str_if_eq:eeTF { \l_@@_vpos_block_str } { B }
+                  \str_if_eq:eeTF B \l_@@_vpos_block_str 
                     {
                       \str_case:on \l_@@_hpos_block_str
                         {
@@ -15544,8 +15529,8 @@ version 2005/12/01 or later.
                       \bool_lazy_any:nTF
                         {
                           { \int_compare_p:nNn { #1 } = { #3 } }
-                          { \str_if_eq_p:ee { \l_@@_vpos_block_str } { t } }
-                          { \str_if_eq_p:ee { \l_@@_vpos_block_str } { b } } 
+                          { \str_if_eq_p:ee t \l_@@_vpos_block_str }
+                          { \str_if_eq_p:ee b \l_@@_vpos_block_str } 
                         }
                         {
                           \str_case:on \l_@@_hpos_block_str
@@ -15620,9 +15605,9 @@ version 2005/12/01 or later.
       \bool_lazy_any:nTF
         {
           { \str_if_empty_p:N \l_@@_vpos_block_str } 
-          { \str_if_eq_p:ee { \l_@@_vpos_block_str } { c } }
-          { \str_if_eq_p:ee { \l_@@_vpos_block_str } { T } }
-          { \str_if_eq_p:ee { \l_@@_vpos_block_str } { B } }
+          { \str_if_eq_p:ee c \l_@@_vpos_block_str }
+          { \str_if_eq_p:ee T \l_@@_vpos_block_str }
+          { \str_if_eq_p:ee B \l_@@_vpos_block_str }
         }
 %    \end{macrocode}
 % \medskip
@@ -15637,7 +15622,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
           \bool_if:nT \g_@@_last_col_found_bool 
             {
-              \int_compare:nNnT { #2 } = { \g_@@_col_total_int }
+              \int_compare:nNnT { #2 } = \g_@@_col_total_int 
                 { \str_set_eq:NN \l_@@_hpos_block_str \c_@@_l_str }
             }
 %    \end{macrocode}
@@ -15702,12 +15687,12 @@ version 2005/12/01 or later.
                   \@@_env: - #1 - #2 - block 
                   \bool_if:NF \l_@@_hpos_of_block_cap_bool { - short }
                 }
-                { \l_tmpa_tl }
+                \l_tmpa_tl
             }
           \pgfset { inner~sep = \c_zero_dim } 
           \pgfnode 
             { rectangle } 
-            { \l_tmpa_tl }
+            \l_tmpa_tl
             { \box_use_drop:N \l_@@_cell_box } { } { }
         }   
 %    \end{macrocode}
@@ -15722,7 +15707,7 @@ version 2005/12/01 or later.
             { 
               \@@_qpoint:n 
                 { 
-                  row - \str_if_eq:eeTF { \l_@@_vpos_block_str } { b } { #3 } { #1 }  
+                  row - \str_if_eq:eeTF b \l_@@_vpos_block_str { #3 } { #1 }  
                   - base 
                 } 
             } 
@@ -15800,11 +15785,10 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % The first argument of |\@@_stroke_block:nnn| is a list of options for the
-% rectangle that you will stroke. The second argument is the upper-left cell of
-% the block (with, as usual, the syntax $i$|-|$j$) and the third is the last
-% cell of the block (with the same syntax).
+% rectangle that you will stroke. The other arguments are the position of the block:
+% \textsl{imin}, \textsl{jmin}, \textsl{imax} and \textsl{jmax}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_stroke_block:nnn #1 #2 #3
+\cs_new_protected:Npn \@@_stroke_block:nnnnn #1 #2 #3 #4 #5
   {
     \group_begin:
     \tl_clear:N \l_@@_draw_tl
@@ -15820,39 +15804,34 @@ version 2005/12/01 or later.
 % the color fixed by |\arrayrulecolor| is used.
 %    \begin{macrocode}
         \tl_if_eq:NnTF \l_@@_draw_tl { default }
-          { \CT@arc@ } 
+          \CT@arc@  
           { \@@_color:o \l_@@_draw_tl }
       }
+%    \end{macrocode}
+% The following code can't be put just before the |\pgfusepath { stroke }| (it's
+% too late).
+%    \begin{macrocode}
     \pgfsetcornersarced  
+      { \pgfpoint \l_@@_rounded_corners_dim \l_@@_rounded_corners_dim }  
+    \int_compare:nNnF { #2 } > \c@iRow 
       { 
-        \pgfpoint 
-          { \l_@@_rounded_corners_dim } 
-          { \l_@@_rounded_corners_dim } 
-      } 
-    \@@_cut_on_hyphen:w #2 \q_stop
-    \int_compare:nNnF { \l_tmpa_tl } > { \c@iRow }
-      { 
-        \int_compare:nNnF { \l_tmpb_tl } > { \c@jCol }
+        \int_compare:nNnF { #3 } > \c@jCol 
           {
-            \@@_qpoint:n { row - \l_tmpa_tl } 
+            \@@_qpoint:n { row - #2 } 
             \dim_set_eq:NN \l_tmpb_dim \pgf@y 
-            \@@_qpoint:n { col - \l_tmpb_tl }
+            \@@_qpoint:n { col - #3 }
             \dim_set_eq:NN \l_@@_tmpc_dim \pgf@x 
-            \@@_cut_on_hyphen:w #3 \q_stop
-            \int_compare:nNnT { \l_tmpa_tl } > { \c@iRow }
-              { \tl_set:No \l_tmpa_tl { \int_use:N \c@iRow } }
-            \int_compare:nNnT { \l_tmpb_tl } > { \c@jCol }
-              { \tl_set:No \l_tmpb_tl { \int_use:N \c@jCol } }
-            \@@_qpoint:n { row - \int_eval:n { \l_tmpa_tl + 1 } }
+            \@@_qpoint:n
+              { row - \int_eval:n { 1 + \int_min:nn \c@iRow { #4 }  } }
             \dim_set_eq:NN \l_tmpa_dim \pgf@y 
-            \@@_qpoint:n { col - \int_eval:n { \l_tmpb_tl + 1 } }
-            \dim_set_eq:NN \l_@@_tmpd_dim \pgf@x 
+            \@@_qpoint:n
+              { col - \int_eval:n { 1 + \int_min:nn \c@jCol { #5 }  } }
             \pgfsetlinewidth { 1.1 \l_@@_line_width_dim }
             \pgfpathrectanglecorners
               { \pgfpoint \l_@@_tmpc_dim \l_tmpb_dim }
-              { \pgfpoint \l_@@_tmpd_dim \l_tmpa_dim }
-            \dim_compare:nNnTF { \l_@@_rounded_corners_dim } = { \c_zero_dim }
-              { \pgfusepathqstroke }
+              { \pgfpoint \pgf@x \l_tmpa_dim }
+            \dim_compare:nNnTF \l_@@_rounded_corners_dim = \c_zero_dim 
+              \pgfusepathqstroke 
               { \pgfusepath { stroke } }
           }
       }
@@ -15861,7 +15840,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-% Here is the set of keys for the command |\@@_stroke_block:nnn|.
+% Here is the set of keys for the command |\@@_stroke_block:nnnnn|.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / BlockStroke }
   {
@@ -15870,71 +15849,60 @@ version 2005/12/01 or later.
       \tl_if_empty:eF { #1 } { \tl_set:Nn \l_@@_draw_tl { #1 } } ,
     draw .default:n = default ,
     line-width .dim_set:N = \l_@@_line_width_dim ,
+    rules/width .dim_set:N = \l_@@_line_width_dim ,    
     rounded-corners .dim_set:N = \l_@@_rounded_corners_dim ,
     rounded-corners .default:n = 4 pt
   }
 %    \end{macrocode}
-% 
+%
 %
 % \bigskip
-% The first argument of |\@@_vlines_block:nnn| is a list of options for the
-% rules that we will draw. The second argument is the upper-left cell of the
-% block (with, as usual, the syntax $i$|-|$j$) and the third is the last cell of
-% the block (with the same syntax).
+% The command |\@@_vlines_block:nnnnn| is used only once: in |\@@_Block_v:nnnnnn|
+% which actually draw the block.
+%
+% \medskip
+% The first argument of |\@@_vlines_block:nnn| is the width of the 
+% rules that we will draw. The other arguments are the position of the block:
+% \textsl{imin}, \textsl{jmin}, \textsl{imax} and \textsl{jmax}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_vlines_block:nnn #1 #2 #3
+\cs_new_protected:Npn \@@_vlines_block:nnnnn #1 #2 #3 #4 #5
   {
     \group_begin:
-    \dim_set_eq:NN \l_@@_line_width_dim \arrayrulewidth
-    \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
-    \dim_set_eq:NN \arrayrulewidth \l_@@_line_width_dim 
-    \@@_cut_on_hyphen:w #2 \q_stop
-    \tl_set_eq:NN \l_@@_tmpc_tl \l_tmpa_tl
-    \tl_set_eq:NN \l_@@_tmpd_tl \l_tmpb_tl
-    \@@_cut_on_hyphen:w #3 \q_stop
-    \tl_set:Ne \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
-    \tl_set:Ne \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
-    \int_step_inline:nnn { \l_@@_tmpd_tl } { \l_tmpb_tl }
-      { 
-        \use:e 
-          { 
-            \@@_vline:n
-              { 
-                position = ##1 ,
-                start = \l_@@_tmpc_tl ,
-                end = \int_eval:n { \l_tmpa_tl - 1 } ,
-                total-width = \dim_use:N \l_@@_line_width_dim 
-              }
-          } 
-      }
-    \group_end:
-  }
+%    \end{macrocode}
+% We are actually during the execution of the |\g_nicematrix_code_after_tl|.
+% In that context |\arrayrulewidth| is the widht of standard lines (we are drawing
+% standard rules becuase, up to now, there is no way to draw the internal lines of a Block
+% with a style of TikZ).
+%    \begin{macrocode}
+    \dim_set:Nn \arrayrulewidth { #1 }
+%    \end{macrocode}
+%
+% \medskip
+% Below, you use |\@@_vline:n| to draw to rules and that command will use
+% |\g_@@_pos_of_blocks_seq| in order to \emph{not} draw the rules within the blocks.
+% That's why we filter the list of blocks in order to discard the blocks which encompass the
+% current block.
+%    \begin{macrocode}
+    \seq_set_filter:NNn \g_@@_pos_of_blocks_seq \g_@@_pos_of_blocks_seq % noqa: E420
+       {
+         \int_compare_p:nNn { \use_i:nnnnn ##1 } > { #2 }
+         ||
+         \int_compare_p:nNn { \use_ii:nnnnn ##1 } > { #3 }
+         ||
+         \int_compare_p:nNn { \use_iii:nnnnn ##1 } < { #4 }
+         ||
+         \int_compare_p:nNn { \use_iv:nnnnn ##1 } < { #5 }
+       }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_hlines_block:nnn #1 #2 #3
-  {
-    \group_begin:
-    \dim_set_eq:NN \l_@@_line_width_dim \arrayrulewidth
-    \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
-    \dim_set_eq:NN \arrayrulewidth \l_@@_line_width_dim 
-    \@@_cut_on_hyphen:w #2 \q_stop
-    \tl_set_eq:NN \l_@@_tmpc_tl \l_tmpa_tl
-    \tl_set_eq:NN \l_@@_tmpd_tl \l_tmpb_tl
-    \@@_cut_on_hyphen:w #3 \q_stop
-    \tl_set:Ne \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
-    \tl_set:Ne \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
-    \int_step_inline:nnn { \l_@@_tmpc_tl } { \l_tmpa_tl }
+    \int_step_inline:nnn { #3 } { #5 + 1 }
       { 
-        \use:e 
+        \@@_vline:n
           { 
-            \@@_hline:n 
-              { 
-                position = ##1 , 
-                start = \l_@@_tmpd_tl , 
-                end = \int_eval:n { \l_tmpb_tl - 1 } ,
-                total-width = \dim_use:N \l_@@_line_width_dim 
-              } 
+            position = ##1 ,
+            start = #2 ,
+            end = #4 ,
           }
       }
     \group_end:
@@ -15942,28 +15910,70 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% The first argument of |\@@_stroke_borders_block:nnn| is a list of options for
-% the borders that you will stroke. The second argument is the upper-left cell
-% of the block (with, as usual, the syntax $i$|-|$j$) and the third is the last
-% cell of the block (with the same syntax).
+% The command |\@@_hlines_block:nnnnn| is used only once: in |\@@_Block_v:nnnnnn|
+% which actually draw the block.
+% 
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_stroke_borders_block:nnn #1 #2 #3
+\cs_new_protected:Npn \@@_hlines_block:nnnnn #1 #2 #3 #4 #5
+  {
+%    \end{macrocode}
+% We are actually during the execution of the |\g_nicematrix_code_after_tl|.
+% In that context |\arrayrulewidth| is the widht of standard lines (we are drawing
+% standard rules becuase, up to now, there is no way to draw the internal lines of a Block
+% with a style of TikZ).
+%    \begin{macrocode}
+    \group_begin:
+    \dim_set:Nn \arrayrulewidth { #1 }
+%    \end{macrocode}    
+% \medskip
+% Below, you use |\@@_hline:n| to draw to rules and that command will use
+% |\g_@@_pos_of_blocks_seq| in order to \emph{not} draw the rules within the blocks.
+% That's why we filter the list of blocks in order to discard the blocks which encompass the
+% current block.
+%    \begin{macrocode}
+    \seq_set_filter:NNn \g_@@_pos_of_blocks_seq \g_@@_pos_of_blocks_seq % noqa: E420
+       {
+         \int_compare_p:nNn { \use_i:nnnnn ##1 } > { #2 }
+         ||
+         \int_compare_p:nNn { \use_ii:nnnnn ##1 } > { #3 }
+         ||
+         \int_compare_p:nNn { \use_iii:nnnnn ##1 } < { #4 }
+         ||
+         \int_compare_p:nNn { \use_iv:nnnnn ##1 } < { #5 }
+       }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \int_step_inline:nnn { #2 } { #4 + 1 }
+      { 
+        \@@_hline:n 
+          { 
+            position = ##1 , 
+            start = #3 ,
+            end = #5 
+          } 
+      }
+    \group_end:
+  }
+%    \end{macrocode}
+%
+% \bigskip
+% The first argument of |\@@_stroke_borders_block:nnn| is a list of options for
+% the borders that you will stroke. 
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_stroke_borders_block:nnnnn #1 #2 #3 #4 #5
   {
     \dim_set_eq:NN \l_@@_line_width_dim \arrayrulewidth
     \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
-    \dim_compare:nNnTF { \l_@@_rounded_corners_dim } > { \c_zero_dim }
+    \dim_compare:nNnTF \l_@@_rounded_corners_dim > \c_zero_dim 
       { \@@_error:n { borders~forbidden } }
       {
         \tl_clear_new:N \l_@@_borders_tikz_tl
-        \keys_set:no
-          { nicematrix / OnlyForTikzInBorders } 
-          \l_@@_borders_clist 
-        \@@_cut_on_hyphen:w #2 \q_stop
-        \tl_set_eq:NN \l_@@_tmpc_tl \l_tmpa_tl
-        \tl_set_eq:NN \l_@@_tmpd_tl \l_tmpb_tl
-        \@@_cut_on_hyphen:w #3 \q_stop
-        \tl_set:Ne \l_tmpa_tl { \int_eval:n { \l_tmpa_tl + 1 } }
-        \tl_set:Ne \l_tmpb_tl { \int_eval:n { \l_tmpb_tl + 1 } }
+        \keys_set:no { nicematrix / OnlyForTikzInBorders } \l_@@_borders_clist 
+        \tl_set:Nn \l_@@_tmpc_tl { #2 }
+        \tl_set:Nn \l_@@_tmpd_tl { #3 }
+        \tl_set:Ne \l_tmpa_tl { \int_eval:n { #4 + 1 } }
+        \tl_set:Ne \l_tmpb_tl { \int_eval:n { #5 + 1 } }
         \@@_stroke_borders_block_i:
       }
   }
@@ -16074,7 +16084,8 @@ version 2005/12/01 or later.
     borders .clist_set:N = \l_@@_borders_clist ,
     rounded-corners .dim_set:N = \l_@@_rounded_corners_dim ,
     rounded-corners .default:n = 4 pt ,
-    line-width .dim_set:N = \l_@@_line_width_dim 
+    line-width .dim_set:N = \l_@@_line_width_dim ,
+    rules/width .dim_set:N = \l_@@_line_width_dim     
   }
 %    \end{macrocode}
 %
@@ -16194,8 +16205,8 @@ version 2005/12/01 or later.
     \dim_set_eq:NN \l_@@_tmpc_dim \pgf@y
     \@@_qpoint:n { row - #2 }
     \pgfpathrectanglecorners
-      { \pgfpoint { \l_tmpb_dim - \l_tmpa_dim } { \l_@@_tmpc_dim } }
-      { \pgfpoint { \l_tmpb_dim } { \pgf@y } }
+      { \pgfpoint { \l_tmpb_dim - \l_tmpa_dim } \l_@@_tmpc_dim }
+      { \pgfpoint \l_tmpb_dim \pgf@y }
     \pgfusepathqfill
     \endpgfpicture
   }
@@ -16247,15 +16258,15 @@ version 2005/12/01 or later.
           { * { #4 } { \exp_not:o \l_@@_columns_type_tl } }  
           [ \exp_not:o \l_tmpa_tl ] 
       }
-    \int_if_zero:nT { \l_@@_first_row_int }
+    \int_if_zero:nT \l_@@_first_row_int 
       { 
-        \int_if_zero:nT { \l_@@_first_col_int } { & } 
+        \int_if_zero:nT \l_@@_first_col_int { & } 
         \prg_replicate:nn { #4 - 1 } { & } 
-        \int_compare:nNnT { \l_@@_last_col_int } > { -1 } { & } \\ 
+        \int_compare:nNnT \l_@@_last_col_int > { -1 } { & } \\ 
       }
     \prg_replicate:nn { #3 }
       { 
-        \int_if_zero:nT { \l_@@_first_col_int } { & }
+        \int_if_zero:nT \l_@@_first_col_int { & }
 %    \end{macrocode}
 % We put |{ }| before |#6| to avoid a hasty expansion of a potential
 % |\arabic{iRow}| at the beginning of the row which would result in an incorrect
@@ -16263,13 +16274,13 @@ version 2005/12/01 or later.
 % of the |\halign|).
 %    \begin{macrocode}
         \prg_replicate:nn { #4 - 1 } { { } #5 & } #5
-        \int_compare:nNnT { \l_@@_last_col_int } > { -1 } { & } \\  
+        \int_compare:nNnT \l_@@_last_col_int > { -1 } { & } \\  
       }
-    \int_compare:nNnT { \l_@@_last_row_int } > { -2 }
+    \int_compare:nNnT \l_@@_last_row_int > { -2 }
       { 
-        \int_if_zero:nT { \l_@@_first_col_int } { & }
+        \int_if_zero:nT \l_@@_first_col_int { & }
         \prg_replicate:nn { #4 - 1 } { & } 
-        \int_compare:nNnT { \l_@@_last_col_int } > { -1 } { & } \\  
+        \int_compare:nNnT \l_@@_last_col_int > { -1 } { & } \\  
       }
     \end { NiceArrayWithDelims }
     \group_end:
@@ -16324,7 +16335,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_dotfill_i: 
   { 
-    \dim_compare:nNnT { \box_wd:N \l_@@_cell_box } = { \c_zero_dim } 
+    \dim_compare:nNnT { \box_wd:N \l_@@_cell_box } = \c_zero_dim 
       { \@@_old_dotfill: } 
   }
 %    \end{macrocode}
@@ -16486,7 +16497,7 @@ version 2005/12/01 or later.
 % If this is really the end of the current environment (of \pkg{nicematrix}), we
 % put back the command |\end| and its argument in the TeX flow.
 %    \begin{macrocode}
-    \str_if_eq:eeTF { \@currenvir } { #1 } 
+    \str_if_eq:eeTF \@currenvir { #1 } 
       { \end { #1 } }
 %    \end{macrocode}
 % If this is not the |\end| we are looking for, we put those tokens in
@@ -16545,7 +16556,7 @@ version 2005/12/01 or later.
     \bool_if:nTF { #3 }
       { \dim_set_eq:NN \l_tmpa_dim \c_max_dim }
       { \dim_set:Nn \l_tmpa_dim { - \c_max_dim } }
-    \int_step_inline:nnn { \l_@@_first_row_int } { \g_@@_row_total_int }
+    \int_step_inline:nnn \l_@@_first_row_int \g_@@_row_total_int 
       {
         \cs_if_exist:cT 
           { pgf @ sh @ ns @ \@@_env: - ##1 - #2 }
@@ -16556,10 +16567,10 @@ version 2005/12/01 or later.
             \dim_set:Nn \l_tmpa_dim 
               { 
                 \bool_if:nTF { #3 } 
-                  { \dim_min:nn } 
-                  { \dim_max:nn } 
+                  \dim_min:nn 
+                  \dim_max:nn 
                 \l_tmpa_dim
-                { \pgf@x }
+                \pgf@x 
               }  
           }
       }
@@ -16573,7 +16584,7 @@ version 2005/12/01 or later.
     \pgftransformshift 
       { 
         \pgfpoint 
-          { \l_tmpa_dim }
+          \l_tmpa_dim 
           { ( \l_@@_y_initial_dim + \l_@@_y_final_dim + \arrayrulewidth ) / 2 }
       } 
     \pgfnode
@@ -16788,11 +16799,11 @@ version 2005/12/01 or later.
 % The four following token lists correspond to the position of the |\SubMatrix|.
 %    \begin{macrocode}
     \@@_compute_i_j:nn { #2 } { #3 }
-    \int_compare:nNnT { \l_@@_first_i_tl } = { \l_@@_last_i_tl }
+    \int_compare:nNnT \l_@@_first_i_tl = \l_@@_last_i_tl 
       { \def \arraystretch { 1 } }
     \bool_lazy_or:nnTF
-      { \int_compare_p:nNn { \l_@@_last_i_tl } > { \g_@@_row_total_int } }
-      { \int_compare_p:nNn { \l_@@_last_j_tl } > { \g_@@_col_total_int } }
+      { \int_compare_p:nNn \l_@@_last_i_tl > \g_@@_row_total_int } 
+      { \int_compare_p:nNn \l_@@_last_j_tl > \g_@@_col_total_int } 
       { \@@_error:nn { Construct~too~large } { \SubMatrix } }
       {
         \str_clear_new:N \l_@@_submatrix_name_str
@@ -16807,28 +16818,28 @@ version 2005/12/01 or later.
 % The last value of |\int_step_inline:nnn| is provided by curryfication.
 %    \begin{macrocode}
         \bool_if:NTF \l_@@_submatrix_slim_bool
-          { \int_step_inline:nnn { \l_@@_first_i_tl } { \l_@@_last_i_tl } }
-          { \int_step_inline:nnn { \l_@@_first_row_int } { \g_@@_row_total_int } }
+          { \int_step_inline:nnn \l_@@_first_i_tl \l_@@_last_i_tl }
+          { \int_step_inline:nnn \l_@@_first_row_int \g_@@_row_total_int }
           {
             \cs_if_exist:cT 
               { pgf @ sh @ ns @ \@@_env: - ##1 - \l_@@_first_j_tl }
               {
                 \pgfpointanchor { \@@_env: - ##1 - \l_@@_first_j_tl } { west }
-                \dim_compare:nNnT { \pgf@x } < { \l_@@_x_initial_dim }
+                \dim_compare:nNnT \pgf@x < \l_@@_x_initial_dim 
                   { \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x }
               }
             \cs_if_exist:cT 
               { pgf @ sh @ ns @ \@@_env: - ##1 - \l_@@_last_j_tl }
               {
                 \pgfpointanchor { \@@_env: - ##1 - \l_@@_last_j_tl } { east }
-                \dim_compare:nNnT { \pgf@x } > { \l_@@_x_final_dim }
+                \dim_compare:nNnT \pgf@x > \l_@@_x_final_dim 
                   { \dim_set_eq:NN \l_@@_x_final_dim \pgf@x }
               }
           }
-        \dim_compare:nNnTF { \l_@@_x_initial_dim } = { \c_max_dim }
+        \dim_compare:nNnTF \l_@@_x_initial_dim = \c_max_dim 
           { \@@_error:nn { Impossible~delimiter } { left } }
           {
-            \dim_compare:nNnTF { \l_@@_x_final_dim } = { - \c_max_dim }
+            \dim_compare:nNnTF \l_@@_x_final_dim = { - \c_max_dim }
               { \@@_error:nn { Impossible~delimiter } { right } }
               { \@@_sub_matrix_i:nnnn { #1 } { #4 } { #6 } { #7 } }
           }
@@ -16857,20 +16868,20 @@ version 2005/12/01 or later.
     \@@_qpoint:n { row - \l_@@_last_i_tl - base }
     \dim_set:Nn \l_@@_y_final_dim 
       { \fp_to_dim:n { \pgf@y - ( \box_dp:N \strutbox ) * \arraystretch } } 
-    \int_step_inline:nnn { \l_@@_first_col_int } { \g_@@_col_total_int }
+    \int_step_inline:nnn \l_@@_first_col_int \g_@@_col_total_int 
       {
         \cs_if_exist:cT 
           { pgf @ sh @ ns @ \@@_env: - \l_@@_first_i_tl - ##1 }
           {
             \pgfpointanchor { \@@_env: - \l_@@_first_i_tl - ##1 } { north }
             \dim_set:Nn \l_@@_y_initial_dim
-              { \dim_max:nn { \l_@@_y_initial_dim } { \pgf@y } }
+              { \dim_max:nn \l_@@_y_initial_dim \pgf@y } 
           }
         \cs_if_exist:cT 
           { pgf @ sh @ ns @ \@@_env: - \l_@@_last_i_tl - ##1 }
           {
             \pgfpointanchor { \@@_env: - \l_@@_last_i_tl - ##1 } { south }
-            \dim_compare:nNnT { \pgf@y } < { \l_@@_y_final_dim }
+            \dim_compare:nNnT \pgf@y < \l_@@_y_final_dim 
               { \dim_set_eq:NN \l_@@_y_final_dim \pgf@y }
           }
       }
@@ -16897,7 +16908,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \seq_map_inline:Nn \g_@@_cols_vlism_seq 
       {
-        \int_compare:nNnT { \l_@@_first_j_tl } < { ##1 } 
+        \int_compare:nNnT \l_@@_first_j_tl < { ##1 } 
           { 
             \int_compare:nNnT 
               { ##1 } < { \int_eval:n { \l_@@_last_j_tl + 1 } }
@@ -16919,12 +16930,12 @@ version 2005/12/01 or later.
 % The last argument of |\int_step_inline:nn| or |\clist_map_inline:Nn| is given
 % by curryfication.
 %    \begin{macrocode}
-    \str_if_eq:eeTF { \l_@@_submatrix_vlines_clist } { all }
+    \str_if_eq:eeTF \l_@@_submatrix_vlines_clist { all }
       { \int_step_inline:nn { \l_@@_last_j_tl - \l_@@_first_j_tl } }
       { \clist_map_inline:Nn \l_@@_submatrix_vlines_clist }
       {
         \bool_lazy_and:nnTF
-          { \int_compare_p:nNn { ##1 } > { \c_zero_int } }
+          { \int_compare_p:nNn { ##1 } > \c_zero_int }
           { 
              \int_compare_p:nNn 
                { ##1 } < { \l_@@_last_j_tl - \l_@@_first_j_tl + 1 } } 
@@ -16944,12 +16955,12 @@ version 2005/12/01 or later.
 % The last argument of |\int_step_inline:nn| or |\clist_map_inline:Nn| is given
 % by curryfication.
 %    \begin{macrocode}
-    \str_if_eq:eeTF { \l_@@_submatrix_hlines_clist } { all }
+    \str_if_eq:eeTF \l_@@_submatrix_hlines_clist { all }
       { \int_step_inline:nn { \l_@@_last_i_tl - \l_@@_first_i_tl } }
       { \clist_map_inline:Nn \l_@@_submatrix_hlines_clist }
       {
         \bool_lazy_and:nnTF
-          { \int_compare_p:nNn { ##1 } > { \c_zero_int } }
+          { \int_compare_p:nNn { ##1 } > \c_zero_int }
           { 
             \int_compare_p:nNn 
               { ##1 } < { \l_@@_last_i_tl - \l_@@_first_i_tl + 1 } } 
@@ -17347,8 +17358,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \@@_compute_i_j:nn { #1 } { #2 }
     \bool_lazy_or:nnTF
-      { \int_compare_p:nNn { \l_@@_last_i_tl } > { \g_@@_row_total_int } }
-      { \int_compare_p:nNn { \l_@@_last_j_tl } > { \g_@@_col_total_int } }
+      { \int_compare_p:nNn \l_@@_last_i_tl > \g_@@_row_total_int }
+      { \int_compare_p:nNn \l_@@_last_j_tl > \g_@@_col_total_int }
       { 
         \str_if_eq:eeTF { #5 } { under }
           { \@@_error:nn { Construct~too~large } { \UnderBrace } }
@@ -17357,28 +17368,28 @@ version 2005/12/01 or later.
       {
         \tl_clear:N \l_tmpa_tl 
         \keys_set:nn { nicematrix / Brace } { #4 }
-        \tl_if_empty:NF \l_tmpa_tl { \color { \l_tmpa_tl } } 
+        \tl_if_empty:NF \l_tmpa_tl { \color \l_tmpa_tl } 
         \pgfpicture 
         \pgfrememberpicturepositiononpagetrue
         \pgf@relevantforpicturesizefalse
         \bool_if:NT \l_@@_brace_left_shorten_bool 
           {
             \dim_set_eq:NN \l_@@_x_initial_dim \c_max_dim
-            \int_step_inline:nnn { \l_@@_first_i_tl } { \l_@@_last_i_tl }
+            \int_step_inline:nnn \l_@@_first_i_tl \l_@@_last_i_tl 
               {
                 \cs_if_exist:cT 
                   { pgf @ sh @ ns @ \@@_env: - ##1 - \l_@@_first_j_tl }
                   {
                     \pgfpointanchor { \@@_env: - ##1 - \l_@@_first_j_tl } { west }
               
-                    \dim_compare:nNnT { \pgf@x } < { \l_@@_x_initial_dim }
+                    \dim_compare:nNnT \pgf@x < \l_@@_x_initial_dim 
                       { \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x }
                   }
               }
           }
         \bool_lazy_or:nnT
           { \bool_not_p:n \l_@@_brace_left_shorten_bool }
-          { \dim_compare_p:nNn { \l_@@_x_initial_dim } = { \c_max_dim } }
+          { \dim_compare_p:nNn \l_@@_x_initial_dim = \c_max_dim }
           {
             \@@_qpoint:n { col - \l_@@_first_j_tl }
             \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x 
@@ -17386,20 +17397,20 @@ version 2005/12/01 or later.
         \bool_if:NT \l_@@_brace_right_shorten_bool 
           {
             \dim_set:Nn \l_@@_x_final_dim { - \c_max_dim }
-            \int_step_inline:nnn { \l_@@_first_i_tl } { \l_@@_last_i_tl }
+            \int_step_inline:nnn \l_@@_first_i_tl \l_@@_last_i_tl 
               {
                 \cs_if_exist:cT 
                   { pgf @ sh @ ns @ \@@_env: - ##1 - \l_@@_last_j_tl }
                   {
                     \pgfpointanchor { \@@_env: - ##1 - \l_@@_last_j_tl } { east }
-                    \dim_compare:nNnT { \pgf@x } > { \l_@@_x_final_dim }
+                    \dim_compare:nNnT \pgf@x > \l_@@_x_final_dim 
                       { \dim_set_eq:NN \l_@@_x_final_dim \pgf@x }
                   }
               }
           }
         \bool_lazy_or:nnT
           { \bool_not_p:n \l_@@_brace_right_shorten_bool }
-          { \dim_compare_p:nNn { \l_@@_x_final_dim } = { - \c_max_dim } }
+          { \dim_compare_p:nNn \l_@@_x_final_dim = { - \c_max_dim } }
           {
             \@@_qpoint:n { col - \int_eval:n { \l_@@_last_j_tl + 1 } }
             \dim_set_eq:NN \l_@@_x_final_dim \pgf@x 
@@ -17583,7 +17594,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new:Npn \@@_hbrace:nnn #1 #2 #3
   {
-    \int_compare:nNnTF { \c@iRow } < { 2 }
+    \int_compare:nNnTF \c@iRow < { 2 }
       { 
 %    \end{macrocode}
 % We recall that |\str_if_eq:nnTF| is ``fully expandable''.
@@ -17653,7 +17664,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_vbrace:nnn #1 #2 #3 
   {
-    \int_compare:nNnTF { \c@jCol } < { 2 }
+    \int_compare:nNnTF \c@jCol < { 2 }
       {
         \str_if_eq:nnTF { #2 } { * } 
           { 
@@ -17718,16 +17729,12 @@ version 2005/12/01 or later.
 \keys_define:nn { nicematrix / TikzEveryCell }
   { 
     not-empty .code:n = 
-      \bool_lazy_or:nnTF 
-        { \l_@@_in_code_after_bool }
-        { \g_@@_create_cell_nodes_bool }
+      \bool_lazy_or:nnTF \l_@@_in_code_after_bool \g_@@_create_cell_nodes_bool 
         { \bool_set_true:N \l_@@_not_empty_bool }
         { \@@_error:n { detection~of~empty~cells } } ,
     not-empty .value_forbidden:n = true ,
     empty .code:n = 
-      \bool_lazy_or:nnTF 
-        { \l_@@_in_code_after_bool }
-        { \g_@@_create_cell_nodes_bool }
+      \bool_lazy_or:nnTF \l_@@_in_code_after_bool \g_@@_create_cell_nodes_bool 
         { \bool_set_true:N \l_@@_empty_bool }
         { \@@_error:n { detection~of~empty~cells } } ,
     empty .value_forbidden:n = true ,
@@ -17867,10 +17874,7 @@ version 2005/12/01 or later.
        \pgf@relevantforpicturesizefalse
        \pgfpathrectanglecorners
          { \@@_qpoint:n { 1 } }
-         { 
-           \@@_qpoint:n
-             { \int_eval:n { \int_max:nn { \c@iRow } { \c@jCol } + 1 } } 
-         }
+         { \@@_qpoint:n { \int_eval:n { 1 + \int_max:nn \c@iRow \c@jCol } } }
        \pgfsetfillopacity { 0.75 }
        \pgfsetfillcolor { white }
        \pgfusepathqfill
@@ -17879,7 +17883,7 @@ version 2005/12/01 or later.
    \dim_gzero_new:N \g_@@_tmpc_dim
    \dim_gzero_new:N \g_@@_tmpd_dim
    \dim_gzero_new:N \g_@@_tmpe_dim
-   \int_step_inline:nn { \c@iRow }
+   \int_step_inline:nn \c@iRow 
      {
        \bool_if:NTF \l_@@_in_code_after_bool
          {
@@ -17896,7 +17900,7 @@ version 2005/12/01 or later.
        \bool_if:NTF \l_@@_in_code_after_bool
          { \endpgfpicture }
          { \end { pgfpicture } }
-       \int_step_inline:nn { \c@jCol }
+       \int_step_inline:nn \c@jCol 
          {
            \hbox_set:Nn \l_tmpa_box 
              { 
@@ -17939,7 +17943,7 @@ version 2005/12/01 or later.
              { 
                \pgfpoint 
                  { 0.5 * ( \g_@@_tmpc_dim + \g_@@_tmpe_dim ) } 
-                 { \dim_use:N \g_tmpa_dim } 
+                 \g_tmpa_dim 
              } 
            \pgfnode
              { rectangle }
@@ -18218,7 +18222,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { key~with~normal~form~exists }
   {
-    The~key~'\l_keys_key_str'~does~not~exists.\\
+    No~key~'\l_keys_key_str'.\\
     It~will~be~ignored.\\
     Maybe~you~want~to~use~the~key~'\l_tmpa_str'.
   }
@@ -18254,9 +18258,9 @@ version 2005/12/01 or later.
   { 
     \seq_if_in:NoF \g_@@_types_of_matrix_seq \g_@@_name_env_str
       { \@@_fatal:nn { too~many~cols~for~array } }
-    \int_compare:nNnT { \l_@@_last_col_int } = { -2 }
+    \int_compare:nNnT \l_@@_last_col_int = { -2 }
       { \@@_fatal:n { too~many~cols~for~matrix } }
-    \int_compare:nNnT { \l_@@_last_col_int } = { -1 }
+    \int_compare:nNnT \l_@@_last_col_int = { -1 }
       { \@@_fatal:n { too~many~cols~for~matrix } }
     \bool_if:NF \l_@@_last_col_without_value_bool
       { \@@_fatal:n { too~many~cols~for~matrix~with~last~col } }
@@ -18284,7 +18288,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Misuse~of~Hline }
   {
     Misuse~of~Hline. \\
-    Error~in~your~row~ \int_eval:n { \c@iRow }. \\
+    Error~in~your~row~ \int_eval:N \c@iRow . \\
     \token_to_str:N \Hline\ (like \token_to_str:N \hline)~must~be~used~only~
     at~the~beginning~of~a~row.\\
     That~error~is~fatal.
@@ -18313,7 +18317,8 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { NiceTabularX~probably~required }
   {
     Incorrect~syntax.\\
-    You~probably~want~to~use~\{NiceTabularX\}.\\
+    You~probably~want~to~use~\{NiceTabularX\}~whose~first~argument~is~the~
+    disered~width~of~the~tabular.\\
     That~error~is~fatal.
   }
 %    \end{macrocode}
@@ -18336,6 +18341,7 @@ version 2005/12/01 or later.
   {
     Bad~use~of~\token_to_str:N \rowcolor \\
     You~can't~use~\token_to_str:N \rowcolor\ in~\token_to_str:N \Block.\\
+    However,~it's~possible~to~color~the~block~with~its~key~'fill'.\\
     That~command~will~be~ignored.
   }
 %    \end{macrocode}
@@ -18349,6 +18355,17 @@ version 2005/12/01 or later.
     This~error~is~fatal.
   }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Invalid~argument~for~w }
+  {
+    Invalid~argument~for~w.\\
+    You~have~used~the~type~of~alignment~'#1'~for~your~column~'w'~
+    but~only~'c',~'r',~'l'~and~'s'~are~allowed~in~a~column~'w'.~
+    If~you~go~on,~'c'~will~be~used.
+  }
+%    \end{macrocode}  
+% 
 %
 %    \begin{macrocode}
 \@@_msg_new:nn { invalid~weight }
@@ -18382,7 +18399,9 @@ version 2005/12/01 or later.
     than~allowed~by~your~ \@@_full_name_env: .
     \@@_message_hdotsfor: \ 
     The~maximal~number~of~columns~is~ \int_eval:n { \l_@@_last_col_int - 1 }~
-    (plus~the~exterior~columns).~This~error~is~fatal.
+    (plus~the~exterior~columns).\\
+    But,~maybe,~you~have~forgotten~a~\token_to_str:N \\. \\ 
+    This~error~is~fatal.
   }
 %    \end{macrocode}
 % 
@@ -18417,6 +18436,7 @@ version 2005/12/01 or later.
       { \int_compare_p:n { \l_@@_first_col_int = 0 } || \g_@@_last_col_found_bool }
       { (plus~the~exterior~ones)~}
     since~the~preamble~is~' \g_@@_user_preamble_tl '.\\
+    But,~maybe,~you~have~forgotten~a~\token_to_str:N \\. \\    
     This~error~is~fatal.
   }
 %    \end{macrocode}
@@ -18500,6 +18520,7 @@ version 2005/12/01 or later.
   {
     Erroneous~use.\\
     You~can't~use~the~command~ #1 because~'booktabs'~is~not~loaded.\\
+    You~should~load~'booktabs'~(before~or~after~'nicematrix').\\
     That~command~will~be~ignored.
   }
 %    \end{macrocode}
@@ -18568,7 +18589,8 @@ version 2005/12/01 or later.
     Bad~line~style.\\
     Since~you~haven't~loaded~TikZ,~the~only~value~you~can~give~to~'line-style'~
     is~'standard'.~That~key~will~be~ignored.\\
-    You~can~load~TikZ~with~\token_to_str:N \usepackage \{tikz\}.\\
+    You~can~load~TikZ~with~\token_to_str:N \usepackage \{tikz\},~
+    before~or~after~'nicematrix'.\\
   }
 %    \end{macrocode}
 % 
@@ -18820,7 +18842,8 @@ version 2005/12/01 or later.
     siunitx~not~loaded\\
     You~can't~use~the~columns~'S'~because~'siunitx'~is~not~loaded.\\
     That~error~is~fatal.\\
-    You~can~load~'siunitx'~with~\token_to_str:N \usepackage \{siunitx\}.\\    
+    You~can~load~'siunitx'~with~\token_to_str:N \usepackage \{siunitx\},~
+    before~or~after~'nicematrix'. \\    
   }
 %    \end{macrocode}
 % 
@@ -19041,7 +19064,8 @@ version 2005/12/01 or later.
     TikZ~not~loaded.\\
     You~can't~use~ \token_to_str:N \TikzEveryCell \
     because~you~have~not~loaded~tikz.\\
-    You~can~load~'tikz'~with~\token_to_str:N \usepackage \{tikz\}.\\    
+    You~can~load~'tikz'~with~\token_to_str:N \usepackage \{tikz\},~
+    before~or~after~'nicematrix'. \\ 
     This~command~will~be~ignored.
   }
 %    \end{macrocode}
@@ -19052,7 +19076,8 @@ version 2005/12/01 or later.
     TikZ~not~loaded.\\
     You~can't~use~the~key~'tikz'~for~the~command~' \token_to_str:N
     \Block '~because~you~have~not~loaded~tikz.\\
-    You~can~load~'tikz'~with~\token_to_str:N \usepackage \{tikz\}.\\        
+    You~can~load~'tikz'~with~\token_to_str:N \usepackage \{tikz\},~
+    before~or~after~'nicematrix'. \\        
     This~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -19190,7 +19215,8 @@ version 2005/12/01 or later.
   {
     booktabs~not~loaded.\\
     You~can't~use~the~key~'tabular/bottomrule'~because~you~haven't~
-    loaded~'booktabs'.\\
+    loaded~'booktabs'.~You~should~load~'booktabs',~before~or~
+    after~'nicematrix'.\\
     This~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -19309,7 +19335,7 @@ version 2005/12/01 or later.
   {
     varwidth~not~loaded.\\
     You~can't~use~the~column~type~'V'~because~'varwidth'~is~not~
-    loaded.\\
+    loaded.~You~should~load~'varwidth',~before~or~after~'nicematrix'. \\
     Your~column~will~behave~like~'p'.
   }
 %    \end{macrocode}
@@ -19319,7 +19345,8 @@ version 2005/12/01 or later.
   {
     varwidth~not~loaded.\\
     You~can't~use~the~key~'V'~in~your~column~'X'~
-    because~'varwidth'~is~not~loaded.\\
+    because~'varwidth'~is~not~loaded.~You~should~load~'varwidth',~
+    before~or~after~'nicematrix'.\\
     It~will~be~ignored. \\
   }
 %    \end{macrocode}
@@ -19354,9 +19381,9 @@ version 2005/12/01 or later.
   }
   {
     The~available~keys~are~(in~alphabetic~order):~&-in-blocks,~ampersand-in-blocks,~
-    b,~B,~borders,~c,~draw,~fill,~hlines,~hvlines,~l,~line-width,~name,~
-    opacity,~rounded-corners,~r,~respect-arraystretch,~t,~T,~tikz,~transparent~
-    and~vlines.  
+    b,~B,~borders,~c,~draw,~fill,~hlines,~hvlines,~l,~name,~
+    opacity,~rounded-corners,~r,~respect-arraystretch,~rules/width,~t,~T,~tikz,~
+    transparent~and~vlines.  
   }
 %    \end{macrocode}
 % 
@@ -19826,6 +19853,8 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%
+%    
 %    \begin{macrocode}
 \@@_define_com:NNN p  (  ) 
 \@@_define_com:NNN b  [  ] 

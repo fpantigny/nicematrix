@@ -593,13 +593,9 @@ the key \Definition{opacity} sets the opacity of the filling color specified by
   transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
   support such instructions. The  opacity is applied by using |\pgfsetfillopacity|.} 
 \item \index{draw (key of \texttt{\textbackslash Block})}
-the key \Definition{draw} takes in as value a color and strokes the
-frame of the block with that color (the default value of that key is the
-current color of the rules of the array);
-\item \index{color!key of \texttt{\textbackslash Block}} 
-the key \Definition{color} takes in as value a color and apply that
-color the content of the block but draws also the frame of the block with that
-color;
+the key \Definition{draw} strokes the frame of the block with the current color
+for the rules (however, it's possible to use another color by providing it
+as value of the key |draw|);
 \item \index{vlines!key of \texttt{\textbackslash Block}} 
 \index{hvlines!key of \texttt{\textbackslash Block}} 
 \index{hlines!key of \texttt{\textbackslash Block}}
@@ -609,15 +605,19 @@ block;\footnote{However, the rules are not drawn in the sub-blocks of the
 block, as always with \pkg{nicematrix}: the rules are not drawn in the blocks,
 except when they have the key |transparent|
 (cf. section~\ref{rules} p.~\pageref{rules}).}
-\item \index{line-width (key of \texttt{\textbackslash Block})}
-the key \Definition{line-width} is the width of the rules (is relevant
+\item \index{rules/width (key of \texttt{\textbackslash Block})}
+the key \Definition{rules/width} is the width of the rules (is relevant
 only when one of the keys |draw|, |hvlines|, |vlines| and |hlines| is used);
 \item \index{rounded-corners!key of \texttt{\textbackslash Block}}
 \index{Corners (rounded ---)!for a block} 
 the key \Definition{rounded-corners} requires rounded corners (for the
 frame drawn by |draw| and the shape drawn by |fill|) with a radius equal to
 the value of that key (the default value is 4~pt\footnote{This value is the
-initial value of the \emph{rounded corners} of TikZ.}).
+initial value of the \emph{rounded corners} of TikZ.}) ;
+\item \index{color!key of \texttt{\textbackslash Block}} 
+the key \Definition{color} has a behaviour which is a bit strange for historical reasons:
+it takes in as argument a color and applies it to the content of the block
+and also draws the frame of the block with that color (we don't recommend to use it).
 \end{itemize}
 
 \medskip
@@ -2015,7 +2015,7 @@ seven & eight & nine
 \end{scope}
 
 \medskip
-\colorbox{yellow!50}{\bfseries New 7.6}
+\colorbox{yellow!50}{\bfseries New 7.7}
 
 \nobreak
 \smallskip
@@ -2032,12 +2032,15 @@ letter ``|;|'' for dashed rules. They are available when TikZ is loaded.
         letter = ; , 
         command = \hdashedline , 
         ccommand = \cdashedline ,
-        tikz = densely~dashed ,
+        tikz = { dash pattern = on 4 pt off 2pt } ,        
         total-width = \pgflinewidth
       }
   } 
 \end{Code}
 
+\smallskip
+When the TikZ library \pkg{decorations} has been loaded (with
+|\usetikzlibrary{decorations}|), the key |dash expand off| is added.
 
 
 
@@ -3256,11 +3259,17 @@ the package \pkg{array} (itself loaded by \pkg{nicematrix}).
 \index{width!key of \texttt{\{NiceTabular\}}}
 
 The environment |{NiceTabular}| provides |X| columns similar to those provided
-by the environment |{tabularx}| of the eponymous package.
+by the environment |{tabularx}| of the eponymous package.\footnote{The
+  environment |{tabularx}| catches its body as an argument and typesets it
+  several times during a LaTeX run in order to compute the width of the columns.
+  On its side, |{NiceTabular}| does not catch its body as an argument (except
+  when the key |light-syntax| is in force) and typesets the tabular only once but writes
+  informations on the |aux| file, and requires several compilations.}
 
 The required width of the tabular may be specified with the key
 \Definition{width} (in |{NiceTabular}| or in |\NiceMatrixOptions|). The initial
-value of this parameter is |\linewidth| of LaTeX (and not |\textwidth|).
+value of this parameter is the parameter |\linewidth| of LaTeX (and not
+|\textwidth|).
 
 For sake of similarity with the environment |{tabularx}|, \pkg{nicematrix} also
 provides an environment \Definition{\{NiceTabularX\}} with a syntax similar to
@@ -3268,14 +3277,13 @@ the syntax of |{tabularx}|, that is to say with a first mandatory argument which
 is the width of the tabular.
 
 \medskip
-As with the packages \pkg{tabu}\footnote{The extension \pkg{tabu} is now
-considered as deprecated.} and \pkg{tabularray}, the specifier |X| takes
-in an optional argument (between square brackets) which is a list of keys.
+The specifier |X| takes in an optional argument (between square brackets) which
+is a list of keys.
 \begin{itemize}
 \item It's possible to give a weight for the column by providing a positive number
 directly as argument of the specifier |X|. For example, a column |X[0.5]| will
 have a width equal to the half of the width of a column~|X| (which has a weight
-equal to $1$).\footnote{The negative values of the weight, as provided by \pkg{tabu} (which is now obsolete), are \emph{not} supported by \pkg{nicematrix}. If such a value is used, an error will be raised.}
+equal to $1$).
 \item It's possible to specify an horizontal alignment with one of the
 letters |l|, |c| and |r| (which insert respectively |\raggedright|,
 |\centering| and |\raggedleft| followed by |\arraybackslash|).\footnote{In fact,
@@ -4108,8 +4116,8 @@ $\begin{bNiceMatrix}[margin,hvlines]
 
 \indexcommand{Hbrace}
 \indexcommand{Vbrace}
-\index{brace (nicematrix/brace is a TikZ style\newline used by \textbackslash
-  Hbrace et \textbackslash Vbrace)}
+\index{brace (nicematrix/brace is a TikZ style\newline used by
+  \texttt{\textbackslash Hbrace} et \texttt{\textbackslash Vbrace})}
 \index{tikz-braces (key at load-tome of \texttt{nicematrix)}}
 \label{Hbrace}
 
@@ -4996,7 +5004,10 @@ See table \ref{t:tabularnote}, p.~\pageref{t:tabularnote}, for an example of
 use the keys |caption| and |label|.
 
 \smallskip
-These functionalities are compatible with the extension \pkg{caption}.
+These functionalities are compatible with the extension \pkg{caption}. For example, it's
+possible to use the tuning
+|\captionsetup{justification=raggedright,singlelinecheck=false}| in order to have 
+left-align captions, even when the caption is shorter than the tabular.
 
 \subsection{The footnotes}
 
@@ -8243,6 +8254,13 @@ also available on the
 \small
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
+
+\subsection*{Changes between version 7.6 and 7.7}
+
+New commands |\hdashedline|, |\cdashedline| and the letter |;|
+
+New key |notes/no-print| and new command |\NiceTabularNotes|
+
 
 \subsection*{Changes between version 7.5 and 7.6}
 
