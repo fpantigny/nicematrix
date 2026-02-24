@@ -201,7 +201,7 @@ avec une distribution TeX comme MiKTeX, TeX~Live ou MacTeX.
 ou TeXPage) vous pouvez télécharger le fichier |nicematrix.sty| dans le dossier
 de votre projet pour bénéficier de la dernière version de
 \pkg{nicematrix}.\footnote{La dernière version de |nicematrix.sty| peut être
-  téléchargée sur le dépôt Github de \pkg{nicematrix} : \newline \small
+  téléchargée sur le dépôt GitHub de \pkg{nicematrix} : \newline \small
   \url{https://github.com/fpantigny/nicematrix/releases}}
 
 \medskip
@@ -475,7 +475,7 @@ Il est également possible d'utiliser les outils de \pkg{booktabs}: |\toprule|,
 \smallskip
 \begin{Code}[width=9cm]
 \begin{enumerate}
-\item an item
+\item un item
 \smallskip
 \item
 $\begin{NiceArray}[t]{lcccccc}
@@ -489,7 +489,7 @@ u_n & 1 & 2 & 4 & 8 & 16 & 32
 \end{Code}
 \begin{minipage}{5cm}
 \begin{enumerate}
-\item an item
+\item un item
 \smallskip
 \item
 $\begin{NiceArray}[t]{lcccccc}[no-cell-nodes]
@@ -4226,7 +4226,7 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 \label{dotted-and-rules}
 
 Les lignes pointillées délimitent des blocs virtuels qui ont le même
-comportement vis à vis des filets que les blocs créés par |\Block| (les filets
+comportement vis-à-vis des filets que les blocs créés par |\Block| (les filets
 spécifiés par le spécificateur \verb+|+ dans le préambule, la commande |\Hline|,
 les clés |vlines|, |hlines|, |hvlines| et |hvlines-except-borders| et les outils
 créés par |custom-line| ne sont pas tracés dans les blocs).\footnote{En revanche, la commande |\line| dans le |\CodeAfter|
@@ -4305,7 +4305,7 @@ et une syntaxe «additive», c'est-à-dire que l'on peut écrire, par exemple,
 \item un troisième argument, obligatoire, qui est le label de l'accolade.
 \end{itemize}
 
-Concernant la commande |\Hbrace|, son comportement vis à vis des esperluettes
+Concernant la commande |\Hbrace|, son comportement vis-à-vis des esperluettes
 (|&|) est le même que celui des commandes |\multicolumn|, |\hdotsfor|,
 |\Hdotsfor| (fournie par \pkg{nicematrix}), etc. : on ne doit mettre qu'une
 seule esperluette après la commande, même si l'accolade s'étend sur plusieurs
@@ -4376,11 +4376,6 @@ p.~\pageref{ex:no-longer-dotted-rules}.
 
 \index{Pointillés@\textbf{Pointillés (lignes en ---)}|)}
 
-\medskip
-It's also possible to draw braces of the mathematical mode of LaTeX by using the
-commands |\OverBrace| and |\UnderBrace| (cf.~\ref{OverBrace}
-p.~\pageref{OverBrace}) and the command |\SubMatrix| (cf.~\ref{SubMatrix}
-p.~\pageref{sub-matrix}) in the |\CodeAfter|.
 
 \medskip
 Il est également possible de dessiner des accolades du mode mathématique de
@@ -4971,7 +4966,7 @@ $\begin{pNiceMatrix}
 \end{pNiceMatrix}$
 
 \bigskip
-Attention : Aucun espace vertical n'est réservé par \pkg{nicematrix} pour ces
+Attention : aucun espace vertical n'est réservé par \pkg{nicematrix} pour ces
 accolades, ni pour leurs labels.\footnote{Voir à ce sujet: \url{https://tex.stackexchange.com/questions/685755}}
 
 \bigskip
@@ -5208,7 +5203,7 @@ Si \pkg{nicematrix} est chargée avec l'option |footnotehyper|, l'extension
 pour extraire les notes de pied de page.
 
 \smallskip
-Attention : Les extensions \pkg{footnote} et \pkg{footnotehyper} sont
+Attention : les extensions \pkg{footnote} et \pkg{footnotehyper} sont
 incompatibles. L'extension \pkg{footnotehyper} est le successeur de l'extension
 \pkg{footnote} et devrait être utilisée préférentiellement. L'extension
 \pkg{footnote} a quelques défauts ; en particulier, elle doit être chargée après
@@ -6108,7 +6103,7 @@ non vide du tableau considéré. Ces nœuds sont utilisés, entre autres, pour
 tracer les lignes en pointillés entre les cases du tableau.
 
 \smallskip
-\textbf{Attention} : Par défaut, aucun nœud n'est créé dans une case vide.
+\textbf{Attention} : par défaut, aucun nœud n'est créé dans une case vide.
 
 \smallskip
 Néanmoins, on peut forcer la création d'un nœud avec la commande |\NotEmpty|.\footnote{Il faut toutefois remarquer qu'avec cette commande, la
@@ -6442,7 +6437,7 @@ a & a     & a
 
 
 \medskip
-\textbf{Attention} : Ces nœuds sont reconstruits à partir des contenus des cases
+\textbf{Attention} : ces nœuds sont reconstruits à partir des contenus des cases
 et ne correspondent donc pas nécessairement aux cases délimitées par des filets.
 
 \medskip
