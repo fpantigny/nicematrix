@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.7}
-\def\myfiledate{2026/02/22}
+\def\myfileversion{7.8}
+\def\myfiledate{2026/03/11}
 %
 %
 %<*batchfile>  
@@ -209,7 +209,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% We also create a command which will generate usually an error but only a
+% We also create a command which will usually generate an error but only a
 % warning on Overleaf. The argument is given by curryfication.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_error_or_warning:n 
@@ -249,6 +249,43 @@ version 2005/12/01 or later.
   { \IfPackageLoadedT { mdwtab } { \@@_fatal:n { mdwtab~loaded } } }
 %    \end{macrocode}
 %
+% 
+% We test whether the current class is \cls{revtex4-1} (deprecated) or
+% \cls{revtex4-2} because the version 4.2f of \cls{revtex4-2} is incompatible with
+% \pkg{nicematrix}.
+%
+%    \begin{macrocode}
+\IfClassLoadedTF { revtex4-1 }
+  { \bool_const:Nn \c_@@_revtex_bool { \c_true_bool } }
+  {
+    \IfClassLoadedTF { revtex4-2 }
+      { \bool_const:Nn \c_@@_revtex_bool { \c_true_bool } }
+      {
+%    \end{macrocode}
+% Maybe one of the previous classes will be loaded inside another class... We
+% try to detect that situation.
+%    \begin{macrocode}
+        \cs_if_exist:NT \rvtx@ifformat@geq 
+          { \bool_const:Nn \c_@@_revtex_bool { \c_true_bool } }
+          { \bool_const:Nn \c_@@_revtex_bool { \c_false_bool } }
+      }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { class~revtex }
+  {
+    You~can't~use~this~version~of~'nicematrix'~in~a~class~of~REVTeX~because~
+    REVTeX~is~*not*~compatible~with~recent~versions~of~LaTeX.~Sorry...\\
+    The~package~'nicematrix'~won't~be~loaded.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\bool_if:NT \c_@@_revtex_bool
+  { \msg_critical:nn { nicematrix } { class~revtex } }
+%    \end{macrocode}
+% 
 % \bigskip
 % \section{Collecting options}
 %
@@ -347,7 +384,7 @@ version 2005/12/01 or later.
 %
 % \medskip
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \IfPackageLoadedTF { tikz }
       { 
@@ -362,7 +399,7 @@ version 2005/12/01 or later.
 %
 % That's why we create |\c_@@_pgfortikzpicture_tl| and
 % |\c_@@_endpgfortikzpicture_tl| which will be used to construct in a
-% |\hook_gput_code:nnn { begindocument } { . } | the correct version of some
+% |\AtBeginDocument | the correct version of some
 % commands. The tokens |\exp_not:N| are mandatory.
 %    \begin{macrocode}
         \tl_const:Nn \c_@@_pgfortikzpicture_tl { \exp_not:N \tikzpicture }
@@ -375,28 +412,6 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 % 
-% We test whether the current class is \cls{revtex4-1} (deprecated) or
-% \cls{revtex4-2} because these classes redefines |\array| (of \pkg{array}) in a
-% way incompatible with our programmation. At the date April 2025, the current
-% version \cls{revtex4-2} is 4.2f (compatible with \pkg{booktabs}).
-%
-%    \begin{macrocode}
-\IfClassLoadedTF { revtex4-1 }
-  { \bool_const:Nn \c_@@_revtex_bool { \c_true_bool } }
-  {
-    \IfClassLoadedTF { revtex4-2 }
-      { \bool_const:Nn \c_@@_revtex_bool { \c_true_bool } }
-      {
-%    \end{macrocode}
-% Maybe one of the previous classes will be loaded inside another class... We
-% try to detect that situation.
-%    \begin{macrocode}
-        \cs_if_exist:NT \rvtx@ifformat@geq 
-          { \bool_const:Nn \c_@@_revtex_bool { \c_true_bool } }
-          { \bool_const:Nn \c_@@_revtex_bool { \c_false_bool } }
-      }
-  }
-%    \end{macrocode}
 %
 %
 % 
@@ -454,7 +469,7 @@ version 2005/12/01 or later.
 % be modified. In order to avoid an error message in this case, we will redefine
 % |\pgfutil@check@rerun| in the |aux| file.
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . } 
+\AtBeginDocument 
   {     
     \IfPackageLoadedT { booktabs } 
       {
@@ -490,7 +505,7 @@ version 2005/12/01 or later.
 % redefinition of |\everycr|. The command |\@@_everycr:| will be used only
 % in |\@@_some_initialization:|, itself in |\ar@ialign|.
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . } 
+\AtBeginDocument 
   {
     \cs_set_protected:Npe \@@_everycr:
       {
@@ -512,7 +527,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % When \pkg{colortbl} is used, we have to catch the tokens |\columncolor| in the
 % preamble because, otherwise, \pkg{colortbl} will catch them and the colored
-% panels won't be drawn by \pkg{nicematrix} but by \pkg{colortbl} (with an
+% panels won't be drawn by \pkg{nicematrix}, but by \pkg{colortbl} (with an
 % output which is not perfect).
 %
 %    \begin{macrocode}
@@ -936,7 +951,6 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \bool_new:N \l_@@_initial_open_bool
 \bool_new:N \l_@@_final_open_bool
-\bool_new:N \l_@@_Vbrace_bool 
 %    \end{macrocode}
 % 
 % 
@@ -949,11 +963,20 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% The following dimension will be used for the total width of composite rules
-% (\emph{total} means that the spaces on both sides are included).
+% |\l_@@_rule_width_before_dim| will be used before the construction of the array (that
+% is to say during the definition of new types of rules and during the instructions used
+% by the final user in order to require rules of several types).
 %    \begin{macrocode}
-\dim_new:N \l_@@_rule_width_dim 
+\dim_new:N \l_@@_rule_width_before_dim
 %    \end{macrocode}
+%
+% |\l_@@_rule_width_before_dim| will be used \emph{after} the construction of the array
+% (that is to say when we are actually drawing the rules).
+%    \begin{macrocode}
+\dim_new:N \l_@@_rule_width_after_dim 
+%    \end{macrocode}
+% We use two variables only for legibility. We could use the same since we are not at all
+% at the same moment in the compilation.
 %
 % \bigskip
 % The key |color| in a command of rule such as |\Hline| (or the specifier
@@ -1128,17 +1151,19 @@ version 2005/12/01 or later.
 \bool_new:N \l_@@_bold_row_style_bool
 %    \end{macrocode}
 %
-% \bigskip
-%    \begin{macrocode}
-\bool_new:N \l_@@_notes_no_print_bool
-%    \end{macrocode}
 %
 % \bigskip
-% |\g_@@_cbic_clist| is for |create-blocks-in-column|
+% |\g_@@_cbic_clist| is for |create-blocks-in-col|
 %    \begin{macrocode}
 \clist_new:N \g_@@_cbic_clist
 %    \end{macrocode}
 %
+% \bigskip
+% |\g_@@_col_with_trees_clist| is for |draw-trees-in-col|
+%   \begin{macrocode}
+\clist_new:N \g_@@_col_with_trees_clist
+%    \end{macrocode}
+% 
 % 
 % \bigskip
 % The following command will be able to reconstruct the full name of the current
@@ -1159,26 +1184,14 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \tl_new:N \g_@@_cell_after_hook_tl
 %    \end{macrocode}
+%
 % The argument is given by curryfication.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_put_in_cell_after_hook:n
   { \tl_gput_right:Nn \g_@@_cell_after_hook_tl }
 %    \end{macrocode}
 % 
-% \bigskip
-% For the key |code| of the command |\SubMatrix| (itself in the main
-% |\CodeAfter|), we will use the following token list.
-%    \begin{macrocode}
-\tl_new:N \l_@@_code_tl
-%    \end{macrocode}
 %
-% \bigskip
-% For the key |pgf-node-code|. That code will be used when the nodes of the
-% cells (that is to say the nodes of the form |i-j|) will be created.
-%    \begin{macrocode}
-\tl_new:N \l_@@_pgf_node_code_tl
-%    \end{macrocode}
-% 
 %
 % \bigskip
 % The so-called |\CodeBefore| is split in two parts because we want to control
@@ -1192,6 +1205,20 @@ version 2005/12/01 or later.
 % |\Body|. 
 % 
 % \bigskip
+% |\g_@@_rules_tl| will contain instructions to draw rules specified by:
+%
+% \begin{itemize}
+% \item the keys |hlines| and |vlines| (and |hvlines|, |hvlines-except-borders|);
+% \item the specifier \verb+|+ in the preamble of the argument;
+% \item the commands |\Hline|;
+% \item the key |hlines|, |vlines| and |hvlines| of a block;
+% \item the key |draw| of a block;
+% \item the command |\diagbox|.
+% \end{itemize}
+%    \begin{macrocode}
+\tl_new:N \g_@@_rules_tl
+%    \end{macrocode}
+%
 % The so-called |\CodeAfter| is split in two parts because we want to control
 % the order of execution of some instructions.
 %    \begin{macrocode}
@@ -1233,12 +1260,6 @@ version 2005/12/01 or later.
 \seq_new:N \l_@@_custom_line_commands_seq
 %    \end{macrocode}
 % 
-% \bigskip
-% The following token list corresponds to the key |rules/color| available
-% in the environments.
-%    \begin{macrocode}
-\tl_new:N \l_@@_rules_color_tl
-%    \end{macrocode}
 %
 % \bigskip
 % The sum of the weights of all the |X|-columns in the preamble. 
@@ -1258,12 +1279,6 @@ version 2005/12/01 or later.
 \dim_new:N \l_@@_X_columns_dim
 %    \end{macrocode}
 %
-% \bigskip
-%    \begin{macrocode}
-\dim_new:N \l_@@_brace_shift_dim
-%    \end{macrocode}
-% 
-% 
 % \bigskip
 % This boolean will be used only to detect in an expandable way whether we are
 % at the beginning of the (potential) column zero, in order to raise an error if
@@ -1307,7 +1322,8 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% The following dimensions will be used when drawing the dotted lines.
+% The following dimensions will be used when drawing the dotted lines but also
+% for the rules.
 %    \begin{macrocode}
 \dim_new:N \l_@@_x_initial_dim
 \dim_new:N \l_@@_y_initial_dim
@@ -1438,6 +1454,13 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \medskip
+% The following counter will be used for structures such as |\Hline\Hline|.
+%    \begin{macrocode}
+\int_new:N \l_@@_multiplicity_int
+\int_set:Nn \l_@@_multiplicity_int { 1 }
+%    \end{macrocode}
+% 
+% \medskip
 % By default, the diagonal lines will be parallelized\footnote{It's possible to
 % use the option |parallelize-diags| to disable this parallelization.}. There
 % are two types of diagonals lines: the $|\Ddots|$ diagonals and the |\Iddots|
@@ -1483,11 +1506,8 @@ version 2005/12/01 or later.
 % \medskip
 % The following counters will be used when drawing the rules.
 %    \begin{macrocode}
-\int_new:N \l_@@_start_int
-\int_set:Nn \l_@@_start_int 1
-\int_new:N \l_@@_end_int 
-\int_new:N \l_@@_local_start_int 
-\int_new:N \l_@@_local_end_int 
+\int_new:N \l_@@_segment_start_int 
+\int_new:N \l_@@_segment_end_int 
 %    \end{macrocode}
 % 
 % \medskip
@@ -1513,48 +1533,14 @@ version 2005/12/01 or later.
 % The following parameters correspond to the keys |fill|, |opacity|, |draw|,
 % |tikz|, |borders|, and |rounded-corners| of the command |\Block|.
 %    \begin{macrocode}
-\tl_new:N \l_@@_fill_tl
-\tl_new:N \l_@@_opacity_tl 
 \tl_new:N \l_@@_draw_tl
 \seq_new:N \l_@@_tikz_seq
-\clist_new:N \l_@@_borders_clist
-\dim_new:N \l_@@_rounded_corners_dim
+\tl_new:N \l_@@_tikz_rule_tl
 %    \end{macrocode}
 % The last parameter has no direct link with the [empty] corners of the array
 % (which are computed and taken into account by \pkg{nicematrix} when the key
 % |corners| is used). 
 % 
-% \medskip
-% The following dimension corresponds to the key |rounded-corners| available in
-% an individual environment |{NiceTabular}|. When that key is used, a clipping
-% is applied in the |\CodeBefore| of the environment in order to have rounded
-% corners for the potential colored panels.
-%    \begin{macrocode}
-\dim_new:N \l_@@_tab_rounded_corners_dim
-%    \end{macrocode}
-% 
-% \medskip
-% The following token list correspond to the key |color| of the command |\Block|
-% and also the key |color| of the command |\RowStyle|.
-%    \begin{macrocode}
-\tl_new:N \l_@@_color_tl
-%    \end{macrocode}
-%
-% \medskip
-% In the key |tikz| of a command |\Block| or in the argument of a command
-% |\TikzEveryCell|, the final user puts a list of tikz keys. But, you have added
-% another key, named |offset| (which means that an offset will be used for the
-% frame of the block or the cell). The following parameter corresponds to that key.
-%    \begin{macrocode}
-\dim_new:N \l_@@_offset_dim 
-%    \end{macrocode}
-% 
-% \medskip
-% Here is the dimension for the width of the rule when a block (created by
-% |\Block|) is stroked or when the key |hvlines| is used.
-%    \begin{macrocode}
-\dim_new:N \l_@@_line_width_dim
-%    \end{macrocode}
 % 
 % \medskip
 % The parameters of the horizontal position of the label of a block. If the user
@@ -1568,6 +1554,11 @@ version 2005/12/01 or later.
 \str_set:Nn \l_@@_hpos_block_str { c }
 \bool_new:N \l_@@_hpos_of_block_cap_bool
 \bool_new:N \l_@@_p_block_bool
+%    \end{macrocode}
+%
+% \medskip
+%    \begin{macrocode}
+\bool_new:N \l_@@_fix_vertex_bool
 %    \end{macrocode}
 %
 % \medskip
@@ -1585,21 +1576,7 @@ version 2005/12/01 or later.
 \str_new:N \l_@@_vpos_block_str
 %    \end{macrocode}
 %
-% 
-% \medskip
-% Used when the key |draw-first| is used for |\Ddots| or |\Iddots|.
-%    \begin{macrocode}
-\bool_new:N \l_@@_draw_first_bool
-%    \end{macrocode}
 %
-% \medskip
-% The following flag corresponds to the keys |vlines| and |hlines| of the
-% command |\Block| (the key |hvlines| is the conjunction of both).
-%    \begin{macrocode}
-\bool_new:N \l_@@_vlines_block_bool
-\bool_new:N \l_@@_hlines_block_bool
-%    \end{macrocode}
-% 
 %
 % \medskip
 % The blocks which use the key |-| will store their content in a box. These
@@ -1608,16 +1585,6 @@ version 2005/12/01 or later.
 \int_new:N \g_@@_block_box_int
 %    \end{macrocode}
 %
-% \medskip
-%    \begin{macrocode}
-\dim_new:N \l_@@_submatrix_extra_height_dim
-\dim_new:N \l_@@_submatrix_left_xshift_dim
-\dim_new:N \l_@@_submatrix_right_xshift_dim
-\clist_new:N \l_@@_hlines_clist 
-\clist_new:N \l_@@_vlines_clist
-\clist_new:N \l_@@_submatrix_hlines_clist 
-\clist_new:N \l_@@_submatrix_vlines_clist 
-%    \end{macrocode}
 %
 % \medskip
 % The following key is set when the keys |hvlines| and |hvlines-except-borders|
@@ -1629,7 +1596,6 @@ version 2005/12/01 or later.
 %
 %
 % \bigskip
-% The following flag will be used by (for instance) |\@@_vline_ii:|.
 % When |\l_@@_dotted_bool| is |true|, a dotted line (with our system) will be drawn.
 %    \begin{macrocode}
 \bool_new:N \l_@@_dotted_bool
@@ -1644,8 +1610,9 @@ version 2005/12/01 or later.
 % 
 % 
 % \bigskip
-% \textbf{Variables for the exterior rows and columns}\par\nobreak
+% \textbf{Variables for the exterior rows and columns}
 %
+% \nobreak
 % \medskip
 % The keys for the exterior rows and columns are |first-row|, |first-col|,
 % |last-row| and |last-col|. However, internally, these keys are not coded in a
@@ -1816,7 +1783,7 @@ version 2005/12/01 or later.
 % \end{itemize}
 % 
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   { 
     \dim_const:Nn \c_@@_shift_Ldots_last_row_dim { 0.5 em } 
     \dim_const:Nn \c_@@_innersep_middle_dim { 0.17 em }
@@ -1948,7 +1915,7 @@ version 2005/12/01 or later.
 % beginning of the document (we want to allow the user to load \pkg{enumitem}
 % after \pkg{nicematrix}).
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \IfPackageLoadedTF { enumitem }
       { 
@@ -2287,13 +2254,6 @@ version 2005/12/01 or later.
 % \bigskip 
 % \section{The options}
 % 
-% The following parameter corresponds to the keys |caption|, |short-caption| and
-% |label| of the environment |{NiceTabular}|. 
-%    \begin{macrocode}
-\tl_new:N \l_@@_caption_tl
-\tl_new:N \l_@@_short_caption_tl 
-\tl_new:N \l_@@_label_tl
-%    \end{macrocode}
 %
 % \bigskip
 % The following parameter corresponds to the key |caption-above| of
@@ -2304,35 +2264,14 @@ version 2005/12/01 or later.
 \bool_new:N \l_@@_caption_above_bool
 %    \end{macrocode}
 % 
-% \bigskip
-% By default, the behaviour of |\cline| is changed in the environments of
-% \pkg{nicematrix}: a |\cline| spreads the array by an amount equal to
-% |\arrayrulewidth|. It's possible to disable this feature with the key
-% |\l_@@_standard_line_bool|. 
-%    \begin{macrocode}
-\bool_new:N \l_@@_standard_cline_bool
-%    \end{macrocode}
-% 
-% \bigskip
-% The following dimensions correspond to the options |cell-space-top-limit| and co
-% (these parameters are inspired by the package \pkg{cellspace}). 
-%    \begin{macrocode}
-\dim_new:N \l_@@_cell_space_top_limit_dim
-\dim_new:N \l_@@_cell_space_bottom_limit_dim
-%    \end{macrocode}
 %
-% \bigskip
-% The following parameter corresponds to the key |xdots/horizontal_labels|.
-%    \begin{macrocode}
-\bool_new:N \l_@@_xdots_h_labels_bool
-%    \end{macrocode}
 % \bigskip
 % The following dimension is the distance between two dots for the dotted lines
 % (when |line-style| is equal to |standard|, which is the initial value). The
 % initial value is 0.45~em but it will be changed if the option |small| is used.
 %    \begin{macrocode}
 \dim_new:N \l_@@_xdots_inter_dim
-\hook_gput_code:nnn { begindocument } { . } 
+\AtBeginDocument 
   { \dim_set:Nn \l_@@_xdots_inter_dim { 0.45 em } }
 %    \end{macrocode}
 % The unit is |em| and that's why we fix the dimension after the preamble.
@@ -2345,7 +2284,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \dim_new:N \l_@@_xdots_shorten_start_dim
 \dim_new:N \l_@@_xdots_shorten_end_dim
-\hook_gput_code:nnn { begindocument } { . } 
+\AtBeginDocument 
   { 
     \dim_set:Nn \l_@@_xdots_shorten_start_dim { 0.3 em } 
     \dim_set:Nn \l_@@_xdots_shorten_end_dim { 0.3 em } 
@@ -2359,7 +2298,7 @@ version 2005/12/01 or later.
 % value is 0.53~pt but it will be changed if the option |small| is used.
 %    \begin{macrocode}
 \dim_new:N \l_@@_xdots_radius_dim
-\hook_gput_code:nnn { begindocument } { . } 
+\AtBeginDocument 
   { \dim_set:Nn \l_@@_xdots_radius_dim { 0.53 pt } }
 %    \end{macrocode}
 % The unit is |em| and that's why we fix the dimension after the preamble.
@@ -2385,55 +2324,6 @@ version 2005/12/01 or later.
 \bool_new:N \l_@@_light_syntax_expanded_bool
 %    \end{macrocode}
 % 
-% \bigskip
-% The string |\l_@@_baseline_tl| may contain one of the three values |t|,
-% |c| or |b| as in the option of the environment |{array}|. However, it may also
-% contain \textbf{an integer} (which represents the number of the row to which
-% align the array). 
-%    \begin{macrocode}
-\tl_new:N \l_@@_baseline_tl 
-\tl_set:Nn \l_@@_baseline_tl { c }
-%    \end{macrocode}
-%
-% \bigskip
-% The following parameter corresponds to the key |ampersand-in-blocks|
-%    \begin{macrocode}
-\bool_new:N \l_@@_amp_in_blocks_bool
-%    \end{macrocode}
-% 
-% \bigskip
-% The flag |\l_@@_exterior_arraycolsep_bool| corresponds to the option
-% |exterior-arraycolsep|. If this option is set, a space equal to |\arraycolsep|
-% will be put on both sides of an environment |{NiceArray}| (as it is done in
-% |{array}| of \pkg{array}).
-%    \begin{macrocode}
-\bool_new:N \l_@@_exterior_arraycolsep_bool
-%    \end{macrocode}
-%
-% \bigskip
-% The flag |\l_@@_parallelize_diags_bool| controls whether the diagonals are
-% parallelized. The initial value is~|true|.
-%    \begin{macrocode}
-\bool_new:N \l_@@_parallelize_diags_bool
-\bool_set_true:N \l_@@_parallelize_diags_bool
-%    \end{macrocode}
-%
-% \bigskip
-% The following parameter correspond to the key |corners|. The elements of that
-% |clist| must be within |NW|, |SW|, |NE| and |SE|.
-%    \begin{macrocode}
-\clist_new:N \l_@@_corners_clist
-%    \end{macrocode}
-% 
-% \bigskip
-% The flag |\l_@@_nullify_dots_bool| corresponds to the option |nullify-dots|.
-% When the flag is down, the instructions like |\vdots| are inserted within a
-% |\hphantom| (and so the constructed matrix has exactly the same size as a
-% matrix constructed with the classical |{matrix}| and |\ldots|, |\vdots|,
-% etc.). 
-%    \begin{macrocode}
-\bool_new:N \l_@@_nullify_dots_bool
-%    \end{macrocode}
 %
 % \medskip
 % When the key |respect-arraystretch| is used, the following command will be nullified.
@@ -2467,6 +2357,7 @@ version 2005/12/01 or later.
 \str_new:N \l_@@_name_str
 %    \end{macrocode}
 %
+% 
 % \bigskip
 % The boolean |\l_@@_medium_nodes_bool| will be used to indicate whether the
 % ``medium nodes'' are created in the array. Idem for the ``large nodes''.
@@ -2481,117 +2372,56 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \bool_new:N \l_@@_except_borders_bool
 %    \end{macrocode}
-% 
 %
-% \bigskip
-% The dimension |\l_@@_left_margin_dim| correspond to the option |left-margin|.
-% Idem for the right margin. These parameters are involved in the creation of
-% the ``medium nodes'' but also in the placement of the delimiters and the
-% drawing of the horizontal dotted lines (|\hdottedline|).
-%    \begin{macrocode}
-\dim_new:N \l_@@_left_margin_dim
-\dim_new:N \l_@@_right_margin_dim
-%    \end{macrocode}
-%
-%                              
-% \bigskip
-% The dimensions |\l_@@_extra_left_margin_dim| and
-% |\l_@@_extra_right_margin_dim| correspond to the options |extra-left-margin|
-% and |extra-right-margin|.  
-%    \begin{macrocode}
-\dim_new:N \l_@@_extra_left_margin_dim
-\dim_new:N \l_@@_extra_right_margin_dim
-%    \end{macrocode}
-% 
-% \medskip
-% The token list |\l_@@_end_of_row_tl| corresponds to the option |end-of-row|.
-% It specifies the symbol used to mark the ends of rows when the light syntax is
-% used. 
-%    \begin{macrocode}
-\tl_new:N \l_@@_end_of_row_tl
-\tl_set:Nn \l_@@_end_of_row_tl { ; }
-%    \end{macrocode}
-%
-% \medskip
-% The following parameter is for the color the dotted lines drawn by |\Cdots|,
-% |\Ldots|, |\Vdots|, |\Ddots|, |\Iddots| and |\Hdotsfor| but \emph{not} the
-% dotted lines drawn by |\hdottedline| and ``|:|''.
-%    \begin{macrocode} 
-\tl_new:N \l_@@_xdots_color_tl
-%    \end{macrocode}
-% 
-% \bigskip
-% The following token list corresponds to the key |delimiters/color|.
-%    \begin{macrocode}
-\tl_new:N \l_@@_delimiters_color_tl
-%    \end{macrocode}
-%
-% 
-% \bigskip
-% Sometimes, we want to have several arrays vertically juxtaposed in order to
-% have an alignment of the columns of these arrays. To acheive this goal, one
-% may wish to use the same width for all the columns (for example with the
-% option |columns-width| or the option |auto-columns-width| of the environment
-% |{NiceMatrixBlock}|). However, even if we use the same type of delimiters, the
-% width of the delimiters may be different from an array to another because the
-% width of the delimiter is fonction of its size. That's why we create an option
-% called |delimiters/max-width| which will give to the delimiters the width of
-% a delimiter (of the same type) of big size. The following boolean corresponds
-% to this option.
-%    \begin{macrocode}
-\bool_new:N \l_@@_delimiters_max_width_bool
-%    \end{macrocode}
 % 
 %
 % \bigskip
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / xdots }
   {
+%    \end{macrocode}    
+% When the key |xdots/nullify| is used, the instructions like |\vdots| are
+% inserted within a |\hphantom| (and so the constructed matrix has exactly the
+% same size as a matrix constructed with the classical |{matrix}| and |\ldots|,
+% |\vdots|, etc.).
+%    \begin{macrocode}
     nullify .bool_set:N = \l_@@_nullify_dots_bool ,
-    nullify .default:n = true , 
     brace-shift .dim_set:N = \l_@@_brace_shift_dim ,
-    brace-shift .value_required:n = true ,
     brace-shift+ .code:n =
       \dim_add:Nn \l_@@_brace_shift_dim { #1 } ,
     brace-shift+ .value_required:n = true ,
     brace-shift~+ .meta:n = { brace-shift+ = #1 } ,
     Vbrace .bool_set:N = \l_@@_Vbrace_bool ,
     shorten-start .code:n = 
-      \hook_gput_code:nnn { begindocument } { . } 
-        { \dim_set:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
+      \AtBeginDocument { \dim_set:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
     shorten-start .value_required:n = true ,        
     shorten-start+ .code:n = 
-      \hook_gput_code:nnn { begindocument } { . } 
-        { \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
+      \AtBeginDocument { \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
     shorten-start~+ .meta:n = { shorten-start += #1 } ,
     shorten-start+ .value_required:n = true ,
     shorten-end .code:n = 
-      \hook_gput_code:nnn { begindocument } { . } 
-        { \dim_set:Nn \l_@@_xdots_shorten_end_dim { #1 } } ,
+      \AtBeginDocument { \dim_set:Nn \l_@@_xdots_shorten_end_dim { #1 } } ,
     shorten-end .value_required:n = true ,        
     shorten-end+ .code:n = 
-      \hook_gput_code:nnn { begindocument } { . } 
-        { \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } } ,
+      \AtBeginDocument { \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } } ,
     shorten-end+ .value_required:n = true ,
     shorten-end~+ .meta:n = { shorten-end += #1 } ,    
     shorten .code:n = 
-      \hook_gput_code:nnn { begindocument } { . } 
+      \AtBeginDocument 
         { 
           \dim_set:Nn \l_@@_xdots_shorten_start_dim { #1 } 
           \dim_set:Nn \l_@@_xdots_shorten_end_dim { #1 } 
         } ,
     shorten .value_required:n = true ,
     shorten+ .code:n = 
-      \hook_gput_code:nnn { begindocument } { . } 
+      \AtBeginDocument 
         { 
           \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } 
           \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } 
         } ,
     shorten~+ .meta:n = { shorten+ = #1 } ,            
     horizontal-labels .bool_set:N = \l_@@_xdots_h_labels_bool , 
-    horizontal-labels .default:n = true , 
     horizontal-label .bool_set:N = \l_@@_xdots_h_labels_bool , 
-    horizontal-label .default:n = true , 
     line-style .code:n = 
       { 
         \bool_lazy_or:nnTF 
@@ -2604,12 +2434,10 @@ version 2005/12/01 or later.
     color .tl_set:N = \l_@@_xdots_color_tl ,
     color .value_required:n = true ,
     radius .code:n = 
-      \hook_gput_code:nnn { begindocument } { . } 
-        { \dim_set:Nn \l_@@_xdots_radius_dim { #1 } } ,
+      \AtBeginDocument { \dim_set:Nn \l_@@_xdots_radius_dim { #1 } } ,
     radius .value_required:n = true ,
     inter .code:n = 
-      \hook_gput_code:nnn { begindocument } { . } 
-        { \dim_set:Nn \l_@@_xdots_inter_dim { #1 } } ,
+      \AtBeginDocument { \dim_set:Nn \l_@@_xdots_inter_dim { #1 } } ,
     radius .value_required:n = true ,
 %    \end{macrocode}
 % The options |down|, |up| and |middle| are not documented for the final user
@@ -2631,16 +2459,32 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-% 
 %
+% \bigskip
+%    \begin{macrocode}
+\keys_define:nn { nicematrix / trees }
+  {
+    color.tl_set:N = \l_@@_trees_color_tl ,
+    color .value_required:n = true ,
+    line-width .dim_set:N = \l_@@_trees_line_width_dim ,
+    rounded-corners .dim_set:N = \l_@@_trees_rounded_corners_dim ,
+    rounded-corners .default:n = 2 pt ,
+    unknown .code:n =
+      \@@_unknown_key:nn { nicematrix / trees } { Unknown~key~for~trees }    
+  }
+%    \end{macrocode}
+% 
 % \bigskip
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / rules }
   {
+    fix-vertex .code:n =
+      \bool_set_true:N \l_@@_fix_vertex_bool 
+      \socket_assign_plug:nn { nicematrix / draw-at-odd-vertex-h } { active }
+      \socket_assign_plug:nn { nicematrix / draw-at-odd-vertex-v } { active } ,
     color .tl_set:N = \l_@@_rules_color_tl ,
     color .value_required:n = true ,
     width .dim_set:N = \arrayrulewidth ,
-    width .value_required:n = true ,
     unknown .code:n = \@@_error:n { Unknown~key~for~rules }
   }
 %    \end{macrocode}
@@ -2652,8 +2496,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Global }
   {
+    fix-vertex .value_forbidden:n = true , 
     brace-shift .dim_set:N = \l_@@_brace_shift_dim ,
-    brace-shift .value_required:n = true ,
     brace-shift+ .code:n =
       \dim_add:Nn \l_@@_brace_shift_dim { #1 } ,
     brace-shift+ .value_required:n = true ,
@@ -2663,28 +2507,38 @@ version 2005/12/01 or later.
     color-inside .code:n = \@@_fatal:n { key~color-inside } ,
     colortbl-like .code:n = \@@_fatal:n { key~color-inside } ,
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
-    ampersand-in-blocks .default:n = true , 
     &-in-blocks .meta:n = ampersand-in-blocks ,
     no-cell-nodes .code:n = 
       \bool_set_true:N \l_@@_no_cell_nodes_bool 
       \cs_set_protected:Npn \@@_node_cell: 
         { \set@color \box_use_drop:N \l_@@_cell_box } ,
     no-cell-nodes .value_forbidden:n = true ,
+%    \end{macrocode}
+% When the key |rounded-corners| is used, a clipping is applied in the
+% |\CodeBefore| of the environment in order to have rounded corners for the
+% potential colored panels.
+%    \begin{macrocode}
     rounded-corners .dim_set:N = \l_@@_tab_rounded_corners_dim ,
     rounded-corners .default:n = 4 pt ,
     custom-line .code:n = \@@_custom_line:n { #1 } ,
+    default-line .code:n = \@@_default_line:n { #1 } ,
     rules .code:n = \keys_set:nn { nicematrix / rules } { #1 } ,
     rules .value_required:n = true ,
+    trees .code:n = \keys_set:nn { nicematrix / trees } { #1 } ,
+    trees .value_required:n = true ,
+%    \end{macrocode}
+% By default, the behaviour of |\cline| is changed in the environments of
+% \pkg{nicematrix}: a |\cline| spreads the array by an amount equal to
+% |\arrayrulewidth|. It's possible to disable this feature with the key
+% |standard-cline|.
+%    \begin{macrocode}
     standard-cline .bool_set:N = \l_@@_standard_cline_bool ,
-    standard-cline .default:n = true ,
     cell-space-top-limit .dim_set:N = \l_@@_cell_space_top_limit_dim ,
-    cell-space-top-limit .value_required:n = true ,    
     cell-space-top-limit+ .code:n =
       \dim_add:Nn \l_@@_cell_space_top_limit_dim { #1 } ,
     cell-space-top-limit+ .value_required:n = true ,
     cell-space-top-limit~+ .meta:n = { cell-space-top-limit+ = #1 } ,
     cell-space-bottom-limit .dim_set:N = \l_@@_cell_space_bottom_limit_dim ,
-    cell-space-bottom-limit .value_required:n = true ,
     cell-space-bottom-limit+ .code:n =
       \dim_add:Nn \l_@@_cell_space_bottom_limit_dim { #1 } ,
     cell-space-bottom-limit+ .value_required:n = true ,
@@ -2711,8 +2565,14 @@ version 2005/12/01 or later.
       \bool_set_true:N \l_@@_light_syntax_bool 
       \bool_set_true:N \l_@@_light_syntax_expanded_bool ,
     light-syntax-expanded .value_forbidden:n = true ,
+%    \end{macrocode}
+% 
+% The key |end-of-row| specifies the symbol used to mark the ends of rows when
+% the light syntax is used.
+%    \begin{macrocode}
     end-of-row .tl_set:N = \l_@@_end_of_row_tl ,
     end-of-row .value_required:n = true ,
+    end-of-row .initial:n = ; , 
     
     first-col .code:n = \int_zero:N \l_@@_first_col_int , 
     first-row .code:n = \int_zero:N \l_@@_first_row_int ,
@@ -2748,9 +2608,10 @@ version 2005/12/01 or later.
     code-for-last-row~+ .meta:n = { code-for-last-row+ = #1 } ,
     
     hlines .clist_set:N = \l_@@_hlines_clist ,
-    vlines .clist_set:N = \l_@@_vlines_clist ,
     hlines .default:n = all ,
+    vlines .clist_set:N = \l_@@_vlines_clist ,    
     vlines .default:n = all ,
+
     vlines-in-sub-matrix .code:n = 
       {
         \tl_if_single_token:nTF { #1 }
@@ -2782,6 +2643,7 @@ version 2005/12/01 or later.
       } ,
     hvlines-except-borders .value_forbidden:n = true ,
     parallelize-diags .bool_set:N = \l_@@_parallelize_diags_bool ,
+    parallelize-diags .initial:n = true ,
 %    \end{macrocode}
 %
 % \bigskip
@@ -2809,9 +2671,13 @@ version 2005/12/01 or later.
     extra-margin .value_required:n = true ,
     respect-arraystretch .code:n = 
       \cs_set_eq:NN \@@_reset_arraystretch: \prg_do_nothing: ,
-    respect-arraystretch .value_forbidden:n = true , 
+    respect-arraystretch .value_forbidden:n = true ,
+%    \end{macrocode}
+% The code of the key |pgf-node-code| will be used when the nodes of the cells
+% (that is to say the nodes of the form |i-j|) will be created.
+%    \begin{macrocode}
     pgf-node-code .tl_set:N = \l_@@_pgf_node_code_tl ,
-    pgf-node-code .value_required:n = true 
+    pgf-node-code .value_required:n = true ,
   }
 %    \end{macrocode}
 %
@@ -2821,7 +2687,11 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / environments } 
   {
-    create-blocks-in-col .code:n = \@@_create_blocks_in_col:n { #1 } ,
+    draw-trees-in-col .code:n = 
+      \clist_gput_right:Nn \g_@@_col_with_trees_clist { #1 } ,
+    draw-trees-in-col .value_required:n = true ,
+    create-blocks-in-col .code:n = 
+      \clist_gput_right:Nn \g_@@_cbic_clist { #1 } ,
     create-blocks-in-col .value_required:n = true ,
     corners .clist_set:N = \l_@@_corners_clist , 
     corners .default:n = { NW , SW , NE , SE } ,
@@ -2842,8 +2712,15 @@ version 2005/12/01 or later.
     c .code:n = \tl_set:Nn \l_@@_baseline_tl c ,
     t .code:n = \tl_set:Nn \l_@@_baseline_tl t ,
     b .code:n = \tl_set:Nn \l_@@_baseline_tl b ,
+%    \end{macrocode}
+% The string |\l_@@_baseline_tl| may contain one of the three values |t|,
+% |c| or |b| as in the option of the environment |{array}|. However, it may also
+% contain \textbf{an integer} (which represents the number of the row to which
+% align the array). 
+%    \begin{macrocode}
     baseline .tl_set:N = \l_@@_baseline_tl ,
     baseline .value_required:n = true ,
+    baseline .initial:n = c ,
     columns-width .code:n = 
 %    \end{macrocode}
 % We use |\str_if_eq:nnTF| which is slightly faster than |\tl_if_eq:nnTF| (and
@@ -2881,9 +2758,7 @@ version 2005/12/01 or later.
 \keys_define:nn { nicematrix / notes }
   {
     no-print .bool_set:N = \l_@@_notes_no_print_bool ,
-    no-print .default:n = true , 
     para .bool_set:N = \l_@@_notes_para_bool ,
-    para .default:n = true ,
     code-before .tl_set:N = \l_@@_notes_code_before_tl ,
     code-before .value_required:n = true ,
     code-before+ .code:n =
@@ -2895,7 +2770,6 @@ version 2005/12/01 or later.
     code-after .tl_set:N = \l_@@_notes_code_after_tl ,
     code-after .value_required:n = true ,
     bottomrule .bool_set:N = \l_@@_notes_bottomrule_bool ,
-    bottomrule .default:n = true ,
     style .cs_set:Np = \@@_notes_style:n #1 , 
     style .value_required:n = true ,
     label-in-tabular .cs_set:Np = \@@_notes_label_in_tabular:n #1 ,
@@ -2904,7 +2778,7 @@ version 2005/12/01 or later.
     label-in-list .value_required:n = true ,
     enumitem-keys .code:n = 
       { 
-        \hook_gput_code:nnn { begindocument } { . } 
+        \AtBeginDocument 
           { 
             \IfPackageLoadedT { enumitem }
               { \setlist* [ tabularnotes ] { #1 } }
@@ -2913,7 +2787,7 @@ version 2005/12/01 or later.
     enumitem-keys .value_required:n = true ,
     enumitem-keys-para .code:n = 
       { 
-        \hook_gput_code:nnn { begindocument } { . } 
+        \AtBeginDocument 
           { 
             \IfPackageLoadedT { enumitem }
               { \setlist* [ tabularnotes* ] { #1 } }
@@ -2921,17 +2795,25 @@ version 2005/12/01 or later.
       } ,
     enumitem-keys-para .value_required:n = true ,
     detect-duplicates .bool_set:N = \l_@@_notes_detect_duplicates_bool ,  
-    detect-duplicates .default:n = true , 
     unknown .code:n  =
       \@@_unknown_key:nn { nicematrix / notes } { Unknown~key~for~notes } 
   }
 %    \end{macrocode}  
 %
+% \bigskip
+% Sometimes, we want to have several arrays vertically juxtaposed in order to
+% have an alignment of the columns of these arrays. To acheive this goal, one
+% may wish to use the same width for all the columns (for example with the
+% option |columns-width| or the option |auto-columns-width| of the environment
+% |{NiceMatrixBlock}|). However, even if we use the same type of delimiters, the
+% width of the delimiters may be different from an array to another because the
+% width of the delimiter is fonction of its size. That's why we create an option
+% called |delimiters/max-width| which will give to the delimiters the width of
+% a delimiter (of the same type) of big size. 
 %    \begin{macrocode} 
 \keys_define:nn { nicematrix / delimiters }
   {
     max-width .bool_set:N = \l_@@_delimiters_max_width_bool ,
-    max-width .default:n = true ,
     color .tl_set:N = \l_@@_delimiters_color_tl ,
     color .value_required:n = true ,
   }
@@ -2948,6 +2830,7 @@ version 2005/12/01 or later.
     NiceMatrixOptions / xdots .inherit:n = nicematrix / xdots ,
     NiceMatrixOptions / rules .inherit:n = nicematrix / rules ,
     NiceMatrixOptions / notes .inherit:n = nicematrix / notes ,
+    NiceMatrixOptions / trees .inherit:n = nicematrix / trees ,    
     NiceMatrixOptions / sub-matrix .inherit:n = nicematrix / sub-matrix ,  
     SubMatrix / rules .inherit:n = nicematrix / rules ,  
     CodeAfter / xdots .inherit:n = nicematrix / xdots ,
@@ -2960,6 +2843,7 @@ version 2005/12/01 or later.
       } ,
     NiceMatrix / xdots .inherit:n = nicematrix / xdots ,
     NiceMatrix / rules .inherit:n = nicematrix / rules ,
+    NiceMatrix / trees .inherit:n = nicematrix / trees ,    
     NiceTabular .inherit:n = 
       {
         nicematrix / Global ,
@@ -2968,6 +2852,7 @@ version 2005/12/01 or later.
     NiceTabular / xdots .inherit:n = nicematrix / xdots ,
     NiceTabular / rules .inherit:n = nicematrix / rules ,
     NiceTabular / notes .inherit:n = nicematrix / notes ,
+    NiceTabular / trees .inherit:n = nicematrix / trees ,    
     NiceArray .inherit:n = 
       { 
         nicematrix / Global ,
@@ -2975,13 +2860,15 @@ version 2005/12/01 or later.
       } ,
     NiceArray / xdots .inherit:n = nicematrix / xdots ,
     NiceArray / rules .inherit:n = nicematrix / rules ,
+    NiceArray / trees .inherit:n = nicematrix / trees ,    
     pNiceArray .inherit:n = 
       { 
         nicematrix / Global ,
         nicematrix / environments ,
       } ,
     pNiceArray / xdots .inherit:n = nicematrix / xdots ,
-    pNiceArray / rules .inherit:n = nicematrix / rules 
+    pNiceArray / rules .inherit:n = nicematrix / rules ,
+    pNiceArray / trees .inherit:n = nicematrix / trees     
   }
 %    \end{macrocode}
 % 
@@ -2996,11 +2883,9 @@ version 2005/12/01 or later.
     delimiters / color .tl_set:N = \l_@@_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l_@@_delimiters_max_width_bool ,
-    delimiters / max-width .default:n = true ,
     delimiters .code:n = \keys_set:nn { nicematrix / delimiters } { #1 } , 
     delimiters .value_required:n = true , 
     width .dim_set:N = \l_@@_width_dim ,
-    width .value_required:n = true ,
     last-col .code:n = 
       \tl_if_empty:nF { #1 }
         { \@@_error:n { last-col~non~empty~for~NiceMatrixOptions } } 
@@ -3056,7 +2941,6 @@ version 2005/12/01 or later.
     matrix / columns-type .tl_set:N = \l_@@_columns_type_tl ,
     matrix / columns-type .value_required:n = true ,
     caption-above .bool_set:N = \l_@@_caption_above_bool ,
-    caption-above .default:n = true , 
     unknown .code:n  =
       \@@_unknown_key:nn
         { nicematrix / Global , nicematrix / NiceMatrixOptions }
@@ -3096,7 +2980,6 @@ version 2005/12/01 or later.
     delimiters / color .tl_set:N = \l_@@_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l_@@_delimiters_max_width_bool ,
-    delimiters / max-width .default:n = true ,
     delimiters .code:n = \keys_set:nn { nicematrix / delimiters } { #1 } , 
     delimiters .value_required:n = true , 
     small .bool_set:N = \l_@@_small_bool ,
@@ -3150,7 +3033,6 @@ version 2005/12/01 or later.
     delimiters / color .tl_set:N = \l_@@_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l_@@_delimiters_max_width_bool ,
-    delimiters / max-width .default:n = true ,
     delimiters .code:n = \keys_set:nn { nicematrix / delimiters } { #1 } , 
     delimiters .value_required:n = true , 
     small .bool_set:N = \l_@@_small_bool ,
@@ -3884,7 +3766,7 @@ version 2005/12/01 or later.
 % fully expandable and we need something fully expandable here.
 % |\str_if_eq:ee(TF)| is faster than |\str_if_eq:nn(TF)|.
 %    \begin{macrocode}
-    [ \str_if_eq:eeTF \l_@@_baseline_tl  { c } { c } { t } ]
+    [ \str_if_eq:eeTF c \l_@@_baseline_tl c t ]
   }
 \cs_generate_variant:Nn \@@_array:n { o }
 %    \end{macrocode}
@@ -3892,16 +3774,11 @@ version 2005/12/01 or later.
 % \medskip
 % We keep in memory the standard version of |\ar@ialign| because we will redefine
 % |\ar@ialign| in the environment |{NiceArrayWithDelims}| but restore the standard
-% version for use in the cells of the array. However, it seems that RevTeX goes on
-% with a redefinition of |array| which uses |\ialign|.
-%    \begin{macrocode}
-\bool_if:NTF \c_@@_revtex_bool 
-  { \cs_new_eq:NN \@@_old_ialign: \ialign }  
-%    \end{macrocode}
+% version for use in the cells of the array. 
 % We use here a |\cs_set_eq:cN| instead of a |\cs_set_eq:NN| in order to avoid a
 % message when |explcheck| is used on |nicematrix.sty|.
 %    \begin{macrocode}
-  { \cs_new_eq:cN { @@_old_ar@ialign: } \ar@ialign }
+\cs_new_eq:cN { @@_old_ar@ialign: } \ar@ialign 
 %    \end{macrocode}
 %
 % 
@@ -4025,7 +3902,7 @@ version 2005/12/01 or later.
 % avoid the error messages of that redefinition
 % \footnote{cf. |\nicematrix@redefine@check@rerun|}.
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \IfPackageLoadedTF { booktabs }
       { 
@@ -4159,13 +4036,11 @@ version 2005/12/01 or later.
 % that command for several reasons. In particular, |\ar@ialign| sets |\everycr|
 % to |{ }| and we \emph{need} to change the value of |\everycr|. 
 %    \begin{macrocode}
-    \bool_if:NF \c_@@_revtex_bool 
-      {
-        \def \ar@ialign 
-          { 
-            \tbl_init_cell_data_for_table:
-            \@@_some_initialization:
-            \dim_zero:N \tabskip 
+    \def \ar@ialign 
+      { 
+        \tbl_init_cell_data_for_table:
+        \@@_some_initialization:
+        \dim_zero:N \tabskip 
 %    \end{macrocode}
 %
 % After its first use, the definition of |\ar@ialign| will revert
@@ -4174,27 +4049,11 @@ version 2005/12/01 or later.
 % |\cs_set_eq:Nc| instead of |\cs_set_eq:NN| in order to avoid a message when
 % |explcheck| is used on |nicematrix.sty|.
 %    \begin{macrocode}
-            \cs_set_eq:Nc \ar@ialign { @@_old_ar@ialign: }
-            \halign 
-          }
+        \cs_set_eq:Nc \ar@ialign { @@_old_ar@ialign: }
+        \halign 
       }
 %    \end{macrocode}
 %
-% \medskip
-% It seems that there is a problem when \pkg{nicematrix} is used with in
-% \cls{revtex4-2} with the package \pkg{colortbl} loaded. 
-% The following code prevent that problem but it does \emph{not} treat the
-% actual problem! It's only a patch \emph{ad hoc}.
-%
-% That patch has been added in version 7.0x, 2024-11-27 (question by mail of
-% Tamra Nebabu).
-%    \begin{macrocode}
-     \bool_if:NT \c_@@_revtex_bool
-       {
-         \IfPackageLoadedT { colortbl }
-           { \cs_set_protected:Npn \CT@setup { } }
-       } 
-%    \end{macrocode}
 % 
 % We keep in memory the old versions or |\ldots|, |\cdots|, etc. only because we
 % use them inside |\phantom| commands in order that the new commands |\Ldots|,
@@ -4224,6 +4083,7 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \dotfill \@@_dotfill:
     \cs_set_eq:NN \CodeAfter \@@_CodeAfter:
     \cs_if_free:NT \Body { \cs_set_eq:NN \Body \@@_Body: }
+    \cs_if_free:NT \CodeBefore { \cs_set_eq:NN \CodeBefore \@@_CodeBefore: } 
     \cs_set_eq:NN \diagbox \@@_diagbox:nn
     \cs_set_eq:NN \NotEmpty \@@_NotEmpty:
     \cs_set_eq:NN \TopRule \@@_TopRule
@@ -4506,6 +4366,7 @@ version 2005/12/01 or later.
 %
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_Body: { \@@_fatal:n { Body~alone } }
+\cs_new_protected_nopar:Npn \@@_CodeBefore: { \@@_fatal:n { Bad~use~of~CodeBefore } }
 %    \end{macrocode}
 % 
 % The following command will be executed if the |\CodeBefore| has to be actually
@@ -4667,7 +4528,6 @@ version 2005/12/01 or later.
 \keys_define:nn { nicematrix / CodeBefore }
   {
     create-cell-nodes .bool_gset:N = \g_@@_create_cell_nodes_bool ,
-    create-cell-nodes .default:n = true ,
     sub-matrix .code:n = \keys_set:nn { nicematrix / sub-matrix } { #1 } , 
     sub-matrix .value_required:n = true ,
     delimiters / color .tl_set:N = \l_@@_delimiters_color_tl ,
@@ -4823,37 +4683,18 @@ version 2005/12/01 or later.
         \@@_qpoint:n { col - \int_eval:n { #4 + 1 } }
         \dim_set_eq:NN \l_@@_tmpc_dim \pgf@x
         \@@_qpoint:n { \int_eval:n { #3 + 1 } }
-        \dim_set_eq:NN \l_@@_tmpd_dim \pgf@y
+        % \dim_set_eq:NN \l_@@_tmpd_dim \pgf@y % 2026-02-24
         \@@_pgf_rect_node:nnnnn
           { \@@_env: - #5 }
           { \dim_use:N \l_tmpa_dim }
           { \dim_use:N \l_tmpb_dim }
           { \dim_use:N \l_@@_tmpc_dim }
-          { \dim_use:N \l_@@_tmpd_dim }
+          { \dim_use:N \pgf@y }
       }
   }
 %    \end{macrocode}
 %
 %
-% \bigskip
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_patch_for_revtex:
-  {
-    \cs_set_eq:NN \@addamp \@addamp@LaTeX
-    \cs_set_eq:NN \@array \@array@array
-    \cs_set_eq:NN \@tabular \@tabular@array
-    \cs_set:Npn \@tabarray { \@ifnextchar [ { \@array } { \@array [ c ] } }
-    \cs_set_eq:NN \array \array@array
-    \cs_set_eq:NN \endarray \endarray@array
-    \cs_set:Npn \endtabular { \endarray $\egroup} % $
-    \cs_set_eq:NN \@mkpream \@mkpream@array
-    \cs_set_eq:NN \@classx \@classx@array
-    \cs_set_eq:NN \insert@column \insert@column@array
-    \cs_set_eq:NN \@arraycr \@arraycr@array
-    \cs_set_eq:NN \@xarraycr \@xarraycr@array
-    \cs_set_eq:NN \@xargarraycr \@xargarraycr@array
-  }
-%    \end{macrocode}
 %
 % 
 % \bigskip
@@ -4863,12 +4704,11 @@ version 2005/12/01 or later.
 \NewDocumentEnvironment { NiceArrayWithDelims } 
   { m m O { } m ! O { } t \CodeBefore }
   { 
-    \bool_if:NT \c_@@_revtex_bool { \@@_patch_for_revtex: }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
     \@@_provide_pgfsyspdfmark:
-    \bool_if:NT \g_@@_footnote_bool { \savenotes }
+    \bool_if:NT \g_@@_footnote_bool \savenotes
 %    \end{macrocode}
 % 
 % The aim of the following |\bgroup| (the corresponding |\egroup| is, of course,
@@ -5588,17 +5428,34 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % Here, the command |\dim_use:N| is mandatory.
 %    \begin{macrocode}
-        \exp_not:N ! { \skip_horizontal:N \dim_use:N \l_@@_rule_width_dim }   
+        \exp_not:N ! { \skip_horizontal:N \dim_use:N \l_@@_rule_width_before_dim }   
       }
-    \tl_gput_right:Ne \g_@@_pre_code_after_tl
-      { 
-        \@@_vline:n
-          { 
-            position = \int_eval:n { \c@jCol + 1 } ,
-            multiplicity = \int_use:N \l_tmpa_int ,
-            total-width = \dim_use:N \l_@@_rule_width_dim ,
-            #2
-          } 
+    \tl_gput_right:Ne \g_@@_rules_tl
+      {
+%    \end{macrocode}
+%
+% \bigskip
+% With the keys of |nicematrix / rules-after| we would write:
+%    \begin{Verbatim}  
+% \@@_draw_vrule:n
+%   {
+%     multiplicity = \int_use:N \l_tmpa_int ,
+%     position = \int_eval:n { \c@jCol + 1 } ,
+%     total-width = \dim_use:N \l_@@_rule_width_before_dim ,
+%     #2
+%   }
+%    \end{Verbatim}
+%
+% We will use a version slightly more efficient:
+%    \begin{macrocode}
+        {
+          \int_compare:nNnT \l_tmpa_int > 1
+            { \@@_set_multiplicity:n { \int_use:N \l_tmpa_int } }
+          \int_set:Nn \l_@@_position_int { \int_eval:n { \c@jCol + 1 } }
+          \dim_set:Nn \l_@@_rule_width_after_dim
+            { \dim_use:N \l_@@_rule_width_before_dim }
+          \@@_draw_vrule:n { #2 }
+        }
 %    \end{macrocode}
 % We don't have provided value for |start| nor for |end|, which means that the
 % rule will cover (potentially) all the rows of the array.
@@ -6702,9 +6559,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \int_compare:nNnT { #1 } > 1
       {
-        \seq_gput_left:Ne \g_@@_multicolumn_cells_seq
+        \seq_gput_right:Ne \g_@@_multicolumn_cells_seq         % left replaced by right 
           { \int_use:N \c@iRow - \int_eval:n { \c@jCol + 1 } }
-        \seq_gput_left:Nn \g_@@_multicolumn_sizes_seq { #1 } 
+        \seq_gput_right:Nn \g_@@_multicolumn_sizes_seq { #1 }  % left replaced by right
         \seq_gput_right:Ne \g_@@_pos_of_blocks_seq
           { 
             { 
@@ -7413,10 +7270,6 @@ version 2005/12/01 or later.
           \@@_analyze_end:Nn 
           { 
             \@@_transform_preamble: 
-%    \end{macrocode}
-% Here is the call to |\array| (we have a dedicated macro |\@@_array:n| because
-% of compatibility with the classes \cls{revtex4-1} and \cls{revtex4-2}).
-%    \begin{macrocode}
             \@@_array:o \g_@@_array_preamble_tl 
           }
       }
@@ -7548,9 +7401,6 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % \bigskip
 %
-% The call to |\array| is in the following command (we have a dedicated macro
-% |\@@_array:| because of compatibility with the classes \cls{revtex4-1} and
-% \cls{revtex4-2}). 
 %    \begin{macrocode}
     \@@_array:o \g_@@_array_preamble_tl \l_@@_new_body_tl
   }
@@ -8220,7 +8070,7 @@ version 2005/12/01 or later.
         \bool_set_true:N \l_@@_except_borders_bool
         \clist_if_empty:NF \l_@@_corners_clist
           { \@@_error:n { hvlines,~rounded-corners~and~corners } }
-        \tl_gput_right:Nn \g_@@_pre_code_after_tl
+        \tl_gput_right:Nn \g_@@_rules_tl
           {
             \@@_stroke_block:nnnnn
               {
@@ -8292,7 +8142,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \clist_if_empty:NF \g_@@_cbic_clist { \@@_cbic: }
+    \clist_if_empty:NF \g_@@_cbic_clist \@@_create_blocks_in_col:
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -8335,7 +8185,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \pgfpicture
     \@@_create_aliases_last:
-    \str_if_empty:NF \l_@@_name_str { \@@_create_alias_nodes: }
+    \str_if_empty:NF \l_@@_name_str \@@_create_alias_nodes:
     \endpgfpicture
 %    \end{macrocode}
 % 
@@ -8405,10 +8255,10 @@ version 2005/12/01 or later.
 % |\g_@@_future_pos_of_blocks_seq| is used by |\EmptyRow| and |\EmptyColumn| in the
 % |\CodeBefore|.
 %    \begin{macrocode}
-   \seq_gconcat:NNN \g_@@_pos_of_blocks_seq
-     \g_@@_pos_of_blocks_seq
-     \g_@@_future_pos_of_blocks_seq
-   \seq_gclear:N \g_@@_future_pos_of_blocks_seq
+    \seq_gconcat:NNN \g_@@_pos_of_blocks_seq
+      \g_@@_pos_of_blocks_seq
+      \g_@@_future_pos_of_blocks_seq
+    \seq_gclear:N \g_@@_future_pos_of_blocks_seq
 %    \end{macrocode}
 % 
 % \bigskip
@@ -8418,11 +8268,10 @@ version 2005/12/01 or later.
     \@@_adjust_pos_of_blocks_seq:
 %    \end{macrocode}
 %
-% 
 %    \begin{macrocode}
     \@@_deal_with_rounded_corners:
-    \clist_if_empty:NF \l_@@_hlines_clist { \@@_draw_hlines: }
-    \clist_if_empty:NF \l_@@_vlines_clist { \@@_draw_vlines: }
+    \legacy_if:nF { measuring@ } \@@_draw_rules: 
+    \tl_gclear:N \g_@@_rules_tl
 %    \end{macrocode}
 %
 % \bigskip
@@ -8440,18 +8289,19 @@ version 2005/12/01 or later.
               }
           }  
       }
-    \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: 
-    \cs_set_eq:NN \SubMatrix \@@_SubMatrix
-    \cs_set_eq:NN \UnderBrace \@@_UnderBrace
-    \cs_set_eq:NN \OverBrace \@@_OverBrace
-    \cs_set_eq:NN \ShowCellNames \@@_ShowCellNames
-    \cs_set_eq:NN \TikzEveryCell \@@_TikzEveryCell
-    \cs_set_eq:NN \line \@@_line
+        \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: 
+        \cs_set_eq:NN \SubMatrix \@@_SubMatrix
+        \cs_set_eq:NN \UnderBrace \@@_UnderBrace
+        \cs_set_eq:NN \OverBrace \@@_OverBrace
+        \cs_set_eq:NN \ShowCellNames \@@_ShowCellNames
+        \cs_set_eq:NN \TikzEveryCell \@@_TikzEveryCell
+        \cs_set_eq:NN \line \@@_line
+
 %    \end{macrocode}
 % The LaTeX-style boolean |\ifmeasuring@| is used by \pkg{amsmath} during the
 % phase of measure in environments such as |{align}|, etc. 
 %    \begin{macrocode}
-    \legacy_if:nF { measuring@ } { \g_@@_pre_code_after_tl }
+    \legacy_if:nF { measuring@ } \g_@@_pre_code_after_tl
     \tl_gclear:N \g_@@_pre_code_after_tl
 %    \end{macrocode}
 % When |light-syntax| is used, we insert systematically a |\CodeAfter| in the
@@ -8487,7 +8337,11 @@ version 2005/12/01 or later.
     \exp_last_unbraced:No \@@_CodeAfter_keys: \g_nicematrix_code_after_tl
     \scan_stop: 
     \tl_gclear:N \g_nicematrix_code_after_tl
+    \clist_if_empty:NF \g_@@_col_with_trees_clist \@@_draw_trees:
     \group_end:
+%    \end{macrocode}
+%
+%    \begin{macrocode}
 %    \end{macrocode}
 % 
 % 
@@ -8630,7 +8484,7 @@ version 2005/12/01 or later.
 % |\@@_draw_dotted_lines:| whether TikZ is loaded or not (in that case, only
 % \textsc{pgf} is loaded).
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \cs_new_protected:Npe \@@_draw_dotted_lines:
       {
@@ -9377,7 +9231,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \bool_if:NT \g_@@_aux_found_bool
           {
-            \group_begin:
+            {
               \@@_open_shorten:
               \int_if_zero:nTF { #1 } 
                 { \color { nicematrix-first-row } }
@@ -9393,7 +9247,7 @@ version 2005/12/01 or later.
               \keys_set:nn { nicematrix / xdots } { #3 }
               \@@_color:o \l_@@_xdots_color_tl
               \@@_actually_draw_Ldots: 
-            \group_end:
+            }
           }        
       }
   }
@@ -9475,7 +9329,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \bool_if:NT \g_@@_aux_found_bool
           {
-            \group_begin:
+            {
               \@@_open_shorten:
               \int_if_zero:nTF { #1 } 
                 { \color { nicematrix-first-row } }
@@ -9491,7 +9345,7 @@ version 2005/12/01 or later.
               \keys_set:nn { nicematrix / xdots } { #3 }
               \@@_color:o \l_@@_xdots_color_tl
               \@@_actually_draw_Cdots: 
-            \group_end:
+            }
          }
       }
   }
@@ -9609,7 +9463,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \bool_if:NT \g_@@_aux_found_bool
           {
-            \group_begin:
+            {
               \@@_open_shorten:
               \int_if_zero:nTF { #2 } 
                 { \color { nicematrix-first-col } }
@@ -9622,7 +9476,7 @@ version 2005/12/01 or later.
               \bool_if:NTF \l_@@_Vbrace_bool
                 \@@_actually_draw_Vbrace: 
                 \@@_actually_draw_Vdots: 
-              \group_end:                
+             }
           }
       }
   }
@@ -9837,12 +9691,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \bool_if:NT \g_@@_aux_found_bool
           {
-            \group_begin:
+            {
               \@@_open_shorten:
               \keys_set:nn { nicematrix / xdots } { #3 }
               \@@_color:o \l_@@_xdots_color_tl
               \@@_actually_draw_Ddots:
-            \group_end:
+            }
           }
       }
   }
@@ -9938,12 +9792,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \bool_if:NT \g_@@_aux_found_bool
           {
-            \group_begin:
+            {
               \@@_open_shorten:
               \keys_set:nn { nicematrix / xdots } { #3 }
               \@@_color:o \l_@@_xdots_color_tl
               \@@_actually_draw_Iddots: 
-            \group_end:
+            }
           }
       }
   }
@@ -10005,8 +9859,7 @@ version 2005/12/01 or later.
 % \bigskip
 % \section{The actual instructions for drawing the dotted lines with TikZ}
 %
-% The command |\@@_draw_line:| should be used in a |{pgfpicture}|. It has six
-% implicit arguments:
+% The command |\@@_draw_line:| has six implicit arguments:
 %
 % \begin{itemize}
 % \item |\l_@@_x_initial_dim| 
@@ -10064,7 +9917,7 @@ version 2005/12/01 or later.
 % The following TikZ styles are for the three labels (set by the symbols |_|,
 % |^| and |=|) of a continuous line with a non-standard style.
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \IfPackageLoadedT { tikz }
       { 
@@ -10218,7 +10071,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_draw_standard_dotted_line: 
   {
-    \group_begin:
+    {
 %    \end{macrocode}
 % The dimension |\l_@@_l_dim| is the length $\ell$ of the line to draw. We use
 % the floating point reals of the L3 programming layer to compute this length.
@@ -10246,9 +10099,9 @@ version 2005/12/01 or later.
     \dim_compare:nNnT \l_@@_l_dim < \c_@@_max_l_dim 
       {
         \dim_compare:nNnT \l_@@_l_dim > { 1 pt } 
-          { \@@_draw_standard_dotted_line_i: }
+          \@@_draw_standard_dotted_line_i: 
       }
-    \group_end:
+    }
 %    \end{macrocode}
 %    \begin{macrocode}
     \bool_lazy_all:nF
@@ -10257,7 +10110,7 @@ version 2005/12/01 or later.
         { \tl_if_empty_p:N \l_@@_xdots_down_tl }
         { \tl_if_empty_p:N \l_@@_xdots_middle_tl }
       }
-      { \@@_labels_standard_dotted_line: }
+      \@@_labels_standard_dotted_line: 
   } 
 %    \end{macrocode}
 %
@@ -10432,11 +10285,11 @@ version 2005/12/01 or later.
 % commands. However, we don't know the future catcode of |_| in the main
 % document (maybe the user will use \pkg{underscore}, and, in that case, the
 % catcode is $13$ because \pkg{underscore} activates |_|). That's why these
-% commands will be defined in a |\hook_gput_code:nnn { begindocument } { . }|
+% commands will be defined in a |\AtBeginDocument|
 % and the \emph{arg spec} will be rescanned.
 %
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . } 
+\AtBeginDocument 
   {
 %    \end{macrocode}
 % We rescan the \emph{argspec} in order the correct catcode of |_| in the main
@@ -10573,8 +10426,7 @@ version 2005/12/01 or later.
 \keys_define:nn { nicematrix / Ddots }
   { 
     draw-first .bool_set:N = \l_@@_draw_first_bool ,
-    draw-first .default:n = true ,
-    draw-first .value_forbidden:n = true
+    draw-first .value_forbidden:n = true ,
   }
 %    \end{macrocode}
 % 
@@ -10632,7 +10484,7 @@ version 2005/12/01 or later.
 % |\NewDocumentCommand| is protected and that's why we have put the
 % |\multicolumn| before (in the definition of |\@@_Hdotsfor:|).
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
 %    \end{macrocode}
 % We don't put |!| before the last optional argument for homogeneity with
@@ -10725,18 +10577,18 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \bool_if:NT \g_@@_aux_found_bool
       {
-        \group_begin:
-        \@@_open_shorten:
-        \int_if_zero:nTF { #1 } 
-          { \color { nicematrix-first-row } }
-          { 
-            \int_compare:nNnT { #1 } = \g_@@_row_total_int 
-              { \color { nicematrix-last-row } }
-          }
-        \keys_set:nn { nicematrix / xdots } { #4 }
-        \@@_color:o \l_@@_xdots_color_tl
-        \@@_actually_draw_Ldots: 
-        \group_end:
+        {
+          \@@_open_shorten:
+          \int_if_zero:nTF { #1 } 
+            { \color { nicematrix-first-row } }
+            { 
+              \int_compare:nNnT { #1 } = \g_@@_row_total_int 
+                { \color { nicematrix-last-row } }
+            }
+          \keys_set:nn { nicematrix / xdots } { #4 }
+          \@@_color:o \l_@@_xdots_color_tl
+          \@@_actually_draw_Ldots: 
+        }
       }
 %    \end{macrocode}
 %
@@ -10753,7 +10605,7 @@ version 2005/12/01 or later.
 %
 % \bigskip 
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \cs_new_protected:Npn \@@_Vdotsfor:
       { \@@_collect_options:n { \@@_Vdotsfor_i } }
@@ -10842,20 +10694,20 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \bool_if:NT \g_@@_aux_found_bool
       {
-        \group_begin:
-        \@@_open_shorten:
-        \int_if_zero:nTF { #2 } 
-          { \color { nicematrix-first-col } }
-          { 
-            \int_compare:nNnT { #2 } = \g_@@_col_total_int 
-              { \color { nicematrix-last-col } }
-          }
-        \keys_set:nn { nicematrix / xdots } { #4 }
-        \@@_color:o \l_@@_xdots_color_tl
-        \bool_if:NTF \l_@@_Vbrace_bool
-          \@@_actually_draw_Vbrace: 
-          \@@_actually_draw_Vdots: 
-        \group_end:
+        {
+          \@@_open_shorten:
+          \int_if_zero:nTF { #2 } 
+            { \color { nicematrix-first-col } }
+            { 
+              \int_compare:nNnT { #2 } = \g_@@_col_total_int 
+                { \color { nicematrix-last-col } }
+            }
+          \keys_set:nn { nicematrix / xdots } { #4 }
+          \@@_color:o \l_@@_xdots_color_tl
+          \bool_if:NTF \l_@@_Vbrace_bool
+            \@@_actually_draw_Vbrace: 
+            \@@_actually_draw_Vdots: 
+        }
       }
 %    \end{macrocode}
 %
@@ -10938,7 +10790,7 @@ version 2005/12/01 or later.
 % construction uses the fact the |\@@_line_i:nn| is protected and that
 % |\@@_double_int_eval:n| is fully expandable).
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
 %    \end{macrocode}
 % We rescan the \emph{argspec} in order the correct catcode of |_| in the main
@@ -10948,16 +10800,16 @@ version 2005/12/01 or later.
       { O { } m m ! O { } E { _ ^ : } { { } { } { } } } 
     \exp_args:NNo \NewDocumentCommand \@@_line \l_tmpa_tl
       {
-        \group_begin:
-        \keys_set:nn { nicematrix / xdots } { #1 , #4 , down = #5 , up = #6 }
-        \@@_color:o \l_@@_xdots_color_tl 
-        \use:e
-          {
-            \@@_line_i:nn 
-              { \@@_double_int_eval:n #2 - \q_stop }
-              { \@@_double_int_eval:n #3 - \q_stop }
-          }
-        \group_end:
+        {
+          \keys_set:nn { nicematrix / xdots } { #1 , #4 , down = #5 , up = #6 }
+          \@@_color:o \l_@@_xdots_color_tl 
+          \use:e
+            {
+              \@@_line_i:nn 
+                { \@@_double_int_eval:n #2 - \q_stop }
+                { \@@_double_int_eval:n #3 - \q_stop }
+            }
+        }
       } 
   }
 %    \end{macrocode}
@@ -10979,7 +10831,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \cs_new_protected:Npe \@@_draw_line_ii:nn #1 #2
       {
@@ -11080,13 +10932,11 @@ version 2005/12/01 or later.
 \keys_define:nn { nicematrix / RowStyle }
   {
     cell-space-top-limit .dim_set:N = \l_tmpa_dim ,
-    cell-space-top-limit .value_required:n = true ,
     cell-space-top-limit+ .code:n =
       \dim_set:Nn \l_tmpa_dim { \l_@@_cell_space_top_limit_dim + #1 } ,
     cell-space-top-limit+ .value_required:n = true ,
     cell-space-top-limit~+ .meta:n = { cell-space-top-limit+ = #1 } ,
     cell-space-bottom-limit .dim_set:N = \l_tmpb_dim ,
-    cell-space-bottom-limit .value_required:n = true ,
     cell-space-bottom-limit+ .code:n =
       \dim_set:Nn \l_tmpb_dim { \l_@@_cell_space_bottom_limit_dim + #1 } ,
     cell-space-bottom-limit+ .value_required:n = true ,
@@ -11105,7 +10955,6 @@ version 2005/12/01 or later.
     color .tl_set:N = \l_@@_color_tl ,
     color .value_required:n = true ,
     bold .bool_set:N = \l_@@_bold_row_style_bool ,
-    bold .default:n = true ,
     nb-rows .code:n = 
       \str_if_eq:eeTF { #1 } { * } 
         { \int_set:Nn \l_@@_key_nb_rows_int { 500 } } 
@@ -11117,9 +10966,9 @@ version 2005/12/01 or later.
 % \emph{In fine}, the opacity will be applied by |\pgfsetfillopacity|.
 %    \begin{macrocode}
     opacity .tl_set:N = \l_@@_opacity_tl ,
-    opacity .value_required:n = true , 
+    opacity .value_required:n = true ,
     rowcolor .tl_set:N = \l_@@_fill_tl ,
-    rowcolor .value_required:n = true , 
+    rowcolor .value_required:n = true ,
     rounded-corners .dim_set:N = \l_@@_rounded_corners_dim ,
     rounded-corners .default:n = 4 pt ,
     unknown .code:n =
@@ -11320,7 +11169,6 @@ version 2005/12/01 or later.
      { \tl_gput_right:ce { g_@@_color _ \int_use:N \l_tmpa_int _tl } { #2 } }
   }
 \cs_generate_variant:Nn \@@_add_to_colors_seq:nn { e }
-\cs_generate_variant:Nn \@@_add_to_colors_seq:nn { e e }
 %    \end{macrocode}
 %
 %
@@ -11595,10 +11443,8 @@ version 2005/12/01 or later.
 \keys_define:nn { nicematrix / rowcolors }
   {
     respect-blocks .bool_set:N = \l_@@_respect_blocks_bool ,
-    respect-blocks .default:n = true ,
     cols .tl_set:N = \l_@@_cols_tl ,
     restart .bool_set:N = \l_@@_rowcolors_restart_bool ,
-    restart .default:n = true ,
     unknown .code:n = \@@_error:n { Unknown~key~for~rowcolors } 
   }
 %    \end{macrocode}
@@ -11703,9 +11549,12 @@ version 2005/12/01 or later.
               }
             \tl_if_empty:NF \l_@@_color_tl
               {
-                \@@_add_to_colors_seq:ee
-                  { \tl_if_blank:nF { #1 } { [ #1 ] } { \l_@@_color_tl } }
-                  { \@@_cartesian_color:nn { \l_@@_rows_tl } { \l_@@_cols_tl } }
+                \use:e
+                  {
+                    \@@_add_to_colors_seq:nn
+                      { \tl_if_blank:nF { #1 } { [ #1 ] } { \l_@@_color_tl } }
+                      { \@@_cartesian_color:nn { \l_@@_rows_tl } { \l_@@_cols_tl } }
+                  }
               }
             \int_incr:N \l_@@_color_int
             \int_set:Nn \l_tmpa_int { \l_tmpb_int + 1 }
@@ -12323,9 +12172,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \NewDocumentCommand \@@_TopRule_ii: { o }
   {
-    \tl_gput_right:Ne \g_@@_pre_code_after_tl
+    \tl_gput_right:Ne \g_@@_rules_tl
       { 
-        \@@_hline:n 
+        \@@_draw_hrule:n 
           { 
             position = \int_eval:n { \c@iRow + 1 } ,
             tikz = 
@@ -12361,9 +12210,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \NewDocumentCommand \@@_BottomRule_ii: { o }
   {
-    \tl_gput_right:Ne \g_@@_pre_code_after_tl
+    \tl_gput_right:Ne \g_@@_rules_tl
       { 
-        \@@_hline:n 
+        \@@_draw_hrule:n 
           { 
             position = \int_eval:n { \c@iRow + 1 } ,
             tikz = 
@@ -12404,9 +12253,9 @@ version 2005/12/01 or later.
   {
     \skip_vertical:N \aboverulesep
     \@@_create_row_node_i:
-    \tl_gput_right:Ne \g_@@_pre_code_after_tl
+    \tl_gput_right:Ne \g_@@_rules_tl
       { 
-        \@@_hline:n 
+        \@@_draw_hrule:n 
           { 
             position = \int_eval:n { \c@iRow + 1 } ,
             tikz = 
@@ -12426,43 +12275,54 @@ version 2005/12/01 or later.
 % \bigskip
 % \subsubsection*{General system for drawing rules}
 %
-% When a command, environment or ``subsystem'' of \pkg{nicematrix} wants to draw
-% a rule, it will write in the internal |\CodeAfter| a command |\@@_vline:n| or
-% |\@@_hline:n|. Both commands take in as argument a list of \textsl{key=value}
-% pairs. That list will first be analyzed with the following set of keys.
-% However, unknown keys will be analyzed further with another set of keys.
-% 
+%
 %    \begin{macrocode}
-\keys_define:nn { nicematrix / Rules }
+\AtBeginDocument
   {
-    position .int_set:N = \l_@@_position_int , 
-    position .value_required:n = true ,
-    start .int_set:N = \l_@@_start_int ,
-    end .code:n = 
-      \bool_lazy_or:nnTF
-        { \tl_if_empty_p:n { #1 } }
-        { \str_if_eq_p:ee { #1 } { last } }
-        { \int_set_eq:NN \l_@@_end_int \c@jCol }
-        { \int_set:Nn \l_@@_end_int { #1 } } 
+    \cs_new_protected:Npe \@@_draw_rules:
+      {
+        \c_@@_pgfortikzpicture_tl
+        \@@_draw_rules_i:
+        \c_@@_endpgfortikzpicture_tl
+      }
   }
 %    \end{macrocode}
 %
-% \bigskip
-% It's possible that the rule won't be drawn continuously from |start| to |end|
-% because of the blocks (created with the command |\Block|), the virtual blocks
-% (created by |\Cdots|, etc.), etc. That's why an analysis is done and the rule
-% is cut in small rules which will actually be drawn. The small continuous rules
-% will be drawn by |\@@_vline_ii:| and |\@@_hline_ii:|. Those commands use the
-% following set of keys.
-%
 %    \begin{macrocode}
-\keys_define:nn { nicematrix / RulesBis }
+\cs_new_protected:Npn \@@_draw_rules_i:
   {
-    multiplicity .int_set:N = \l_@@_multiplicity_int , 
-    multiplicity .initial:n = 1 , 
-    dotted .bool_set:N = \l_@@_dotted_bool ,
-    dotted .initial:n = false , 
-    dotted .default:n = true ,
+    \pgfrememberpicturepositiononpagetrue
+    \pgf@relevantforpicturesizefalse
+    \pgfsetrectcap
+    \pgfsetlinewidth { 1.1 \arrayrulewidth }
+    \CT@arc@
+    \clist_if_empty:NF \l_@@_hlines_clist \@@_draw_key_hlines: 
+    \clist_if_empty:NF \l_@@_vlines_clist \@@_draw_key_vlines:
+    \g_@@_rules_tl
+  }
+%    \end{macrocode}
+% 
+% When a command, environment or ``subsystem'' of \pkg{nicematrix} wants to draw
+% a rule, it will write in |\g_@@_rules_tl| a command |\@@_draw_vrule:n| or
+% |\@@_draw_hrule:n|. Both commands take in as argument a list of \textsl{key=value}
+% pairs.
+% 
+% That list will first be analyzed with the following set of keys which is a kind of
+% ``internal set of keys''.
+% 
+%    \begin{macrocode}
+\keys_define:nn { nicematrix / rules-after }
+  {
+    position .int_set:N = \l_@@_position_int , 
+    start .int_set:N = \l_@@_start_int ,
+    start .initial:n = 1 ,
+    end .int_set:N = \l_@@_end_int ,
+    multiplicity .code:n = \@@_set_multiplicity:n { #1 } ,
+    dotted .code:n =
+      \bool_set_true:N \l_@@_dotted_bool     
+      \socket_assign_plug:nn { nicematrix / vsegment } { dotted } 
+      \socket_assign_plug:nn { nicematrix / hsegment } { dotted } ,
+    dotted .value_forbidden:n = true ,
 %    \end{macrocode}
 % We want that, even when the rule has been defined with TikZ by the key |tikz|,
 % the user has still the possibility to change the color of the rule with the key
@@ -12472,119 +12332,214 @@ version 2005/12/01 or later.
 % the ability to write |\MyDashedRule[color=red]|.
 %    \begin{macrocode}
     color .code:n = 
-      \@@_set_CTarc:n { #1 } 
+      \@@_set_CTarc:n { #1 }
+      \CT@arc@
       \tl_set:Nn \l_@@_rule_color_tl { #1 } , 
     color .value_required:n = true ,
     sep-color .code:n = \@@_set_CTdrsc:n { #1 } ,
     sep-color .value_required:n = true ,
-    total-width .dim_set:N = \l_@@_rule_width_dim ,
-    total-width .value_required:n = true ,
-    width .meta:n = { total-width = #1 } ,
+%    \end{macrocode}
+%
+% Example for the key |total-width|:
+% \begin{Verbatim}
+% \NiceMatrixOptions
+%    {
+%      custom-line =
+%        {
+%          letter = I , 
+%          tikz = { line width = 1pt , dotted} ,
+%          total-width = 1 pt
+%        }
+%    }
+% \end{Verbatim}
+%
+%    \begin{macrocode}
+    total-width .dim_set:N = \l_@@_rule_width_after_dim ,
     unknown .code:n =
       \@@_unknown_key:nn
-        { nicematrix / RulesBis }
-        { Unknown~key~for~RulesBis } ,
+        { nicematrix / rules-after }
+        { Unknown~key~for~a~rule } ,
     tikz .value_required:n = true 
   }
 %    \end{macrocode}
 %
 % If the user uses the key |tikz|, the rule (or more precisely: the different
-% sub-rules since a rule may be broken by blocks or others) will be drawn with
+% segments since a rule may be broken by blocks or others) will be drawn with
 % TikZ. 
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \IfPackageLoadedTF { tikz }
       {
-        \keys_define:nn { nicematrix / RulesBis }
-          { tikz .code:n = \clist_put_right:Nn \l_@@_tikz_rule_tl { #1 } }
+        \keys_define:nn { nicematrix / rules-after }
+          {
+            tikz .code:n =
+              \clist_put_right:Nn \l_@@_tikz_rule_tl { #1 } 
+              \socket_assign_plug:nn { nicematrix / vsegment } { tikz } 
+              \socket_assign_plug:nn { nicematrix / hsegment } { tikz } 
+          }
       }
       {
-        \keys_define:nn { nicematrix / RulesBis }
+        \keys_define:nn { nicematrix / rules-after }
           { tikz .code:n = \@@_error:n { tikz~without~tikz } } 
       }
   }
 %    \end{macrocode}
-% 
+%
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_set_multiplicity:n #1
+  {
+    \int_set:Nn \l_@@_multiplicity_int { #1 } 
+    \socket_assign_plug:nn { nicematrix / vsegment } { multiple } 
+    \socket_assign_plug:nn { nicematrix / hsegment } { multiple } 
+  }
+%    \end{macrocode}
 %
 % \subsubsection*{The vertical rules}
-% 
-% The following command will be executed in the internal |\CodeAfter|. The
-% argument |#1| is a list of \textsl{key=value} pairs.
+%
+% |\@@_draw_vrule:n| and |\@@_draw_vrule:| will appear in
+% |\@@_draw_key_vlines:n| and in the token list |\g_@@_rules_tl| (or within
+% other functions used in |\g_@@_rules_tl|) and those token lists will be
+% executed within a PGF pseudo-environment.
+%
+% \bigskip
+% The argument |#1| is a list of \textsl{key=value} pairs.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_vline:n #1
+\cs_new_protected:Npn \@@_draw_vrule:n #1
   {  
 %    \end{macrocode}
 % The group is for the options.
 %    \begin{macrocode}
-    \group_begin:
-    \int_set_eq:NN \l_@@_end_int \c@iRow
-    \keys_set_known:nnN { nicematrix / Rules } { #1 } \l_@@_other_keys_tl
+    { 
+      \int_set_eq:NN \l_@@_end_int \c@iRow 
+      \keys_set:nn { nicematrix / rules-after } { #1 } 
 %    \end{macrocode}
 % The following test is for the case where the user does not use all the columns
 % specified in the preamble of the environment (for instance, a preamble of
 % \verb+|c|c|c|+ but only two columns used).
 %    \begin{macrocode}
-    \int_compare:nNnT \l_@@_position_int < { \c@jCol + 2 }
-      \@@_vline_i:
-    \group_end:
+      \int_compare:nNnT \l_@@_position_int < { \c@jCol + 2 }
+        \@@_draw_vrule:
+    }
   }
 %    \end{macrocode}
 %
+% \bigskip
+% |\@@_draw_vrule:| is a function similar to |\@@_draw_vrule:n| but whitout the
+% list of pairs (the rule will be drawn with the current values of the
+% parameters for rules in the TeX group).
+%
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_vline_i:
+\cs_new_protected:Npn \@@_draw_vrule:
   {
-    \tl_clear:N \l_@@_tikz_rule_tl 
-    \keys_set:no { nicematrix / RulesBis } \l_@@_other_keys_tl 
+    \group_begin:
 %    \end{macrocode}
 % |\l_tmpa_tl| is the number of row and |\l_tmpb_tl| the number of column. When
 % we have found a row corresponding to a rule to draw, we note its number in
 % |\l_@@_tmpc_tl|. 
 %    \begin{macrocode}
     \tl_set:No \l_tmpb_tl { \int_use:N \l_@@_position_int }
+%    \end{macrocode}
+% |\l_@@_x_initial_dim| will be the $x$-value of the rule to draw (used in all the plugs).
+%    \begin{macrocode}
+    \@@_qpoint:n { col - \int_use:N \l_@@_position_int }
+    \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
     \int_step_variable:nnNn \l_@@_start_int \l_@@_end_int 
       \l_tmpa_tl
       {
 %    \end{macrocode}
-% The boolean |\g_tmpa_bool| indicates whether the small vertical rule will be
-% drawn. If we find that it is in a block (a real block, created by |\Block| or
-% a virtual block corresponding to a dotted line, created by |\Cdots|, |\Vdots|,
-% etc.), we will set |\g_tmpa_bool| to |false| and the small vertical rule won't
-% be drawn.
+% After the execution of |\test_v:|, |\g_tmpa_bool| will be equal to |true|
+% if we have to draw that rule.
 %    \begin{macrocode}
-        \bool_gset_true:N \g_tmpa_bool
+        \@@_test_v:
+        \bool_if:NTF \g_tmpa_bool
+          { 
+            \int_if_zero:nTF \l_@@_segment_start_int 
+%    \end{macrocode}
+% We keep in memory that we have a rule to draw. |\l_@@_segment_start_int| will be 
+% the starting row of the rule that we will have to draw.
+%    \begin{macrocode}
+              { \int_set:Nn \l_@@_segment_start_int \l_tmpa_tl }
 %    \end{macrocode}
 % 
 %    \begin{macrocode}
-        \seq_map_inline:Nn \g_@@_pos_of_blocks_seq
-          { \@@_test_vline_in_block:nnnnn ##1 }
-        \seq_map_inline:Nn \g_@@_pos_of_xdots_seq
-          { \@@_test_vline_in_block:nnnnn ##1 }
-        \seq_map_inline:Nn \g_@@_pos_of_stroken_blocks_seq
-          { \@@_test_vline_in_stroken_block:nnnn ##1 }
-        \clist_if_empty:NF \l_@@_corners_clist \@@_test_in_corner_v: 
-        \bool_if:NTF \g_tmpa_bool
-          { 
-            \int_if_zero:nT \l_@@_local_start_int 
-%    \end{macrocode}
-% We keep in memory that we have a rule to draw. |\l_@@_local_start_int| will be 
-% the starting row of the rule that we will have to draw.
-%    \begin{macrocode}
-              { \int_set:Nn \l_@@_local_start_int \l_tmpa_tl }
+              { \socket_use:nn { nicematrix / draw-at-odd-vertex-v } }
           }
           {
-            \int_compare:nNnT \l_@@_local_start_int > \c_zero_int
-              { 
-                \int_set:Nn \l_@@_local_end_int { \l_tmpa_tl - 1 } 
-                \@@_vline_ii: 
-                \int_zero:N \l_@@_local_start_int 
+            \int_compare:nNnT \l_@@_segment_start_int > \c_zero_int
+              {
+                \int_set:Nn \l_@@_segment_end_int { \l_tmpa_tl - 1 }
+%    \end{macrocode}
+% The socket |vsegment| is defined below with its four plugs.
+%    \begin{macrocode}
+                \socket_use:n { nicematrix / vsegment } 
+                \int_zero:N \l_@@_segment_start_int 
               }
           }
       }
-    \int_compare:nNnT \l_@@_local_start_int > \c_zero_int 
+    \int_compare:nNnT \l_@@_segment_start_int > \c_zero_int 
       { 
-        \int_set_eq:NN \l_@@_local_end_int \l_@@_end_int 
-        \@@_vline_ii:
+        \int_set_eq:NN \l_@@_segment_end_int \l_@@_end_int 
+        \socket_use:n { nicematrix / vsegment } 
+      }
+    \group_end:
+  }
+%    \end{macrocode}
+%
+% The boolean |\g_tmpa_bool| indicates whether the small vertical rule will be
+% drawn. If we find that it is in a block (a real block, created by |\Block| or
+% |create-blocks-in-col| or a virtual block corresponding to a dotted line,
+% created by |\Cdots|, |\Vdots|, etc.), we will set |\g_tmpa_bool| to |false|
+% and the small vertical rule won't be drawn.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_test_v:
+  {
+    \bool_gset_true:N \g_tmpa_bool
+    \clist_if_empty:NF \l_@@_corners_clist \@@_test_in_corner_v:
+    \bool_if:NT \g_tmpa_bool
+      {
+        \seq_map_inline:Nn \g_@@_pos_of_blocks_seq
+          { \@@_test_vline_in_block:nnnnn ##1 }
+        \bool_if:NT \g_tmpa_bool
+          {
+            \seq_map_inline:Nn \g_@@_pos_of_xdots_seq
+              { \@@_test_vline_in_block:nnnnn ##1 }
+            \bool_if:NT \g_tmpa_bool
+              {
+                \seq_map_inline:Nn \g_@@_pos_of_stroken_blocks_seq
+                  { \@@_test_vline_in_stroken_block:nnnn ##1 }
+              }
+          }
+      }
+  }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+\socket_new:nn { nicematrix / draw-at-odd-vertex-v } { 0 }
+\socket_new_plug:nnn { nicematrix / draw-at-odd-vertex-v } { active }
+  {
+    {
+       \int_compare:nNnTF \l_@@_position_int > \c@jCol
+         { \bool_set_false:N \l_tmpa_bool }
+         {
+           \@@_test_h:
+           \bool_set_eq:NN \l_tmpa_bool \g_tmpa_bool 
+         }
+       \int_compare:nNnTF \l_@@_position_int = 1
+         { \bool_gset_false:N \g_tmpa_bool }
+         {
+           \tl_set:Ne \l_tmpb_tl { \int_eval:n { \l_tmpb_tl - 1 } }
+           \@@_test_h:
+         }
+       \bool_gset:Nn \g_tmpa_bool
+         { \bool_xor_p:nn \g_tmpa_bool \l_tmpa_bool }
+    }
+    \bool_if:NT \g_tmpa_bool
+      {
+        \int_set:Nn \l_@@_segment_end_int { \l_tmpa_tl - 1 }
+        \socket_use:n { nicematrix / vsegment } 
+        \int_set:Nn \l_@@_segment_start_int \l_tmpa_tl
       }
   }
 %    \end{macrocode}
@@ -12612,157 +12567,175 @@ version 2005/12/01 or later.
        }
    }
 %    \end{macrocode}
-%
+% 
 % \bigskip
+% For the drawing of the (vertical) segments, we will use a socket with four plugs :
+% \begin{itemize}
+% \item a plug |standar| for the simple rules.
+% \item a plug |multiple| for the rules similar to the standard rules of \pkg{array} and
+% \pkg{colortbl}, that is to say with |multiplicity|, etc;
+% \item a plug |dotted| for the rules with our own system of dotted rules;
+% \item a plug |tikz| for the rules drawn with TikZ.
+% \end{itemize}
+% 
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_vline_ii:
-  {
-    % \tl_clear:N \l_@@_tikz_rule_tl 
-    % \keys_set:no { nicematrix / RulesBis } \l_@@_other_keys_tl 
-    \bool_if:NTF \l_@@_dotted_bool
-      \@@_vline_iv: 
-      {
-        \tl_if_empty:NTF \l_@@_tikz_rule_tl
-          \@@_vline_iii: 
-          \@@_vline_v: 
-      }
-  }
+\socket_new:nn { nicematrix / vsegment } { 0 }
 %    \end{macrocode}
 % 
 % \bigskip
-% First the case of a standard rule: the user has not used the key |dotted| nor
-% the key |tikz|.
+% In the following plug, the $x$-value for the line has been computed previously
+% in |\l_@@_x_initial_dim|.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_vline_iii:
+\socket_new_plug:nnn { nicematrix / vsegment } { standard }
   {
-    \pgfpicture
-    \pgfrememberpicturepositiononpagetrue
-    \pgf@relevantforpicturesizefalse
-    \@@_qpoint:n { row - \int_use:N \l_@@_local_start_int }
-    \dim_set_eq:NN \l_tmpa_dim \pgf@y
-    \@@_qpoint:n { col - \int_use:N \l_@@_position_int }
-    \dim_set:Nn \l_tmpb_dim 
+    \@@_qpoint:n { row - \int_use:N \l_@@_segment_start_int }
+    \pgfpathmoveto { \pgfpoint \l_@@_x_initial_dim \pgf@y }      
+    \@@_qpoint:n { row - \int_eval:n { \l_@@_segment_end_int + 1 } }
+    \pgfpathlineto { \pgfpoint \l_@@_x_initial_dim \pgf@y }
+    \pgfusepathqstroke
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\socket_assign_plug:nn { nicematrix / vsegment } { standard }
+%    \end{macrocode}
+%
+%
+%    \begin{macrocode}
+\socket_new_plug:nnn { nicematrix / vsegment } { multiple }
+  {
+    \dim_add:Nn \l_@@_x_initial_dim 
       { 
-        \pgf@x  
-        - 0.5 \l_@@_rule_width_dim 
+        - 0.5 \l_@@_rule_width_after_dim 
         + 
         ( \arrayrulewidth * \l_@@_multiplicity_int  
            + \doublerulesep * ( \l_@@_multiplicity_int - 1 ) ) / 2
       }
-    \@@_qpoint:n { row - \int_eval:n { \l_@@_local_end_int + 1 } }
-    \dim_set_eq:NN \l_@@_tmpc_dim \pgf@y
-    \bool_lazy_all:nT
+    \@@_qpoint:n { row - \int_use:N \l_@@_segment_start_int }
+    \dim_set_eq:NN \l_@@_y_initial_dim \pgf@y
+    \@@_qpoint:n { row - \int_eval:n { \l_@@_segment_end_int + 1 } }
+    \dim_set_eq:NN \l_@@_y_final_dim \pgf@y
+    \bool_lazy_and:nnT
+      { \cs_if_exist_p:N \CT@drsc@ } 
+      { ! \tl_if_blank_p:o \CT@drsc@ }
       {
-        { \int_compare_p:nNn \l_@@_multiplicity_int > 1 }
-        { \cs_if_exist_p:N \CT@drsc@ } 
-        { ! \tl_if_blank_p:o \CT@drsc@ }
-      }
-      {
-        \group_begin:
-        \CT@drsc@
-        \dim_add:Nn \l_tmpa_dim { 0.5 \arrayrulewidth }
-        \dim_sub:Nn \l_@@_tmpc_dim { 0.5 \arrayrulewidth }
-        \dim_set:Nn \l_@@_tmpd_dim
-          { 
-            \l_tmpb_dim - ( \doublerulesep + \arrayrulewidth ) 
-            * ( \l_@@_multiplicity_int - 1 ) 
-          } 
-        \pgfpathrectanglecorners
-          { \pgfpoint \l_tmpb_dim \l_tmpa_dim }
-          { \pgfpoint \l_@@_tmpd_dim \l_@@_tmpc_dim }
-        \pgfusepath { fill }
-        \group_end:
+        {
+          \CT@drsc@
+          \dim_add:Nn \l_@@_y_initial_dim { 0.5 \arrayrulewidth }
+          \dim_sub:Nn \l_@@_y_final_dim { 0.5 \arrayrulewidth }
+          \dim_set:Nn \l_@@_tmpd_dim
+            { 
+              \l_@@_x_initial_dim - ( \doublerulesep + \arrayrulewidth ) 
+              * ( \l_@@_multiplicity_int - 1 ) 
+            } 
+          \pgfpathrectanglecorners
+            { \pgfpoint \l_@@_x_initial_dim \l_@@_y_initial_dim }
+            { \pgfpoint \l_@@_tmpd_dim \l_@@_y_final_dim }
+          \pgfusepath { fill }
+        }
       } 
-    \pgfpathmoveto { \pgfpoint \l_tmpb_dim \l_tmpa_dim }
-    \pgfpathlineto { \pgfpoint \l_tmpb_dim \l_@@_tmpc_dim }
+    \pgfpathmoveto { \pgfpoint \l_@@_x_initial_dim \l_@@_y_initial_dim }
+    \pgfpathlineto { \pgfpoint \l_@@_x_initial_dim \l_@@_y_final_dim }
     \prg_replicate:nn { \l_@@_multiplicity_int - 1 }
       {
-        \dim_sub:Nn \l_tmpb_dim { \arrayrulewidth + \doublerulesep }
-        \pgfpathmoveto { \pgfpoint \l_tmpb_dim \l_tmpa_dim }
-        \pgfpathlineto { \pgfpoint \l_tmpb_dim \l_@@_tmpc_dim }
+        \dim_sub:Nn \l_@@_x_initial_dim { \arrayrulewidth + \doublerulesep }
+        \pgfpathmoveto { \pgfpoint \l_@@_x_initial_dim \l_@@_y_initial_dim }
+        \pgfpathlineto { \pgfpoint \l_@@_x_initial_dim \l_@@_y_final_dim }
       }
-    \CT@arc@
-    \pgfsetlinewidth { 1.1 \arrayrulewidth }
-    \pgfsetrectcap
     \pgfusepathqstroke
-    \endpgfpicture
   }
 %    \end{macrocode}
 %
-%
 % \bigskip
-% The following code is for the case of a dotted rule (with our system of
-% rounded dots).
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_vline_iv:
+\socket_new_plug:nnn { nicematrix / vsegment } { dotted }
   {
-    \pgfpicture
-    \pgfrememberpicturepositiononpagetrue
-    \pgf@relevantforpicturesizefalse
-    \@@_qpoint:n { col - \int_use:N \l_@@_position_int }
-    \dim_set:Nn \l_@@_x_initial_dim { \pgf@x - 0.5 \l_@@_rule_width_dim }
+    \dim_sub:Nn \l_@@_x_initial_dim { 0.5 \l_@@_rule_width_after_dim }
     \dim_set_eq:NN \l_@@_x_final_dim \l_@@_x_initial_dim 
-    \@@_qpoint:n { row - \int_use:N \l_@@_local_start_int }
+    \@@_qpoint:n { row - \int_use:N \l_@@_segment_start_int }
     \dim_set_eq:NN \l_@@_y_initial_dim \pgf@y
-    \@@_qpoint:n { row - \int_eval:n { \l_@@_local_end_int + 1 } }
+    \@@_qpoint:n { row - \int_eval:n { \l_@@_segment_end_int + 1 } }
     \dim_set_eq:NN \l_@@_y_final_dim \pgf@y
-    \CT@arc@
+%    \end{macrocode}
+%
+% The command |\@@_draw_line:| has six implicit arguments:
+%
+% \begin{itemize}
+% \item |\l_@@_x_initial_dim| 
+% \item |\l_@@_y_initial_dim| 
+% \item |\l_@@_x_final_dim|
+% \item |\l_@@_y_final_dim|
+% \item |\l_@@_initial_open_bool|
+% \item |\l_@@_final_open_bool|
+% \end{itemize}
+%
+%    \begin{macrocode}
     \@@_draw_line:
-    \endpgfpicture
   }
 %    \end{macrocode}
 %
 % \bigskip
-% The following code is for the case when the user uses the key |tikz|.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_vline_v:
+\socket_new_plug:nnn { nicematrix / vsegment } { tikz }
   {
-    \begin { tikzpicture }
+    { 
 %    \end{macrocode}
 % By default, the color defined by |\arrayrulecolor| or by |rules/color| will be
 % used, but it's still possible to change the color by using the key |color| or,
 % of course, the key |color| inside the key |tikz| (that is to say the key
 % |color| provided by \textsc{pgf}.
 %    \begin{macrocode}
-    \CT@arc@
-    \tl_if_empty:NF \l_@@_rule_color_tl
-      { \tl_put_right:Ne \l_@@_tikz_rule_tl { , color = \l_@@_rule_color_tl } }  
-    \pgfrememberpicturepositiononpagetrue
-    \pgf@relevantforpicturesizefalse
-    \@@_qpoint:n { row - \int_use:N \l_@@_local_start_int }
-    \dim_set_eq:NN \l_tmpa_dim \pgf@y
-    \@@_qpoint:n { col - \int_use:N \l_@@_position_int }
-    \dim_set:Nn \l_tmpb_dim { \pgf@x - 0.5 \l_@@_rule_width_dim }
-    \@@_qpoint:n { row - \int_eval:n { \l_@@_local_end_int + 1 } }
-    \dim_set_eq:NN \l_@@_tmpc_dim \pgf@y
-    \exp_args:No \tikzset \l_@@_tikz_rule_tl
-    \use:e { \exp_not:N \draw [ \l_@@_tikz_rule_tl ] } 
-      ( \l_tmpb_dim , \l_tmpa_dim ) --
-      ( \l_tmpb_dim , \l_@@_tmpc_dim ) ;
-    \end { tikzpicture }
+      \tl_if_empty:NF \l_@@_rule_color_tl
+        { \tl_put_right:Ne \l_@@_tikz_rule_tl { , color = \l_@@_rule_color_tl } }  
+      \@@_qpoint:n { row - \int_use:N \l_@@_segment_start_int }
+      \dim_set_eq:NN \l_@@_y_initial_dim \pgf@y
+      \dim_sub:Nn \l_@@_x_initial_dim { 0.5 \l_@@_rule_width_after_dim }
+      \@@_qpoint:n { row - \int_eval:n { \l_@@_segment_end_int + 1 } }
+%    \end{macrocode}
+% The following line can't be short-cutted.
+%    \begin{macrocode}
+      \dim_set_eq:NN \l_@@_y_final_dim \pgf@y
+      % \exp_args:No \tikzset \l_@@_tikz_rule_tl
+      \use:e { \exp_not:N \draw [ \l_@@_tikz_rule_tl ] } 
+        ( \l_@@_x_initial_dim , \l_@@_y_initial_dim ) --
+        ( \l_@@_x_initial_dim , \l_@@_y_final_dim ) ;
+    }
   }
 %    \end{macrocode}
 %
 %
 % \bigskip
-% The command |\@@_draw_vlines:| draws all the vertical rules excepted in the
-% blocks, in the virtual blocks (determined by a command such as |\Cdots|) and in
-% the corners (if the key |corners| is used).
+% The command |\@@_draw_key_vlines:| draws the horizontal rules specified by
+% the key |vlines|. These rules are not drawn in the blocks (even the virtual
+% blocks determined by commands such as |\Cdots|) and in the corners --- if the
+% key |corners| is used).
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_draw_vlines:
+\cs_new_protected:Npn \@@_draw_key_vlines:
   {
-    \int_step_inline:nnn 
-      { \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 2 1 }
-      { 
-        \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 
-          \c@jCol 
-          { \int_eval:n { \c@jCol + 1 } } 
-      }
-      { 
-        \str_if_eq:eeF \l_@@_vlines_clist { all }
-          { \clist_if_in:NnT \l_@@_vlines_clist { ##1 } }
-          { \@@_vline:n { position = ##1 , total-width = \arrayrulewidth } }
-      }
+    {
+      \dim_set_eq:NN \l_@@_rule_width_after_dim \arrayrulewidth
+      \int_set:Nn \l_@@_end_int \c@iRow 
+      \int_step_inline:nnn 
+        { \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 2 1 }
+        { 
+          \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 
+            \c@jCol 
+            { \int_eval:n { \c@jCol + 1 } } 
+        }
+        { 
+          \str_if_eq:eeF \l_@@_vlines_clist { all }
+            { \clist_if_in:NnT \l_@@_vlines_clist { ##1 } }
+%    \end{macrocode}
+% The argument of |\@@_vlines:n| is a list of key-value pairs. There is a key
+% |position| which sets |\l_@@_position_int| but it's faster to do the affectation
+% right now.
+%    \begin{macrocode}
+            {
+              \int_set:Nn \l_@@_position_int { ##1 }
+              \@@_draw_vrule:
+            }
+        }
+    }
   }
 %    \end{macrocode}
 %
@@ -12770,86 +12743,145 @@ version 2005/12/01 or later.
 % 
 % \subsubsection*{The horizontal rules}
 %
+% |\@@_draw_hrule:n| and |\@@_draw_hrule:| will appear in
+% |\@@_draw_key_hlines:n| and in the token rules |\g_@@_rules_tl| (or within
+% other functions used in |\g_@@_rules_tl|) and those token lists will be
+% executed within a PGF pseudo-environment.
+%
 % \bigskip
-% The following command will be executed in the internal |\CodeAfter|. The
-% argument |#1| is a list of \textsl{key=value} pairs of the form
-% |{nicematrix/Rules}|.
+% The argument |#1| is a list of \textsl{key=value} pairs.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_hline:n #1 
+\cs_new_protected:Npn \@@_draw_hrule:n #1 
   {
-%    \end{macrocode}
-% The group is for the options.
-%    \begin{macrocode}
-    \group_begin:
-    \int_set_eq:NN \l_@@_end_int \c@jCol
-    \keys_set_known:nnN { nicematrix / Rules } { #1 } \l_@@_other_keys_tl
-    \@@_hline_i:
-    \group_end:
+    { 
+      \int_set_eq:NN \l_@@_end_int \c@jCol
+      \keys_set_known:nn { nicematrix / rules-after } { #1 } 
+      \@@_draw_hrule:
+    }
   }
 %    \end{macrocode}
 %
+% \bigskip
+% |\@@_draw_hrule:| is a function similar to |\@@_draw_hrule:n| but whitout the
+% list of pairs (the rule will be drawn with the current values of the
+% parameters for rules in the TeX group).
+%
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_hline_i:
+\cs_new_protected:Npn \@@_draw_hrule:
   {
-    \tl_clear:N \l_@@_tikz_rule_tl 
-    \keys_set:no { nicematrix / RulesBis } \l_@@_other_keys_tl 
+    \group_begin:
 %    \end{macrocode}
 % |\l_tmpa_tl| is the number of row and |\l_tmpb_tl| the number of column. When
 % we have found a column corresponding to a rule to draw, we note its number in
 % |\l_@@_tmpc_tl|. 
 %    \begin{macrocode}
     \tl_set:No \l_tmpa_tl { \int_use:N \l_@@_position_int }
+%    \end{macrocode}
+% |\l_@@_y_initial_dim| will be the $y$-value of the rule to draw (used in all
+% the plugs).
+%    \begin{macrocode}
+    \@@_qpoint:n { row - \int_use:N \l_@@_position_int }
+    \dim_set_eq:NN \l_@@_y_initial_dim \pgf@y
     \int_step_variable:nnNn \l_@@_start_int \l_@@_end_int
       \l_tmpb_tl
       {
 %    \end{macrocode}
-% The boolean |\g_tmpa_bool| indicates whether the small horizontal rule will be
-% drawn. If we find that it is in a block (a real block, created by |\Block| or
-% a virtual block corresponding to a dotted line, created by |\Cdots|, |\Vdots|,
-% etc.), we will set |\g_tmpa_bool| to |false| and the small horizontal rule won't
-% be drawn.
+% After the execution of |\test_v:|, |\g_tmpa_bool| will be equal to |true|
+% if we have to draw that rule.
 %    \begin{macrocode}
-         \bool_gset_true:N \g_tmpa_bool
-%    \end{macrocode}
-% 
-% We test whether we are in a block.
-%    \begin{macrocode}
-        \seq_map_inline:Nn \g_@@_pos_of_blocks_seq
-          { \@@_test_hline_in_block:nnnnn ##1 }
-%    \end{macrocode}
-% 
-%    \begin{macrocode}
-         \seq_map_inline:Nn \g_@@_pos_of_xdots_seq
-           { \@@_test_hline_in_block:nnnnn ##1 }
-         \seq_map_inline:Nn \g_@@_pos_of_stroken_blocks_seq
-           { \@@_test_hline_in_stroken_block:nnnn ##1 }
-         \clist_if_empty:NF \l_@@_corners_clist { \@@_test_in_corner_h: }
+        \@@_test_h:
          \bool_if:NTF \g_tmpa_bool
            { 
-             \int_if_zero:nT \l_@@_local_start_int 
+             \int_if_zero:nTF \l_@@_segment_start_int 
 %    \end{macrocode}
-% We keep in memory that we have a rule to draw. |\l_@@_local_start_int| will be
+% We keep in memory that we have a segment to draw. |\l_@@_segment_start_int| will be
 % the starting row of the rule that we will have to draw.
 %    \begin{macrocode}
-               { \int_set:Nn \l_@@_local_start_int \l_tmpb_tl }
+               { \int_set:Nn \l_@@_segment_start_int \l_tmpb_tl }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+               { \socket_use:n { nicematrix / draw-at-odd-vertex-h } }
            }
            {
-             \int_compare:nNnT \l_@@_local_start_int > \c_zero_int 
+             \int_compare:nNnT \l_@@_segment_start_int > \c_zero_int 
                { 
-                 \int_set:Nn \l_@@_local_end_int { \l_tmpb_tl - 1 }  
-                 \@@_hline_ii:
-                 \int_zero:N \l_@@_local_start_int 
+                 \int_set:Nn \l_@@_segment_end_int { \l_tmpb_tl - 1 }
+%    \end{macrocode}
+% The socket |hsegment| is defined below with its four plugs.
+%    \begin{macrocode}
+                 \socket_use:n { nicematrix / hsegment }
+                 \int_zero:N \l_@@_segment_start_int 
                }
            }
       }
-    \int_compare:nNnT \l_@@_local_start_int > \c_zero_int 
+    \int_compare:nNnT \l_@@_segment_start_int > \c_zero_int 
       { 
-        \int_set_eq:NN \l_@@_local_end_int \l_@@_end_int
-        \@@_hline_ii:
+        \int_set_eq:NN \l_@@_segment_end_int \l_@@_end_int
+        \socket_use:n { nicematrix / hsegment }
       }
+    \group_end:
   }
 %    \end{macrocode}
 %
+% The boolean |\g_tmpa_bool| indicates whether the small horizontal rule will be
+% drawn. If we find that it is in a block (a real block, created by |\Block| or
+% |create-blocks-in-col| or a virtual block corresponding to a dotted line,
+% created by |\Cdots|, |\Vdots|, etc.), we will set |\g_tmpa_bool| to |false|
+% and the small horizontal rule won't be drawn.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_test_h:
+  {
+    \bool_gset_true:N \g_tmpa_bool
+    \clist_if_empty:NF \l_@@_corners_clist \@@_test_in_corner_h: 
+    \bool_if:NT \g_tmpa_bool
+      {
+        \seq_map_inline:Nn \g_@@_pos_of_blocks_seq
+          { \@@_test_hline_in_block:nnnnn ##1 }
+        \bool_if:NT \g_tmpa_bool
+          {
+            \seq_map_inline:Nn \g_@@_pos_of_xdots_seq
+              { \@@_test_hline_in_block:nnnnn ##1 }
+            \bool_if:NT \g_tmpa_bool
+              {
+                \seq_map_inline:Nn \g_@@_pos_of_stroken_blocks_seq
+                  { \@@_test_hline_in_stroken_block:nnnn ##1 }
+              }
+          }
+      }
+  }
+%    \end{macrocode}           
+%
+% \bigskip
+%    \begin{macrocode}
+\socket_new:nn { nicematrix / draw-at-odd-vertex-h } { 0 }
+\socket_new_plug:nnn { nicematrix / draw-at-odd-vertex-h } { active }
+  {
+     {
+       \int_compare:nNnTF \l_@@_position_int > \c@iRow
+         { \bool_set_false:N \l_tmpa_bool }
+         {
+           \@@_test_v:
+           \bool_set_eq:NN \l_tmpa_bool \g_tmpa_bool 
+         }
+       \int_compare:nNnTF \l_@@_position_int = 1
+         { \bool_gset_false:N \g_tmpa_bool }                   
+         {
+           \tl_set:Ne \l_tmpa_tl { \int_eval:n { \l_tmpa_tl - 1 } }
+           \@@_test_v:
+         }
+       \bool_gset:Nn \g_tmpa_bool
+         { \bool_xor_p:nn \g_tmpa_bool \l_tmpa_bool }
+    }
+    \bool_if:NT \g_tmpa_bool
+      {
+        \int_set:Nn \l_@@_segment_end_int { \l_tmpb_tl - 1 } 
+        \socket_use:n { nicematrix / hsegment } 
+        \int_set:Nn \l_@@_segment_start_int \l_tmpb_tl
+      }
+  }
+%    \end{macrocode}
+% 
 % \bigskip
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_in_corner_h:
@@ -12874,87 +12906,86 @@ version 2005/12/01 or later.
    }
 %    \end{macrocode}
 %
+%
+% \bigskip
+% For the drawing of the (horizontal) segments, we will use a socket with four plugs :
+% \begin{itemize}
+% \item a plug |standar| for simple rules;
+% \item a plug |multiplity| for the rules similar to the standard rules of \pkg{array} and
+% \pkg{colortbl}, that is to say with |multiplicity|, etc;
+% \item a plug |dotted| for the rules with our own system of dotted rules;
+% \item a plug |tikz| for the rules drawn with TikZ.
+% \end{itemize}
 % 
-% \bigskip 
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_hline_ii:
-  {
-    % \tl_clear:N \l_@@_tikz_rule_tl 
-    % \keys_set:no { nicematrix / RulesBis } \l_@@_other_keys_tl 
-    \bool_if:NTF \l_@@_dotted_bool
-      \@@_hline_iv: 
-      {
-        \tl_if_empty:NTF \l_@@_tikz_rule_tl
-          \@@_hline_iii: 
-          \@@_hline_v: 
-      }
-  }
+\socket_new:nn { nicematrix / hsegment } { 0 }
 %    \end{macrocode}
 %
 % \bigskip
-% First the case of a standard rule (without the keys |dotted| and |tikz|).
+% In the following plug, the $y$-value for the line has been computed previously
+% in |\l_@@_y_initial_dim|.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_hline_iii:
+\socket_new_plug:nnn { nicematrix /  hsegment } { standard }
   {
-    \pgfpicture
-    \pgfrememberpicturepositiononpagetrue
-    \pgf@relevantforpicturesizefalse
-    \@@_qpoint:n { col - \int_use:N \l_@@_local_start_int }
-    \dim_set_eq:NN \l_tmpa_dim \pgf@x
-    \@@_qpoint:n { row - \int_use:N \l_@@_position_int }
-    \dim_set:Nn \l_tmpb_dim 
+    \@@_qpoint:n { col - \int_use:N \l_@@_segment_start_int }
+    \pgfpathmoveto { \pgfpoint \pgf@x \l_@@_y_initial_dim }      
+    \@@_qpoint:n { col - \int_eval:n { \l_@@_segment_end_int + 1 } }
+    \pgfpathlineto { \pgfpoint \pgf@x \l_@@_y_initial_dim }
+    \pgfusepathqstroke
+  }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+\socket_assign_plug:nn { nicematrix / hsegment } { standard }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\socket_new_plug:nnn { nicematrix /  hsegment } { multiple }
+  {
+    \dim_add:Nn \l_@@_y_initial_dim 
       { 
-        \pgf@y
-        - 0.5 \l_@@_rule_width_dim 
+        - 0.5 \l_@@_rule_width_after_dim 
         + 
         ( \arrayrulewidth * \l_@@_multiplicity_int  
            + \doublerulesep * ( \l_@@_multiplicity_int - 1 ) ) / 2
       }
-    \@@_qpoint:n { col - \int_eval:n { \l_@@_local_end_int + 1 } }
-    \dim_set_eq:NN \l_@@_tmpc_dim \pgf@x
-    \bool_lazy_all:nT
-      { 
-        { \int_compare_p:nNn \l_@@_multiplicity_int > 1 }
-        { \cs_if_exist_p:N \CT@drsc@ } 
-        { ! \tl_if_blank_p:o \CT@drsc@ }
-      }
+    \@@_qpoint:n { col - \int_use:N \l_@@_segment_start_int }
+    \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
+    \@@_qpoint:n { col - \int_eval:n { \l_@@_segment_end_int + 1 } }
+    \dim_set_eq:NN \l_@@_x_final_dim \pgf@x
+    \bool_lazy_and:nnT
+      { \cs_if_exist_p:N \CT@drsc@ } 
+      { ! \tl_if_blank_p:o \CT@drsc@ }
       {
-        \group_begin:
-        \CT@drsc@
-        \dim_set:Nn \l_@@_tmpd_dim
-          { 
-            \l_tmpb_dim - ( \doublerulesep + \arrayrulewidth ) 
-            * ( \l_@@_multiplicity_int - 1 ) 
-          } 
-        \pgfpathrectanglecorners
-          { \pgfpoint \l_tmpa_dim \l_tmpb_dim }
-          { \pgfpoint \l_@@_tmpc_dim \l_@@_tmpd_dim }
-        \pgfusepathqfill
-        \group_end:
+        {
+          \CT@drsc@
+          \dim_set:Nn \l_@@_tmpd_dim
+            { 
+              \l_@@_y_initial_dim - ( \doublerulesep + \arrayrulewidth ) 
+              * ( \l_@@_multiplicity_int - 1 ) 
+            } 
+          \pgfpathrectanglecorners
+            { \pgfpoint \l_@@_x_initial_dim \l_@@_y_initial_dim }
+            { \pgfpoint \l_@@_x_final_dim \l_@@_tmpd_dim }
+          \pgfusepathqfill
+        }
       } 
-    \pgfpathmoveto { \pgfpoint \l_tmpa_dim \l_tmpb_dim }
-    \pgfpathlineto { \pgfpoint \l_@@_tmpc_dim \l_tmpb_dim }
+    \pgfpathmoveto { \pgfpoint \l_@@_x_initial_dim \l_@@_y_initial_dim }
+    \pgfpathlineto { \pgfpoint \l_@@_x_final_dim \l_@@_y_initial_dim }
     \prg_replicate:nn { \l_@@_multiplicity_int - 1 }
       {
-        \dim_sub:Nn \l_tmpb_dim { \arrayrulewidth + \doublerulesep }
-        \pgfpathmoveto { \pgfpoint \l_tmpa_dim \l_tmpb_dim }
-        \pgfpathlineto { \pgfpoint \l_@@_tmpc_dim \l_tmpb_dim }
+        \dim_sub:Nn \l_@@_y_initial_dim { \arrayrulewidth + \doublerulesep }
+        \pgfpathmoveto { \pgfpoint \l_@@_x_initial_dim \l_@@_y_initial_dim }
+        \pgfpathlineto { \pgfpoint \l_@@_x_final_dim \l_@@_y_initial_dim }
       }
-    \CT@arc@
-    \pgfsetlinewidth { 1.1 \arrayrulewidth }
-    \pgfsetrectcap
     \pgfusepathqstroke
-    \endpgfpicture
   }
 %    \end{macrocode}
 %
+% 
 % \bigskip
-% The following code is for the case of a dotted rule (with our system of
-% rounded dots).
-% The aim is that, by standard the dotted line fits between square brackets
-% (|\hline| doesn't).
-%
-% \smallskip
+% Now, the case of a dotted line.
+% 
 % \begin{BVerbatim}[baseline=c,boxwidth=10cm]
 % \begin{bNiceMatrix}
 % 1 & 2 & 3 & 4 \\
@@ -12995,17 +13026,13 @@ version 2005/12/01 or later.
 % \end{bNiceMatrix}$
 %
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_hline_iv:
+\socket_new_plug:nnn { nicematrix / hsegment } { dotted }
   {
-    \pgfpicture
-    \pgfrememberpicturepositiononpagetrue
-    \pgf@relevantforpicturesizefalse
-    \@@_qpoint:n { row - \int_use:N \l_@@_position_int }
-    \dim_set:Nn \l_@@_y_initial_dim { \pgf@y - 0.5 \l_@@_rule_width_dim } 
+    \dim_sub:Nn \l_@@_y_initial_dim { 0.5 \l_@@_rule_width_after_dim } 
     \dim_set_eq:NN \l_@@_y_final_dim \l_@@_y_initial_dim
-    \@@_qpoint:n { col - \int_use:N \l_@@_local_start_int }
+    \@@_qpoint:n { col - \int_use:N \l_@@_segment_start_int }
     \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
-    \int_compare:nNnT \l_@@_local_start_int = 1
+    \int_compare:nNnT \l_@@_segment_start_int = 1
       {
         \dim_sub:Nn \l_@@_x_initial_dim \l_@@_left_margin_dim 
         \bool_if:NF \g_@@_delims_bool 
@@ -13016,11 +13043,11 @@ version 2005/12/01 or later.
 % better result.
 %    \begin{macrocode}
         \tl_if_eq:NnF \g_@@_left_delim_tl ( 
-          { \dim_add:Nn \l_@@_x_initial_dim  { 0.5 \l_@@_xdots_inter_dim } }
+          { \dim_add:Nn \l_@@_x_initial_dim { 0.5 \l_@@_xdots_inter_dim } }
       }        
-    \@@_qpoint:n { col - \int_eval:n { \l_@@_local_end_int + 1 } }
+    \@@_qpoint:n { col - \int_eval:n { \l_@@_segment_end_int + 1 } }
     \dim_set_eq:NN \l_@@_x_final_dim \pgf@x
-    \int_compare:nNnT \l_@@_local_end_int = \c@jCol 
+    \int_compare:nNnT \l_@@_segment_end_int = \c@jCol 
       {
         \dim_add:Nn \l_@@_x_final_dim \l_@@_right_margin_dim 
         \bool_if:NF \g_@@_delims_bool 
@@ -13028,64 +13055,83 @@ version 2005/12/01 or later.
         \tl_if_eq:NnF \g_@@_right_delim_tl ) 
           { \dim_gsub:Nn \l_@@_x_final_dim { 0.5 \l_@@_xdots_inter_dim } }
       }
-    \CT@arc@
+%    \end{macrocode}
+%
+% The command |\@@_draw_line:| has six implicit arguments:
+%
+% \begin{itemize}
+% \item |\l_@@_x_initial_dim| 
+% \item |\l_@@_y_initial_dim| 
+% \item |\l_@@_x_final_dim|
+% \item |\l_@@_y_final_dim|
+% \item |\l_@@_initial_open_bool|
+% \item |\l_@@_final_open_bool|
+% \end{itemize}
+%
+%    \begin{macrocode}
     \@@_draw_line:
-    \endpgfpicture
   }
 %    \end{macrocode}
 %
 % \bigskip
-% The following code is for the case when the user uses the key |tikz| (in the
-% definition of a customized rule by using the key |custom-line|).
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_hline_v:
+\socket_new_plug:nnn { nicematrix / hsegment } { tikz }
   {
-    \begin { tikzpicture }
+    { 
 %    \end{macrocode}
 % By default, the color defined by |\arrayrulecolor| or by |rules/color| will be
 % used, but it's still possible to change the color by using the key |color| or,
 % of course, the key |color| inside the key |tikz| (that is to say the key
 % |color| provided by \textsc{pgf}.
 %    \begin{macrocode}
-    \CT@arc@
-    \tl_if_empty:NF \l_@@_rule_color_tl
-      { \tl_put_right:Ne \l_@@_tikz_rule_tl { , color = \l_@@_rule_color_tl } }  
-    \pgfrememberpicturepositiononpagetrue
-    \pgf@relevantforpicturesizefalse
-    \@@_qpoint:n { col - \int_use:N \l_@@_local_start_int }
-    \dim_set_eq:NN \l_tmpa_dim \pgf@x
-    \@@_qpoint:n { row - \int_use:N \l_@@_position_int }
-    \dim_set:Nn \l_tmpb_dim { \pgf@y - 0.5 \l_@@_rule_width_dim }
-    \@@_qpoint:n { col - \int_eval:n { \l_@@_local_end_int + 1 } }
-    \dim_set_eq:NN \l_@@_tmpc_dim \pgf@x
-    \exp_args:No \tikzset \l_@@_tikz_rule_tl
-    \use:e { \exp_not:N \draw [ \l_@@_tikz_rule_tl ] } 
-      ( \l_tmpa_dim , \l_tmpb_dim ) --
-      ( \l_@@_tmpc_dim , \l_tmpb_dim ) ;
-    \end { tikzpicture }
+      \tl_if_empty:NF \l_@@_rule_color_tl
+        { \tl_put_right:Ne \l_@@_tikz_rule_tl { , color = \l_@@_rule_color_tl } }  
+      \@@_qpoint:n { col - \int_use:N \l_@@_segment_start_int }
+      \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
+      \dim_sub:Nn \l_@@_y_initial_dim { 0.5 \l_@@_rule_width_after_dim }
+      \@@_qpoint:n { col - \int_eval:n { \l_@@_segment_end_int + 1 } }
+      \dim_set_eq:NN \l_@@_x_final_dim \pgf@x
+      % \exp_args:No \tikzset \l_@@_tikz_rule_tl
+      \use:e { \exp_not:N \draw [ \l_@@_tikz_rule_tl ] } 
+        ( \l_@@_x_initial_dim , \l_@@_y_initial_dim )
+        -- ( \l_@@_x_final_dim , \l_@@_y_initial_dim ) ;
+    }
   }
 %    \end{macrocode}
 %
 %
 % \bigskip
-% The command |\@@_draw_hlines:| draws all the horizontal rules excepted in the
-% blocks (even the virtual blocks determined by commands such as |\Cdots| and in
-% the corners --- if the key |corners| is used).
+% The command |\@@_draw_key_hlines:| draws the horizontal rules specified by
+% the key |hlines|. These rules are not drawn in the blocks (even the virtual
+% blocks determined by commands such as |\Cdots|) and in the corners --- if the
+% key |corners| is used).
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_draw_hlines:
+\cs_new_protected:Npn \@@_draw_key_hlines:
   {
-    \int_step_inline:nnn 
-      { \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 2 1 }
-      { 
-        \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 
-          \c@iRow 
-          { \int_eval:n { \c@iRow + 1 } } 
-      }
-      { 
-        \str_if_eq:eeF \l_@@_hlines_clist { all }
-          { \clist_if_in:NnT \l_@@_hlines_clist { ##1 } }
-          { \@@_hline:n { position = ##1 , total-width = \arrayrulewidth } }
-      }
+    {
+      \int_set:Nn \l_@@_end_int \c@jCol    
+      \dim_set_eq:NN \l_@@_rule_width_after_dim \arrayrulewidth     
+      \int_step_inline:nnn 
+        { \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 2 1 }
+        { 
+          \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 
+            \c@iRow 
+            { \int_eval:n { \c@iRow + 1 } } 
+        }
+        { 
+          \str_if_eq:eeF \l_@@_hlines_clist { all }
+            { \clist_if_in:NnT \l_@@_hlines_clist { ##1 } }
+%    \end{macrocode}
+% The argument of |\@@_hlines:n| is a list of key-value pairs. There is a key
+% |position| which sets |\l_@@_position_int| but it's faster to do the affectation
+% right now.
+%    \begin{macrocode}
+            {
+              \int_set:Nn \l_@@_position_int { ##1 }
+              \@@_draw_hrule:
+            }
+        }
+    }
   }
 %    \end{macrocode}
 %
@@ -13126,16 +13172,34 @@ version 2005/12/01 or later.
 \cs_set_protected:Npn \@@_Hline_iv:nn #1 #2 
   {
     \@@_compute_rule_width:n { multiplicity = #1 , #2 }
-    \skip_vertical:N \l_@@_rule_width_dim 
-    \tl_gput_right:Ne \g_@@_pre_code_after_tl
-      { 
-        \@@_hline:n 
-          { 
-            multiplicity = #1 , 
-            position = \int_eval:n { \c@iRow + 1 } ,
-            total-width = \dim_use:N \l_@@_rule_width_dim ,
-            #2
-          } 
+    \skip_vertical:N \l_@@_rule_width_before_dim
+    \tl_gput_right:Ne \g_@@_rules_tl
+      {
+%    \end{macrocode}
+%
+%
+% \bigskip
+% With the keys of |nicematrix / rules-after| we would write:
+%
+% \begin{Verbatim}
+% \@@_draw_hrule:n 
+%   { 
+%     multiplicity = #1 ,
+%     position = \int_eval:n { \c@iRow + 1 } ,
+%     total-width = \dim_use:N \l_@@_rule_width_before_dim ,
+%     #2
+%   }
+% \end{Verbatim}
+%
+% We will use a version slightly more efficient:
+%    \begin{macrocode}
+        {
+          \int_compare:nNnT { #1 } > 1 { \@@_set_multiplicity:n { #1 } }
+          \int_set:Nn \l_@@_position_int { \int_eval:n { \c@iRow + 1 } }
+          \dim_set:Nn \l_@@_rule_width_after_dim
+            { \dim_use:N \l_@@_rule_width_before_dim }
+          \@@_draw_hrule:n { #2 }
+        }
       }
     \egroup 
   }
@@ -13155,9 +13219,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_custom_line:n #1 
   {
-    \str_clear_new:N \l_@@_command_str
-    \str_clear_new:N \l_@@_ccommand_str
-    \str_clear_new:N \l_@@_letter_str
+    \str_clear:N \l_@@_letter_str 
+    \str_clear:N \l_@@_command_str
+    \str_clear:N \l_@@_ccommand_str 
     \tl_clear_new:N \l_@@_other_keys_tl
     \keys_set_known:nnN { nicematrix / custom-line } { #1 } \l_@@_other_keys_tl
     \str_if_eq:eeT \c_backslash_str { \str_head:N \l_@@_command_str }
@@ -13191,7 +13255,7 @@ version 2005/12/01 or later.
         { \str_if_empty_p:N \l_@@_ccommand_str }
       }
       { \@@_error:n { No~letter~and~no~command } }
-      { \@@_custom_line_i:o \l_@@_other_keys_tl } 
+      { \@@_custom_line_i:o \l_@@_other_keys_tl }
   }
 %    \end{macrocode}
 % 
@@ -13204,7 +13268,7 @@ version 2005/12/01 or later.
     command .str_set:N = \l_@@_command_str ,
     command .value_required:n = true ,
     ccommand .str_set:N = \l_@@_ccommand_str ,
-    ccommand .value_required:n = true ,
+    ccommand .value_required:n = true 
   }
 %    \end{macrocode}
 %
@@ -13270,14 +13334,12 @@ version 2005/12/01 or later.
 % The previous command |\@@_custom_line_i:n| uses the following set of keys.
 % However, the whole definition of the customized lines (as provided by the
 % final user as argument of |custom-line|) will also be used further with
-% other sets of keys (for instance |{nicematrix/Rules}|). That's why the
+% other sets of keys (for instance |{nicematrix/rules-after}|). That's why the
 % following set of keys has some keys which are no-op.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / custom-line-bis }
   {
     multiplicity .int_set:N = \l_@@_multiplicity_int , 
-    multiplicity .initial:n = 1 , 
-    multiplicity .value_required:n = true ,
     color .code:n = \bool_set_true:N \l_@@_color_bool ,
     color .value_required:n = true ,
     tikz .code:n = \bool_set_true:N \l_@@_tikz_rule_bool ,
@@ -13286,8 +13348,6 @@ version 2005/12/01 or later.
     dotted .value_forbidden:n = true ,
     total-width .code:n = { } , 
     total-width .value_required:n = true ,
-    width .code:n = { } , 
-    width .value_required:n = true ,
     sep-color .code:n = { } , 
     sep-color .value_required:n = true ,
     unknown .code:n =
@@ -13307,20 +13367,16 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % The following keys are used to determine the total width of the line
-% (including the spaces on both sides of the line). The key |width| is
-% deprecated and has been replaced by the key |total-width|.
+% (including the spaces on both sides of the line). 
 % 
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / custom-line-width }
   {
-    multiplicity .int_set:N = \l_@@_multiplicity_int , 
-    multiplicity .initial:n = 1 , 
-    multiplicity .value_required:n = true ,
+    multiplicity .int_set:N = \l_@@_tmpc_int , 
     tikz .code:n = \bool_set_true:N \l_@@_tikz_rule_bool ,
-    total-width .code:n = \dim_set:Nn \l_@@_rule_width_dim { #1 } 
+    total-width .code:n = \dim_set:Nn \l_@@_rule_width_before_dim { #1 } 
                           \bool_set_true:N \l_@@_total_width_bool ,
     total-width .value_required:n = true , 
-    width .meta:n = { total-width = #1 } ,
     dotted .code:n = \bool_set_true:N \l_@@_dotted_rule_bool ,
   }
 %    \end{macrocode}
@@ -13329,7 +13385,7 @@ version 2005/12/01 or later.
 % The following command will create the command that the final user will use in
 % its array to draw an horizontal rule (hence the `|h|` in the name) with the
 % full width of the array. |#1| is the whole set of keys to pass to the command
-% |\@@_hline:n| (which is in the internal |\CodeAfter|).
+% |\@@_draw_hrule:n| (which is in the internal |\CodeAfter|).
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_h_custom_line:n #1
   {
@@ -13348,7 +13404,7 @@ version 2005/12/01 or later.
 % The following command will create the command that the final user will use in
 % its array to draw an horizontal rule on only some of the columns of the array
 % (hence the letter |c| as in |\cline|). |#1| is the whole set of keys to pass
-% to the command |\@@_hline:n| (which is in the internal |\CodeAfter|).
+% to the command |\@@_draw_hrule:n| (which is in the internal |\CodeAfter|).
 %
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_c_custom_line:n #1
@@ -13363,7 +13419,7 @@ version 2005/12/01 or later.
         \noalign
           {
             \@@_compute_rule_width:n { #1 , ##1 }
-            \skip_vertical:n { \l_@@_rule_width_dim }
+            \skip_vertical:n \l_@@_rule_width_before_dim
             \clist_map_inline:nn
               { ##2 }
               { \@@_c_custom_line_i:nn { #1 , ##1 } { ####1 } }
@@ -13381,16 +13437,16 @@ version 2005/12/01 or later.
     \tl_if_in:nnTF { #2 } { - } 
       { \@@_cut_on_hyphen:w #2 \q_stop }  
       { \@@_cut_on_hyphen:w #2 - #2 \q_stop }  
-    \tl_gput_right:Ne \g_@@_pre_code_after_tl
-      { 
-        \@@_hline:n 
+    \tl_gput_right:Ne \g_@@_rules_tl
+      {
+        \@@_draw_hrule:n 
           { 
             #1 , 
             start = \l_tmpa_tl , 
             end = \l_tmpb_tl , 
             position = \int_eval:n { \c@iRow + 1 } ,
-            total-width = \dim_use:N \l_@@_rule_width_dim
-          } 
+            total-width = \dim_use:N \l_@@_rule_width_before_dim 
+          }           
       }
   }
 %    \end{macrocode}
@@ -13405,14 +13461,14 @@ version 2005/12/01 or later.
     \bool_if:NF \l_@@_total_width_bool
       { 
         \bool_if:NTF \l_@@_dotted_rule_bool
-          { \dim_set:Nn \l_@@_rule_width_dim { 2 \l_@@_xdots_radius_dim } }
+          { \dim_set:Nn \l_@@_rule_width_before_dim { 2 \l_@@_xdots_radius_dim } }
           {
             \bool_if:NF \l_@@_tikz_rule_bool
               { 
-                \dim_set:Nn \l_@@_rule_width_dim 
+                \dim_set:Nn \l_@@_rule_width_before_dim
                   { 
-                    \arrayrulewidth * \l_@@_multiplicity_int 
-                    + \doublerulesep * ( \l_@@_multiplicity_int - 1 ) 
+                    \arrayrulewidth * \l_@@_tmpc_int 
+                    + \doublerulesep * ( \l_@@_tmpc_int - 1 ) 
                   }
               }
           }
@@ -13441,15 +13497,32 @@ version 2005/12/01 or later.
 % In the following line, the |\dim_use:N| is mandatory since we do an expansion.
 %    \begin{macrocode}
     \tl_gput_right:Ne \g_@@_array_preamble_tl
-      { \exp_not:N ! { \skip_horizontal:n { \dim_use:N \l_@@_rule_width_dim } } }
-    \tl_gput_right:Ne \g_@@_pre_code_after_tl
-      { 
-        \@@_vline:n 
-          { 
-            #2 , 
-            position = \int_eval:n { \c@jCol + 1 } ,
-            total-width = \dim_use:N \l_@@_rule_width_dim 
-          } 
+      {
+        \exp_not:N !
+          { \skip_horizontal:n { \dim_use:N \l_@@_rule_width_before_dim } }
+      }
+    \tl_gput_right:Ne \g_@@_rules_tl
+      {
+%    \end{macrocode}
+%
+% Here is a version with the keys of |rules-after|.
+% \begin{Verbatim}
+% \@@_draw_vrule:n 
+%   { 
+%     #2 , 
+%     position = \int_eval:n { \c@jCol + 1 } ,
+%     total-width = \dim_use:N \l_@@_rule_width_before_dim
+%   }
+% \end{Verbatim}
+% However, you will use a slightly more efficient version.
+% 
+%    \begin{macrocode}
+        {
+          \dim_set:Nn \l_@@_rule_width_after_dim
+            { \dim_use:N \l_@@_rule_width_before_dim }
+          \int_set:Nn \l_@@_position_int { \int_eval:n { \c@jCol + 1 } }
+          \@@_draw_vrule:n { #2 }
+        }
       }
     \@@_rec_preamble:n #1
   }
@@ -13461,7 +13534,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \IfPackageLoadedT { tikz }
       {
@@ -13472,7 +13545,12 @@ version 2005/12/01 or later.
                 letter = ; ,
                 command = \hdashedline ,
                 ccommand = \cdashedline ,
-                tikz = { dash~pattern = on~4~pt~off~2pt, dash~expand~off } ,
+                tikz =
+                  {
+                    dash~pattern = on~4~pt~off~2pt,
+                    dash~expand~off ,
+                    line~cap = butt
+                  } ,
                 total-width = \pgflinewidth
               }
           }
@@ -13482,8 +13560,74 @@ version 2005/12/01 or later.
                 letter = ; ,
                 command = \hdashedline ,
                 ccommand = \cdashedline ,
-                tikz = { dash~pattern = on~4~pt~off~2pt } ,
+                tikz = { dash~pattern = on~4~pt~off~2pt , line~cap = butt} ,
                 total-width = \pgflinewidth
+              }
+          }
+      }
+  }
+%    \end{macrocode}
+%
+% \subsubsection*{The key default-line}
+%
+%    \begin{macrocode}
+\keys_define:nn { nicematrix / default-line }
+  {
+    multiplicity .int_set:N = \l_@@_multiplicity_int , 
+    color .code:n = \bool_set_true:N \l_@@_color_bool ,
+    color .value_required:n = true ,
+    tikz .code:n =
+      \bool_set_true:N \l_@@_tikz_rule_bool
+      \tl_set:Nn \l_@@_tikz_rule_tl { #1 } ,
+    tikz .value_required:n = true ,
+    dotted .code:n = \bool_set_true:N \l_@@_dotted_rule_bool ,
+    dotted .value_forbidden:n = true ,
+    total-width .code:n = { } , 
+    total-width .value_required:n = true ,
+    sep-color .code:n = { } , 
+    sep-color .value_required:n = true ,
+    unknown .code:n =
+      \@@_unknown_key:nn
+        { nicematrix / default-line }
+        { Unknown~key~for~default-line }
+  }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_default_line:n #1
+  {
+    \bool_set_false:N \l_@@_tikz_rule_bool
+    \bool_set_false:N \l_@@_dotted_rule_bool
+    \bool_set_false:N \l_@@_color_bool
+    \keys_set:nn { nicematrix / default-line } { #1 }
+    \bool_if:NT \l_@@_tikz_rule_bool
+      {
+        \IfPackageLoadedF { tikz }
+          { \@@_error:n { tikz~in~custom-line~without~tikz } } 
+        \bool_if:NT \l_@@_color_bool
+          { \@@_error:n { color~in~custom-line~with~tikz } }
+      }
+    \bool_if:NT \l_@@_dotted_rule_bool
+      { 
+        \int_compare:nNnT \l_@@_multiplicity_int > 1
+          { \@@_error:n { key~multiplicity~with~dotted } }
+      }
+    \bool_if:NTF \l_@@_tikz_rule_bool
+      {
+        \socket_assign_plug:nn { nicematrix / vsegment } { tikz }
+        \socket_assign_plug:nn { nicematrix / hsegment } { tikz }
+      }
+      {
+        \bool_if:NTF \l_@@_dotted_rule_bool
+          {
+            \socket_assign_plug:nn { nicematrix / vsegment } { dotted }
+            \socket_assign_plug:nn { nicematrix / hsegment } { dotted }
+          }
+          {
+            \bool_if:NTF \l_@@_multiple_rule_bool
+              {
+                \socket_assign_plug:nn { nicematrix / vsegment } { multiple }
+                \socket_assign_plug:nn { nicematrix / hsegment } { multiple }
               }
           }
       }
@@ -13496,7 +13640,7 @@ version 2005/12/01 or later.
 % |\l_tmpa_tl| for the row and |\l_tmpb_tl| for the column) would provide an
 % horizontal rule towards the right in the block delimited by the four arguments
 % |#1|, |#2|, |#3| and |#4|. If this rule would be in the block (it must not be
-% drawn), the boolean |\l_tmpa_bool| is set to |false|.
+% drawn), the boolean |\g_tmpa_bool| is set to |false|.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_hline_in_block:nnnnn #1 #2 #3 #4 #5
   {
@@ -13592,13 +13736,13 @@ version 2005/12/01 or later.
         \str_case:nnF { ##1 }
           {
             { NW } 
-            { \@@_compute_a_corner:nnnnnn 1 1 1 1 \c@iRow \c@jCol }
+            { \@@_compute_corner:nnnnnn 1 1 1 1 \c@iRow \c@jCol }
             { NE } 
-            { \@@_compute_a_corner:nnnnnn 1 \c@jCol 1 { -1 } \c@iRow 1 }
+            { \@@_compute_corner:nnnnnn 1 \c@jCol 1 { -1 } \c@iRow 1 }
             { SW } 
-            { \@@_compute_a_corner:nnnnnn \c@iRow 1 { -1 } 1 1 \c@jCol }
+            { \@@_compute_corner:nnnnnn \c@iRow 1 { -1 } 1 1 \c@jCol }
             { SE } 
-            { \@@_compute_a_corner:nnnnnn \c@iRow \c@jCol { -1 } { -1 } 1 1 } 
+            { \@@_compute_corner:nnnnnn \c@iRow \c@jCol { -1 } { -1 } 1 1 } 
           }
           { \@@_error:nn { bad~corner } { ##1 } }
       }
@@ -13652,7 +13796,7 @@ version 2005/12/01 or later.
 % |\l_@@_corners_cells_clist|.
 % 
 % \medskip
-% The six arguments of |\@@_compute_a_corner:nnnnnn| are as follow:
+% The six arguments of |\@@_compute_corner:nnnnnn| are as follow:
 % \begin{itemize}
 % \item |#1| and |#2| are the number of row and column of the cell which is
 % actually in the corner;
@@ -13664,7 +13808,7 @@ version 2005/12/01 or later.
 % the corner.
 % \end{itemize}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_compute_a_corner:nnnnnn #1 #2 #3 #4 #5 #6
+\cs_new_protected:Npn \@@_compute_corner:nnnnnn #1 #2 #3 #4 #5 #6
   {
 %    \end{macrocode}
 % For the explanations and the name of the variables, we consider that we are
@@ -14158,7 +14302,7 @@ version 2005/12/01 or later.
           { \@@_env: - last - ##1 \l_@@_suffix_tl } 
           { \@@_env: - \int_use:N \c@iRow - ##1 \l_@@_suffix_tl } 
       }
-    \pgfnodealias % added 2025-04-05
+    \pgfnodealias 
       { \@@_env: - last - last \l_@@_suffix_tl } 
       { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol \l_@@_suffix_tl } 
 %    \end{macrocode}
@@ -14326,7 +14470,7 @@ version 2005/12/01 or later.
 % and |#5| is the label (=content) of the block.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_Block_ii:nnnnn #1 #2 #3 #4 #5
-  {
+  { 
 %    \end{macrocode}
 %
 % \medskip
@@ -14441,9 +14585,9 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \rowcolor \@@_rowcolor_error    
     \cs_set_protected_nopar:Npn \diagbox ##1 ##2
       {
-        \tl_gput_right:Ne \g_@@_pre_code_after_tl    
+        \tl_gput_right:Ne \g_@@_rules_tl
           { 
-            \@@_actually_diagbox:nnnnnn 
+            \@@_draw_diagbox:nnnnnn 
               { \int_use:N \c@iRow }
               { \int_use:N \c@jCol }
               { \int_eval:n { \c@iRow + #1 - 1 } }
@@ -14472,7 +14616,7 @@ version 2005/12/01 or later.
 % |\documentclass|).
 %    \begin{macrocode}
         \tl_if_empty:NTF \l_@@_color_tl
-          { \int_compare:nNnT { #2 } = 1 { \set@color } }
+          { \int_compare:nNnT { #2 } = 1 \set@color } 
           { \@@_color:o \l_@@_color_tl }
 %    \end{macrocode}
 % If the block is mono-row, we use |\g_@@_row_style_tl| even if it has yet been
@@ -14623,7 +14767,7 @@ version 2005/12/01 or later.
 % the |\Block|, we do a rotation of the box (and we also adjust the
 % baseline of the rotated box).
 %    \begin{macrocode}
-    \bool_if:NT \g_@@_rotate_bool { \@@_rotate_box_of_block: }
+    \bool_if:NT \g_@@_rotate_bool \@@_rotate_box_of_block:
 %    \end{macrocode}
 %
 % If we are in a mono-column block, we take into account the width of that block
@@ -14656,7 +14800,7 @@ version 2005/12/01 or later.
             { \str_if_eq_p:ee t \l_@@_vpos_block_str }
             { \str_if_eq_p:ee b \l_@@_vpos_block_str }
           }
-          { \@@_adjust_blocks_ht_dp: }
+          \@@_adjust_blocks_ht_dp: 
       }
     \seq_gput_right:Ne \g_@@_blocks_seq
       {   
@@ -14800,15 +14944,15 @@ version 2005/12/01 or later.
         {
           \bool_if:NTF \l_@@_tabular_bool
             { 
-              \group_begin:
+              {
 %    \end{macrocode}
 % The following command will be no-op when |respect-arraystretch| is in force.
 %    \begin{macrocode}
-              \@@_reset_arraystretch:
-              \exp_not:n
-                {
-                  \dim_zero:N \extrarowheight 
-                  #4  
+                \@@_reset_arraystretch:
+                \exp_not:n
+                  {
+                    \dim_zero:N \extrarowheight 
+                    #4  
 %    \end{macrocode}
 % If the box is rotated (the key |\rotate| may be in the previous |#4|), the
 % tabular used for the content of the cell will be constructed with a format
@@ -14817,41 +14961,41 @@ version 2005/12/01 or later.
 % the tabular is the same as the external alignment of the tabular (that is to
 % say the position of the block in its zone of merged cells).
 %    \begin{macrocode}
-                  \tag_if_active:T { \tag_stop:n { table } }
-                  \use:e 
-                    {
-                      \exp_not:N \begin { tabular } [ \l_@@_vpos_block_str ] 
-                      { @ { } \l_@@_hpos_block_str @ { } } 
-                    }
-                    #5 
-                  \end { tabular } 
-                }
-              \group_end:
+                    \tag_if_active:T { \tag_stop:n { table } }
+                    \use:e 
+                      {
+                        \exp_not:N \begin { tabular } [ \l_@@_vpos_block_str ] 
+                        { @ { } \l_@@_hpos_block_str @ { } } 
+                      }
+                      #5 
+                    \end { tabular } 
+                  }
+              }
             } 
 %    \end{macrocode}
 % When we are \emph{not} in an environment |{NiceTabular}| (or similar).
 %    \begin{macrocode}
             { 
-              \group_begin:
+              {
 %    \end{macrocode}
 % The following will be no-op when |respect-arraystretch| is in force.
 %    \begin{macrocode}
-              \@@_reset_arraystretch:
-              \exp_not:n
-                {
-                  \dim_zero:N \extrarowheight 
-                  #4 
-                  $ % $  
-                  \use:e 
-                    { 
-                      \exp_not:N \begin { array } [ \l_@@_vpos_block_str ]
-                      { @ { } \l_@@_hpos_block_str @ { } }
-                    } 
-                    #5 
-                  \end { array } 
-                  $ % $
-                }
-              \group_end:
+                \@@_reset_arraystretch:
+                \exp_not:n
+                  {
+                    \dim_zero:N \extrarowheight 
+                    #4 
+                    $ % $  
+                    \use:e 
+                      { 
+                        \exp_not:N \begin { array } [ \l_@@_vpos_block_str ]
+                        { @ { } \l_@@_hpos_block_str @ { } }
+                      } 
+                      #5 
+                    \end { array } 
+                    $ % $
+                  }
+              }
             }
         }
       }  
@@ -14904,7 +15048,6 @@ version 2005/12/01 or later.
 \keys_define:nn { nicematrix / Block / SecondPass }
   {
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
-    ampersand-in-blocks .default:n = true , 
     &-in-blocks .meta:n = ampersand-in-blocks ,
 %    \end{macrocode}
 % The sequence |\l_@@_tikz_seq| will contain a sequence of comma-separated lists
@@ -14944,16 +15087,12 @@ version 2005/12/01 or later.
     borders .value_required:n = true ,
     hvlines .meta:n = { vlines , hlines } , 
     vlines .bool_set:N = \l_@@_vlines_block_bool,
-    vlines .default:n = true , 
     hlines .bool_set:N = \l_@@_hlines_block_bool,
-    hlines .default:n = true , 
     rules/width .dim_set:N = \arrayrulewidth ,
-    rules/width .value_required:n = true ,
 %    \end{macrocode}
 % The key |line-width| is now deprecated (replaced by |rules/width|).
 %    \begin{macrocode}
-    line-width .dim_set:N = \l_@@_line_width_dim ,
-    line-width .value_required:n = true ,
+    line-width .dim_set:N = \arrayrulewidth ,
 %    \end{macrocode}
 % Some keys have not a property |.value_required:n| (or similar) because they
 % are in |FirstPass|. 
@@ -14978,15 +15117,12 @@ version 2005/12/01 or later.
     v-center .meta:n = m ,
     p .code:n = \bool_set_true:N \l_@@_p_block_bool ,
     p .value_forbidden:n = true ,
-    name .tl_set:N = \l_@@_block_name_str , % .str_set:N ?
+    name .str_set:N = \l_@@_block_name_str , 
     name .value_required:n = true ,
-    name .initial:n = ,
     respect-arraystretch .code:n = 
       \cs_set_eq:NN \@@_reset_arraystretch: \prg_do_nothing: ,
     respect-arraystretch .value_forbidden:n = true , 
     transparent .bool_set:N = \l_@@_transparent_bool ,
-    transparent .default:n = true , 
-    transparent .initial:n = false ,
     unknown .code:n =
       \@@_unknown_key:nn
         { nicematrix / Block / SecondPass }
@@ -15003,9 +15139,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_draw_blocks:
   {
-    \bool_if:NTF \c_@@_revtex_bool 
-      { \cs_set_eq:NN \ialign \@@_old_ialign: }    
-      { \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: }
+    \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: 
     \seq_map_inline:Nn \g_@@_blocks_seq { \@@_Block_iv:nnnnnn ##1 }
   }
 %    \end{macrocode}
@@ -15057,14 +15191,20 @@ version 2005/12/01 or later.
       {  
         \int_compare:nNnTF \l_@@_last_row_int > \g_@@_row_total_int 
           { \msg_error:nnnn { nicematrix } { Block~too~large~1 } { #1 } { #2 } } 
-          { 
-            \@@_Block_v:nneenn 
-              { #1 } 
-              { #2 } 
-              { \int_use:N \l_@@_last_row_int }
-              { \int_use:N \l_@@_last_col_int }
+          {
+%    \end{macrocode}
+% We expand the four first arguments of |\@@_Block_v:nnnnnn|.
+%    \begin{macrocode}
+            \use:e
+              {
+                \@@_Block_v:nnnnnn
+                  { #1 } 
+                  { #2 } 
+                  { \int_use:N \l_@@_last_row_int }
+                  { \int_use:N \l_@@_last_col_int }
+              }
               { #5 } 
-              { #6 } 
+              { #6 }
           }
       }
   }
@@ -15096,7 +15236,8 @@ version 2005/12/01 or later.
 % (since the cell must be divided in several sub-cells). Remark that
 % |\tl_if_in:nnT| is faster then |\str_if_in:nnT|.
 %    \begin{macrocode}
-    \tl_if_in:nnT { #6 } { & } { \bool_set_true:N \l_@@_ampersand_bool }
+    \bool_if:NT \l_@@_amp_in_blocks_bool
+      { \tl_if_in:nnT { #6 } { & } { \bool_set_true:N \l_@@_ampersand_bool } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -15104,7 +15245,7 @@ version 2005/12/01 or later.
       \l_@@_vlines_block_bool 
       { ! \l_@@_ampersand_bool }
       {
-        \tl_gput_right:Ne \g_nicematrix_code_after_tl
+        \tl_gput_right:Ne \g_@@_rules_tl
           {
             \@@_vlines_block:nnnnn
               { \dim_use:N \arrayrulewidth }  
@@ -15113,7 +15254,7 @@ version 2005/12/01 or later.
       }
     \bool_if:NT \l_@@_hlines_block_bool
       {
-        \tl_gput_right:Ne \g_nicematrix_code_after_tl
+        \tl_gput_right:Ne \g_@@_rules_tl
           { 
             \@@_hlines_block:nnnnn
               { \dim_use:N \arrayrulewidth }
@@ -15127,7 +15268,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \bool_if:NF \l_@@_transparent_bool 
       { 
-        \seq_gput_left:Ne \g_@@_pos_of_blocks_seq 
+        \seq_gput_right:Ne \g_@@_pos_of_blocks_seq 
           { { #1 } { #2 } { #3 } { #4 } { \l_@@_block_name_str } }  
       }
 %    \end{macrocode}
@@ -15138,7 +15279,7 @@ version 2005/12/01 or later.
       {
         \bool_lazy_or:nnT \l_@@_hlines_block_bool \l_@@_vlines_block_bool 
           { \@@_error:n { hlines~with~color } }
-        \tl_gput_right:Nn \g_nicematrix_code_after_tl
+        \tl_gput_right:Nn \g_@@_rules_tl
           { 
             \@@_stroke_block:nnnnn
 %    \end{macrocode}
@@ -15195,9 +15336,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \cs_set_protected_nopar:Npn \diagbox ##1 ##2
       {
-        \tl_gput_right:Ne \g_@@_pre_code_after_tl    
+        \tl_gput_right:Ne \g_@@_rules_tl
           { 
-            \@@_actually_diagbox:nnnnnn 
+            \@@_draw_diagbox:nnnnnn 
               { #1 } { #2 } { #3 } { #4 } 
               { \exp_not:n { ##1 } } 
               { \exp_not:n { ##2 } }
@@ -15794,9 +15935,6 @@ version 2005/12/01 or later.
     \tl_clear:N \l_@@_draw_tl
     \dim_set_eq:NN \l_@@_line_width_dim \arrayrulewidth
     \keys_set_known:nn { nicematrix / BlockStroke } { #1 }
-    \pgfpicture
-    \pgfrememberpicturepositiononpagetrue
-    \pgf@relevantforpicturesizefalse
     \tl_if_empty:NF \l_@@_draw_tl 
       { 
 %    \end{macrocode}
@@ -15835,7 +15973,6 @@ version 2005/12/01 or later.
               { \pgfusepath { stroke } }
           }
       }
-    \endpgfpicture
     \group_end:
   }
 %    \end{macrocode}
@@ -15848,10 +15985,13 @@ version 2005/12/01 or later.
     draw .code:n = 
       \tl_if_empty:eF { #1 } { \tl_set:Nn \l_@@_draw_tl { #1 } } ,
     draw .default:n = default ,
-    line-width .dim_set:N = \l_@@_line_width_dim ,
-    rules/width .dim_set:N = \l_@@_line_width_dim ,    
     rounded-corners .dim_set:N = \l_@@_rounded_corners_dim ,
-    rounded-corners .default:n = 4 pt
+    rounded-corners .default:n = 4 pt ,
+    rules/width .dim_set:N = \l_@@_line_width_dim ,
+%    \end{macrocode}
+% The key |line-width| is now deprecated.
+%    \begin{macrocode}
+    line-width .dim_set:N = \l_@@_line_width_dim 
   }
 %    \end{macrocode}
 %
@@ -15870,40 +16010,66 @@ version 2005/12/01 or later.
     \group_begin:
 %    \end{macrocode}
 % We are actually during the execution of the |\g_nicematrix_code_after_tl|.
-% In that context |\arrayrulewidth| is the widht of standard lines (we are drawing
-% standard rules becuase, up to now, there is no way to draw the internal lines of a Block
+% In that context |\arrayrulewidth| is the width of standard lines (we are drawing
+% standard rules because, up to now, there is no way to draw the internal lines of a Block
 % with a style of TikZ).
 %    \begin{macrocode}
     \dim_set:Nn \arrayrulewidth { #1 }
 %    \end{macrocode}
 %
 % \medskip
-% Below, you use |\@@_vline:n| to draw to rules and that command will use
+% Below, you use |\@@_draw_vrule:n| to draw to rules and that command will use
 % |\g_@@_pos_of_blocks_seq| in order to \emph{not} draw the rules within the blocks.
 % That's why we filter the list of blocks in order to discard the blocks which encompass the
 % current block.
 %    \begin{macrocode}
     \seq_set_filter:NNn \g_@@_pos_of_blocks_seq \g_@@_pos_of_blocks_seq % noqa: E420
-       {
-         \int_compare_p:nNn { \use_i:nnnnn ##1 } > { #2 }
-         ||
-         \int_compare_p:nNn { \use_ii:nnnnn ##1 } > { #3 }
-         ||
-         \int_compare_p:nNn { \use_iii:nnnnn ##1 } < { #4 }
-         ||
-         \int_compare_p:nNn { \use_iv:nnnnn ##1 } < { #5 }
-       }
+      {
+        \int_compare_p:nNn { \use_i:nnnnn ##1 } > { #2 }
+        ||
+        \int_compare_p:nNn { \use_ii:nnnnn ##1 } > { #3 }
+        ||
+        \int_compare_p:nNn { \use_iii:nnnnn ##1 } < { #4 }
+        ||
+        \int_compare_p:nNn { \use_iv:nnnnn ##1 } < { #5 }
+      }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \int_step_inline:nnn { #3 } { #5 + 1 }
-      { 
-        \@@_vline:n
-          { 
-            position = ##1 ,
-            start = #2 ,
-            end = #4 ,
+    \bool_if:NT \l_@@_fix_vertex_bool
+      {
+        \int_compare:nNnT { #3 } > 1
+          {
+            \seq_put_right:Ne \g_@@_pos_of_blocks_seq
+              {
+                { 1 }
+                { 1 }
+                { \int_use:N \c@iRow }
+                { \int_eval:n { #3 -1 } }            
+                { }
+              }
           }
+        \int_compare:nNnT { #5 } < \c@jCol
+          {
+            \seq_put_right:Ne \g_@@_pos_of_blocks_seq
+              {
+                { 1 }
+                { \int_eval:n { #5 + 1 } }
+                { \int_use:N \c@iRow }            
+                { \int_use:N \c@jCol }
+                { }
+              }
+          }
+      }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \int_set:Nn \l_@@_start_int { #2 }
+    \int_set:Nn \l_@@_end_int { #4 }
+    \int_step_inline:nnn { #3 } { #5 + 1 }
+      {
+        \int_set:Nn \l_@@_position_int { ##1 }
+        \@@_draw_vrule:
       }
     \group_end:
   }
@@ -15911,25 +16077,23 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % The command |\@@_hlines_block:nnnnn| is used only once: in |\@@_Block_v:nnnnnn|
-% which actually draw the block.
+% which actually draws the block.
 % 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_hlines_block:nnnnn #1 #2 #3 #4 #5
   {
+    \group_begin:
 %    \end{macrocode}
 % We are actually during the execution of the |\g_nicematrix_code_after_tl|.
 % In that context |\arrayrulewidth| is the widht of standard lines (we are drawing
 % standard rules becuase, up to now, there is no way to draw the internal lines of a Block
 % with a style of TikZ).
 %    \begin{macrocode}
-    \group_begin:
     \dim_set:Nn \arrayrulewidth { #1 }
 %    \end{macrocode}    
 % \medskip
-% Below, you use |\@@_hline:n| to draw to rules and that command will use
-% |\g_@@_pos_of_blocks_seq| in order to \emph{not} draw the rules within the blocks.
-% That's why we filter the list of blocks in order to discard the blocks which encompass the
-% current block.
+% We filter the list of blocks |\g_@@_pos_of_blocks_seq| in order to discard the blocks
+% which encompass the current block (elsewhere, of course, the rules would not be drawn).
 %    \begin{macrocode}
     \seq_set_filter:NNn \g_@@_pos_of_blocks_seq \g_@@_pos_of_blocks_seq % noqa: E420
        {
@@ -15944,14 +16108,40 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
+    \bool_if:NT \l_@@_fix_vertex_bool
+      {
+        \int_compare:nNnT { #2 } > 1
+          {
+            \seq_put_right:Ne \g_@@_pos_of_blocks_seq
+              {
+                { 1 }
+                { 1 }
+                { \int_eval:n { #2 - 1 } }
+                { \int_use:N \c@jCol }
+                { }
+              }
+          }
+        \int_compare:nNnT { #4 } < \c@iRow
+          {
+            \seq_put_right:Ne \g_@@_pos_of_blocks_seq
+              {
+                { \int_eval:n { #4 + 1 } }
+                { 1 }
+                { \int_use:N \c@iRow }
+                { \int_use:N \c@jCol }
+                { }
+              }
+          }
+      }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \int_set:Nn \l_@@_start_int { #3 }
+    \int_set:Nn \l_@@_end_int { #5 }
     \int_step_inline:nnn { #2 } { #4 + 1 }
-      { 
-        \@@_hline:n 
-          { 
-            position = ##1 , 
-            start = #3 ,
-            end = #5 
-          } 
+      {
+        \int_set:Nn \l_@@_position_int { ##1 }
+        \@@_draw_hrule:
       }
     \group_end:
   }
@@ -15980,7 +16170,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \cs_new_protected:Npe \@@_stroke_borders_block_i:
       {
@@ -16084,8 +16274,11 @@ version 2005/12/01 or later.
     borders .clist_set:N = \l_@@_borders_clist ,
     rounded-corners .dim_set:N = \l_@@_rounded_corners_dim ,
     rounded-corners .default:n = 4 pt ,
+    rules/width .dim_set:N = \l_@@_line_width_dim ,
+%    \end{macrocode}
+% The following key is deprecated.
+%    \begin{macrocode}
     line-width .dim_set:N = \l_@@_line_width_dim ,
-    rules/width .dim_set:N = \l_@@_line_width_dim     
   }
 %    \end{macrocode}
 %
@@ -16142,9 +16335,12 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \medskip
+
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / SpecialOffset }
-  { offset .dim_set:N = \l_@@_offset_dim }
+  {
+    offset .dim_set:N = \l_@@_offset_dim ,
+  }
 %    \end{macrocode}
 %
 % \bigskip
@@ -16229,7 +16425,6 @@ version 2005/12/01 or later.
     delimiters / color .tl_set:N = \l_@@_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l_@@_delimiters_max_width_bool ,
-    delimiters / max-width .default:n = true ,
     delimiters .code:n = \keys_set:nn { nicematrix / delimiters } { #1 } , 
     delimiters .value_required:n = true , 
     rounded-corners .dim_set:N = \l_@@_tab_rounded_corners_dim ,
@@ -16350,9 +16545,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_diagbox:nn #1 #2
   {
-    \tl_gput_right:Ne \g_@@_pre_code_after_tl    
+    \tl_gput_right:Ne \g_@@_rules_tl
       { 
-        \@@_actually_diagbox:nnnnnn
+        \@@_draw_diagbox:nnnnnn
           { \int_use:N \c@iRow } 
           { \int_use:N \c@jCol } 
           { \int_use:N \c@iRow } 
@@ -16387,16 +16582,14 @@ version 2005/12/01 or later.
 % The command |\diagbox| is also redefined locally when we draw a block.
 % 
 % \medskip
-% The first four arguments of |\@@_actually_diagbox:nnnnnn| correspond to the
+% The first four arguments of |\@@_draw_diagbox:nnnnnn| correspond to the
 % rectangle (=block) to slash (we recall that it's possible to use |\diagbox| in
 % a |\Block|). The other two are the elements to draw below and above the
 % diagonal line.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_actually_diagbox:nnnnnn #1 #2 #3 #4 #5 #6
+\cs_new_protected:Npn \@@_draw_diagbox:nnnnnn #1 #2 #3 #4 #5 #6
   {
-    \pgfpicture
-    \pgf@relevantforpicturesizefalse
-    \pgfrememberpicturepositiononpagetrue
+    \group_begin:
     \@@_qpoint:n { row - #1 }
     \dim_set_eq:NN \l_tmpa_dim \pgf@y
     \@@_qpoint:n { col - #2 }
@@ -16442,7 +16635,7 @@ version 2005/12/01 or later.
       } 
       { } 
       { }
-    \endpgfpicture
+    \group_end:
   }
 %    \end{macrocode}
 %
@@ -16623,17 +16816,13 @@ version 2005/12/01 or later.
 \keys_define:nn { nicematrix / sub-matrix }
   {
     extra-height .dim_set:N = \l_@@_submatrix_extra_height_dim ,
-    extra-height .value_required:n = true ,
     left-xshift .dim_set:N = \l_@@_submatrix_left_xshift_dim ,
-    left-xshift .value_required:n = true ,
     right-xshift .dim_set:N = \l_@@_submatrix_right_xshift_dim ,
-    right-xshift .value_required:n = true ,
     xshift .meta:n = { left-xshift = #1, right-xshift = #1 } ,
     xshift .value_required:n = true ,
     delimiters / color .tl_set:N = \l_@@_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
     slim .bool_set:N = \l_@@_submatrix_slim_bool ,
-    slim .default:n = true ,
     hlines .clist_set:N = \l_@@_submatrix_hlines_clist ,
     hlines .default:n = all ,
     vlines .clist_set:N = \l_@@_submatrix_vlines_clist ,
@@ -16781,7 +16970,7 @@ version 2005/12/01 or later.
 % For explanations about the construction with rescanning of the preamble, see
 % the documentation for the user command |\Cdots|.
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . } 
+\AtBeginDocument 
   {
     \tl_set_rescan:Nnn \l_tmpa_tl { } { m m m m O { } E { _ ^ } { { } { } } }
     \exp_args:NNo \NewDocumentCommand \@@_SubMatrix \l_tmpa_tl 
@@ -17323,16 +17512,12 @@ version 2005/12/01 or later.
 \keys_define:nn { nicematrix / Brace } 
   {
     left-shorten .bool_set:N = \l_@@_brace_left_shorten_bool ,
-    left-shorten .default:n = true ,
     left-shorten .value_forbidden:n = true ,
     right-shorten .bool_set:N = \l_@@_brace_right_shorten_bool ,
-    right-shorten .default:n = true ,
     right-shorten .value_forbidden:n = true ,
     shorten .meta:n = { left-shorten , right-shorten } , 
     shorten .value_forbidden:n = true ,
     yshift .dim_set:N = \l_@@_brace_yshift_dim , 
-    yshift .value_required:n = true ,
-    yshift .initial:n = \c_zero_dim ,
     color .tl_set:N = \l_tmpa_tl , 
     color .value_required:n = true ,
     unknown .code:n =
@@ -17816,16 +18001,140 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% \section{The command \textbackslash CreateBlocksInColumn}
+% \section{The key draw-trees-in-col}
+%
 %
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_create_blocks_in_col:n #1
-  { \clist_gput_right:Nn \g_@@_cbic_clist { #1 } }
+\cs_new_protected:Npn \@@_draw_trees:
+  {
+    \@@_expand_clist_hvlines:NN \g_@@_col_with_trees_clist \c@jCol
+    \dim_zero_new:N \l_@@_em_dim
+    \dim_set:Nn \l_@@_em_dim { 1 em }
+    \dim_zero_new:N \l_@@_ex_dim
+    \dim_set:Nn \l_@@_ex_dim { 1 ex }
+    \pgfpicture
+    \pgfrememberpicturepositiononpagetrue
+    \pgf@relevantforpicturesizefalse
+    \dim_compare:nNnT \l_@@_trees_line_width_dim > \c_zero_dim
+      { \pgfsetlinewidth { \l_@@_trees_line_width_dim } }
+    \@@_color:o \l_@@_trees_color_tl
+    \pgfsetcornersarced
+      { \pgfpoint \l_@@_trees_rounded_corners_dim  \l_@@_trees_rounded_corners_dim }
+    \clist_map_function:NN \g_@@_col_with_trees_clist
+      \@@_draw_trees_in_col:n 
+    \clist_gclear:N \g_@@_col_with_trees_clist
+    \endpgfpicture
+  }
 %    \end{macrocode}
 %
+% \bigskip
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_cbic:
+\cs_new_protected:Npn \@@_draw_trees_in_col:n #1
   {
+%    \end{macrocode}
+% The argument is provided by curryfication.
+%    \begin{macrocode}
+    \int_compare:nNnTF { #1 } > \c@jCol
+      { \@@_error:nn { Col~outside~tabular~in~trees } }
+      {
+        \int_compare:nNnTF { #1 } = \c@jCol
+          { \@@_error:nn { Last~col~in~trees } }
+          \@@_draw_trees_in_col_i:n 
+      }
+    { #1 }
+  }
+%    \end{macrocode}
+%
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_draw_trees_in_col_i:n #1
+  {
+    \int_set:Nn \l_tmpa_int { 1 }
+    \int_step_inline:nn { \c@iRow + 1 }
+      { 
+        \cs_if_exist:cT 
+          { pgf @ sh @ ns @ \@@_env: - ##1 - #1 }
+          {
+            \int_compare:nNnT { ##1 } > { \l_tmpa_int + 1 }
+              {
+%    \end{macrocode}
+% Now, you will, potentially, draw a tree.
+%    \begin{macrocode}
+                \@@_draw_tree:nee
+                  { #1 }
+                  { \int_use:N \l_tmpa_int }
+                  { \int_eval:n { ##1 - 1 } }
+              }
+            \int_set:Nn \l_tmpa_int { ##1 }
+          }
+      }
+    \int_compare:nNnT \c@iRow > \l_tmpa_int
+      {
+        \@@_draw_tree:nee
+          { #1 }
+          { \int_use:N \l_tmpa_int }
+          { \int_eval:n { \c@iRow } }
+      }
+  }
+%    \end{macrocode}
+%
+% \bigskip
+% |#1| is the number of column;
+% |#2| is the first row : the root of the tree;
+% |#3| is the last row of the blank zone where we will draw our tree.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_draw_tree:nnn #1 #2 #3
+  {
+%    \end{macrocode}
+% |\l_tmpa_dim| will be the $x$-value of the vertical rule that we will draw.
+%    \begin{macrocode}
+    \pgfpointanchor { \@@_env: - #1 } { 5 }
+    \dim_set_eq:NN \l_tmpa_dim \pgf@x
+%    \end{macrocode}
+% We will begin by the \emph{last} branch of the tree. When that last branch
+% has been drawn (with the vertical line), we will rise the boolean |\l_tmpa_bool|.
+%    \begin{macrocode}
+    \bool_set_false:N \l_tmpa_bool
+    \int_step_inline:nnnn { #3 } { -1 } { #2 + 1 } 
+      {
+        \cs_if_exist:cT
+          { pgf @ sh @ ns @ \@@_env: - ##1 - \int_eval:n { #1 + 1 } }
+%    \end{macrocode}
+% We have found the last branch to draw.
+%    \begin{macrocode}
+          {
+            \pgfpointanchor
+              { \@@_env: - ##1 - \int_eval:n { #1 + 1 } }
+              { base~west } 
+            \pgfpathmoveto
+              {
+                \pgfpoint
+                  { \dim_eval:n { \pgf@x - 0.7 \l_@@_ex_dim } }
+                  { \dim_eval:n { \pgf@y + 0.25 \l_@@_em_dim } }
+              }
+            \pgfpathlineto { \pgfpoint \l_tmpa_dim \pgf@y }
+            \bool_if:NF \l_tmpa_bool
+               {
+                 \pgfpointanchor{ \@@_env: - #2 - #1 } { south }
+                 \pgfpathlineto
+                   { \pgfpoint \l_tmpa_dim { \dim_eval:n { \pgf@y - 3pt } } }
+                 \bool_set_true:N \l_tmpa_bool 
+               }
+            \pgfusepath { stroke }
+          }
+      }
+  }
+\cs_generate_variant:Nn \@@_draw_tree:nnn  { n e e }
+%    \end{macrocode}
+% 
+% 
+% \bigskip
+% \section{The key create-blocks-in-col}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_create_blocks_in_col:
+  {
+    \@@_expand_clist_hvlines:NN \g_@@_cbic_clist \c@jCol    
     \clist_map_inline:Nn \g_@@_cbic_clist
       {
         \cs_set:cpn
@@ -18100,7 +18409,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \bool_if:NF \l_@@_underscore_loaded_bool
       {
@@ -18115,7 +18424,7 @@ version 2005/12/01 or later.
 %
 %
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument } { . }
+\AtBeginDocument
   {
     \IfPackageLoadedT { threeparttable }
       {
@@ -18309,6 +18618,16 @@ version 2005/12/01 or later.
   {
     \token_to_str:N \Body\ alone. \\
     You~have~used~\token_to_str:N \Body\ without~\token_to_str:N \CodeBefore.\\
+    That~error~is~fatal.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Bad~use~of~CodeBefore }
+  {
+    Bad~use~of~\token_to_str:N \CodeBefore. \\
+    \token_to_str:N \CodeBefore\ must~be~used~only~at~the~beginning~of~
+    the~environment.\\
     That~error~is~fatal.
   }
 %    \end{macrocode}
@@ -18643,10 +18962,22 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { Unknown~key~for~rules }
   {
     Unknown~key.\\
-    There~is~only~two~keys~available~here:~width~and~color.\\
+    There~are~only~three~keys~available~here:~'width',~'color'~and~
+    'fix-vertex'.\\
     Your~key~' \l_keys_key_str '~will~be~ignored.
   }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Unknown~key~for~trees }
+  {
+    Unknown~key.\\
+    There~are~only~three~keys~available~here:~width~color~and~
+    rounded-corners.\\
+    Your~key~' \l_keys_key_str '~will~be~ignored.
+  }
+%   \end{macrocode}
+%
 %
 %    \begin{macrocode}
 \@@_msg_new:nn { Unknown~key~for~Hbrace }
@@ -18702,6 +19033,24 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
+\@@_msg_new:nnn { Unknown~key~for~defaut-line }
+  {
+    Unknown~key.\\
+    The~key~' \l_keys_key_str '~is~unknown~in~a~'default-line'.~
+    It~you~go~on,~you~will~probably~have~other~errors. \\
+    \c_@@_available_keys_str
+  }
+  {
+    The~available~keys~are~(in~alphabetic~order):~
+    color,~
+    dotted,~
+    multiplicity,~
+    sep-color,~
+    tikz,~and~total-width.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
 \@@_msg_new:nnn { Unknown~key~for~xdots } 
   {
     Unknown~key.\\
@@ -18731,6 +19080,27 @@ version 2005/12/01 or later.
     That~key~will~be~ignored. 
   }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Col~outside~tabular~in~trees }
+  {
+    Error~with~'draw-trees-in-col' \\
+    The~number~of~column~'#1'~is~outside~your~tabular~since~the~last~column~
+    is~\int_use:N \c@jCol. \\
+    It~will~be~ignored. 
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Last~col~in~trees }
+  {
+    Error~with~'draw-trees-in-col' \\
+    You~can't~use~'draw-trees-in-col'~with~the~column~'#1'~
+    because~it's~the~last~column~of~your~tabular. \\
+    It~will~be~ignored.
+  }
+%    \end{macrocode}          
+% 
 %
 %    \begin{macrocode}
 \@@_msg_new:nn { label~without~caption }
@@ -19353,23 +19723,21 @@ version 2005/12/01 or later.
 %
 % 
 %    \begin{macrocode}
-\@@_msg_new:nnn { Unknown~key~for~RulesBis }
+\@@_msg_new:nnn { Unknown~key~for~a~rule }
   {
     Unknown~key.\\
     Your~key~' \l_keys_key_str '~is~unknown~for~a~rule.\\
     \c_@@_available_keys_str
   }
   {
-    The~available~keys~are~(in~alphabetic~order):~
-    color,~
-    dotted,~
-    multiplicity,~
-    sep-color,~
-    tikz,~and~total-width.
+    The~available~keys~are:~color,~multiplicity,~sep-color,~tikz~
+    and~total-width~(meaningful~only~in~cunjonction~with~'tikz').
   }
-
 %    \end{macrocode}
-% 
+% If fact, there is also the key |dotted| but it won't be very useful
+% since we provide |\hdottedline|, |\cdottedline| and the letter~|:|.
+%
+% \medskip
 %    \begin{macrocode}
 \@@_msg_new:nnn { Unknown~key~for~Block } 
   {

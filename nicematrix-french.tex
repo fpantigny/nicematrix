@@ -19,7 +19,7 @@
     patterns,
     arrows.meta,
     decorations.pathreplacing,
-    babel,
+    decorations.pathmorphing,
     calligraphy
   }
  
@@ -201,7 +201,7 @@ avec une distribution TeX comme MiKTeX, TeX~Live ou MacTeX.
 ou TeXPage) vous pouvez télécharger le fichier |nicematrix.sty| dans le dossier
 de votre projet pour bénéficier de la dernière version de
 \pkg{nicematrix}.\footnote{La dernière version de |nicematrix.sty| peut être
-  téléchargée sur le dépôt Github de \pkg{nicematrix} : \newline \small
+  téléchargée sur le dépôt GitHub de \pkg{nicematrix} : \newline \small
   \url{https://github.com/fpantigny/nicematrix/releases}}
 
 \medskip
@@ -475,7 +475,7 @@ Il est également possible d'utiliser les outils de \pkg{booktabs}: |\toprule|,
 \smallskip
 \begin{Code}[width=9cm]
 \begin{enumerate}
-\item an item
+\item un item
 \smallskip
 \item
 $\begin{NiceArray}[t]{lcccccc}
@@ -489,7 +489,7 @@ u_n & 1 & 2 & 4 & 8 & 16 & 32
 \end{Code}
 \begin{minipage}{5cm}
 \begin{enumerate}
-\item an item
+\item un item
 \smallskip
 \item
 $\begin{NiceArray}[t]{lcccccc}[no-cell-nodes]
@@ -689,7 +689,7 @@ du bloc : cette clé prend comme valeur une liste d'éléments parmi les suivant
 valeur de la clé |borders| mettre une entrée de la forme
 |tikz={|\textsl{liste}|}| où \textsl{liste} est une liste de couples
 \textsl{clé=valeur} de TikZ spécifiant les caractéristiques graphiques des
-traits qui seront dessinés (pour un exemple, voir p.~\pageref{ex:tiretes}).
+traits qui seront dessinés (pour un exemple, voir p.~\pageref{ex:borders}).
 
 \item \index{tikzz@tikz!clé de \texttt{\textbackslash Block}}
 Quand la clé \Definition{tikz} est utilisée, le chemin TikZ correspondant
@@ -753,7 +753,7 @@ construction classique |w{c}{...}| de l'extension \pkg{array}).
 \begin{NiceTabular}{cw{c}{2cm}w{c}{3cm}c}
 rose      & tulipe & marguerite & dahlia \\
 violette
-& \emph{\Block[draw=red,fill=[RGB]{204,204,255},rounded-corners]{2-2}
+& \emph{\Block[C,draw=red,fill=[RGB]{204,204,255},rounded-corners]{2-2}
         {\LARGE De très jolies fleurs}}
    & & souci \\
 pervenche & & & lys \\
@@ -995,7 +995,7 @@ manière justifiée.
 
 \bigskip
 On peut mettre un environnement |{itemize}| ou |{enumerate}| dans un bloc qui
-utilise la clé |p| ou la clé |j| (dans les autres cas, on aura une erreur: 
+utilise la clé |p| ou la clé |j| (dans les autres cas, on aura une erreur LaTeX: 
 |Not allowed in LR mode|). Dans l'exemple suivant, on a chargé l'extension
 \pkg{enumitem} (pour pouvoir utiliser la clé |left| de l'environnement
 |{itemize}|).
@@ -1539,6 +1539,8 @@ la commande |\Hline|.
   est recommandé d'utiliser plutôt |\Block| quand on utilise l'extension
   \pkg{nicematrix}.} de \pkg{nicematrix} présentée
 p.~\pageref{Block};
+\item ceux créés par la clé |create-blocks-in-col| :
+cf.~p.~\pageref{create-blocks-in-col};
 \item ceux délimités implicitement par des lignes en pointillés continues, créées
 par |\Cdots|, |\Vdots|, etc. : cf.~p.~\pageref{Cdots}.
 \end{itemize}
@@ -1659,16 +1661,16 @@ clés |hlines| et |vlines|.
 
 \smallskip
 \begin{Code}
-\begin{NiceTabular}{cccc}[\emph{hvlines},rules/color=blue,rules/width=1pt]
+\begin{NiceTabular}{cccc}[\emph{hvlines},rules={color=blue,width=1pt}]
 rose      & tulipe & marguerite & dahlia \\
-violette  & \Block[draw=red]{2-2}{\LARGE fleurs}  & & souci \\
+violette  & \Block[C,draw=red]{2-2}{\LARGE fleurs}  & & souci \\
 pervenche & & & lys \\
 arum      & iris & jacinthe & muguet
 \end{NiceTabular}
 \end{Code}
 %
 \begin{center}
-\begin{NiceTabular}{cccc}[hvlines,rules/color=blue,rules/width=1pt]
+\begin{NiceTabular}{cccc}[hvlines,rules={color=blue,width=1pt}]
 rose      & tulipe & marguerite & dahlia \\
 violette  & \Block[C,draw=red]{2-2}{\LARGE fleurs}  & & souci \\
 pervenche & & & lys \\
@@ -1964,29 +1966,29 @@ comme les autres filets de \pkg{nicematrix}).
 
 \medskip
 \begin{Code}
-\begin{NiceTabular}{lcIcIc}\emph{[custom-line = {letter=I, color=blue}]}
-\hline
+\begin{NiceTabular}{lcIcIc}\emph{[custom-line = {letter=I, color=red}]}
+\Hline
           & \Block{1-3}{dimensions} \\
           & L & l & h \\
-\hline
+\Hline
 Produit A & 3 & 1 & 2 \\
 Produit B & 1 & 3 & 4 \\
 Produit C & 5 & 4 & 1 \\
-\hline
+\Hline
 \end{NiceTabular}
 \end{Code}
 
 
 \begin{center}
-\begin{NiceTabular}{lcIcIc}[custom-line = {letter=I, color=blue}]
-\hline
+\begin{NiceTabular}{lcIcIc}[custom-line = {letter=I, color=red}]
+\Hline
           & \Block[C]{1-3}{dimensions} \\
           & L & l & H \\
-\hline
+\Hline
 Produit A & 3 & 1 & 2 \\
 Produit B & 1 & 3 & 4 \\
 Produit C & 5 & 4 & 1 \\
-\hline
+\Hline
 \end{NiceTabular}
 \end{center}
 
@@ -2056,7 +2058,11 @@ n'est \emph{pas} calculée à partir des caractéristiques fournies par la clé
 |tikz|).
 
 \bigskip
-Voici ce que l'on obtient avec la clé |dotted| de TikZ.
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz} % dans le préambule
+\usetikzlibrary{decorations.pathmorphing} % dans le préambule
+\end{Verbatim}
+
 
 \begin{Code}
 \NiceMatrixOptions
@@ -2064,8 +2070,8 @@ Voici ce que l'on obtient avec la clé |dotted| de TikZ.
     custom-line = 
      {
        letter = I , 
-       \emph{tikz = dotted ,
-       total-width = \pgflinewidth}
+       \emph{tikz = { decorate, decoration = zigzag } ,
+       total-width = 6 pt}
      }
   }
 
@@ -2081,9 +2087,9 @@ sept & huit & neuf
   {
     custom-line = 
      {
-       letter = I , 
-       tikz = dotted ,
-       total-width = \pgflinewidth
+       letter = I ,
+       tikz = { decorate, decoration = zigzag } ,
+       total-width = 6 pt
      }
   }
 \begin{NiceTabular}{cIcIc}[no-cell-nodes]
@@ -2106,6 +2112,7 @@ lettre «|;|» pour des filets en tiretés. Elles sont disponibles quand TikZ es
 \indexcommand{cdashedline}
 
 \medskip
+\begin{footnotesize}
 \begin{Code}[annotation = false]
 \emph{% déjà présent dans nicematrix.sty}
 \NiceMatrixOptions
@@ -2115,15 +2122,66 @@ lettre «|;|» pour des filets en tiretés. Elles sont disponibles quand TikZ es
         letter = ; ,
         command = \hdashedline ,
         ccommand = \cdashedline ,
-        tikz = { dash pattern = on 4 pt off 2pt, dash expand off } ,
+        tikz = { dash pattern = on 4 pt off 2pt } ,
         total-width = \pgflinewidth
       }
   } 
 \end{Code}
+\end{footnotesize}
+
 
 \smallskip
 En fait, si la librairie TikZ \pkg{decorations} est chargée (avec
-|\usetikzlibrary{decorations}|), la clé |dash expand off| est ajoutée).
+|\usetikzlibrary{decorations}|), la clé |dash expand off| est ajoutée.
+
+\bigskip
+Il est donc possible d'utiliser les commandes |\hdashedline| et |\cdashedline|
+pour tracer des filets horizontaux en tiretés.
+
+\medskip
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz} % dans le préambule
+\usetikzlibrary{decorations} % dans le préambule
+\end{Verbatim}
+
+\smallskip
+\begin{Code}[width=9.5cm]
+\begin{pNiceMatrix}
+1 & 2 & 3 & 4 & 5 \\
+\emph{\hdashedline}
+6 & 7 & 8 & 9 & 10 \\
+\emph{\cdashedline{1,4-5}}
+11 & 12 & 13 & 14 & 15
+\end{pNiceMatrix}
+\end{Code}
+$\begin{pNiceMatrix}[no-cell-nodes]
+1 & 2 & 3 & 4 & 5 \\
+\hdashedline
+6 & 7 & 8 & 9 & 10 \\
+\cdashedline{1,4-5}
+11 & 12 & 13 & 14 & 15
+\end{pNiceMatrix}$
+
+
+\medskip
+Dans les environnements avec un préambule explicite (comme |{NiceTabular}|,
+|{NiceArray}|, etc.), il est possible de dessiner un trait vertical en
+pointillés avec le spécificateur «|;|».
+
+\medskip
+\begin{Code}[width=9.5cm]
+\begin{pNiceArray}{cccc\emph{;}c}
+1 & 2 & 3 & 4 & 5 \\
+6 & 7 & 8 & 9 & 10 \\
+11 & 12 & 13 & 14 & 15
+\end{pNiceArray}
+\end{Code}
+$\begin{pNiceArray}{cccc;c}[no-cell-nodes]
+1 & 2 & 3 & 4 & 5 \\
+6 & 7 & 8 & 9 & 10 \\
+11 & 12 & 13 & 14 & 15
+\end{pNiceArray}$
+
 
 
 
@@ -2137,10 +2195,16 @@ En fait, si la librairie TikZ \pkg{decorations} est chargée (avec
 \indexcommand{cdottedline}
 
 \nobreak
-Comme on le voit dans l'exemple précédent, les pointillés tracés par la clé
-|dotted| de TikZ ne sont pas ronds. C'est pourquoi l'extension \pkg{nicematrix}
-propose dans la clé |custom-line| une clé |dotted| qui va tracer des pointillés
-ronds. La valeur initiale de la clé |total-width| est, dans ce cas-là, égale au
+L'extension \pkg{nicematrix} propose des «lignes pointillées continues» pour des
+lignes de conduite dans les matrices mathématiques (avec les commandes |\Cdots|,
+|\Vdots|, etc: cf. p.~\pageref{Cdots}). Pour ces lignes, \pkg{nicematrix}
+n'utilise pas TikZ mais un système interne.
+
+Même s'il n'a pas été conçu à l'origine pour les filets, \pkg{nicematrix} met quand même
+ce type de ligne à la disposition de l'utilisateur pour des filets
+avec une clé |dotted| dans la clé |custom-line|.
+
+La valeur initiale de la clé |total-width| est, dans ce cas-là, égale au
 diamètre des points (l'utilisateur peut quand même utiliser la clé |total-width|
 pour en changer la valeur). Ces pointillés ronds sont aussi utilisés par
 \pkg{nicematrix} pour des lignes en pointillés continues créées entre deux
@@ -2155,6 +2219,7 @@ lettre «|:|» pour ces filets en pointillés.\footnote{Néanmoins, l'utilisateu
   avec |custom-line| s'il le souhaite.}
 
 \smallskip
+\begin{footnotesize}
 \begin{Code}[annotation = false]
 \emph{% déjà présent dans nicematrix.sty}
 \NiceMatrixOptions
@@ -2168,50 +2233,9 @@ lettre «|:|» pour ces filets en pointillés.\footnote{Néanmoins, l'utilisateu
       }
   } 
 \end{Code}
+\end{footnotesize}
 
-\bigskip
-Il est donc possible d'utiliser les commandes |\hdottedline| et |\cdottedline|
-pour tracer des filets horizontaux en pointillés.
-
-\medskip
-\begin{Code}[width=9.5cm]
-\begin{pNiceMatrix}
-1 & 2 & 3 & 4 & 5 \\
-\emph{\hdottedline}
-6 & 7 & 8 & 9 & 10 \\
-\emph{\cdottedline{1,4-5}}
-11 & 12 & 13 & 14 & 15
-\end{pNiceMatrix}
-\end{Code}
-$\begin{pNiceMatrix}[no-cell-nodes]
-1 & 2 & 3 & 4 & 5 \\
-\hdottedline
-6 & 7 & 8 & 9 & 10 \\
-\cdottedline{1,4-5}
-11 & 12 & 13 & 14 & 15
-\end{pNiceMatrix}$
-
-
-\medskip
-Dans les environnements avec un préambule explicite (comme |{NiceTabular}|,
-|{NiceArray}|, etc.), il est possible de dessiner un trait vertical en
-pointillés avec le spécificateur «|:|».
-
-\medskip
-\begin{Code}[width=9.5cm]
-\begin{pNiceArray}{cccc\emph{:}c}
-1 & 2 & 3 & 4 & 5 \\
-6 & 7 & 8 & 9 & 10 \\
-11 & 12 & 13 & 14 & 15
-\end{pNiceArray}
-\end{Code}
-$\begin{pNiceArray}{cccc:c}[no-cell-nodes]
-1 & 2 & 3 & 4 & 5 \\
-6 & 7 & 8 & 9 & 10 \\
-11 & 12 & 13 & 14 & 15
-\end{pNiceArray}$
 \end{itemize}
-
 
 \bigskip
 \index{start (clé pour les filets)}
@@ -4226,7 +4250,7 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 \label{dotted-and-rules}
 
 Les lignes pointillées délimitent des blocs virtuels qui ont le même
-comportement vis à vis des filets que les blocs créés par |\Block| (les filets
+comportement vis-à-vis des filets que les blocs créés par |\Block| (les filets
 spécifiés par le spécificateur \verb+|+ dans le préambule, la commande |\Hline|,
 les clés |vlines|, |hlines|, |hvlines| et |hvlines-except-borders| et les outils
 créés par |custom-line| ne sont pas tracés dans les blocs).\footnote{En revanche, la commande |\line| dans le |\CodeAfter|
@@ -4305,7 +4329,7 @@ et une syntaxe «additive», c'est-à-dire que l'on peut écrire, par exemple,
 \item un troisième argument, obligatoire, qui est le label de l'accolade.
 \end{itemize}
 
-Concernant la commande |\Hbrace|, son comportement vis à vis des esperluettes
+Concernant la commande |\Hbrace|, son comportement vis-à-vis des esperluettes
 (|&|) est le même que celui des commandes |\multicolumn|, |\hdotsfor|,
 |\Hdotsfor| (fournie par \pkg{nicematrix}), etc. : on ne doit mettre qu'une
 seule esperluette après la commande, même si l'accolade s'étend sur plusieurs
@@ -4376,11 +4400,6 @@ p.~\pageref{ex:no-longer-dotted-rules}.
 
 \index{Pointillés@\textbf{Pointillés (lignes en ---)}|)}
 
-\medskip
-It's also possible to draw braces of the mathematical mode of LaTeX by using the
-commands |\OverBrace| and |\UnderBrace| (cf.~\ref{OverBrace}
-p.~\pageref{OverBrace}) and the command |\SubMatrix| (cf.~\ref{SubMatrix}
-p.~\pageref{sub-matrix}) in the |\CodeAfter|.
 
 \medskip
 Il est également possible de dessiner des accolades du mode mathématique de
@@ -4971,7 +4990,7 @@ $\begin{pNiceMatrix}
 \end{pNiceMatrix}$
 
 \bigskip
-Attention : Aucun espace vertical n'est réservé par \pkg{nicematrix} pour ces
+Attention : aucun espace vertical n'est réservé par \pkg{nicematrix} pour ces
 accolades, ni pour leurs labels.\footnote{Voir à ce sujet: \url{https://tex.stackexchange.com/questions/685755}}
 
 \bigskip
@@ -5208,7 +5227,7 @@ Si \pkg{nicematrix} est chargée avec l'option |footnotehyper|, l'extension
 pour extraire les notes de pied de page.
 
 \smallskip
-Attention : Les extensions \pkg{footnote} et \pkg{footnotehyper} sont
+Attention : les extensions \pkg{footnote} et \pkg{footnotehyper} sont
 incompatibles. L'extension \pkg{footnotehyper} est le successeur de l'extension
 \pkg{footnote} et devrait être utilisée préférentiellement. L'extension
 \pkg{footnote} a quelques défauts ; en particulier, elle doit être chargée après
@@ -5585,6 +5604,120 @@ Pour un exemple de personnalisation des notes de tableau, voir p.~\pageref{ex:no
 
 
 \section{Autres fonctionnalités}
+
+\index{draw-trees-in-col}
+\index{trees (plusieurs sous-clés)}
+
+\subsection{Arbres}
+
+\index{draw-trees-in-col}
+\index{trees (plusieurs sous-clés)}
+\index{arbres (clé «draw-trees-in-col»)}
+
+\colorbox{yellow!50}{\textbf{Nouveau 7.8}}
+
+\nobreak
+\smallskip
+La clé |draw-trees-in-col| prend en argument une liste de numéros de colonnes
+et, dans chacune de ces colonnes, dessine des arbres comme en propose
+l'extension \pkg{dirtree}.
+
+\medskip
+\begin{Verbatim}[formatcom=\footnotesize\color{gray}]
+\usepackage{booktabs} % in the preamble
+\end{Verbatim}
+
+\begin{Code}
+\renewcommand{\arraystretch}{1.3}
+\begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[\emph{draw-trees-in-col=1-2}]
+\toprule
+Category &&&  \% \\
+\midrule
+Animal   &&& 100 \\
+& Human   &&  50 \\
+&& Man     &  20 \\
+&& Woman   &  30 \\
+& Fox     &&  30 \\
+&& Vixen   &  16 \\
+&& Dog     &  14 \\
+& Chicken &&  20 \\
+&& Cock    &   8 \\
+&& Hen     &  12 \\
+\bottomrule
+\end{NiceTabular}
+\end{Code}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[draw-trees-in-col=1-2]
+\toprule
+\RowStyle{\bfseries}
+Category &&&  \% \\
+\midrule
+Animal   &&& 100 \\
+& Human   &&  50 \\
+&& Man     &  20 \\
+&& Woman   &  30 \\
+& Fox     &&  30 \\
+&& Vixen   &  16 \\
+&& Dog     &  14 \\
+& Chicken &&  20 \\
+&& Cock    &   8 \\
+&& Hen     &  12 \\
+\bottomrule
+\end{NiceTabular}
+\end{center}
+
+
+\bigskip
+Trois clés \Definition{trees/line-width}, \Definition{trees/color} et
+\Definition{trees/rounded-corners} sont fournies pour la personnalisation de ces traits.
+
+\medskip
+\begin{Code}
+\renewcommand{\arraystretch}{1.3}
+\NiceMatrixOptions{\emph{trees= {line-width = 0.4pt, color = red , rounded-corners}}}
+\begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[\emph{draw-trees-in-col=1-2}]
+\toprule
+Category &&&  \% \\
+\midrule
+Animal   &&& 100 \\
+& Human   &&  50 \\
+&& Man     &  20 \\
+&& Woman   &  30 \\
+& Fox     &&  30 \\
+&& Vixen   &  16 \\
+&& Dog     &  14 \\
+& Chicken &&  20 \\
+&& Cock    &   8 \\
+&& Hen     &  12 \\
+\bottomrule
+\end{NiceTabular}
+\end{Code}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\NiceMatrixOptions{trees= {line-width = 0.4pt, color = red , rounded-corners}}
+\begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[draw-trees-in-col=1-2]
+\toprule
+\RowStyle{\bfseries}
+Category &&&  \% \\
+\midrule
+Animal   &&& 100 \\
+& Human   &&  50 \\
+&& Man     &  20 \\
+&& Woman   &  30 \\
+& Fox     &&  30 \\
+&& Vixen   &  16 \\
+&& Dog     &  14 \\
+& Chicken &&  20 \\
+&& Cock    &   8 \\
+&& Hen     &  12 \\
+\bottomrule
+\end{NiceTabular}
+\end{center}
+
+
 
 \subsection{La clé rounded-corners}
 
@@ -6108,7 +6241,7 @@ non vide du tableau considéré. Ces nœuds sont utilisés, entre autres, pour
 tracer les lignes en pointillés entre les cases du tableau.
 
 \smallskip
-\textbf{Attention} : Par défaut, aucun nœud n'est créé dans une case vide.
+\textbf{Attention} : par défaut, aucun nœud n'est créé dans une case vide.
 
 \smallskip
 Néanmoins, on peut forcer la création d'un nœud avec la commande |\NotEmpty|.\footnote{Il faut toutefois remarquer qu'avec cette commande, la
@@ -6300,6 +6433,8 @@ Titre \\
 On a utilisé les nœuds indiquant la position des filets, qui sont présentés un
 peu plus loin, p.~\pageref{nodes-i}.
 
+Bien sûr, il existe des extensions spécialisées dans ce type de constructions
+graphiques, comme par exemple \pkg{tcolorbox}.
 
 
 \subsection{Les «nœuds moyens» et les «nœuds larges»}
@@ -6442,7 +6577,7 @@ a & a     & a
 
 
 \medskip
-\textbf{Attention} : Ces nœuds sont reconstruits à partir des contenus des cases
+\textbf{Attention} : ces nœuds sont reconstruits à partir des contenus des cases
 et ne correspondent donc pas nécessairement aux cases délimitées par des filets.
 
 \medskip
@@ -7014,6 +7149,16 @@ affectés).
 
 \index{Incompatibilités}
 
+\textbf{L'extension nicematrix ne peut pas être utilisée dans \cls{revtex4-2} car cette
+classe n'est plus compatible avec les versions récentes de LaTeX.} En effet,
+\cls{revtex4-2} modifie des commandes internes à l'extension \pkg{array} et ces modifications
+n'ont pas été mises à jour pour tenir compte des modifications récentes de \pkg{array} liées
+à la génération de \textsc{pdf} balisé.
+
+
+\bigskip
+
+
 Il peut y avoir des incompatibilités de \pkg{nicematrix} avec \pkg{babel} pour
 les langues qui activent (au sens de TeX) certains caractères, en particulier le
 caractère~|<|. 
@@ -7131,6 +7276,122 @@ George     & Adams     & $34$
 
 
 \section{Exemples}
+
+
+
+
+\subsection{Notes dans les tableaux}
+
+\index{nota@\textbf{Notes dans les tableaux}|textit}
+\index{tabularnote@\texttt{\textbackslash tabularnote}|textit}
+\index{notes (clé pour paramétrer les notes de\newline tableau)|textit}
+\index{style (sous-clé de «notes»)|textit}
+\index{enumitem-keys (sous-clé de «notes»)|textit}
+\index{enumitem@\pkg{enumitem} (extension requise pour utiliser\newline
+  \texttt{\textbackslash tabularnote})|textit}
+\label{ex:notes}
+
+Les outils de \pkg{nicematrix} pour les notes dans les tableaux ont été
+présentés à la partie \ref{s:notes} p.~\pageref{s:notes}.
+
+\medskip
+Imaginons que l'on souhaite numéroter les notes de tableau (celles construites
+avec |\tabularnote|) avec des astérisques.\footnote{Bien entendu, il faut qu'il
+  y en ait très peu : trois paraît un maximum.}
+
+On commence par écrire une commande |\stars| similaire aux commandes classiques
+|\arabic|, |\alph|, |\Alph|, etc. mais qui produit un nombre d'astérisques égal
+à son argument.\footnote{Ou plutôt : à la valeur de son argument.}
+
+\medskip
+\begin{Code}
+\ExplSyntaxOn
+\NewDocumentCommand { \emph{\stars} } { m }
+  { \prg_replicate:nn { \value { #1 } } { \( \star \) } }
+\ExplSyntaxOff
+\end{Code}
+
+\medskip
+Bien entendu, on change le style des notes avec la clé |notes/style|. Mais, il
+serait bon aussi de changer certains paramètres du type de liste (au sens de
+\pkg{enumitem}) utilisé pour composer les notes après le tableau. On demande de
+composer les labels avec une largeur égale à celle du plus grand des labels. Or,
+le label le plus large est bien entendu celui avec le maximum d'astérisques.
+On connaît ce nombre : il est égal à |\value{tabularnote}| (car |tabularnote|
+est le compteur LaTeX utilisé par |\tabularnote| et il est donc égal à la fin au
+nombre total de notes dans le tableau). On utilise alors la clé |widest*| de
+\pkg{enumitem} pour demander une largeur de label correspondante :
+|widest*=\value{tabularnote}|.
+
+\smallskip
+\begin{Code}
+\NiceMatrixOptions
+  {
+    notes =
+     {
+       \emph{style = \stars{#1} , 
+       enumitem-keys = 
+        { 
+          widest* = \value{tabularnote} ,
+          align = right 
+        } }
+     }
+  }
+\end{Code}
+
+
+
+\begin{scope}
+\ExplSyntaxOn
+\NewDocumentCommand \stars { m }
+  { \prg_replicate:nn { \value { #1 } } { \( \star \) } }
+\NiceMatrixOptions
+  {
+    notes =
+     {
+       style = \stars{#1} ,
+       enumitem-keys =
+        {
+          widest* = \value{tabularnote} ,
+          align = right
+        }
+     }
+  }
+\ExplSyntaxOff
+
+\begin{Code}
+\begin{NiceTabular}{@{}llr@{}}
+\toprule \RowStyle{\bfseries}
+Nom & Prénom & Date de naissance \\
+\midrule
+Achard\emph{\tabularnote{La famille Achard est une très ancienne famille du Poitou.}}
+& Jacques & 5 juin 1962 \\
+Lefèbvre\emph{\tabularnote{Le patronyme Lefebvre est une altération de Lefébure.}}
+& Mathilde & 23 mai 1988 \\
+Vanesse & Stéphanie & 30 octobre 1994 \\
+Dupont & Chantal & 15 janvier 1998 \\
+\bottomrule
+\end{NiceTabular}
+\end{Code}
+
+\begin{center}
+\begin{NiceTabular}{@{}llr@{}}[no-cell-nodes]
+\toprule \RowStyle{\bfseries}
+Nom & Prénom & Date de naissance \\
+\midrule
+Achard\tabularnote{La famille Achard est une très ancienne famille du Poitou.}
+& Jacques & 5 juin 1962 \\
+Lefebvre\tabularnote{Le patronyme Lefebvre est une altération de Lefébure.}
+& Mathilde & 23 mai 1988 \\
+Vanesse & Stéphanie & 30 octobre 1994 \\
+Dupont & Chantal & 15 janvier 1998 \\
+\bottomrule
+\end{NiceTabular}
+\end{center}
+\end{scope}
+
+
+
 
 \subsection{Utilisation de la clé «tikz» de la commande \texttt{\textbackslash Block}}
 
@@ -7310,122 +7571,73 @@ tous les filets sauf ceux sur les bords (qui sont, bien entendu, ajoutés par
 \end{center}
 
 
+\subsection{Un tableau de signes}
 
 
-\subsection{Notes dans les tableaux}
-
-\index{nota@\textbf{Notes dans les tableaux}|textit}
-\index{tabularnote@\texttt{\textbackslash tabularnote}|textit}
-\index{notes (clé pour paramétrer les notes de\newline tableau)|textit}
-\index{style (sous-clé de «notes»)|textit}
-\index{enumitem-keys (sous-clé de «notes»)|textit}
-\index{enumitem@\pkg{enumitem} (extension requise pour utiliser\newline
-  \texttt{\textbackslash tabularnote})|textit}
-\label{ex:notes}
-
-Les outils de \pkg{nicematrix} pour les notes dans les tableaux ont été
-présentés à la partie \ref{s:notes} p.~\pageref{s:notes}.
-
-\medskip
-Imaginons que l'on souhaite numéroter les notes de tableau (celles construites
-avec |\tabularnote|) avec des astérisques.\footnote{Bien entendu, il faut qu'il
-  y en ait très peu : trois paraît un maximum.}
-
-On commence par écrire une commande |\stars| similaire aux commandes classiques
-|\arabic|, |\alph|, |\Alph|, etc. mais qui produit un nombre d'astérisques égal
-à son argument.\footnote{Ou plutôt : à la valeur de son argument.}
-
-\medskip
 \begin{Code}
-\ExplSyntaxOn
-\NewDocumentCommand { \emph{\stars} } { m }
-  { \prg_replicate:nn { \value { #1 } } { \( \star \) } }
-\ExplSyntaxOff
+\[\begin{NiceMatrix}[columns-width=1cm,hvlines]
+f(x)   & \Block[C]{1-5}{+} \\
+f'(x)  & \Block[C]{1-2}{+} && \Block[C]{1-2}{+} && + \\
+f''(x) & - & \Block[C]{1-2}{-} && \Block[C]{1-2}{+} \\
+\end{NiceMatrix}\]
 \end{Code}
 
+\bigskip
+
+\[\begin{NiceMatrix}[columns-width=1cm,hvlines]
+f(x)   & \Block[C]{1-5}{+} \\
+f'(x)  & \Block[C]{1-2}{+} && \Block[C]{1-2}{+} && + \\
+f''(x) & - & \Block[C]{1-2}{-} && \Block[C]{1-2}{+} \\
+\end{NiceMatrix}\]
+
+
+
+
+\subsection{Exemple d'utilisation de la clé borders de \texttt{\textbackslash Block}}
+
+\label{ex:borders}
+
+\index{tikzz@tikz!clé de «borders» de \texttt{\textbackslash Block}|textit}
+
+Dans l'exemple suivant, on utilise des commandes |\Block| pour tracer des filets.
+
 \medskip
-Bien entendu, on change le style des notes avec la clé |notes/style|. Mais, il
-serait bon aussi de changer certains paramètres du type de liste (au sens de
-\pkg{enumitem}) utilisé pour composer les notes après le tableau. On demande de
-composer les labels avec une largeur égale à celle du plus grand des labels. Or,
-le label le plus large est bien entendu celui avec le maximum d'astérisques.
-On connaît ce nombre : il est égal à |\value{tabularnote}| (car |tabularnote|
-est le compteur LaTeX utilisé par |\tabularnote| et il est donc égal à la fin au
-nombre total de notes dans le tableau). On utilise alors la clé |widest*| de
-\pkg{enumitem} pour demander une largeur de label correspondante :
-|widest*=\value{tabularnote}|.
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz} % dans le préambule
+\end{Verbatim}
 
 \smallskip
 \begin{Code}
-\NiceMatrixOptions
-  {
-    notes =
-     {
-       \emph{style = \stars{#1} , 
-       enumitem-keys = 
-        { 
-          widest* = \value{tabularnote} ,
-          align = right 
-        } }
-     }
-  }
+\begin{pNiceMatrix}
+\emph{\Block[borders={bottom,right,tikz=dotted}]{2-2}{}}
+1 & 2 & 0  & 0 & 0 & 0 \\
+4 & 5 & 0  & 0 & 0 & 0 \\
+0 & 0 & \emph{\Block[borders={bottom,top,right,left,tikz=dotted}]{2-2}{}}
+        7  & 1 & 0 & 0 \\
+0 & 0 & -1 & 2 & 0 & 0 \\
+0 & 0 & 0  & 0 & \emph{\Block[borders={left,top,tikz=dotted}]{2-2}{}}
+                 3 & 4 \\
+0 & 0 & 0  & 0 & 1 & 4 
+\end{pNiceMatrix}
 \end{Code}
 
 
 
-\begin{scope}
-\ExplSyntaxOn
-\NewDocumentCommand \stars { m }
-  { \prg_replicate:nn { \value { #1 } } { \( \star \) } }
-\NiceMatrixOptions
-  {
-    notes =
-     {
-       style = \stars{#1} ,
-       enumitem-keys =
-        {
-          widest* = \value{tabularnote} ,
-          align = right
-        }
-     }
-  }
-\ExplSyntaxOff
-
-\begin{Code}
-\begin{NiceTabular}{@{}llr@{}}
-\toprule \RowStyle{\bfseries}
-Nom & Prénom & Date de naissance \\
-\midrule
-Achard\emph{\tabularnote{La famille Achard est une très ancienne famille du Poitou.}}
-& Jacques & 5 juin 1962 \\
-Lefèbvre\emph{\tabularnote{Le patronyme Lefebvre est une altération de Lefébure.}}
-& Mathilde & 23 mai 1988 \\
-Vanesse & Stéphanie & 30 octobre 1994 \\
-Dupont & Chantal & 15 janvier 1998 \\
-\bottomrule
-\end{NiceTabular}
-\end{Code}
-
-\begin{center}
-\begin{NiceTabular}{@{}llr@{}}[no-cell-nodes]
-\toprule \RowStyle{\bfseries}
-Nom & Prénom & Date de naissance \\
-\midrule
-Achard\tabularnote{La famille Achard est une très ancienne famille du Poitou.}
-& Jacques & 5 juin 1962 \\
-Lefebvre\tabularnote{Le patronyme Lefebvre est une altération de Lefébure.}
-& Mathilde & 23 mai 1988 \\
-Vanesse & Stéphanie & 30 octobre 1994 \\
-Dupont & Chantal & 15 janvier 1998 \\
-\bottomrule
-\end{NiceTabular}
-\end{center}
-\end{scope}
+\[\begin{pNiceMatrix}
+\Block[borders={bottom,right,tikz=dotted}]{2-2}{}
+1 & 2 & 0  & 0 & 0 & 0 \\
+4 & 5 & 0  & 0 & 0 & 0 \\
+0 & 0 & \Block[borders={bottom,top,right,left,tikz=dotted}]{2-2}{}
+        7  & 1 & 0 & 0 \\
+0 & 0 & -1 & 2 & 0 & 0 \\
+0 & 0 & 0  & 0 & \Block[borders={left,top,tikz=dotted}]{2-2}{}
+                 3 & 4 \\
+0 & 0 & 0  & 0 & 1 & 4 
+\end{pNiceMatrix}\]
 
 
 
-
-\subsection{Lignes en pointillés}
+\subsection{Lignes en pointillés continues dans les matrices}
 
 \index{Pointillés@\textbf{Pointillés (lignes en ---)}|textit}
 
@@ -7563,10 +7775,11 @@ pointillées (TikZ doit être chargé).
 
 
 
-\interitem
-On peut même tracer des lignes continues.\footnote{Dans ce document, la
-  bibliothèque \pkg{arrows.meta} de TikZ a été chargée, ce qui a une incidence
-  sur la forme des pointes de flèches.}
+\subsection{Illustrer les nombres de lignes et de colonnes d'une matrice}
+
+
+Dans ce document, la bibliothèque \pkg{arrows.meta} de TikZ a été chargée, ce
+qui a une incidence sur la forme des pointes de flèches.
 
 \medskip
 \begin{Code}[annotation = false]
@@ -7767,47 +7980,6 @@ $\begin{pNiceArray}{ccc|cc}[margin,last-col]
   \SubMatrix{.}{4-1}{5-5}{\}}[xshift=3.5mm]
 \end{pNiceArray}$
 
-
-
-
-\subsection{Lignes en tiretés}
-
-\label{ex:tiretes}
-
-\index{tikzz@tikz!clé de «borders» de \texttt{\textbackslash Block}|textit}
-
-Dans l'exemple suivant, on utilise des commandes |\Block| pour tracer des filets
-en tiretés. Cet exemple nécessite que TikZ soit chargé (par
-|\usepackage{tikz}|). 
-
-\medskip
-\begin{Code}
-\begin{pNiceMatrix}
-\emph{\Block[borders={bottom,right,tikz=dashed}]{2-2}{}}
-1 & 2 & 0  & 0 & 0 & 0 \\
-4 & 5 & 0  & 0 & 0 & 0 \\
-0 & 0 & \emph{\Block[borders={bottom,top,right,left,tikz=dashed}]{2-2}{}}
-        7  & 1 & 0 & 0 \\
-0 & 0 & -1 & 2 & 0 & 0 \\
-0 & 0 & 0  & 0 & \emph{\Block[borders={left,top,tikz=dashed}]{2-2}{}}
-                 3 & 4 \\
-0 & 0 & 0  & 0 & 1 & 4 
-\end{pNiceMatrix}
-\end{Code}
-
-
-
-\[\begin{pNiceMatrix}
-\Block[borders={bottom,right,tikz=dashed}]{2-2}{}
-1 & 2 & 0  & 0 & 0 & 0 \\
-4 & 5 & 0  & 0 & 0 & 0 \\
-0 & 0 & \Block[borders={bottom,top,right,left,tikz=dashed}]{2-2}{}
-        7  & 1 & 0 & 0 \\
-0 & 0 & -1 & 2 & 0 & 0 \\
-0 & 0 & 0  & 0 & \Block[borders={left,top,tikz=dashed}]{2-2}{}
-                 3 & 4 \\
-0 & 0 & 0  & 0 & 1 & 4 
-\end{pNiceMatrix}\]
 
 
 
@@ -8213,13 +8385,13 @@ matrice.
 \medskip
 Cet exemple et les suivants nécessitent d'avoir chargé TikZ (\pkg{nicematrix} ne
 charge que \textsc{pgf}, qui est une sous-couche de TikZ) ainsi que la
-bibliothèque TikZ |fit|, ce qui peut se faire avec les deux instructions
-suivantes dans le préambule du document :
+bibliothèque TikZ~|fit|.
 
-\begin{verbatim}
+\smallskip
+\begin{Verbatim}[formatcom=\footnotesize\color{gray}]
 \usepackage{tikz}
 \usetikzlibrary{fit}
-\end{verbatim}
+\end{Verbatim}
 
 \medskip
 Nous créons un nœud TikZ rectangulaire qui englobe les nœuds de la deuxième
@@ -8496,6 +8668,10 @@ qui doit donc être chargée préalablement).
      1 
    \end{NiceTabular}}
 \end{center}
+
+\medskip
+Bien sûr, si on a de nombreux diagrammes à faire de la sorte, on recommande d'utiliser une
+extension dédiée comme \pkg{atableau}.
 
 \cleardoublepage
 

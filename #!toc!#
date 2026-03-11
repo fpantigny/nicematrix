@@ -1,0 +1,135 @@
+TABLE-OF-CONTENTS on c:/Users/panti/Documents/Travail/texmf/tex/latex/nicematrix/nicematrix.tex
+SPC=view TAB=goto RET=goto+hide [q]uit [r]escan [l]abels [f]ollow [x]r [?]Help
+------------------------------------------------------------------------------
+     1 The environments of this package
+     2 The vertical space between the rows
+     3 The vertical position of the arrays
+     4 The blocks
+       4.1 General case
+       4.2 The mono-column blocks
+       4.3 The mono-row blocks
+       4.4 The mono-cell blocks
+       4.5 Horizontal position of the content of the block
+       4.6 Vertical position of the content of the block
+       4.7 \textbackslash\textbackslash\ and \& in the blocks
+       4.8 The key create-blocks-in-col
+     5 The rules
+       5.1 Some differences with the classical environments
+         5.1.1 The vertical rules
+         5.1.2 The command \textbackslash cline
+       5.2 The thickness and the color of the rules
+       5.3 The tools of nicematrix for the rules
+         5.3.1 The keys hlines and vlines
+         5.3.2 The keys hvlines and hvlines-except-borders
+         5.3.3 The (empty) corners
+         5.3.4 The command \textbackslash diagbox
+         5.3.5 Commands for customized rules
+     6 The color of the background of the rows and columns
+       6.1 Use of colortbl
+       6.2 The tools of nicematrix in the \textbackslash CodeBefore
+       6.3 Color tools to be used inside the tabular
+       6.4 The special color ``nocolor''
+     7 The command \textbackslash RowStyle
+     8 The width of the columns
+       8.1 Basic tools
+       8.2 The columns V of varwidth
+       8.3 The columns X
+     9 The exterior rows and columns
+     10 The continuous dotted lines
+       10.1 The option xdots/nullify
+       10.2 The commands \textbackslash Hdotsfor and \textbackslash Vdotsfor
+       10.3 How to generate the continuous dotted lines transparently
+       10.4 The labels of the dotted lines
+       10.5 Customisation of the dotted lines
+       10.6 The dotted lines and the rules
+       10.7 The commands \textbackslash Hbrace and \textbackslash Vbrace
+     11 Delimiters in the preamble of the environment
+     12 The \textbackslash CodeAfter
+       12.1 The command \textbackslash line in the \textbackslash CodeAfter
+       12.2 The command \textbackslash SubMatrix in the \textbackslash CodeAfter (and the \textbackslash CodeBef
+       12.3 The commands \textbackslash OverBrace and \textbackslash UnderBrace in the \textbackslash CodeAfter
+       12.4 The command \textbackslash TikzEveryCell in the \textbackslash CodeAfter
+     13 Captions and notes in the tabulars
+       13.1 Caption of a tabular
+       13.2 The footnotes
+       13.3 The notes of tabular
+       13.4 Customisation of the tabular notes
+     14 Other features
+       14.1 Trees
+       14.2 The key rounded-corners
+       14.3 Command \textbackslash ShowCellNames
+       14.4 Use of the column type S of siunitx
+       14.5 Default column type in \{NiceMatrix\}
+       14.6 The command \textbackslash rotate
+       14.7 The option small
+       14.8 The counters iRow and jCol
+       14.9 The key light-syntax
+       14.10 Color of the delimiters
+       14.11 The environment \{NiceArrayWithDelims\}
+       14.12 The command \textbackslash OnlyMainNiceMatrix
+     15 Use of TikZ with nicematrix
+       15.1 The nodes corresponding to the contents of the cells
+         15.1.1 The key pgf-node-code
+         15.1.2 The columns V of varwidth
+       15.2 The ``medium nodes'' and the ``large nodes''
+       15.3 The nodes which indicate the position of the rules
+       15.4 The nodes corresponding to the command \textbackslash SubMatrix
+     16 API for the developers
+     17 Technical remarks
+       17.1 Diagonal lines
+       17.2 The ``empty'' cells
+       17.3 The option exterior-arraycolsep
+       17.4 Incompatibilities
+       17.5 Compatibility with the Tagging Project of LaTeX
+     18 Examples
+       18.1 Notes in the tabulars
+       18.2 Utilisation of the key ``tikz'' of the command \texttt{\textbackslash Block}
+       18.3 Use with tcolorbox
+       18.4 A sign chart
+       18.5 Use of the key borders of the command \texttt{\textbackslash Block}
+       18.6 Continuous dotted lines in the matrices
+       18.7 Dotted lines which are no longer dotted
+       18.8 How the illustrate the numbers of rows and columns in a matrix
+       18.9 Stacks of matrices
+       18.10 How to highlight cells of a matrix
+       18.11 Utilisation of \textbackslash SubMatrix in the \textbackslash CodeBefore
+       18.12 A triangular tabular
+     19 History
+        * Changes between version 7.6 and 7.7
+        * Changes between version 7.5 and 7.6
+        * Changes between version 7.4 and 7.5
+        * Changes between version 7.3 and 7.4
+        * Changes between version 7.2 and 7.3
+        * Changes between version 7.1 and 7.2
+        * Changes between version 7.0 and 7.1
+        * Changes between version 6.29 and 7.0
+        * Changes between version 6.28 and 6.29
+        * Changes between version 6.27 and 6.28
+        * Changes between version 6.26 and 6.27
+        * Changes between version 6.25 and 6.26
+        * Changes between version 6.24 and 6.25
+        * Changes between version 6.23 and 6.24
+        * Changes between version 6.22 and 6.23
+        * Changes between version 6.21 and 6.22
+        * Changes between version 6.20a and 6.21
+        * Changes between version 6.20 and 6.20a
+        * Changes between version 6.19 and 6.20
+        * Changes between version 6.18 and 6.19
+        * Changes between version 6.17 and 6.18
+        * Changes between version 6.16 and 6.17
+        * Changes between version 6.15 and 6.16
+        * Changes between version 6.14 and 6.15
+        * Changes between version 6.13 and 6.14
+        * Changes between version 6.12 and 6.13
+        * Changes between version 6.11 and 6.12
+        * Changes between version 6.10 and 6.11
+        * Changes between version 6.9 and 6.10
+        * Changes between version 6.8 and 6.9
+        * Changes between version 6.7 and 6.8
+        * Changes between version 6.6 and 6.7
+        * Changes between version 6.5 and 6.6
+        * Changes between versions 6.4 and 6.5
+        * Changes between versions 6.3 and 6.4
+        * Changes between versions 6.2 and 6.3
+        * Changes between versions 6.1 and 6.2
+        * Changes between versions 6.0 and 6.1

@@ -15,6 +15,7 @@
     patterns,
     arrows.meta,
     decorations.pathreplacing,
+    decorations.pathmorphing,
     calligraphy
   }
 
@@ -636,7 +637,7 @@ elements covered by |left|, |right|, |top| and |bottom|; it's possible, in
 fact, in the list which is the value of the key |borders|, to add an entry of
 the form |tikz={|\textsl{list}|}| where \textsl{list} is a list of couples
 \textsl{key=value} of TikZ specifying the graphical characteristics of the
-lines that will be drawn (for an example, see p.~\pageref{dashed}).
+lines that will be drawn (for an example, see p.~\pageref{ex:borders}).
 
 \item \index{tikzz@tikz!key of \texttt{\textbackslash Block}}
 When the key \Definition{tikz} is used, the TikZ path corresponding of
@@ -694,7 +695,7 @@ In the following example, we have had to enlarge by hand the columns 2 and 3
 \begin{NiceTabular}{cw{c}{2cm}w{c}{3cm}c}
 rose & tulip & daisy & dahlia \\
 violet 
-  & \emph{\Block[draw=red,fill=[RGB]{204,204,255},rounded-corners]{2-2}
+  & \emph{\Block[C,draw=red,fill=[RGB]{204,204,255},rounded-corners]{2-2}
           {\LARGE Some beautiful flowers}} & & marigold \\
    & & marigold \\
 iris & & & lis \\
@@ -1456,6 +1457,8 @@ columns.}
 it's recommended to use instead |\Block| in the environments of
 \pkg{nicematrix}.} presented
 p.~\pageref{Block};
+\item the blocks createad by the key |create-blocks-in-col|:
+cf.~p.~\pageref{create-blocks-in-col};
 \item the blocks implicitly delimited by the continuous dotted lines created
 by |\Cdots|, |\Vdots|, etc. (cf.~p.~\pageref{Cdots}).
 \end{itemize}
@@ -1582,7 +1585,7 @@ and |vlines|.
 \setlength{\arrayrulewidth}{1pt}
 \begin{NiceTabular}{cccc}[\emph{hvlines},rules/color=blue]
 rose      & tulip & sunflower & lily \\
-violet    & \Block[draw=red]{2-2}{\LARGE flowers} & & orchid \\
+violet    & \Block[C,draw=red]{2-2}{\LARGE flowers} & & orchid \\
 carnation & & & lys \\
 daisy     & peony & jasmine & magnolia 
 \end{NiceTabular}
@@ -1884,29 +1887,29 @@ blocks and corners as do all the rules of \pkg{nicematrix}).
 
 \medskip
 \begin{Code}
-\begin{NiceTabular}{lcIcIc}\emph{[custom-line = {letter=I, color=blue}]}
-\hline
+\begin{NiceTabular}{lcIcIc}\emph{[custom-line = {letter=I, color=red}]}
+\Hline
           & \Block{1-3}{dimensions} \\
           & L & l & h \\
-\hline
+\Hline
 Product A & 3 & 1 & 2 \\
 Product B & 1 & 3 & 4 \\
 Product C & 5 & 4 & 1 \\
-\hline
+\Hline
 \end{NiceTabular}
 \end{Code}
 
 
 \begin{center}
-\begin{NiceTabular}{lcIcIc}[custom-line = {letter=I, color=blue},no-cell-nodes]
-\hline
+\begin{NiceTabular}{lcIcIc}[custom-line = {letter=I, color=red},no-cell-nodes]
+\Hline
           & \Block[C]{1-3}{dimensions} \\
           & L & l & H \\
-\hline
+\Hline
 Product A & 3 & 1 & 2 \\
 Product B & 1 & 3 & 4 \\
 Product C & 5 & 4 & 1 \\
-\hline
+\Hline
 \end{NiceTabular}
 \end{center}
 
@@ -1975,19 +1978,21 @@ value of that key, is, in some ways, the width of the rule that will be drawn
 (\pkg{nicematrix} does not compute that width from the characteristics of the
 rule specified in |tikz|).
 
-
-
 \bigskip
-Here is an example with the key |dotted| of TikZ.
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz} % in the preamble
+\usetikzlibrary{decorations.pathmorphing} % in the preamble
+\end{Verbatim}
 
-\begin{Code}[width=9cm]
+
+\begin{Code}[width=9.1cm]
 \NiceMatrixOptions
   {
     custom-line = 
      {
        letter = I , 
-       \emph{tikz = dotted ,
-       total-width = \pgflinewidth}
+       \emph{tikz = { decorate, decoration = zigzag } ,
+       total-width = 6 pt}
      }
   }
 
@@ -2002,9 +2007,9 @@ seven & eight & nine
   {
     custom-line = 
      {
-       letter = I , 
-       tikz = dotted ,
-       total-width = \pgflinewidth
+       letter = I ,
+       tikz = { decorate, decoration = zigzag } ,
+       total-width = 6 pt
      }
   }
 \begin{NiceTabular}{cIcIc}[no-cell-nodes]
@@ -2021,11 +2026,14 @@ seven & eight & nine
 \smallskip
 In fact, \pkg{nicematrix} defines by default the commands
 \DefinitionCommand{hdashedline} and \DefinitionCommand{cdashedline} and the
-letter ``|;|'' for dashed rules. They are available when TikZ is loaded. 
+letter ``|;|'' for dashed rules. They are available when TikZ is loaded (if they are used
+when TikZ is not loaded, an error message for unknown command will be displayed).
 
 \medskip
+\begin{footnotesize}
 \begin{Code}[annotation = false]
-\NiceMatrixOptions \emph{% \textsl{yet present in nicematrix.sty}}
+\emph{% \textsl{yet present in nicematrix.sty}}
+\NiceMatrixOptions 
   { 
     custom-line = 
       { 
@@ -2037,10 +2045,61 @@ letter ``|;|'' for dashed rules. They are available when TikZ is loaded.
       }
   } 
 \end{Code}
+\end{footnotesize}
 
 \smallskip
 When the TikZ library \pkg{decorations} has been loaded (with
 |\usetikzlibrary{decorations}|), the key |dash expand off| is added.
+
+
+\bigskip
+Thus, it's possible to use the commands |\hdashedline| and |\cdashedline| to
+draw horizontal dashed rules.
+
+\medskip
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz} % in the preamble
+\usetikzlibrary{decorations} % in the preamble
+\end{Verbatim}
+
+\smallskip
+\begin{Code}[width=9.5cm]
+\begin{pNiceMatrix}
+1 & 2 & 3 & 4 & 5 \\
+\emph{\hdashedline}
+6 & 7 & 8 & 9 & 10 \\
+\emph{\cdashedline{1,4-5}}
+11 & 12 & 13 & 14 & 15 
+\end{pNiceMatrix}
+\end{Code}
+$\begin{pNiceMatrix}[no-cell-nodes]
+1 & 2 & 3 & 4 & 5 \\
+\hdashedline
+6 & 7 & 8 & 9 & 10 \\
+\cdashedline{1,4-5}
+11 & 12 & 13 & 14 & 15 
+\end{pNiceMatrix}$
+
+
+\bigskip
+In the environments with an explicit preamble (like |{NiceTabular}|,
+|{NiceArray}|, etc.), it's possible to draw a vertical dashed line with the
+specifier ``|;|''.
+
+\medskip
+\begin{Code}[width=9.5cm]
+$\left(\begin{NiceArray}{cccc\emph{;}c}
+1 & 2 & 3 & 4 & 5 \\
+6 & 7 & 8 & 9 & 10 \\
+11 & 12 & 13 & 14 & 15 
+\end{NiceArray}\right)
+\end{Code}
+$\left(\begin{NiceArray}{cccc;c}[no-cell-nodes]
+1 & 2 & 3 & 4 & 5 \\
+6 & 7 & 8 & 9 & 10 \\
+11 & 12 & 13 & 14 & 15 
+\end{NiceArray}\right)$
+
 
 
 
@@ -2052,13 +2111,20 @@ When the TikZ library \pkg{decorations} has been loaded (with
 \indexcommand{hdottedline}
 \indexcommand{cdottedline}
 
-As one can see, the dots of a dotted line of TikZ have the shape of a square,
-and not a circle. That's why the extension \pkg{nicematrix} provides in the
-key |custom-line| a key |dotted| which will draw rounded dots. The initial
-value of the key |total-width| is, in this case, equal to the diameter of the dots
-(but the user may change the value with the key |total-width| if needed). Those
-dotted rules are also used by \pkg{nicematrix} to draw continuous dotted rules
-between cells of the matrix with |\Cdots|, |\Vdots|, etc. (cf. p.~\pageref{Cdots}).
+\nobreak
+The extension \pkg{nicematrix} provides ``continuous dotted lines'' for leading
+rules in the mathematical matrices (with the commands |\Cdots|, |\Vdots|, etc.:
+cf. p.~\pageref{Cdots}). For these lines, \pkg{nicematrix} does not use TikZ but
+an internal system.
+
+Even though that system was not designed for the rules of a tabular, \pkg{nicematrix}
+provides that type of line to the final user with a key |dotted| in the key |custom-line|.
+
+The initial value of the key |total-width| is, in this case, equal to the
+diameter of the dots (but the user may change the value with the key
+|total-width| if needed). Those dotted rules are also used by \pkg{nicematrix}
+to draw continuous dotted rules between cells of the matrix with |\Cdots|,
+|\Vdots|, etc. (cf. p.~\pageref{Cdots}).
 
 In fact, \pkg{nicematrix} defines by default the commands
 \DefinitionCommand{hdottedline} and \DefinitionCommand{cdottedline} and the
@@ -2067,8 +2133,10 @@ letter ``|:|'' for those dotted rules.\footnote{However, it's possible to
   switch to dashed lines).}
 
 \smallskip
+\begin{footnotesize}
 \begin{Code}[annotation = false]
-\NiceMatrixOptions \emph{% \textsl{yet present in nicematrix.sty}}
+\emph{% \textsl{yet present in nicematrix.sty}}
+\NiceMatrixOptions 
   { 
     custom-line = 
       { 
@@ -2079,48 +2147,7 @@ letter ``|:|'' for those dotted rules.\footnote{However, it's possible to
       }
   } 
 \end{Code}
-
-Thus, it's possible to use the commands |\hdottedline| and |\cdottedline |to
-draw horizontal dotted rules.
-
-\medskip
-\begin{Code}[width=9.5cm]
-\begin{pNiceMatrix}
-1 & 2 & 3 & 4 & 5 \\
-\emph{\hdottedline}
-6 & 7 & 8 & 9 & 10 \\
-\emph{\cdottedline{1,4-5}}
-11 & 12 & 13 & 14 & 15 
-\end{pNiceMatrix}
-\end{Code}
-$\begin{pNiceMatrix}[no-cell-nodes]
-1 & 2 & 3 & 4 & 5 \\
-\hdottedline
-6 & 7 & 8 & 9 & 10 \\
-\cdottedline{1,4-5}
-11 & 12 & 13 & 14 & 15 
-\end{pNiceMatrix}$
-
-
-\bigskip
-In the environments with an explicit preamble (like |{NiceTabular}|,
-|{NiceArray}|, etc.), it's possible to draw a vertical dotted line with the
-specifier ``|:|''.
-
-\medskip
-\begin{Code}[width=9.5cm]
-$\left(\begin{NiceArray}{cccc\emph{:}c}
-1 & 2 & 3 & 4 & 5 \\
-6 & 7 & 8 & 9 & 10 \\
-11 & 12 & 13 & 14 & 15 
-\end{NiceArray}\right)
-\end{Code}
-$\left(\begin{NiceArray}{cccc:c}[no-cell-nodes]
-1 & 2 & 3 & 4 & 5 \\
-6 & 7 & 8 & 9 & 10 \\
-11 & 12 & 13 & 14 & 15 
-\end{NiceArray}\right)$
-
+\end{footnotesize}
 \end{itemize}
 
 \bigskip
@@ -5395,6 +5422,116 @@ For an example of customisation of the tabular notes, see p.~\pageref{ex:notes}.
 
 \section{Other features}
 
+
+\subsection{Trees}
+
+\index{draw-trees-in-col}
+\index{trees (plusieurs sous-clés)}
+
+
+\colorbox{yellow!50}{\textbf{New 7.8}}
+
+\nobreak
+\smallskip
+The key |draw-trees-in-col| takes in as argument a list of numbers of columns and, in each
+of those columns, will draw a tree in the style the trees drawn by the package \pkg{dirtree}.
+
+\medskip
+\begin{Verbatim}[formatcom=\footnotesize\color{gray}]
+\usepackage{booktabs} % in the preamble
+\end{Verbatim}
+
+\begin{Code}
+\renewcommand{\arraystretch}{1.3}
+\begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[\emph{draw-trees-in-col=1-2}]
+\toprule
+Category &&&  \% \\
+\midrule
+Animal   &&& 100 \\
+& Human   &&  50 \\
+&& Man     &  20 \\
+&& Woman   &  30 \\
+& Fox     &&  30 \\
+&& Vixen   &  16 \\
+&& Dog     &  14 \\
+& Chicken &&  20 \\
+&& Cock    &   8 \\
+&& Hen     &  12 \\
+\bottomrule
+\end{NiceTabular}
+\end{Code}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[draw-trees-in-col=1-2]
+\toprule
+\RowStyle{\bfseries}
+Category &&&  \% \\
+\midrule
+Animal   &&& 100 \\
+& Human   &&  50 \\
+&& Man     &  20 \\
+&& Woman   &  30 \\
+& Fox     &&  30 \\
+&& Vixen   &  16 \\
+&& Dog     &  14 \\
+& Chicken &&  20 \\
+&& Cock    &   8 \\
+&& Hen     &  12 \\
+\bottomrule
+\end{NiceTabular}
+\end{center}
+
+
+\bigskip
+Three keys \Definition{trees/line-width}, \Definition{trees/color} and
+\Definition{trees/rounded-corners} are provided for the customization of those rules.
+
+\medskip
+\begin{Code}
+\renewcommand{\arraystretch}{1.3}
+\NiceMatrixOptions{\emph{trees= {line-width = 0.4pt, color = red , rounded-corners}}}
+\begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[\emph{draw-trees-in-col=1-2}]
+\toprule
+Category &&&  \% \\
+\midrule
+Animal   &&& 100 \\
+& Human   &&  50 \\
+&& Man     &  20 \\
+&& Woman   &  30 \\
+& Fox     &&  30 \\
+&& Vixen   &  16 \\
+&& Dog     &  14 \\
+& Chicken &&  20 \\
+&& Cock    &   8 \\
+&& Hen     &  12 \\
+\bottomrule
+\end{NiceTabular}
+\end{Code}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\NiceMatrixOptions{trees= {line-width = 0.4pt, color = red , rounded-corners}}
+\begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[draw-trees-in-col=1-2]
+\toprule
+\RowStyle{\bfseries}
+Category &&&  \% \\
+\midrule
+Animal   &&& 100 \\
+& Human   &&  50 \\
+&& Man     &  20 \\
+&& Woman   &  30 \\
+& Fox     &&  30 \\
+&& Vixen   &  16 \\
+&& Dog     &  14 \\
+& Chicken &&  20 \\
+&& Cock    &   8 \\
+&& Hen     &  12 \\
+\bottomrule
+\end{NiceTabular}
+\end{center}
+
+
 \subsection{The key rounded-corners}
 
 \label{tabular-rounded-corners}
@@ -6098,6 +6235,8 @@ Titre \\
 We have used the nodes corresponding to the position of the potential rules,
 which are described below (cf. p.~\pageref{nodes-i}).
 
+Of course, there are dedicated packages to such constructions (for example \pkg{tcolorbox}).
+
 
 \subsection[The medium nodes and the large nodes]{The ``medium nodes'' and the ``large nodes''}
 
@@ -6795,6 +6934,14 @@ environments of \pkg{nicematrix} are not affected).
 
 \index{Incompatibilities}
 
+\textbf{The package \pkg{nicematrix} can't be used in the class \cls{revtex4-2}
+because this class is not compatible with the recent versions of LaTeX.}
+Indeed, \cls{revtex4-2} modifies serval interal commands of \pkg{array} and
+those modifications have not been updated to take into acount the recent changes in
+\pkg{array} in relation with the Tagging Project.
+
+\bigskip
+
 There might be incompatibilities between \pkg{nicematrix} and \pkg{babel} with
 the language which activate (in the TeX sens) some characters, in particular
 the character |<|. 
@@ -6909,8 +7056,120 @@ George     & Adams     & $34$
 
 \section{Examples}
 
+
+
+\subsection{Notes in the tabulars}
+
+\index{nota@\textbf{Notes in the tabulars}|textit}
+\index{tabularnote@\texttt{\textbackslash tabularnote}|textit}
+\index{notes (key to customize the notes of a\newline tabular)|textit}
+\index{style (subkey of ``notes'')|textit}
+\index{enumitem-keys (subkey of ``notes'')|textit}
+\index{enumitem@\pkg{enumitem} (package required to use\newline \texttt{\textbackslash tabularnote})|textit}
+
+
+\label{ex:notes}
+
+The tools provided by \pkg{nicematrix} for the composition of the tabular
+notes have been presented in the section \ref{s:notes} p.~\pageref{s:notes}.
+
+\medskip
+Let's consider that we wish to number the notes of a tabular with
+stars.\footnote{Of course, it's realistic only when there is very few notes in
+the tabular.}
+
+\medskip
+First, we write a command |\stars| similar to the well-known commands 
+|\arabic|, |\alph|, |\Alph|, etc. which produces a number of stars equal to
+its argument\footnote{In fact: the value of its argument.}.
+\begin{Code}
+\ExplSyntaxOn
+\NewDocumentCommand { \emph{\stars} } { m }
+  { \prg_replicate:nn { \value { #1 } } { \( \star \) } } 
+\ExplSyntaxOff
+\end{Code}
+%
+Of course, we change the style of the labels with the key |notes/style|.
+However, it would be interesting to change also some parameters in the type of
+list used to compose the notes at the end of the tabular.
+First, we required a composition flush right for the labels with the setting
+|align=right|.
+Moreover, we want the labels to be composed on a width equal to the width of
+the widest label. The widest label is, of course, the label with the greatest
+number of stars. We know that number: it is equal to |\value{tabularnote}|
+(because |tabularnote| is the LaTeX counter used by |\tabularnote| and,
+therefore, at the end of the tabular, its value is equal to the total number
+of tabular notes). We use the key |widest*| of \pkg{enumitem} in order to
+require a width equal to that value: |widest*=\value{tabularnote}|. 
+
+\begin{Code}
+\NiceMatrixOptions 
+  {
+    notes = 
+     {
+       \emph{style = \stars{#1} , 
+       enumitem-keys = 
+        { 
+          widest* = \value{tabularnote} ,
+          align = right 
+        } }
+     }
+  }
+\end{Code}
+
+
+
+\begin{scope}
+\ExplSyntaxOn
+\NewDocumentCommand \stars { m }
+  { \prg_replicate:nn { \value { #1 } } { \( \star \) } } 
+\NiceMatrixOptions 
+  {
+    notes = 
+     {
+       style = \stars{#1} ,
+       enumitem-keys = 
+        {
+          widest* = \value{tabularnote} ,
+          align = right 
+        }
+     }
+  }
+\ExplSyntaxOff
+\begin{Code}
+\begin{NiceTabular}{@{}llr@{}}
+\toprule \RowStyle{\bfseries}
+Last name & First name & Birth day \\
+\midrule
+Achard\tabularnote{\emph{Achard is an old family of the Poitou.}} 
+& Jacques & 5 juin 1962 \\
+Lefebvre\tabularnote{\emph{The name Lefebvre is an alteration of the name Lefebure.}} 
+& Mathilde & 23 mai 1988 \\
+Vanesse & Stephany & 30 octobre 1994 \\
+Dupont & Chantal & 15 janvier 1998 \\
+\bottomrule
+\end{NiceTabular}
+\end{Code}
+
+\begin{center}
+\begin{NiceTabular}{@{}llr@{}}[no-cell-nodes]
+\toprule \RowStyle{\bfseries}
+Last name & First name & Birth day \\
+\midrule
+Achard\tabularnote{Achard is an old family of the Poitou.} 
+& Jacques & June 5, 2005 \\
+Lefebvre\tabularnote{The name Lefebvre is an alteration of the name Lefebure.} 
+& Mathilde & January 23, 1975 \\
+Vanesse & Stephany & October 30, 1994 \\
+Dupont & Chantal & January 15, 1998 \\
+\bottomrule
+\end{NiceTabular}
+\end{center}
+\end{scope}
+
+
 \subsection[{Utilisation of the key 'tikz' of the command \textbackslash
-Block}]{Utilisation of the key ``tikz'' of the command \textbackslash Block} 
+Block}]{Utilisation of the key ``tikz'' of the command \texttt{\textbackslash Block}} 
 \label{tikz-key-examples}
 
 \index{tikzz@tikz!key of \texttt{\textbackslash Block}|textit}
@@ -7080,118 +7339,69 @@ the rules, except on the borders (which are, of course, added by \pkg{tcolorbox}
 \end{center}
 
 
-\subsection{Notes in the tabulars}
-
-\index{nota@\textbf{Notes in the tabulars}|textit}
-\index{tabularnote@\texttt{\textbackslash tabularnote}|textit}
-\index{notes (key to customize the notes of a\newline tabular)|textit}
-\index{style (subkey of ``notes'')|textit}
-\index{enumitem-keys (subkey of ``notes'')|textit}
-\index{enumitem@\pkg{enumitem} (package required to use\newline \texttt{\textbackslash tabularnote})|textit}
+\subsection{A sign chart}
 
 
-\label{ex:notes}
+\begin{Code}
+\[\begin{NiceMatrix}[columns-width=1cm,hvlines]
+f(x)   & \Block[C]{1-5}{+} \\
+f'(x)  & \Block[C]{1-2}{+} && \Block[C]{1-2}{+} && + \\
+f''(x) & - & \Block[C]{1-2}{-} && \Block[C]{1-2}{+} \\
+\end{NiceMatrix}\]
+\end{Code}
 
-The tools provided by \pkg{nicematrix} for the composition of the tabular
-notes have been presented in the section \ref{s:notes} p.~\pageref{s:notes}.
+\bigskip
+
+\[\begin{NiceMatrix}[columns-width=1cm,hvlines]
+f(x)   & \Block[C]{1-5}{+} \\
+f'(x)  & \Block[C]{1-2}{+} && \Block[C]{1-2}{+} && + \\
+f''(x) & - & \Block[C]{1-2}{-} && \Block[C]{1-2}{+} \\
+\end{NiceMatrix}\]
+
+
+
+\subsection{Use of the key borders of the command \texttt{\textbackslash Block}}
+\label{ex:borders}
+\index{tikzz@tikz!key of ``borders'' de \texttt{\textbackslash Block}|textit}
+
+In the following example, we use the command |\Block| to draw rules.
 
 \medskip
-Let's consider that we wish to number the notes of a tabular with
-stars.\footnote{Of course, it's realistic only when there is very few notes in
-the tabular.}
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz} % in the preamble
+\end{Verbatim}
 
-\medskip
-First, we write a command |\stars| similar to the well-known commands 
-|\arabic|, |\alph|, |\Alph|, etc. which produces a number of stars equal to
-its argument\footnote{In fact: the value of its argument.}.
-\begin{Code}
-\ExplSyntaxOn
-\NewDocumentCommand { \emph{\stars} } { m }
-  { \prg_replicate:nn { \value { #1 } } { \( \star \) } } 
-\ExplSyntaxOff
-\end{Code}
-%
-Of course, we change the style of the labels with the key |notes/style|.
-However, it would be interesting to change also some parameters in the type of
-list used to compose the notes at the end of the tabular.
-First, we required a composition flush right for the labels with the setting
-|align=right|.
-Moreover, we want the labels to be composed on a width equal to the width of
-the widest label. The widest label is, of course, the label with the greatest
-number of stars. We know that number: it is equal to |\value{tabularnote}|
-(because |tabularnote| is the LaTeX counter used by |\tabularnote| and,
-therefore, at the end of the tabular, its value is equal to the total number
-of tabular notes). We use the key |widest*| of \pkg{enumitem} in order to
-require a width equal to that value: |widest*=\value{tabularnote}|. 
+\smallskip
 
 \begin{Code}
-\NiceMatrixOptions 
-  {
-    notes = 
-     {
-       \emph{style = \stars{#1} , 
-       enumitem-keys = 
-        { 
-          widest* = \value{tabularnote} ,
-          align = right 
-        } }
-     }
-  }
+\begin{pNiceMatrix}
+\emph{\Block[borders={bottom,right,tikz=dotted}]{2-2}{}}
+1 & 2 & 0  & 0 & 0 & 0 \\
+4 & 5 & 0  & 0 & 0 & 0 \\
+0 & 0 & \emph{\Block[borders={bottom,top,right,left,tikz=dotted}]{2-2}{}}
+        7  & 1 & 0 & 0 \\
+0 & 0 & -1 & 2 & 0 & 0 \\
+0 & 0 & 0  & 0 & \emph{\Block[borders={left,top,tikz=dotted}]{2-2}{}}
+                 3 & 4 \\
+0 & 0 & 0  & 0 & 1 & 4 
+\end{pNiceMatrix}
 \end{Code}
 
 
-
-\begin{scope}
-\ExplSyntaxOn
-\NewDocumentCommand \stars { m }
-  { \prg_replicate:nn { \value { #1 } } { \( \star \) } } 
-\NiceMatrixOptions 
-  {
-    notes = 
-     {
-       style = \stars{#1} ,
-       enumitem-keys = 
-        {
-          widest* = \value{tabularnote} ,
-          align = right 
-        }
-     }
-  }
-\ExplSyntaxOff
-\begin{Code}
-\begin{NiceTabular}{@{}llr@{}}
-\toprule \RowStyle{\bfseries}
-Last name & First name & Birth day \\
-\midrule
-Achard\tabularnote{\emph{Achard is an old family of the Poitou.}} 
-& Jacques & 5 juin 1962 \\
-Lefebvre\tabularnote{\emph{The name Lefebvre is an alteration of the name Lefebure.}} 
-& Mathilde & 23 mai 1988 \\
-Vanesse & Stephany & 30 octobre 1994 \\
-Dupont & Chantal & 15 janvier 1998 \\
-\bottomrule
-\end{NiceTabular}
-\end{Code}
-
-\begin{center}
-\begin{NiceTabular}{@{}llr@{}}[no-cell-nodes]
-\toprule \RowStyle{\bfseries}
-Last name & First name & Birth day \\
-\midrule
-Achard\tabularnote{Achard is an old family of the Poitou.} 
-& Jacques & June 5, 2005 \\
-Lefebvre\tabularnote{The name Lefebvre is an alteration of the name Lefebure.} 
-& Mathilde & January 23, 1975 \\
-Vanesse & Stephany & October 30, 1994 \\
-Dupont & Chantal & January 15, 1998 \\
-\bottomrule
-\end{NiceTabular}
-\end{center}
-\end{scope}
+\[\begin{pNiceMatrix}
+\Block[borders={bottom,right,tikz=dotted}]{2-2}{}
+1 & 2 & 0  & 0 & 0 & 0 \\
+4 & 5 & 0  & 0 & 0 & 0 \\
+0 & 0 & \Block[borders={bottom,top,right,left,tikz=dotted}]{2-2}{}
+        7  & 1 & 0 & 0 \\
+0 & 0 & -1 & 2 & 0 & 0 \\
+0 & 0 & 0  & 0 & \Block[borders={left,top,tikz=dotted}]{2-2}{}
+                 3 & 4 \\
+0 & 0 & 0  & 0 & 1 & 4 
+\end{pNiceMatrix}\]
 
 
-
-\subsection{Dotted lines}
+\subsection{Continuous dotted lines in the matrices}
 
 \index{dotted@\textbf{Dotted lines}|textit}
 
@@ -7321,10 +7531,11 @@ not longer dotted (TikZ should be loaded).
 \end{pNiceMatrix}\]
 \end{scope}
 
-\vspace{1cm}
-In fact, it's even possible to draw solid lines with the commands |\Cdots|,
-|\Vdots|, etc.\footnote{In this document, the TikZ library \pkg{arrows.meta}
-has been loaded, which impacts the shape of the arrow tips.}
+\subsection{How the illustrate the numbers of rows and columns in a matrix}
+
+
+In this document, the TikZ library \pkg{arrows.meta}
+has been loaded, which impacts the shape of the arrow tips.
 
 \medskip
 \begin{Code}
@@ -7527,41 +7738,6 @@ Or course, the output may seem disappointing. That's why, for this type of use,
 we recommend the use of the commands |\Hbrace| and |\Vbrace| (provided by
 \pkg{nicematrix}), as shown in the previous examples.
 
-
-\subsection{Dashed rules}
-\label{dashed}
-\index{tikzz@tikz!key of ``borders'' de \texttt{\textbackslash Block}|textit}
-
-In the following example, we use the command |\Block| to draw dashed rules.
-For that example, TikZ should be loaded (by |\usepackage{tikz}|).
-
-
-\begin{Code}
-\begin{pNiceMatrix}
-\emph{\Block[borders={bottom,right,tikz=dashed}]{2-2}{}}
-1 & 2 & 0  & 0 & 0 & 0 \\
-4 & 5 & 0  & 0 & 0 & 0 \\
-0 & 0 & \emph{\Block[borders={bottom,top,right,left,tikz=dashed}]{2-2}{}}
-        7  & 1 & 0 & 0 \\
-0 & 0 & -1 & 2 & 0 & 0 \\
-0 & 0 & 0  & 0 & \emph{\Block[borders={left,top,tikz=dashed}]{2-2}{}}
-                 3 & 4 \\
-0 & 0 & 0  & 0 & 1 & 4 
-\end{pNiceMatrix}
-\end{Code}
-
-
-\[\begin{pNiceMatrix}
-\Block[borders={bottom,right,tikz=dashed}]{2-2}{}
-1 & 2 & 0  & 0 & 0 & 0 \\
-4 & 5 & 0  & 0 & 0 & 0 \\
-0 & 0 & \Block[borders={bottom,top,right,left,tikz=dashed}]{2-2}{}
-        7  & 1 & 0 & 0 \\
-0 & 0 & -1 & 2 & 0 & 0 \\
-0 & 0 & 0  & 0 & \Block[borders={left,top,tikz=dashed}]{2-2}{}
-                 3 & 4 \\
-0 & 0 & 0  & 0 & 1 & 4 
-\end{pNiceMatrix}\]
 
 
 \subsection{Stacks of matrices}
@@ -7899,9 +8075,9 @@ the command |\Block| is left empty, that means that the block is a mono-cell blo
 \begin{Code}
 $\begin{pNiceArray}{>{\strut}cccc}[margin,rules/color=blue,no-cell-nodes]
 \emph{\Block[draw]{}{a_{11}}} & a_{12} & a_{13} & a_{14} \\
-a_{21} & \Block[draw]{}{a_{22}} & a_{23} & a_{24} \\
-a_{31} & a_{32} & \Block[draw]{}{a_{33}} & a_{34} \\
-a_{41} & a_{42} & a_{43} & \Block[draw]{}{a_{44}} \\
+a_{21} & \emph{\Block[draw]{}{a_{22}}} & a_{23} & a_{24} \\
+a_{31} & a_{32} & \emph{\Block[draw]{}{a_{33}}} & a_{34} \\
+a_{41} & a_{42} & a_{43} & \emph{\Block[draw]{}{a_{44}}} \\
 \end{pNiceArray}$
 \end{Code}
 \[\begin{pNiceArray}{>{\strut}cccc}[margin,rules/color=blue,no-cell-nodes]
@@ -7951,11 +8127,13 @@ method to highlight a row of the matrix.
 \medskip
 That example and the following ones require TikZ (by default, \pkg{nicematrix}
 only loads \textsc{pgf}, which is a sub-layer of TikZ) and the TikZ library
-|fit|. The following instructions in the preamble of your document do the job:
-\begin{verbatim}
-\usepackage{tikz}
+|fit|. 
+
+\smallskip
+\begin{Verbatim}[formatcom=\footnotesize\color{gray}]
+\usepackage{tikz}      % in the preamble
 \usetikzlibrary{fit}
-\end{verbatim}
+\end{Verbatim}
 
 \medskip 
 We create a rectangular TikZ node which encompasses the nodes of the second
@@ -8232,6 +8410,10 @@ package, which must be loaded previously).
    \end{NiceTabular}}
 \end{center}
 
+\medskip
+Of course, if you have to draw many diagrams like this one, you should consider using a
+dedicated package, such as \pkg{atableau}.
+
 
 \newpage
 \vspace{1cm}
@@ -8254,6 +8436,11 @@ also available on the
 \small
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
+
+\subsection*{Changes between version 7.7 and 7.8}
+
+New key |draw-trees-in-col| (and keys |trees/color|, |trees/line-width| and
+|trees/rounded-corners|)
 
 \subsection*{Changes between version 7.6 and 7.7}
 
