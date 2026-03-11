@@ -7040,7 +7040,10 @@
   {
     \__nicematrix_compute_rule_width:n { #2 }
     \tl_gput_right:Ne \g__nicematrix_array_preamble_tl
-      { \exp_not:N ! { \skip_horizontal:n { \dim_use:N \l__nicematrix_rule_width_before_dim } } }
+      {
+        \exp_not:N !
+          { \skip_horizontal:n { \dim_use:N \l__nicematrix_rule_width_before_dim } }
+      }
     \tl_gput_right:Ne \g__nicematrix_rules_tl
       {
         {
