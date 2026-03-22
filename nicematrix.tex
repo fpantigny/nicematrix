@@ -14,8 +14,8 @@
     fit,
     patterns,
     arrows.meta,
-    decorations.pathreplacing,
-    decorations.pathmorphing,
+    decorations.pathreplacing, % for \Hbrace and \Vbrace
+    decorations.pathmorphing, % for zigzag
     calligraphy
   }
 
@@ -71,7 +71,8 @@
 
 
 \usepackage{piton}
-\PitonOptions{language = verbatim, detected-commands = {emph,textsl}, splittable = 4}
+\let\myrlap\rlap
+\PitonOptions{language = verbatim, detected-commands = {myrlap, emph,textsl}, splittable = 4}
 \SetPitonStyle{ Number = , Comment = }
 
 \ExplSyntaxOn
@@ -278,10 +279,19 @@ The environment |\{NiceArrayWithDelims\}| is a generalisation of the environment
 \textbf{It's recommended to use primarily the classical environments and to use
   the environments of \pkg{nicematrix} only when some feature provided by these
   environments is used (this will save memory and speed up the
-  compilation).}\footnote{In order to speed up the compilations, it's also possible
-  to use ponctually the key |no-cell-nodes| which disables the creation of the PGF/TikZ
-  nodes for the contents of the cells but some functionalities won't work any longer
-  (cf.~p.~\pageref{no-cell-nodes}).}
+  compilation).}
+
+\medskip
+By the way, when using an environment of \pkg{nicematrix} it's often possible to
+speed up the compilation by using the key \Definition{no-cell-nodes} (the
+compilation time may be reduced by a factor of 3 or 4). Indeed, numerous
+functionalities of \pkg{nicematrix} do not use the PGF-TikZ nodes created under
+the contents of the cells (cf.~p.~\pageref{no-cell-nodes}) and the key
+|no-cell-nodes| avoids their creation which is expensive (the creation of those
+nodes can't be desactivated by \pkg{nicematrix} because \pkg{nicematrix} has no
+way to know whether those nodes are used directly by the final user in an
+environment |{tikzpicture}| after the environment of \pkg{nicematrix}).
+
 
 \medskip 
 All the environments of the package \pkg{nicematrix} accept, between square
@@ -1518,8 +1528,7 @@ to the rules which will be drawn).
 \begin{itemize}
 \item It's possible to put some intervals of integers with the syntax $i$|-|$j$
 
-\item \colorbox{yellow!50}{\bfseries{New 7.4}} It's possible to put negative numbers
-(which are counted from the end).
+\item It's possible to put negative numbers (which are counted from the end).
 \end{itemize}
 
 In fact, for the environments with delimiters (such as |{pNiceMatrix}| or
@@ -1976,7 +1985,7 @@ rule specified in |tikz|).
 
 \bigskip
 \begin{Verbatim}[formatcom = \footnotesize \color{gray}]
-\usepackage{tikz} % in the preamble
+\usepackage{tikz}                         % in the preamble
 \usetikzlibrary{decorations.pathmorphing} % in the preamble
 \end{Verbatim}
 
@@ -2753,7 +2762,7 @@ However, \pkg{booktabs} is \emph{not} loaded by \pkg{nicematrix}.
 \begin{scope}
 \hfuzz=10cm
 \begin{Code}[width=8.5cm]
-\begin{NiceTabular}[c]{lSSSS}
+\begin{NiceTabular}[c]{lSSSS}[no-cell-nodes] \myrlap{% no-cell-nodes is optional}
 \CodeBefore
   \rowcolor{red!15}{1-2} 
   \rowcolors{3}{blue!15}{}
@@ -2812,7 +2821,7 @@ corresponding columns. The command |\EmptyRow| is similar for the rows.
 
 \medskip
 \begin{Code}[width=10cm]
-\begin{NiceTabular}{ccccc}[hvlines,no-cell-nodes]
+\begin{NiceTabular}{ccccc}[hvlines,no-cell-nodes] \myrlap{% no-cell-nodes is optional}
 \CodeBefore
   \rowcolor{blue!15}{1}
   \emph{\EmptyColumn{3}}
@@ -4171,10 +4180,8 @@ three arguments:
 |shorten|, |shorten-start| and |shorten-end|.
 
 \smallskip
-\colorbox{yellow!50}{\textbf{New 7.5}}
-
 \index{brace-shift (key of \texttt{\textbackslash Hbrace} and \texttt{\textbackslash Vbrace})}
-\nobreak
+
 A key \Definition{brace-shift}$^+$ is also provided to shift the brace (and its
 label) towards the exterior of the matrix. That key has a normal syntax but also an
 ``additive'' syntax, which means that it's possible to write, for example,
@@ -5429,11 +5436,13 @@ For an example of customisation of the tabular notes, see p.~\pageref{ex:notes}.
 
 \nobreak
 \smallskip
-The key |draw-trees-in-col| takes in as argument a list of numbers of columns and, in each
-of those columns, will draw a tree in the style the trees drawn by the package \pkg{dirtree}.
+
+The key \Definition{draw-trees-in-col} takes in as argument a list of
+numbers of columns and, in each of those columns, will draw a tree
+in the style the trees drawn by the package \pkg{dirtree}.
 
 \medskip
-\begin{Verbatim}[formatcom=\footnotesize\color{gray}]
+\begin{Verbatim}[formatcom=\footnotesize \color{gray}]
 \usepackage{booktabs} % in the preamble
 \end{Verbatim}
 
@@ -5461,7 +5470,6 @@ Animal   &&& 100 \\
 \renewcommand{\arraystretch}{1.3}
 \begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[draw-trees-in-col=1-2]
 \toprule
-\RowStyle{\bfseries}
 Category &&&  \% \\
 \midrule
 Animal   &&& 100 \\
@@ -7407,7 +7415,7 @@ for the dashed rule specified by the letter |;| in the preamble of the array).
 
 \nobreak
 \bigskip
-\begin{Verbatim}[formatcom=\footnotesize\color{gray}]
+\begin{Verbatim}[formatcom=\footnotesize \color{gray}]
 \usepackage{tikz}      % in the preamble
 \end{Verbatim}
 
@@ -7602,6 +7610,13 @@ available only if TikZ has been loaded with the library
 \pkg{decorations.pathreplacing}: |\usepackage{tikz}|
 |\usetikzlibrary{decorations.pathreplacing}|.}
 
+\smallskip
+\begin{Verbatim}[formatcom=\footnotesize \color{gray}]
+\usepackage{tikz}                          % in the preamble
+\usetikzlibrary{decorations.pathreplacing} % in the preamble
+\end{Verbatim}
+
+
 \medskip
 \begin{Code}[width=11cm]
 \NiceMatrixOptions{xdots/horizontal-labels}
@@ -7629,12 +7644,14 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 \pagebreak
 It's possible to change the TikZ style of those braces by changing the TikZ
-style |nicematrix/brace|. In the following example, we assume that the TikZ
-extension \pkg{calligraphy} has been loaded:
+style |nicematrix/brace|. In the following example, we 
+``calligraphic'' braces (the TikZ library \pkg{calligraphy} must be loaded after
+\pkg{decorations.pathreplacing}).
 
 \smallskip
-\begin{Verbatim}
-\usetikzlibrary{calligraphy}
+\begin{Verbatim}[formatcom=\footnotesize \color{gray}]
+\usepackage{tikz}                                      % in the preamble
+\usetikzlibrary{decorations.pathreplacing,calligraphy} % in the preamble
 \end{Verbatim}
 
 \medskip
@@ -7646,12 +7663,12 @@ extension \pkg{calligraphy} has been loaded:
       { 
         decoration = 
           { 
-            calligraphic brace , 
+            \emph{calligraphic brace} , 
             amplitude = 0.4 em , 
             raise = -0.25 em 
           } , 
         line width = 0.1 em ,
-        decorate , 
+        decorate 
       } 
   }
 \end{Code}
@@ -7678,7 +7695,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
             raise = -0.25 em 
           } , 
         line width = 0.1 em ,
-        decorate , 
+        decorate  
       } 
   }
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
@@ -8126,7 +8143,7 @@ only loads \textsc{pgf}, which is a sub-layer of TikZ) and the TikZ library
 |fit|. 
 
 \smallskip
-\begin{Verbatim}[formatcom=\footnotesize\color{gray}]
+\begin{Verbatim}[formatcom=\footnotesize \color{gray}]
 \usepackage{tikz}      % in the preamble
 \usetikzlibrary{fit}
 \end{Verbatim}

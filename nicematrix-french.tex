@@ -19,7 +19,7 @@
     patterns,
     arrows.meta,
     decorations.pathreplacing,
-    decorations.pathmorphing,
+    decorations.pathmorphing, % pour zigzag
     calligraphy
   }
  
@@ -77,7 +77,8 @@
 \def\emphase{\bgroup\color{RoyalPurple}\let\next=}
 
 \usepackage{piton}
-\PitonOptions{language = verbatim, detected-commands = {emph,textsl}, splittable = 4}
+\let\myrlap\rlap
+\PitonOptions{language = verbatim, detected-commands = {emph,textsl,myrlap}, splittable = 4}
 \SetPitonStyle{ Number = , Comment = }
 
 \ExplSyntaxOn
@@ -316,11 +317,20 @@ ses variantes (cf. p.~\pageref{NiceArrayWithDelims}).
 \textbf{On conseille d'utiliser prioritairement les environnements classiques et de
 n'utiliser les environnements de \pkg{nicematrix} que lorsqu'on utilise les
 fonctionnalités supplémentaires offertes par ces environnements (cela permet
-d'économiser la mémoire et d'accélérer la compilation).}\footnote{Pour accélérer
-les compilations, on peut aussi utiliser ponctuellement la clé |no-cell-nodes| qui
-supprime la création des nœuds PGF-TikZ correspondants aux contenus des cellules mais
-certains fonctionnalités ne seront plus disponibles (cf.~p.~\pageref{no-cell-nodes}).
-}
+d'accélérer fortement les compilations).}
+
+
+\medskip
+Par ailleurs, quand on utilise un des environnements de \pkg{nicematrix}, il est
+souvent possible d'accélérer fortement la compilation en utilisant la
+\Definition{no-cell-nodes} (le temps de compilation peut alors être divisé par 3
+ou 4). En effet de nombreuses fonctionnalités de \pkg{nicematrix} n'utilisent
+pas les nœuds PGF-TikZ correspondant aux contenus des cellules
+(cf.~p.~\pageref{no-cell-nodes}) et la clé |no-cell-nodes| désactive leur création
+(la création de ces nœuds ne peut être désactivée par \pkg{nicematrix} car
+\pkg{nicematrix} n'a pas de moyen de savoir si l'utilisateur final ne les utilise pas
+directement par lui-même en utilisant TikZ après l'environnement).
+
 
 \medskip
 Tous les environnements de l'extension \pkg{nicematrix} acceptent, entre
@@ -1603,8 +1613,8 @@ Quand une valeur est présente, il s'agit d'une liste de numéros de filets à t
 \begin{itemize}
 \item Il est possible de mettre des intervalles de numéros de la forme $i$|-|$j$.
 
-\item \colorbox{yellow!50}{\textbf{Nouveau 7.4}} : il est possible de mettre
-des numéros négatifs qui sont alors comptés à partir de la fin.
+\item Il est possible de mettre des numéros négatifs qui sont alors comptés à
+partir de la fin.
 \end{itemize}
 
 
@@ -2059,7 +2069,7 @@ n'est \emph{pas} calculée à partir des caractéristiques fournies par la clé
 
 \bigskip
 \begin{Verbatim}[formatcom = \footnotesize \color{gray}]
-\usepackage{tikz} % dans le préambule
+\usepackage{tikz}                         % dans le préambule
 \usetikzlibrary{decorations.pathmorphing} % dans le préambule
 \end{Verbatim}
 
@@ -2864,7 +2874,7 @@ l'extension \pkg{booktabs} n'est \emph{pas} chargée par \pkg{nicematrix}.
 \begin{scope}
 \hfuzz=10cm
 \begin{Code}[width=8.5cm]
-\begin{NiceTabular}{lSSSS}
+\begin{NiceTabular}{lSSSS}[no-cell-nodes] \myrlap{% no-cell-nodes is optional}
 \CodeBefore
   \rowcolor{red!15}{1-2}
   \rowcolors{3}{blue!15}{}
@@ -2929,7 +2939,7 @@ commande |\EmptyRow| est similaire.
 
 \medskip
 \begin{Code}[width=10cm]
-\begin{NiceTabular}{ccccc}[hvlines,no-cell-nodes]
+\begin{NiceTabular}{ccccc}[hvlines,no-cell-nodes] \myrlap{% no-cell-nodes est facultatif}
 \CodeBefore
   \rowcolor{blue!15}{1}
   \emph{\EmptyColumn{3}}
@@ -2997,7 +3007,7 @@ Beamer (comme |\only|, etc.)
 \medskip
 \begin{Code}
 \NewDocumentCommand { \Blue } { } {\emph{\columncolor{blue!15}}}
-\begin{NiceTabular}{>{\Blue}c>{\Blue}cc}
+\begin{NiceTabular}{>{\Blue}c>{\Blue}cc}[no-cell-nodes] % no-cell-nodes facultatif
 \toprule
 \emph{\rowcolor{red!15}}
 Nom & Prénom & Année de naissance \\
@@ -3040,7 +3050,7 @@ En particulier, on peut engager un coloriage des rangées avec
 
 \bigskip
 \begin{Code}[width=10cm]
-\begin{NiceTabular}{c}[hvlines]
+\begin{NiceTabular}{c}[hvlines,no-cell-nodes] % \myrlap{no-cell-nodes est facultatif}
 un \\
 deux \\
 \emph{\rowlistcolors{red!15}}
@@ -3134,7 +3144,7 @@ soient en mode texte ou bien en mode mathématique.
 
 \medskip
 \begin{Code}[width=12cm]
-\begin{NiceTabular}{cccc}
+\begin{NiceTabular}{cccc}[no-cell-nodes]
 \hline
 \emph{\RowStyle[cell-space-limits=3pt]{\rotate}}
 premier & deuxième & troisième & quatrième \\
@@ -4313,10 +4323,7 @@ arguments:
 |shorten|, |shorten-start| et |shorten-end|.
 
 \smallskip
-\colorbox{yellow!50}{\textbf{Nouveau 7.5}}
-
 \index{brace-shift (clé de \texttt{\textbackslash Hbrace} et \texttt{\textbackslash Vbrace})}
-\nobreak
 Il existe aussi une clé \Definition{brace-shift}$^+$ pour déplacer l'accolade (et
 son label) vers l'extérieur de la matrice. Cette clé accepte une syntaxe normale
 et une syntaxe «additive», c'est-à-dire que l'on peut écrire, par exemple,
@@ -5618,12 +5625,12 @@ Pour un exemple de personnalisation des notes de tableau, voir p.~\pageref{ex:no
 
 \nobreak
 \smallskip
-La clé |draw-trees-in-col| prend en argument une liste de numéros de colonnes
+La clé \Definition{draw-trees-in-col} prend en argument une liste de numéros de colonnes
 et, dans chacune de ces colonnes, dessine des arbres comme en propose
 l'extension \pkg{dirtree}.
 
 \medskip
-\begin{Verbatim}[formatcom=\footnotesize\color{gray}]
+\begin{Verbatim}[formatcom=\footnotesize \color{gray}]
 \usepackage{booktabs} % in the preamble
 \end{Verbatim}
 
@@ -5651,7 +5658,6 @@ Animal   &&& 100 \\
 \renewcommand{\arraystretch}{1.3}
 \begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[draw-trees-in-col=1-2]
 \toprule
-\RowStyle{\bfseries}
 Category &&&  \% \\
 \midrule
 Animal   &&& 100 \\
@@ -7849,6 +7855,12 @@ p.~\pageref{Hbrace}).\footnote{Ces commandes ne sont disponibles que si TikZ a
   été chargée ainsi que la bibliothèque \pkg{decorations.pathreplacing} de TikZ
   : |\usepackage{tikz}| |\usetikzlibrary{decorations.pathreplacing}|.}
 
+\smallskip
+\begin{Verbatim}[formatcom=\footnotesize \color{gray}]
+\usepackage{tikz}                          % dans le préambule
+\usetikzlibrary{decorations.pathreplacing} % dans le préambule
+\end{Verbatim}
+
 
 \medskip
 \begin{Code}
@@ -7879,15 +7891,15 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 \medskip
 Il est possible de changer le style TikZ des accolades en changeant le style
-|nicematrix/brace|. Dans l'exemple suivant, on suppose que l'extension
-\pkg{calligraphy} de TikZ a été chargée:
+|nicematrix/brace|. L'exemple suivant utilise des accolades «calligraphiques»
+(l'extension TikZ \pkg{calligraphy} doit être chargée après
+\pkg{decorations.pathreplacing}).
 
 \smallskip
-\begin{Verbatim}
-\usetikzlibrary{calligraphy}
+\begin{Verbatim}[formatcom=\footnotesize \color{gray}]
+\usepackage{tikz}                                      % dans le préambule
+\usetikzlibrary{decorations.pathreplacing,calligraphy} % dans le préambule
 \end{Verbatim}
-
-
 
 \medskip
 \begin{Code}
@@ -7898,12 +7910,12 @@ Il est possible de changer le style TikZ des accolades en changeant le style
       { 
         decoration = 
           { 
-            calligraphic brace , 
+            \emph{calligraphic brace} , 
             amplitude = 0.4 em , 
             raise = -0.25 em 
           } , 
         line width = 0.1 em ,
-        decorate , 
+        decorate 
       } 
   }
 \end{Code}
@@ -7930,7 +7942,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
             raise = -0.25 em 
           } , 
         line width = 0.1 em ,
-        decorate , 
+        decorate  
       } 
   }
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
@@ -8388,7 +8400,7 @@ charge que \textsc{pgf}, qui est une sous-couche de TikZ) ainsi que la
 bibliothèque TikZ~|fit|.
 
 \smallskip
-\begin{Verbatim}[formatcom=\footnotesize\color{gray}]
+\begin{Verbatim}[formatcom=\footnotesize \color{gray}]
 \usepackage{tikz}
 \usetikzlibrary{fit}
 \end{Verbatim}

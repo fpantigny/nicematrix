@@ -4320,7 +4320,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \skip_horizontal:N \l_@@_left_margin_dim 
+    \skip_horizontal:N \l_@@_left_margin_dim % \skip_horizontal:N  ?
     \skip_horizontal:N \l_@@_extra_left_margin_dim 
     \UseTaggingSocket { tbl / hmode / begin } 
 %    \end{macrocode}
@@ -12291,6 +12291,17 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_draw_rules_i:
   {
+    \bool_lazy_all:nT
+      {
+        { \clist_if_empty_p:N \l_@@_corners_clist }
+        { \seq_if_empty_p:N \g_@@_pos_of_blocks_seq }
+        { \seq_if_empty_p:N \g_@@_pos_of_xdots_seq }
+        { \seq_if_empty_p:N \g_@@_pos_of_stroken_blocks_seq }        
+      }
+      {
+        \socket_assign_plug:nn { nicematrix / draw-hrule } { quick }
+        \socket_assign_plug:nn { nicematrix / draw-vrule } { quick }
+      }
     \pgfrememberpicturepositiononpagetrue
     \pgf@relevantforpicturesizefalse
     \pgfsetrectcap
@@ -12398,7 +12409,7 @@ version 2005/12/01 or later.
 %
 % \subsubsection*{The vertical rules}
 %
-% |\@@_draw_vrule:n| and |\@@_draw_vrule:| will appear in
+% |\@@_draw_vrule:n| and the socket |draw-vrule| will appear in
 % |\@@_draw_key_vlines:n| and in the token list |\g_@@_rules_tl| (or within
 % other functions used in |\g_@@_rules_tl|) and those token lists will be
 % executed within a PGF pseudo-environment.
@@ -12420,18 +12431,32 @@ version 2005/12/01 or later.
 % \verb+|c|c|c|+ but only two columns used).
 %    \begin{macrocode}
       \int_compare:nNnT \l_@@_position_int < { \c@jCol + 2 }
-        \@@_draw_vrule:
+        \socket_use:n { nicematrix / draw-vrule }
     }
   }
 %    \end{macrocode}
 %
 % \bigskip
-% |\@@_draw_vrule:| is a function similar to |\@@_draw_vrule:n| but whitout the
-% list of pairs (the rule will be drawn with the current values of the
-% parameters for rules in the TeX group).
+% The socket ``|nicematrix / draw-vrule|'' will draw a vertical rule. That vertical
+% rule may potentially be composed of several disconnected segments.
+%
+% The plug |general| will break the vertical rule in several segments.
+%
+% The plug |quick| will draw directly the vertical rule. That plug is used when we are
+% sure that the whole rule must be drawn, that is to say when:
+% \begin{itemize}
+% \item there is no corners;
+% \item there is no blocks;
+% \item there is no implicit blocks created by the continuous dotted lines;
+% \item there is no stroken blocks.
+% \end{itemize}
 %
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_draw_vrule:
+\socket_new:nn { nicematrix / draw-vrule } { 0 }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\socket_new_plug:nnn { nicematrix / draw-vrule } { general }
   {
     \group_begin:
 %    \end{macrocode}
@@ -12487,6 +12512,24 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\socket_assign_plug:nn { nicematrix / draw-vrule } { general }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\socket_new_plug:nnn { nicematrix / draw-vrule }  { quick }
+  {
+    \group_begin:
+    \@@_qpoint:n { col - \int_use:N \l_@@_position_int }
+    \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x
+    \int_set_eq:NN \l_@@_segment_start_int \l_@@_start_int
+    \int_set_eq:NN \l_@@_segment_end_int \l_@@_end_int
+    \socket_use:n { nicematrix / vsegment }
+    \group_end:
+  }
+%    \end{macrocode}
+%
+% 
 % The boolean |\g_tmpa_bool| indicates whether the small vertical rule will be
 % drawn. If we find that it is in a block (a real block, created by |\Block| or
 % |create-blocks-in-col| or a virtual block corresponding to a dotted line,
@@ -12695,7 +12738,6 @@ version 2005/12/01 or later.
 % The following line can't be short-cutted.
 %    \begin{macrocode}
       \dim_set_eq:NN \l_@@_y_final_dim \pgf@y
-      % \exp_args:No \tikzset \l_@@_tikz_rule_tl
       \use:e { \exp_not:N \draw [ \l_@@_tikz_rule_tl ] } 
         ( \l_@@_x_initial_dim , \l_@@_y_initial_dim ) --
         ( \l_@@_x_initial_dim , \l_@@_y_final_dim ) ;
@@ -12714,36 +12756,41 @@ version 2005/12/01 or later.
   {
     {
       \dim_set_eq:NN \l_@@_rule_width_after_dim \arrayrulewidth
-      \int_set:Nn \l_@@_end_int \c@iRow 
-      \int_step_inline:nnn 
-        { \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 2 1 }
-        { 
-          \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 
-            \c@jCol 
-            { \int_eval:n { \c@jCol + 1 } } 
-        }
-        { 
-          \str_if_eq:eeF \l_@@_vlines_clist { all }
-            { \clist_if_in:NnT \l_@@_vlines_clist { ##1 } }
+      \int_set:Nn \l_@@_end_int \c@iRow
 %    \end{macrocode}
-% The argument of |\@@_vlines:n| is a list of key-value pairs. There is a key
-% |position| which sets |\l_@@_position_int| but it's faster to do the affectation
-% right now.
+% There is a currifycation in the following code.
 %    \begin{macrocode}
-            {
-              \int_set:Nn \l_@@_position_int { ##1 }
-              \@@_draw_vrule:
-            }
+      \str_if_eq:eeTF \l_@@_vlines_clist { all }
+        { \@@_lines_step_inline:n \c@jCol }
+        { \clist_map_inline:Nn \l_@@_vlines_clist }        
+        { 
+          \int_set:Nn \l_@@_position_int { ##1 }
+          \socket_use:n { nicematrix / draw-vrule }
         }
     }
   }
 %    \end{macrocode}
 %
 %
+% \medskip The following command is used in |\@@_draw_key_vlines:| and in
+% |\@@_draw_key_hlines:|.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_lines_step_inline:n #1
+  {
+      \int_step_inline:nnn 
+        { \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 2 1 }
+        { 
+          \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 
+            { #1 }
+            { \int_eval:n { #1 + 1 } } 
+        }
+  }
+%    \end{macrocode}
+% 
 % 
 % \subsubsection*{The horizontal rules}
 %
-% |\@@_draw_hrule:n| and |\@@_draw_hrule:| will appear in
+% |\@@_draw_hrule:n| and the socket |draw-hrule| will appear in
 % |\@@_draw_key_hlines:n| and in the token rules |\g_@@_rules_tl| (or within
 % other functions used in |\g_@@_rules_tl|) and those token lists will be
 % executed within a PGF pseudo-environment.
@@ -12756,18 +12803,35 @@ version 2005/12/01 or later.
     { 
       \int_set_eq:NN \l_@@_end_int \c@jCol
       \keys_set_known:nn { nicematrix / rules-after } { #1 } 
-      \@@_draw_hrule:
+      \socket_use:nn { nicematrix / draw-hrule } 
     }
   }
 %    \end{macrocode}
 %
 % \bigskip
-% |\@@_draw_hrule:| is a function similar to |\@@_draw_hrule:n| but whitout the
-% list of pairs (the rule will be drawn with the current values of the
-% parameters for rules in the TeX group).
+% \bigskip
+% The socket ``|nicematrix / draw-hrule|'' will draw an horizontal rule. That horizontal
+% rule may potentially be composed of several disconnected segments.
+%
+% The plug |general| will break the vertical rule in several segments.
+%
+% The plug |quick| will draw directly the vertical rule. That plug is used when we are
+% sure that the whole rule must be drawn, that is to say when:
+% \begin{itemize}
+% \item there is no corners;
+% \item there is no blocks;
+% \item there is no implicit blocks created by the continuous dotted lines;
+% \item there is no stroken blocks.
+% \end{itemize}
+%
+%
 %
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_draw_hrule:
+\socket_new:nn { nicematrix / draw-hrule } { 0 }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\socket_new_plug:nnn { nicematrix / draw-hrule}  { general }
   {
     \group_begin:
 %    \end{macrocode}
@@ -12823,6 +12887,26 @@ version 2005/12/01 or later.
     \group_end:
   }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\socket_assign_plug:nn { nicematrix / draw-hrule } { general }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\socket_new_plug:nnn { nicematrix / draw-hrule}  { quick }
+  {
+    \group_begin:
+    \@@_qpoint:n { row - \int_use:N \l_@@_position_int }
+    \dim_set_eq:NN \l_@@_y_initial_dim \pgf@y
+    \int_set_eq:NN \l_@@_segment_start_int \l_@@_start_int
+    \int_set_eq:NN \l_@@_segment_end_int \l_@@_end_int
+    \socket_use:n { nicematrix / hsegment }
+    \group_end:
+  }
+%    \end{macrocode}
+%
+% 
+% 
 %
 % The boolean |\g_tmpa_bool| indicates whether the small horizontal rule will be
 % drawn. If we find that it is in a block (a real block, created by |\Block| or
@@ -13091,7 +13175,6 @@ version 2005/12/01 or later.
       \dim_sub:Nn \l_@@_y_initial_dim { 0.5 \l_@@_rule_width_after_dim }
       \@@_qpoint:n { col - \int_eval:n { \l_@@_segment_end_int + 1 } }
       \dim_set_eq:NN \l_@@_x_final_dim \pgf@x
-      % \exp_args:No \tikzset \l_@@_tikz_rule_tl
       \use:e { \exp_not:N \draw [ \l_@@_tikz_rule_tl ] } 
         ( \l_@@_x_initial_dim , \l_@@_y_initial_dim )
         -- ( \l_@@_x_final_dim , \l_@@_y_initial_dim ) ;
@@ -13109,27 +13192,17 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_draw_key_hlines:
   {
     {
+      \dim_set_eq:NN \l_@@_rule_width_after_dim \arrayrulewidth      
       \int_set:Nn \l_@@_end_int \c@jCol    
-      \dim_set_eq:NN \l_@@_rule_width_after_dim \arrayrulewidth     
-      \int_step_inline:nnn 
-        { \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 2 1 }
-        { 
-          \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 
-            \c@iRow 
-            { \int_eval:n { \c@iRow + 1 } } 
-        }
-        { 
-          \str_if_eq:eeF \l_@@_hlines_clist { all }
-            { \clist_if_in:NnT \l_@@_hlines_clist { ##1 } }
 %    \end{macrocode}
-% The argument of |\@@_hlines:n| is a list of key-value pairs. There is a key
-% |position| which sets |\l_@@_position_int| but it's faster to do the affectation
-% right now.
+% There is a currifycation in the following code.
 %    \begin{macrocode}
-            {
-              \int_set:Nn \l_@@_position_int { ##1 }
-              \@@_draw_hrule:
-            }
+      \str_if_eq:eeTF \l_@@_hlines_clist { all }
+        { \@@_lines_step_inline:n \c@iRow }
+        { \clist_map_inline:Nn \l_@@_hlines_clist }
+        { 
+          \int_set:Nn \l_@@_position_int { ##1 }
+          \socket_use:n { nicematrix / draw-hrule } 
         }
     }
   }
@@ -16018,10 +16091,8 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \medskip
-% Below, you use |\@@_draw_vrule:n| to draw to rules and that command will use
-% |\g_@@_pos_of_blocks_seq| in order to \emph{not} draw the rules within the blocks.
-% That's why we filter the list of blocks in order to discard the blocks which encompass the
-% current block.
+% We filter the list of blocks |\g_@@_pos_of_blocks_seq| in order to discard the blocks
+% which encompass the current block (elsewhere, of course, the rules would not be drawn).
 %    \begin{macrocode}
     \seq_set_filter:NNn \g_@@_pos_of_blocks_seq \g_@@_pos_of_blocks_seq % noqa: E420
       {
@@ -19433,8 +19504,8 @@ version 2005/12/01 or later.
   {
     TikZ~not~loaded.\\
     You~can't~use~ \token_to_str:N \TikzEveryCell \
-    because~you~have~not~loaded~tikz.\\
-    You~can~load~'tikz'~with~\token_to_str:N \usepackage \{tikz\},~
+    because~you~have~not~loaded~TikZ.\\
+    You~can~load~TikZ~with~\token_to_str:N \usepackage \{tikz\},~
     before~or~after~'nicematrix'. \\ 
     This~command~will~be~ignored.
   }
@@ -19445,8 +19516,8 @@ version 2005/12/01 or later.
   {
     TikZ~not~loaded.\\
     You~can't~use~the~key~'tikz'~for~the~command~' \token_to_str:N
-    \Block '~because~you~have~not~loaded~tikz.\\
-    You~can~load~'tikz'~with~\token_to_str:N \usepackage \{tikz\},~
+    \Block '~because~you~have~not~loaded~TikZ.\\
+    You~can~load~TikZ~with~\token_to_str:N \usepackage \{tikz\},~
     before~or~after~'nicematrix'. \\        
     This~key~will~be~ignored.
   }
@@ -19966,6 +20037,7 @@ version 2005/12/01 or later.
     create-extra-nodes,~
     create-medium-nodes,~
     create-large-nodes,~
+    draw-trees-in-col,~
     extra-left-margin,~
     extra-right-margin,~
     first-col,~
@@ -20033,6 +20105,7 @@ version 2005/12/01 or later.
     create-extra-nodes,~
     create-medium-nodes,~
     create-large-nodes,~
+    draw-trees-in-col,~    
     extra-left-margin,~
     extra-right-margin,~
     first-col,~
@@ -20099,6 +20172,7 @@ version 2005/12/01 or later.
     create-extra-nodes,~
     create-medium-nodes,~
     create-large-nodes,~
+    draw-trees-in-col,~    
     extra-left-margin,~
     extra-right-margin,~
     first-col,~
