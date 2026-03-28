@@ -1892,6 +1892,7 @@
     \cs_set_eq:NN \chessboardcolors \__nicematrix_chessboardcolors
     \cs_set_eq:NN \SubMatrix \__nicematrix_SubMatrix_in_code_before
     \cs_set_eq:NN \ShowCellNames \__nicematrix_ShowCellNames
+    \cs_set_eq:NN \ShowCellNames \__nicematrix_ShowCellNamesCodeBefore
     \cs_set_eq:NN \TikzEveryCell \__nicematrix_TikzEveryCell
     \cs_set_eq:NN \EmptyColumn \__nicematrix_EmptyColumn:n
     \cs_set_eq:NN \EmptyRow \__nicematrix_EmptyRow:n
@@ -10079,6 +10080,8 @@
       }
     \clist_gclear:N \g__nicematrix_cbic_clist
   }
+\cs_new_protected:Npn \__nicematrix_ShowCellNamesCodeBefore
+  { \tl_put_right:Nn \__nicematrix_actually_color: \__nicematrix_ShowCellNames } % noqa
 \NewDocumentCommand \__nicematrix_ShowCellNames { }
  {
    \bool_if:NT \l__nicematrix_in_code_after_bool

@@ -5598,25 +5598,56 @@ Jalon & Amandine & Physicist
 
 The command \DefinitionCommand{ShowCellNames}, which may be used in the
 |\CodeBefore| and in the |\CodeAfter| displays the name (with the form $i$-$j$)
-of each cell. When used in the |\CodeAfter|, that command applies a
-semi-transparent white rectangle to fade the array (caution: some \textsc{pdf}
-readers don't support transparency). 
+of each cell.
+
+\medskip
+Whe it is used in the |\CodeBefore|, the names are drawn after the colored backgrounds
+(but before the contents of the cells).
+
+\medskip
+\begin{Code}[width=10.6cm]
+\begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
+\CodeAfter
+  \emph{\ShowCellNames}
+  \rowcolor{gray!15}{1}  
+\Body
+  \Block{2-2}{} &           & test \\
+                &           & blah blah \\
+                & some text & nothing 
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt,no-cell-nodes]
+\CodeBefore
+  \ShowCellNames
+  \rowcolor{gray!15}{1}
+\Body
+  \Block{2-2}{} &           & test \\
+                &           & blah blah \\
+                & some text & nothing 
+\end{NiceTabular}
+
+\bigskip
+When used in the |\CodeAfter|, that command applies a semi-transparent white
+rectangle to fade the array (caution: some \textsc{pdf} readers don't support
+transparency) and, then, the names of the cells are drawn above.
 
 \medskip
 \begin{Code}[width=10.6cm]
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
   \Block{2-2}{} &           & test \\
-                &           & blabla \\
+                &           & blah blah \\
                 & some text & nothing 
-\emph{\CodeAfter \ShowCellNames}
+\CodeAfter \emph{\ShowCellNames}
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt,no-cell-nodes]
   \Block{2-2}{} &           & test \\
-                &           & blabla \\
+                &           & blah blah \\
                 & some text & nothing 
 \CodeAfter \ShowCellNames
 \end{NiceTabular}
+
+
 
 
 \subsection{Use of the column type S of siunitx}

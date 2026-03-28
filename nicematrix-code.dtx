@@ -4450,6 +4450,7 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \chessboardcolors \@@_chessboardcolors
     \cs_set_eq:NN \SubMatrix \@@_SubMatrix_in_code_before
     \cs_set_eq:NN \ShowCellNames \@@_ShowCellNames
+    \cs_set_eq:NN \ShowCellNames \@@_ShowCellNamesCodeBefore
     \cs_set_eq:NN \TikzEveryCell \@@_TikzEveryCell
     \cs_set_eq:NN \EmptyColumn \@@_EmptyColumn:n
     \cs_set_eq:NN \EmptyRow \@@_EmptyRow:n
@@ -18251,6 +18252,20 @@ version 2005/12/01 or later.
 % \bigskip
 % \section{The command \textbackslash ShowCellNames}
 %
+%
+% \medskip
+% When the command |\ShowCellNames| is used in the |\CodeBefore|, we want to stroke
+% the names of the cells \emph{after} the potential backgrounds of the cells. That's why
+% we add the command |\@@_ShowCellNames| to the right of the command |\@@_actually_color:|
+% which actually fill the backgrounds.
+% 
+% 
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_ShowCellNamesCodeBefore
+  { \tl_put_right:Nn \@@_actually_color: \@@_ShowCellNames } % noqa
+%    \end{macrocode}
+%
+% \bigskip
 %    \begin{macrocode}
 \NewDocumentCommand \@@_ShowCellNames { }
  {

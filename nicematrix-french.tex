@@ -325,7 +325,7 @@ Par ailleurs, quand on utilise un des environnements de \pkg{nicematrix}, il est
 souvent possible d'accélérer fortement la compilation en utilisant la
 \Definition{no-cell-nodes} (le temps de compilation peut alors être divisé par 3
 ou 4). En effet de nombreuses fonctionnalités de \pkg{nicematrix} n'utilisent
-pas les nœuds PGF-TikZ correspondant aux contenus des cellules
+pas les nœuds PGF-TikZ correspondant aux contenus des cases
 (cf.~p.~\pageref{no-cell-nodes}) et la clé |no-cell-nodes| désactive leur création
 (la création de ces nœuds ne peut être désactivée par \pkg{nicematrix} car
 \pkg{nicematrix} n'a pas de moyen de savoir si l'utilisateur final ne les utilise pas
@@ -1267,7 +1267,7 @@ Dans ce codage, il s'agit de blocs de taille |1-5| qui sont coupés en trois et
 quatre sous-blocs.
 
 \medskip
-On a illustré la possibilité de colorier une sous-cellule en utilisant la commande
+On a illustré la possibilité de colorier une sous-case en utilisant la commande
 |\cellcolor|.
 
 
@@ -1283,7 +1283,7 @@ successives situées en-dessous).
 
 Ces blocs seront, comme tous les blocs, respectés par les clés de tracés de
 filets (|vlines|, |hlines|, etc. : cf. partie~\ref{rules}, p.~\pageref{rules})
-et par les commandes de coloriage de cellules (cf.
+et par les commandes de coloriage des cases (cf.
 partie~\ref{color-in-code-before}, p.~\pageref{color-in-code-before}). C'est là l'intérêt
 d'utiliser cette clé |create-blocks-in-col|.
 
@@ -5784,27 +5784,57 @@ Cette clé est disponible dans tous les environnements et commandes de
 \texttt{\textbackslash CodeBefore})}
 
 La commande \DefinitionCommande{ShowCellNames}, utilisable dans le |\CodeBefore|
-et le |\CodeAfter| affiche le nom (sous la forme $i$-$j$) de chaque case. Quand elle
-est utilisée dans le |\CodeAfter|, cette commande applique un rectangle blanc
-semi-transparent pour estomper le tableau (attention : certains lecteurs de
-\textsc{pdf} ne prennent pas en charge la transparence).
+et le |\CodeAfter| affiche le nom (sous la forme $i$-$j$) de chaque case.
 
+\medskip
+Quand elle est utilisée dans le |\CodeBefore|, les noms sont affichés
+après les éventuels fonds colorés, mais avant le contenu des cases.
+
+\medskip
+\begin{Code}[width=10.6cm]
+\begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
+\CodeAfter
+  \emph{\ShowCellNames}
+  \rowcolor{gray!15}{1}  
+\Body
+  \Block{2-2}{} &          & test \\
+                &          & blabla \\
+                & du texte & rien
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
+\CodeBefore
+  \ShowCellNames
+  \rowcolor{gray!15}{1}
+\Body
+  \Block{2-2}{} &          & test \\
+                &          & blabla \\
+                & du texte & rien
+\end{NiceTabular}
+
+
+\bigskip
+Quand elle est utilisée dans le |\CodeAfter|, cette commande applique un
+rectangle blanc semi-transparent pour estomper le tableau (attention : certains
+lecteurs de \textsc{pdf} ne prennent pas en charge la transparence) et les noms des cases
+sont affichés par-dessus.
 
 \medskip
 \begin{Code}[width=10.6cm]
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
   \Block{2-2}{} &           & test \\
                 &           & blabla \\
-                & some text & nothing 
-\emph{\CodeAfter \ShowCellNames}
+                & du texte  & rien
+\CodeAfter \emph{\ShowCellNames}
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
-  \Block{2-2}{} &           & test \\
-                &           & blabla \\
-                & some text & nothing 
+  \Block{2-2}{} &          & test \\
+                &          & blabla \\
+                & du texte & rien
 \CodeAfter \ShowCellNames
 \end{NiceTabular}
+
 
 
 \subsection{Utilisation du type de colonne S de \texorpdfstring{\pkg{siunitx}}{siunitx}}
