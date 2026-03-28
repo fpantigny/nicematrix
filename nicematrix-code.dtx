@@ -2641,7 +2641,14 @@ version 2005/12/01 or later.
         \bool_set_true:N \l_@@_hvlines_bool
         \bool_set_true:N \l_@@_except_borders_bool
       } ,
-    hvlines-except-borders .value_forbidden:n = true ,
+    hlines-except-borders .value_forbidden:n = true ,
+    hlines-except-borders .code:n = 
+      { 
+        \tl_set_eq:NN \l_@@_hlines_clist \c_@@_all_tl
+        \bool_set_true:N \l_@@_hlines_bool
+        \bool_set_true:N \l_@@_except_borders_bool
+      } ,
+    hlines-except-borders .value_forbidden:n = true ,
     parallelize-diags .bool_set:N = \l_@@_parallelize_diags_bool ,
     parallelize-diags .initial:n = true ,
 %    \end{macrocode}
@@ -19979,9 +19986,8 @@ version 2005/12/01 or later.
     end-of-row,~
     first-col,~
     first-row,~
-    hlines,~
-    hvlines,~
-    hvlines-except-borders,~
+    h(v)lines,~
+    h(v)lines-except-borders,~
     last-col,~
     last-row,~
     left-margin,~
@@ -20042,9 +20048,8 @@ version 2005/12/01 or later.
     extra-right-margin,~
     first-col,~
     first-row,~
-    hlines,~
-    hvlines,~
-    hvlines-except-borders,~
+    h(v)lines,~
+    h(v)lines-except-borders,~
     last-col,~
     last-row,~
     left-margin,~
@@ -20110,9 +20115,8 @@ version 2005/12/01 or later.
     extra-right-margin,~
     first-col,~
     first-row,~
-    hlines,~
-    hvlines,~
-    hvlines-except-borders,~
+    h(v)lines,~
+    h(v)lines-except-borders,~
     l,~
     last-col,~
     last-row,~
@@ -20177,9 +20181,8 @@ version 2005/12/01 or later.
     extra-right-margin,~
     first-col,~
     first-row,~
-    hlines,~
-    hvlines,~
-    hvlines-except-borders,~
+    h(v)lines,~
+    h(v)lines-except-borders,~
     label,~
     last-col,~
     last-row,~

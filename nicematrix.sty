@@ -996,7 +996,14 @@
         \bool_set_true:N \l__nicematrix_hvlines_bool
         \bool_set_true:N \l__nicematrix_except_borders_bool
       } ,
-    hvlines-except-borders .value_forbidden:n = true ,
+    hlines-except-borders .value_forbidden:n = true ,
+    hlines-except-borders .code:n =
+      {
+        \tl_set_eq:NN \l__nicematrix_hlines_clist \c__nicematrix_all_tl
+        \bool_set_true:N \l__nicematrix_hlines_bool
+        \bool_set_true:N \l__nicematrix_except_borders_bool
+      } ,
+    hlines-except-borders .value_forbidden:n = true ,
     parallelize-diags .bool_set:N = \l__nicematrix_parallelize_diags_bool ,
     parallelize-diags .initial:n = true ,
     renew-dots .bool_set:N = \l__nicematrix_renew_dots_bool ,
@@ -11316,9 +11323,8 @@
     end-of-row,~
     first-col,~
     first-row,~
-    hlines,~
-    hvlines,~
-    hvlines-except-borders,~
+    h(v)lines,~
+    h(v)lines-except-borders,~
     last-col,~
     last-row,~
     left-margin,~
@@ -11374,9 +11380,8 @@
     extra-right-margin,~
     first-col,~
     first-row,~
-    hlines,~
-    hvlines,~
-    hvlines-except-borders,~
+    h(v)lines,~
+    h(v)lines-except-borders,~
     last-col,~
     last-row,~
     left-margin,~
@@ -11435,9 +11440,8 @@
     extra-right-margin,~
     first-col,~
     first-row,~
-    hlines,~
-    hvlines,~
-    hvlines-except-borders,~
+    h(v)lines,~
+    h(v)lines-except-borders,~
     l,~
     last-col,~
     last-row,~
@@ -11499,9 +11503,8 @@
     extra-right-margin,~
     first-col,~
     first-row,~
-    hlines,~
-    hvlines,~
-    hvlines-except-borders,~
+    h(v)lines,~
+    h(v)lines-except-borders,~
     label,~
     last-col,~
     last-row,~
