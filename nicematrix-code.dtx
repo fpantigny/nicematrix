@@ -12569,7 +12569,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \socket_new:nn { nicematrix / draw-at-odd-vertex-v } { 0 }
 \socket_new_plug:nnn { nicematrix / draw-at-odd-vertex-v } { active }
-  {
+  { 
     {
        \int_compare:nNnTF \l_@@_position_int > \c@jCol
          { \bool_set_false:N \l_tmpa_bool }
@@ -16096,6 +16096,7 @@ version 2005/12/01 or later.
 % with a style of TikZ).
 %    \begin{macrocode}
     \dim_set:Nn \arrayrulewidth { #1 }
+    \pgfsetlinewidth \arrayrulewidth % added 2026-03-28
 %    \end{macrocode}
 %
 % \medskip
@@ -16148,7 +16149,7 @@ version 2005/12/01 or later.
     \int_step_inline:nnn { #3 } { #5 + 1 }
       {
         \int_set:Nn \l_@@_position_int { ##1 }
-        \@@_draw_vrule:
+        \socket_use:n { nicematrix / draw-vrule } 
       }
     \group_end:
   }
@@ -16169,6 +16170,7 @@ version 2005/12/01 or later.
 % with a style of TikZ).
 %    \begin{macrocode}
     \dim_set:Nn \arrayrulewidth { #1 }
+    \pgfsetlinewidth \arrayrulewidth % added 2026-03-28    
 %    \end{macrocode}    
 % \medskip
 % We filter the list of blocks |\g_@@_pos_of_blocks_seq| in order to discard the blocks
@@ -16220,7 +16222,7 @@ version 2005/12/01 or later.
     \int_step_inline:nnn { #2 } { #4 + 1 }
       {
         \int_set:Nn \l_@@_position_int { ##1 }
-        \@@_draw_hrule:
+        \socket_use:n { nicematrix / draw-hrule }         
       }
     \group_end:
   }

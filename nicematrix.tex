@@ -5550,7 +5550,7 @@ the part~\ref{corners}, p.~\pageref{corners}.
 The key \Definition{rounded-corners} specifies that the tabular should have
 rounded corners with a radius equal to the value of that key (the default value is
 4~pt\footnote{This value is the initial value of the \emph{rounded corners} of
-  Tikz.}). More precisely, that key has two effects that we describe now.
+  TikZ.}). More precisely, that key has two effects that we describe now.
 \begin{itemize}
 \item All the commands for coloring the cells, columns and rows (in the
 |\CodeBefore| but also directly in the array will respect those rounded corners. 
@@ -5609,7 +5609,7 @@ Whe it is used in the |\CodeBefore|, the names are drawn after the colored backg
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
 \CodeAfter
   \emph{\ShowCellNames}
-  \rowcolor{gray!15}{1}  
+  \rowcolor{gray!15}{3}  
 \Body
   \Block{2-2}{} &           & test \\
                 &           & blah blah \\
@@ -5619,7 +5619,7 @@ Whe it is used in the |\CodeBefore|, the names are drawn after the colored backg
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt,no-cell-nodes]
 \CodeBefore
   \ShowCellNames
-  \rowcolor{gray!15}{1}
+  \rowcolor{gray!15}{3}
 \Body
   \Block{2-2}{} &           & test \\
                 &           & blah blah \\

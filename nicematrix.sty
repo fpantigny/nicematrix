@@ -8655,6 +8655,7 @@
   {
     \group_begin:
     \dim_set:Nn \arrayrulewidth { #1 }
+    \pgfsetlinewidth \arrayrulewidth % added 2026-03-28
     \seq_set_filter:NNn \g__nicematrix_pos_of_blocks_seq \g__nicematrix_pos_of_blocks_seq % noqa: E420
       {
         \int_compare_p:nNn { \use_i:nnnnn ##1 } > { #2 }
@@ -8695,7 +8696,7 @@
     \int_step_inline:nnn { #3 } { #5 + 1 }
       {
         \int_set:Nn \l__nicematrix_position_int { ##1 }
-        \__nicematrix_draw_vrule:
+        \socket_use:n { nicematrix / draw-vrule }
       }
     \group_end:
   }
@@ -8703,6 +8704,7 @@
   {
     \group_begin:
     \dim_set:Nn \arrayrulewidth { #1 }
+    \pgfsetlinewidth \arrayrulewidth % added 2026-03-28
     \seq_set_filter:NNn \g__nicematrix_pos_of_blocks_seq \g__nicematrix_pos_of_blocks_seq % noqa: E420
        {
          \int_compare_p:nNn { \use_i:nnnnn ##1 } > { #2 }
@@ -8743,7 +8745,7 @@
     \int_step_inline:nnn { #2 } { #4 + 1 }
       {
         \int_set:Nn \l__nicematrix_position_int { ##1 }
-        \__nicematrix_draw_hrule:
+        \socket_use:n { nicematrix / draw-hrule }
       }
     \group_end:
   }
