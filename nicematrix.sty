@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.8}
-\def\myfiledate{2026/03/11}
+\def\myfileversion{7.8a}
+\def\myfiledate{2026/03/29}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -1501,7 +1501,7 @@
         __siunitx_table_align_
         \bool_if:NTF \l__siunitx_table_text_bool
           \l__siunitx_table_align_text_tl
-          \l__siunitx_table_align_number_tl
+          \l__siunitx_table_align_number_str
         :n
       }
       { #1 }
@@ -2733,9 +2733,20 @@
   }
 \cs_new_protected:Npn \__nicematrix_make_preamble_S:w [ #1 ]
   { \__nicematrix_make_preamble_S_i:n { #1 } }
+\cs_new_protected:Npn \__nicematrix_test_siunitx:
+  {
+    \IfPackageLoadedTF
+      { siunitx }
+      {
+        \IfPackageAtLeastF { siunitx } { 2026/03/26 }
+          { \__nicematrix_fatal:n { siunitx~too~old } }
+      }
+      { \__nicematrix_fatal:n { siunitx~not~loaded } }
+    \cs_gset_eq:NN \__nicematrix_test_siunitx: \prg_do_nothing:
+  }
 \cs_new_protected:Npn \__nicematrix_make_preamble_S_i:n #1
   {
-    \IfPackageLoadedF { siunitx } { \__nicematrix_fatal:n { siunitx~not~loaded } }
+    \__nicematrix_test_siunitx:
     \tl_gput_right:No \g__nicematrix_array_preamble_tl \g__nicematrix_pre_cell_tl
     \tl_gclear:N \g__nicematrix_pre_cell_tl
     \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
@@ -10804,6 +10815,13 @@
     That~error~is~fatal.\\
     You~can~load~'siunitx'~with~\token_to_str:N \usepackage \{siunitx\},~
     before~or~after~'nicematrix'. \\
+  }
+\__nicematrix_msg_new:nn { siunitx~too~old }
+  {
+    siunitx~too~old\\
+    You~can't~use~the~columns~'S'~because~your~version~of~'siunitx'~
+    is~too~old.~You~need~at~least~the~version~3.5.1~(2026/03/26).\\
+    That~error~is~fatal.\\
   }
 \__nicematrix_msg_new:nn { Invalid~name }
   {

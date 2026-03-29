@@ -1531,7 +1531,8 @@ garantit un meilleur résultat dans les lecteurs de \textsc{pdf} aux bas niveaux
 Les outils proposés par \pkg{nicematrix} pour tracer des filets sont les
 suivants :
 \begin{itemize}[beginpenalty=10000]
-\item les clés |hlines|, |vlines|, |hvlines| et |hvlines-except-borders|;
+\item les clés |hlines|, |vlines|, |hvlines|, |hlines-except-borders| et
+|hvlines-except-borders|;
 \item le spécificateur «\verb+|+» dans le préambule (pour les environnements à
 préambule) ;
 \item \indexcommand{Hline}
@@ -1660,11 +1661,12 @@ z & 0 & 0 & 0 & 0 & 0 \\
 \end{NiceArray}$
 
 
-\subsubsection{Les clés hvlines et hvlines-except-borders}
+\subsubsection{Les clés hvlines, hlines-except-borders et hvlines-except-borders}
 \label{hvlines}
 \index{hvlines|see{Filets}}
 \index{hvlines!clé pour un environnement}
 \index{hvlines-except-borders}
+\index{hlines-except-borders}
 
 La clé \Definition{hvlines}, qui ne prend pas de valeur, est la conjonction des
 clés |hlines| et |vlines|.
@@ -1696,10 +1698,12 @@ p.~\pageref{tabular-rounded-corners}.
 
 
 \medskip
-La clé \Definition{hvlines-except-borders} est similaire à la clé |hvlines| mais
-ne trace pas les filets sur les bords horizontaux et verticaux du tableau. Pour
-un exemple d'utilisation de cette clé, voir la partie «Exemple d'utilisation
-avec \pkg{tcolorbox}» p.~\pageref{ex:tcolorbox}.
+La clé \Definition{hlines-except-borders} est similaire à la clé |hlines| mais
+ne trace pas les filets sur les bords horizontaux du tableau. La clé
+\Definition{hvlines-except-borders} est similaire à la clé |hvlines| mais ne
+trace pas les filets sur les bords horizontaux et verticaux du tableau. Pour un
+exemple d'utilisation de cette clé, voir la partie «Exemple d'utilisation avec
+\pkg{tcolorbox}» p.~\pageref{ex:tcolorbox}.
 
 
 \medskip
@@ -4343,7 +4347,7 @@ seule esperluette après la commande, même si l'accolade s'étend sur plusieurs
 colonnes.
 
 \bigskip
-\begin{Verbatim}[formatcom = \footnotesize]
+\begin{Verbatim}[formatcom = \footnotesize\color{gray}]
 \usepackage{tikz}                          % dans le préambule
 \usetikzlibrary{decorations.pathreplacing} % dans le préambule
 \end{Verbatim}
@@ -5737,7 +5741,7 @@ partie~\ref{corners}, p.~\pageref{corners}.
 La clé \Definition{rounded-corners} spécifie que le tableau ou la matrice devra avoir des
 coins arrondis avec un rayon égal à la valeur de cette clé (la valeur par défaut est
 4~pt\footnote{Cette valeur est la valeur par défaut des «\texttt{rounded
-    corners}» de PGF/Tikz.}). Plus précisément, cette clé a deux effets que l'on
+    corners}» de PGF/TikZ.}). Plus précisément, cette clé a deux effets que l'on
 décrit maintenant.
 \begin{itemize}[beginpenalty=10000]
 \item Toutes les commandes de coloriage de cases, colonnes et rangées (que ce
@@ -5793,7 +5797,7 @@ après les éventuels fonds colorés, mais avant le contenu des cases.
 \medskip
 \begin{Code}[width=10.6cm]
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
-\CodeAfter
+\CodeBefore
   \emph{\ShowCellNames}
   \rowcolor{gray!15}{3}  
 \Body
@@ -5822,6 +5826,9 @@ sont affichés par-dessus.
 \medskip
 \begin{Code}[width=10.6cm]
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
+\CodeBefore
+  \rowcolor{gray!15}{3}  
+\Body
   \Block{2-2}{} &           & test \\
                 &           & blabla \\
                 & du texte  & rien
@@ -5829,6 +5836,9 @@ sont affichés par-dessus.
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
+\CodeBefore
+  \rowcolor{gray!15}{3}  
+\Body
   \Block{2-2}{} &          & test \\
                 &          & blabla \\
                 & du texte & rien
@@ -8429,7 +8439,7 @@ bibliothèque TikZ~|fit|.
 
 \smallskip
 \begin{Verbatim}[formatcom=\footnotesize \color{gray}]
-\usepackage{tikz}
+\usepackage{tikz}     % dans le préambule
 \usetikzlibrary{fit}
 \end{Verbatim}
 

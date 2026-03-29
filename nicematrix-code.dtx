@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.8}
-\def\myfiledate{2026/03/11}
+\def\myfileversion{7.8a}
+\def\myfiledate{2026/03/29}
 %
 %
 %<*batchfile>  
@@ -3623,7 +3623,7 @@ version 2005/12/01 or later.
         __siunitx_table_align_ 
         \bool_if:NTF \l__siunitx_table_text_bool
           \l__siunitx_table_align_text_tl 
-          \l__siunitx_table_align_number_tl 
+          \l__siunitx_table_align_number_str 
         :n 
       } 
       { #1 }
@@ -6061,10 +6061,25 @@ version 2005/12/01 or later.
   { \@@_make_preamble_S_i:n { #1 } }
 %    \end{macrocode}
 %
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_test_siunitx:
+  {
+    \IfPackageLoadedTF
+      { siunitx }
+      {
+        \IfPackageAtLeastF { siunitx } { 2026/03/26 }
+          { \@@_fatal:n { siunitx~too~old } }
+      }
+      { \@@_fatal:n { siunitx~not~loaded } }
+    \cs_gset_eq:NN \@@_test_siunitx: \prg_do_nothing: 
+  }
+%    \end{maacrocode}
+% 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_S_i:n #1
-  { 
-    \IfPackageLoadedF { siunitx } { \@@_fatal:n { siunitx~not~loaded } }
+  {
+    \@@_test_siunitx:
     \tl_gput_right:No \g_@@_array_preamble_tl \g_@@_pre_cell_tl 
     \tl_gclear:N \g_@@_pre_cell_tl
     \tl_gput_right:Nn \g_@@_array_preamble_tl 
@@ -19309,6 +19324,16 @@ version 2005/12/01 or later.
     That~error~is~fatal.\\
     You~can~load~'siunitx'~with~\token_to_str:N \usepackage \{siunitx\},~
     before~or~after~'nicematrix'. \\    
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { siunitx~too~old } 
+  {
+    siunitx~too~old\\
+    You~can't~use~the~columns~'S'~because~your~version~of~'siunitx'~
+    is~too~old.~You~need~at~least~the~version~3.5.1~(2026/03/26).\\
+    That~error~is~fatal.\\
   }
 %    \end{macrocode}
 % 

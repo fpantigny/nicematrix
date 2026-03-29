@@ -1574,12 +1574,13 @@ z & 0 & 0 & 0 & 0 & 0 \\
 
 
 
-\subsubsection{The keys hvlines and hvlines-except-borders}
+\subsubsection{The keys hvlines,  hlines-except-borders and hvlines-except-borders}
 \label{hvlines}
 
 \index{hvlines|see{Rules}}
 \index{hvlines!key for an environment}
 \index{hvlines-except-borders}
+\index{hlines-except-borders}
 
 
 The key \Definition{hvlines} (no value) is the conjunction of the keys |hlines|
@@ -1613,9 +1614,11 @@ exterior frame of the tabular: cf. part~\ref{tabular-rounded-corners},
 p.~\pageref{tabular-rounded-corners}.
 
 \bigskip
-The key \Definition{hvlines-except-borders} is similar to the key |hvlines| but
-does not draw the rules on the horizontal and vertical borders of the array. For
-an example of use of that key, see the part ``Use with tcolorbox'',
+The key \Definition{hlines-except-borders} is similar to the key |hlines| but
+does not draw the rules on the horizontal borders of the array. The key
+\Definition{hvlines-except-borders} is similar to the key |hvlines| but does not
+draw the rules on the horizontal and vertical borders of the array. For an
+example of use of that key, see the part ``Use with tcolorbox'',
 p.~\pageref{tcolorbox}.
 
 \subsubsection{The (empty) corners}
@@ -5607,7 +5610,7 @@ Whe it is used in the |\CodeBefore|, the names are drawn after the colored backg
 \medskip
 \begin{Code}[width=10.6cm]
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
-\CodeAfter
+\CodeBefore
   \emph{\ShowCellNames}
   \rowcolor{gray!15}{3}  
 \Body
@@ -5634,6 +5637,9 @@ transparency) and, then, the names of the cells are drawn above.
 \medskip
 \begin{Code}[width=10.6cm]
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt]
+\CodeBefore
+  \rowcolor{gray!15}{3}  
+\Body
   \Block{2-2}{} &           & test \\
                 &           & blah blah \\
                 & some text & nothing 
@@ -5641,6 +5647,9 @@ transparency) and, then, the names of the cells are drawn above.
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}[hvlines,cell-space-limits=3pt,no-cell-nodes]
+\CodeBefore
+  \rowcolor{gray!15}{3}  
+\Body
   \Block{2-2}{} &           & test \\
                 &           & blah blah \\
                 & some text & nothing 
@@ -7572,7 +7581,7 @@ not longer dotted (TikZ should be loaded).
 In this document, the TikZ library \pkg{arrows.meta}
 has been loaded, which impacts the shape of the arrow tips.
 
-\medskip
+\bigskip
 \begin{Code}
 \NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
 \end{Code}
@@ -7608,6 +7617,8 @@ token~``|:|'' instead of~``|^|'':
 \begin{Code}
 \NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
 \end{Code}
+
+\medskip
 \begin{Code}[width=11cm]
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \emph{\Hdotsfor{3}:{3}} & \emph{\Hdotsfor{2}:{2}} \\
@@ -7631,9 +7642,9 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 1 & 1 & 1 & 1 & 1 \\
 \end{pNiceArray}$}
 
+\newpage
 
 
-\interitem
 If one prefers the braces of the library \pkg{decorations.pathreplacing} of TikZ, the
 best way is to use the commands |\Hbrace| and |\Vbrace| provided by
 \pkg{nicematrix} (cf. p.~\pageref{Hbrace}).\footnote{Remark that those commands are
@@ -7673,7 +7684,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \end{pNiceArray}$}
 
 
-\pagebreak
+\bigskip
 It's possible to change the TikZ style of those braces by changing the TikZ
 style |nicematrix/brace|. In the following example, we 
 ``calligraphic'' braces (the TikZ library \pkg{calligraphy} must be loaded after
@@ -7741,7 +7752,9 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 
 
-\interitem
+
+
+\newpage
 
 If one prefers the curly braces of the current mathematical font of LaTeX, one
 should use the commands |\SubMatrix|, |\OverBrace| and |\UnderBrace| in the
