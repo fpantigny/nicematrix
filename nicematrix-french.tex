@@ -671,6 +671,12 @@ tracent les filets correspondants dans le bloc\footnote{Néanmoins, les filets n
 la clé \Definition{rules/width} fixe la largeur utilisée pour tracer les
 filets (n'a d'intérêt que si |draw|, |hvlines|,
 |hlines| ou |vlines| est utilisée) ;
+
+\item \index{rules/color (clé de \texttt{\textbackslash Block})}
+la clé \Definition{rules/color} fixe la couleur utilisée pour tracer les
+filets (n'a d'intérêt que si |hvlines|, |hlines| ou |vlines| est utilisée) ;
+
+
 \item \index{rounded-corners!clé de \texttt{\textbackslash Block}}
 \index{Coins arrondis!pour un bloc}
 la clé \Definition{rounded-corners} impose des coins arrondis (pour le
@@ -695,7 +701,7 @@ est une sous-couche de TikZ.
 \index{tikzz@tikz!clé de «borders» de \texttt{\textbackslash Block}}
 La clé \Definition{borders} permet de ne tracer que certaines des bordures
 du bloc : cette clé prend comme valeur une liste d'éléments parmi les suivants :
-|left|, |right|, |top| et |bottom| ; on peut en fait, dans la liste qui est la
+|left|, |right|, |top|, |bottom| et |all| ; on peut en fait, dans la liste qui est la
 valeur de la clé |borders| mettre une entrée de la forme
 |tikz={|\textsl{liste}|}| où \textsl{liste} est une liste de couples
 \textsl{clé=valeur} de TikZ spécifiant les caractéristiques graphiques des
@@ -5788,7 +5794,8 @@ Cette clé est disponible dans tous les environnements et commandes de
 \texttt{\textbackslash CodeBefore})}
 
 La commande \DefinitionCommande{ShowCellNames}, utilisable dans le |\CodeBefore|
-et le |\CodeAfter| affiche le nom (sous la forme $i$-$j$) de chaque case.
+et le |\CodeAfter| affiche le nom (sous la forme $i$-$j$) de chaque case. Elle est fournie
+comme un outil de travail pour aider lors de la conception d'un tableau.
 
 \medskip
 Quand elle est utilisée dans le |\CodeBefore|, les noms sont affichés
@@ -6283,6 +6290,11 @@ L'extension \pkg{nicematrix} crée un nœud PGF-TikZ\footnote{On rappelle que Ti
   utiliser avec TikZ qu'avec \textsc{pgf}.} pour chaque \textbf{contenu} de case
 non vide du tableau considéré. Ces nœuds sont utilisés, entre autres, pour
 tracer les lignes en pointillés entre les cases du tableau.
+
+\smallskip
+Par défaut, ces nœuds ne sont pas disponibles dans le |\CodeBefore| (pour accélerer
+les compilations). Si on veut les utiliser dans le |\CodeBefore|, on doit utiliser la
+clé |create-cell-nodes| du mot-clé |\CodeBefore|.
 
 \smallskip
 \textbf{Attention} : par défaut, aucun nœud n'est créé dans une case vide.
@@ -7656,7 +7668,7 @@ Dans l'exemple suivant, on utilise des commandes |\Block| pour tracer des filets
 \emph{\Block[borders={bottom,right,tikz=dotted}]{2-2}{}}
 1 & 2 & 0  & 0 & 0 & 0 \\
 4 & 5 & 0  & 0 & 0 & 0 \\
-0 & 0 & \emph{\Block[borders={bottom,top,right,left,tikz=dotted}]{2-2}{}}
+0 & 0 & \emph{\Block[borders={all,tikz=dotted}]{2-2}{}}
         7  & 1 & 0 & 0 \\
 0 & 0 & -1 & 2 & 0 & 0 \\
 0 & 0 & 0  & 0 & \emph{\Block[borders={left,top,tikz=dotted}]{2-2}{}}
@@ -7671,7 +7683,7 @@ Dans l'exemple suivant, on utilise des commandes |\Block| pour tracer des filets
 \Block[borders={bottom,right,tikz=dotted}]{2-2}{}
 1 & 2 & 0  & 0 & 0 & 0 \\
 4 & 5 & 0  & 0 & 0 & 0 \\
-0 & 0 & \Block[borders={bottom,top,right,left,tikz=dotted}]{2-2}{}
+0 & 0 & \Block[borders={all,tikz=dotted}]{2-2}{}
         7  & 1 & 0 & 0 \\
 0 & 0 & -1 & 2 & 0 & 0 \\
 0 & 0 & 0  & 0 & \Block[borders={left,top,tikz=dotted}]{2-2}{}
@@ -7687,7 +7699,7 @@ Dans l'exemple suivant, on utilise des commandes |\Block| pour tracer des filets
 
 
 Un exemple pour le résultant de deux polynômes (cet exemple nécessite que
-TikZ soit chargé pour que la lettre |;| soit disponible).
+TikZ soit chargé pour que la lettre «|;|» soit disponible).
 
 \nobreak
 \medskip
@@ -7732,14 +7744,16 @@ a_p   &      &&a_0    &       &      &b_1   \\
 
 \vspace{2cm}
 \goodbreak
-Un exemple avec un système linéaire. Rappelons que |xdots/nullify|
-annule les espaces horizontaux et verticaux créés par les commandes |\Cdots|, |\Vdots|, etc.
+Un exemple avec un système linéaire. Rappelons que |xdots/nullify| annule les
+espaces horizontaux et verticaux créés par les commandes |\Cdots|, |\Vdots|,
+etc. (mais les lignes sont quand même tracées, en dépit du nom !).
 
 
 \index{last-col|textit}
 \index{code-for-last-col|textit}
 
-\begin{Verbatim}
+\medskip
+\begin{Code}
 \begin{pNiceMatrix}%
   [vlines=-1,xdots/nullify,last-col,code-for-last-col=\scriptstyle]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
@@ -7749,7 +7763,7 @@ annule les espaces horizontaux et verticaux créés par les commandes |\Cdots|, 
 \Vdots &   &   &\Ddots &   & 0      & \\
 0      &   &   &\Cdots & 0 & 1      & 0      & L_n \gets L_n-L_1
 \end{pNiceMatrix}$
-\end{Verbatim}
+\end{Code}
 
 
 \[\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col,code-for-last-col=\scriptstyle]
@@ -7889,9 +7903,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 Si on préfère des accolades comme celles proposées par la bibliothèque
 \pkg{decorations.pathreplacing} de TikZ, le mieux est d'utiliser les commandes
 |\Hbrace| et |\Vbrace| proposées par \pkg{nicematrix} (cf.
-p.~\pageref{Hbrace}).\footnote{Ces commandes ne sont disponibles que si TikZ a
-  été chargée ainsi que la bibliothèque \pkg{decorations.pathreplacing} de TikZ
-  : |\usepackage{tikz}| |\usetikzlibrary{decorations.pathreplacing}|.}
+p.~\pageref{Hbrace}).
 
 \smallskip
 \begin{Verbatim}[formatcom=\footnotesize \color{gray}]

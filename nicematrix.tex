@@ -229,6 +229,9 @@ A command |\NiceMatrixOptions| is provided to fix the options (the
 scope of the options fixed by this command is the current TeX group: they are
 semi-global). 
 
+\newpage
+
+\tableofcontents
 
 
 \newpage
@@ -619,6 +622,11 @@ except when they have the key |transparent|
 \item \index{rules/width (key of \texttt{\textbackslash Block})}
 the key \Definition{rules/width} is the width of the rules (is relevant
 only when one of the keys |draw|, |hvlines|, |vlines| and |hlines| is used);
+
+\item \index{rules/color (key of \texttt{\textbackslash Block})}
+the key \Definition{rules/width} is the width of the rules (is relevant
+only when one of the keys |hvlines|, |vlines| and |hlines| is used);
+
 \item \index{rounded-corners!key of \texttt{\textbackslash Block}}
 \index{Corners (rounded ---)!for a block} 
 the key \Definition{rounded-corners} requires rounded corners (for the
@@ -643,7 +651,7 @@ Moreover, the require the loading of TikZ by the user (with
 \index{tikzz@tikz!key of ``borders'' de \texttt{\textbackslash Block}}
 The key \Definition{borders} provides the ability to draw only some
 borders of the blocks; the value of that key is a (comma-separated) list of
-elements covered by |left|, |right|, |top| and |bottom|; it's possible, in
+elements covered by |left|, |right|, |top|, |bottom| and |all|; it's possible, in
 fact, in the list which is the value of the key |borders|, to add an entry of
 the form |tikz={|\textsl{list}|}| where \textsl{list} is a list of couples
 \textsl{key=value} of TikZ specifying the graphical characteristics of the
@@ -5601,10 +5609,11 @@ Jalon & Amandine & Physicist
 
 The command \DefinitionCommand{ShowCellNames}, which may be used in the
 |\CodeBefore| and in the |\CodeAfter| displays the name (with the form $i$-$j$)
-of each cell.
+of each cell. It is provided as a tool which may be helpul during the conception of
+a table.
 
 \medskip
-Whe it is used in the |\CodeBefore|, the names are drawn after the colored backgrounds
+When it is used in the |\CodeBefore|, the names are drawn after the colored backgrounds
 (but before the contents of the cells).
 
 \medskip
@@ -6087,6 +6096,11 @@ load TikZ. We speak of PGF/TikZ nodes to emphase the fact that the PGF nodes
 created by \pkg{nicematrix} may be used with PGF but also with TikZ. The final
 user will probably prefer to use TikZ rather than PGF.} for the \textbf{content} of each (non-empty) cell of the array. These nodes are
 used to draw the dotted lines between the cells of the matrix (inter alia).
+
+\smallskip
+By default, those nodes are not available in the |\CodeBefore| (in order to speed up
+compilations). In order to be able to use those nodes in the |\CodeBefore|, one must
+use the key |create-cell-nodes| of the keyword |\CodeBefore|.
 
 
 \smallskip
@@ -7422,7 +7436,7 @@ In the following example, we use the command |\Block| to draw rules.
 \emph{\Block[borders={bottom,right,tikz=dotted}]{2-2}{}}
 1 & 2 & 0  & 0 & 0 & 0 \\
 4 & 5 & 0  & 0 & 0 & 0 \\
-0 & 0 & \emph{\Block[borders={bottom,top,right,left,tikz=dotted}]{2-2}{}}
+0 & 0 & \emph{\Block[borders={all,tikz=dotted}]{2-2}{}}
         7  & 1 & 0 & 0 \\
 0 & 0 & -1 & 2 & 0 & 0 \\
 0 & 0 & 0  & 0 & \emph{\Block[borders={left,top,tikz=dotted}]{2-2}{}}
@@ -7436,7 +7450,7 @@ In the following example, we use the command |\Block| to draw rules.
 \Block[borders={bottom,right,tikz=dotted}]{2-2}{}
 1 & 2 & 0  & 0 & 0 & 0 \\
 4 & 5 & 0  & 0 & 0 & 0 \\
-0 & 0 & \Block[borders={bottom,top,right,left,tikz=dotted}]{2-2}{}
+0 & 0 & \Block[borders={all,tikz=dotted}]{2-2}{}
         7  & 1 & 0 & 0 \\
 0 & 0 & -1 & 2 & 0 & 0 \\
 0 & 0 & 0  & 0 & \Block[borders={left,top,tikz=dotted}]{2-2}{}
@@ -7450,7 +7464,7 @@ In the following example, we use the command |\Block| to draw rules.
 \index{dotted@\textbf{Dotted lines}|textit}
 
 An example with the resultant of two polynoms (this example requires TikZ
-for the dashed rule specified by the letter |;| in the preamble of the array).
+for the dashed rule specified by the letter ``|;|'' in the preamble of the array).
 
 
 \nobreak
@@ -7461,7 +7475,7 @@ for the dashed rule specified by the letter |;| in the preamble of the array).
 
 \nobreak
 \medskip
-\begin{BVerbatim}
+\begin{Code}
 \setlength{\extrarowheight}{1mm}
 \[\begin{vNiceArray}{cccc;ccc}[columns-width=6mm, xdots/shorten += 3pt]
 a_0   &      &&       &b_0    &      &     \\
@@ -7472,7 +7486,7 @@ a_p   &      &&a_0    &       &      &b_1   \\
       &      &&\Vdots &       &\Ddots&      \\
       &      &&a_p    &       &      &b_q    
 \end{vNiceArray}\]
-\end{BVerbatim}
+\end{Code}
 
 \bigskip
 \index{Ddots@\texttt{\textbackslash Ddots}|textit}
@@ -7492,14 +7506,16 @@ a_p   &      &&a_0    &       &      &b_1   \\
 
 \vspace{2cm}
 An example for a linear system. We recall that the command |xdots/nullify| nullifies the
-horizontal and vertical spaces created by the commands |\Cdots|, |\Vdots|, etc.
+horizontal and vertical spaces created by the commands |\Cdots|, |\Vdots|, etc. (but the dotted
+lines are drawn, despite the name |nullify|!).
 
 \index{last-col|textit}
 \index{code-for-last-col|textit}
 
-\nobreak
-\begin{Verbatim}
-\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col,code-for-last-col=\scriptstyle]
+\medskip
+\begin{Code}
+\NiceMatrixOptions{code-for-last-col=\scriptstyle}
+$\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col]
 1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
 0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
 0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
@@ -7507,7 +7523,7 @@ horizontal and vertical spaces created by the commands |\Cdots|, |\Vdots|, etc.
 \Vdots &   &   &\Ddots &   & 0      & \\
 0      &   &   &\Cdots & 0 & 1      & 0      & L_n \gets L_n-L_1
 \end{pNiceMatrix}$
-\end{Verbatim}
+\end{Code}
 
 
 \[\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col,code-for-last-col=\scriptstyle]
@@ -7647,10 +7663,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 If one prefers the braces of the library \pkg{decorations.pathreplacing} of TikZ, the
 best way is to use the commands |\Hbrace| and |\Vbrace| provided by
-\pkg{nicematrix} (cf. p.~\pageref{Hbrace}).\footnote{Remark that those commands are
-available only if TikZ has been loaded with the library
-\pkg{decorations.pathreplacing}: |\usepackage{tikz}|
-|\usetikzlibrary{decorations.pathreplacing}|.}
+\pkg{nicematrix} (cf. p.~\pageref{Hbrace}).
 
 \smallskip
 \begin{Verbatim}[formatcom=\footnotesize \color{gray}]
@@ -7686,7 +7699,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 \bigskip
 It's possible to change the TikZ style of those braces by changing the TikZ
-style |nicematrix/brace|. In the following example, we 
+style |nicematrix/brace|. In the following example, we use
 ``calligraphic'' braces (the TikZ library \pkg{calligraphy} must be loaded after
 \pkg{decorations.pathreplacing}).
 
@@ -8755,11 +8768,6 @@ Key |\color| for the command |\RowStyle|.
 \addcontentsline{toc}{section}{Index}
 
 \printindex
-
-
-\newpage
-
-\tableofcontents
 
 
 \end{document}
