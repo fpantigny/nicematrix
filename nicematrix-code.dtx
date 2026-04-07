@@ -1105,6 +1105,7 @@ version 2005/12/01 or later.
 \seq_new:N \g_@@_rowlistcolors_seq
 %    \end{macrocode}
 %
+% 
 % \bigskip
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_if_math_mode:
@@ -3208,7 +3209,8 @@ version 2005/12/01 or later.
   {
     \if_int_compare:w \c@iRow = \c_zero_int 
       \if_int_compare:w \c@jCol > \c_zero_int 
-        \l_@@_code_for_first_row_tl 
+        \l_@@_code_for_first_row_tl
+        \@@_tuning_key_small: % 2026/04/06
         \xglobal \colorlet { nicematrix-first-row } { . }
       \fi:
     \else:
@@ -3236,7 +3238,8 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_tuning_last_row:
   {
     \if_int_compare:w \c@iRow = \l_@@_last_row_int 
-      \l_@@_code_for_last_row_tl 
+      \l_@@_code_for_last_row_tl
+        \@@_tuning_key_small:  % 2026/04/06
       \xglobal \colorlet { nicematrix-last-row } { . }
     \fi:
   }
@@ -8372,7 +8375,7 @@ version 2005/12/01 or later.
 % |\rowcolor| and |\cellcolor|. These instructions will be written on the |aux|
 % file to be added to the |code-before| in the next run.
 %    \begin{macrocode}
-    \seq_if_empty:NF \g_@@_rowlistcolors_seq { \@@_clear_rowlistcolors_seq: }
+    \seq_if_empty:NF \g_@@_rowlistcolors_seq \@@_clear_rowlistcolors_seq:
     \tl_if_empty:NF \g_@@_pre_code_before_tl
       {
         \tl_gput_right:Ne \g_@@_aux_tl
@@ -11255,20 +11258,26 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% The macro |\@@_actually_color:| will actually fill all the rectangles, color by
-% color (using the sequence |\l_@@_colors_seq| and all the token lists of the
-% form |\l_@@_color_|$i$|_tl|). 
+% The command |\@@_actually_color:| will actually fill the rectangles, color by color,
+% as specified in the sequence |\g_@@_colors_seq|.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_actually_color:
   {
     \pgfpicture
     \pgf@relevantforpicturesizefalse
 %    \end{macrocode}
+% 
 % If the final user has used the key |rounded-corners| for the environment
 % |{NiceTabular}|, we will clip to a rectangle with rounded corners before
 % filling the rectangles.
 %    \begin{macrocode}
     \@@_clip_with_rounded_corners:
+%    \end{macrocode}
+%
+% We will now actually fill all the rectangles, color by color (using the
+% sequence |\l_@@_colors_seq| and all the token lists of the form
+% |\l_@@_color_|$i$|_tl|).
+%    \begin{macrocode}
     \seq_map_indexed_inline:Nn \g_@@_colors_seq
       {
         \int_compare:nNnTF { ##1 } = 1
@@ -11493,8 +11502,6 @@ version 2005/12/01 or later.
 %
 % |\l_@@_colors_seq| will be the list of colors.
 %    \begin{macrocode}
-    \pgfpicture
-    \pgf@relevantforpicturesizefalse
     \seq_clear_new:N \l_@@_colors_seq
     \seq_set_split:Nnn \l_@@_colors_seq { , } { #3 }
     \tl_clear_new:N \l_@@_cols_tl
@@ -11582,7 +11589,6 @@ version 2005/12/01 or later.
             \int_set:Nn \l_tmpa_int { \l_tmpb_int + 1 }
           }
       }
-    \endpgfpicture
   }
 %    \end{macrocode}
 %
@@ -13655,7 +13661,7 @@ version 2005/12/01 or later.
                 letter = ; ,
                 command = \hdashedline ,
                 ccommand = \cdashedline ,
-                tikz = { dash~pattern = on~4~pt~off~2pt , line~cap = butt} ,
+                tikz = { dash~pattern = on~4~pt~off~2pt , line~cap = butt } ,
                 total-width = \pgflinewidth
               }
           }
@@ -14854,7 +14860,7 @@ version 2005/12/01 or later.
                   [ \str_lowercase:f \l_@@_vpos_block_str ] 
                   { @ { } \l_@@_hpos_block_str @ { } } 
               }
-            \bool_if:NT \l_@@_small_bool \scriptstyle % 2026/04/05
+            \@@_tuning_key_small: % 2026/04/05
               #5 
             \end { array } 
             $ % $ 
@@ -15092,7 +15098,7 @@ version 2005/12/01 or later.
                         \exp_not:N \begin { array } [ \l_@@_vpos_block_str ]
                         { @ { } \l_@@_hpos_block_str @ { } }
                       }
-                      \bool_if:NT \l_@@_small_bool \scriptstyle % 2026/05/04
+                      \@@_tuning_key_small: % 2026/05/04
                       #5 
                     \end { array } 
                     $ % $

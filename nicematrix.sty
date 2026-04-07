@@ -388,6 +388,7 @@
 \tl_new:N \l__nicematrix_xdots_up_tl
 \tl_new:N \l__nicematrix_xdots_middle_tl
 \seq_new:N \g__nicematrix_rowlistcolors_seq
+\tl_new:N \l__nicematrix_rowlistcolors_tl
 \cs_new_protected:Npn \__nicematrix_test_if_math_mode:
   {
     \if_mode_math: \else:
@@ -1324,6 +1325,7 @@
     \if_int_compare:w \c@iRow = \c_zero_int
       \if_int_compare:w \c@jCol > \c_zero_int
         \l__nicematrix_code_for_first_row_tl
+        \__nicematrix_tuning_key_small: % 2026/04/06
         \xglobal \colorlet { nicematrix-first-row } { . }
       \fi:
     \else:
@@ -1334,6 +1336,7 @@
   {
     \if_int_compare:w \c@iRow = \l__nicematrix_last_row_int
       \l__nicematrix_code_for_last_row_tl
+        \__nicematrix_tuning_key_small:  % 2026/04/06
       \xglobal \colorlet { nicematrix-last-row } { . }
     \fi:
   }
@@ -5765,6 +5768,7 @@
   {
     \pgfpicture
     \pgf@relevantforpicturesizefalse
+    \l__nicematrix_rowlistcolors_tl
     \__nicematrix_clip_with_rounded_corners:
     \seq_map_indexed_inline:Nn \g__nicematrix_colors_seq
       {
@@ -5890,8 +5894,11 @@
   }
 \NewDocumentCommand \__nicematrix_rowlistcolors { O { } m m O { } }
   {
-    \pgfpicture
-    \pgf@relevantforpicturesizefalse
+    \tl_put_right:Nn \l__nicematrix_rowlistcolors_tl
+      { \__nicematrix_rowlistcolors:nnnn { #1 } { #2 } { #3 } { #4 } }
+  }
+\cs_new_protected:Npn \__nicematrix_rowlistcolors:nnnn #1 #2 #3 #4
+  {
     \seq_clear_new:N \l__nicematrix_colors_seq
     \seq_set_split:Nnn \l__nicematrix_colors_seq { , } { #3 }
     \tl_clear_new:N \l__nicematrix_cols_tl
@@ -5949,7 +5956,6 @@
             \int_set:Nn \l_tmpa_int { \l_tmpb_int + 1 }
           }
       }
-    \endpgfpicture
   }
 \cs_new:Npn \__nicematrix_color_index:n #1
   {
@@ -7128,7 +7134,7 @@
                 letter = ; ,
                 command = \hdashedline ,
                 ccommand = \cdashedline ,
-                tikz = { dash~pattern = on~4~pt~off~2pt , line~cap = butt} ,
+                tikz = { dash~pattern = on~4~pt~off~2pt , line~cap = butt } ,
                 total-width = \pgflinewidth
               }
           }
@@ -7816,7 +7822,7 @@
                   [ \str_lowercase:f \l__nicematrix_vpos_block_str ]
                   { @ { } \l__nicematrix_hpos_block_str @ { } }
               }
-            \bool_if:NT \l__nicematrix_small_bool \scriptstyle % 2026/04/05
+            \__nicematrix_tuning_key_small: % 2026/04/05
               #5
             \end { array }
             $ % $
@@ -7979,7 +7985,7 @@
                         \exp_not:N \begin { array } [ \l__nicematrix_vpos_block_str ]
                         { @ { } \l__nicematrix_hpos_block_str @ { } }
                       }
-                      \bool_if:NT \l__nicematrix_small_bool \scriptstyle % 2026/05/04
+                      \__nicematrix_tuning_key_small: % 2026/05/04
                       #5
                     \end { array }
                     $ % $
