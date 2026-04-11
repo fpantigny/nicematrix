@@ -81,6 +81,8 @@
 \PitonOptions{language = verbatim, detected-commands = {emph,textsl,myrlap}, splittable = 4}
 \SetPitonStyle{ Number = , Comment = }
 
+
+
 \ExplSyntaxOn
 
 \dim_new:N \l__pantigny_width_dim 
@@ -614,7 +616,7 @@ option à mettre entre chevrons est proposée par |\Block| pour spécifier du co
 LaTeX qui sera inséré \emph{avant} le début du mode mathématique.\footnote{Cet
   argument entre chevrons peut aussi être utilisé pour insérer une commande de
   fonte comme |\bfseries|, ce qui peut être utile dans le cas où la commande |\\| apparaît dans le
-  contenu du bloc. On peut aussi y mettre la commmande |\rotate| fournie par
+  contenu du bloc. On peut aussi y mettre la commande |\rotate| fournie par
   \pkg{nicematrix} (cf. partie~\ref{rotate}, p.~\pageref{rotate}).}
 
 \medskip
@@ -677,13 +679,14 @@ la clé \Definition{rules/color} fixe la couleur utilisée pour tracer les
 filets (n'a d'intérêt que si |hvlines|, |hlines| ou |vlines| est utilisée) ;
 
 
-\item \index{rounded-corners!clé de \texttt{\textbackslash Block}}
-\index{Coins arrondis!pour un bloc}
-la clé \Definition{rounded-corners} impose des coins arrondis (pour le
-cadre dessiné par |draw| et le fond dessiné par |fill|)
-avec un rayon égal à la valeur de cette clé (la valeur par défaut est
-4~pt\footnote{Cette valeur par défaut est la valeur initiale des \emph{rounded
-    corners} de TikZ.}) ;
+\item \label{block-rounded-corners}
+\index{rounded-corners!clé de \texttt{\textbackslash Block}} \index{Coins
+  arrondis!pour un bloc} la clé \Definition{rounded-corners} impose des coins
+arrondis (pour le cadre dessiné par |draw| et le fond dessiné par |fill|) avec
+un rayon égal à la valeur de cette clé (la valeur par défaut est 4~pt, ce qui
+est la valeur initiale des \emph{rounded corners} de TikZ.)\footnote{Il existe
+  aussi une clé |rounded-corners| applicable à un environnement de
+  \pkg{nicematrix} : cf. p.~\pageref{tabular-rounded-corners}.} ;
 \item \index{color!clé de \texttt{\textbackslash Block}}
 la clé \Definition{color} a un comportement un peu particulier pour des
 raisons historiques: elle prend en argument une couleur et l'applique au
@@ -2707,7 +2710,7 @@ des virgules. Dans cette liste, le symbole |=| représente une couleur identique
 
 \smallskip
 \begin{Code}[width=10cm]
-\begin{NiceTabular}{c}
+\begin{NiceTabular}{c}[rounded-corners]
 \CodeBefore
   \emph{\rowlistcolors{1}{red!15,blue!15,green!15}}
 \Body
@@ -2720,7 +2723,7 @@ Antoine \\
 Stéphanie \\
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{c}
+\begin{NiceTabular}{c}[rounded-corners]
 \CodeBefore
   \rowlistcolors{1}{red!15,blue!15,green!15}
 \Body
@@ -2753,7 +2756,7 @@ avec |\resetcolorseries|\footnote{Pour l'initialisation, on a
 \begin{NiceTabular}{c}
 \CodeBefore
    \emph{\definecolorseries{BlueWhite}{rgb}{last}{blue}{white}
-   \resetcolorseries{\value{iRow}}{BlueWhite}
+   \resetcolorseries[\value{iRow}]{BlueWhite}
    \rowlistcolors{1}{BlueWhite!!+}}
 \Body
 Mathilde \\
@@ -3653,7 +3656,7 @@ p.~\pageref{sub-matrix}).
 
 
 
-\section{Les lignes en pointillés continues}
+\section{Les lignes en pointillés continues dans les matrices}
 
 \label{Cdots}
 \index{Pointillés@\textbf{Pointillés (lignes en ---)}|(}
@@ -5733,7 +5736,7 @@ Animal   &&& 100 \\
 
 
 
-\subsection{La clé rounded-corners}
+\subsection{La clé rounded-corners des environnements}
 
 \label{tabular-rounded-corners}
 \index{rounded-corners!clé de \texttt{\{NiceTabular\}}}
@@ -5741,7 +5744,9 @@ Animal   &&& 100 \\
 
 La clé |rounded-corners| que l'on décrit maintenant n'a pas de lien direct avec
 la clé |corners| (qui sert à spécifier les «coins vides») décrite à la
-partie~\ref{corners}, p.~\pageref{corners}.
+partie~\ref{corners}, p.~\pageref{corners}. Elle est en revanche proche de la clé
+|rounded-corners| de la commande |\Block| (cf. partie~\ref{block-rounded-corners},
+p.~\pageref{block-rounded-corners}).
 
 \smallskip
 La clé \Definition{rounded-corners} spécifie que le tableau ou la matrice devra avoir des
@@ -5862,7 +5867,7 @@ sont affichés par-dessus.
 
 Si l'extension \pkg{siunitx} est chargée (avant ou après \pkg{nicematrix}), il
 est possible d'utiliser les colonnes de type |S| de \pkg{siunitx} dans les
-environnements de \pkg{nicematrix}. 
+environnements de \pkg{nicematrix}.
 
 \medskip
 \begin{Code}[width = 10.9cm]

@@ -627,12 +627,14 @@ only when one of the keys |draw|, |hvlines|, |vlines| and |hlines| is used);
 the key \Definition{rules/width} is the width of the rules (is relevant
 only when one of the keys |hvlines|, |vlines| and |hlines| is used);
 
-\item \index{rounded-corners!key of \texttt{\textbackslash Block}}
-\index{Corners (rounded ---)!for a block} 
-the key \Definition{rounded-corners} requires rounded corners (for the
-frame drawn by |draw| and the shape drawn by |fill|) with a radius equal to
-the value of that key (the default value is 4~pt\footnote{This value is the
-initial value of the \emph{rounded corners} of TikZ.}) ;
+\item \label{block-rounded-corners}
+\index{rounded-corners!key of \texttt{\textbackslash Block}}
+\index{Corners (rounded ---)!for a block} the key \Definition{rounded-corners}
+requires rounded corners (for the frame drawn by |draw| and the shape drawn by
+|fill|) with a radius equal to the value of that key (the default value is 4~pt,
+which is the initial value of the \emph{rounded corners} of
+TikZ)\footnote{There is also a key |rounded-corners| available for an
+  environment of \pkg{nicematrix}: cf.~p.~\pageref{tabular-rounded-corners}.} ;
 \item \index{color!key of \texttt{\textbackslash Block}} 
 the key \Definition{color} has a behaviour which is a bit strange for historical reasons:
 it takes in as argument a color and applies it to the content of the block
@@ -2602,7 +2604,7 @@ that list, the symbol |=| represent a color identical to the previous one.
 
 \smallskip
 \begin{Code}[width=10cm]
-\begin{NiceTabular}{c}
+\begin{NiceTabular}{c}[rounded-corners]
 \CodeBefore
   \emph{\rowlistcolors{1}{red!15,blue!15,green!15}}
 \Body
@@ -2615,7 +2617,7 @@ Jane \\
 Alexandra \\
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{c}[no-cell-nodes]
+\begin{NiceTabular}{c}[rounded-corners,no-cell-nodes]
 \CodeBefore
   \rowlistcolors{1}{red!15,blue!15,green!15}
 \Body
@@ -3520,7 +3522,7 @@ described p.~\pageref{sub-matrix}.
 
 
 
-\section{The continuous dotted lines}
+\section{The continuous dotted lines in the matrices}
 
 \label{Cdots}
 \index{dotted@\textbf{Dotted lines}|(}
@@ -5547,7 +5549,7 @@ Animal   &&& 100 \\
 \end{center}
 
 
-\subsection{The key rounded-corners}
+\subsection{The key rounded-corners of the environments}
 
 \label{tabular-rounded-corners}
 \index{rounded-corners!key of \texttt{\{NiceTabular\}}}
@@ -5555,7 +5557,8 @@ Animal   &&& 100 \\
 
 The key |rounded-corners| that we will describe now has no direct link with
 the key |corners| (which is used to specify ``empty corners'') described in
-the part~\ref{corners}, p.~\pageref{corners}.
+the part~\ref{corners}, p.~\pageref{corners}. On the other side, it is similar with the
+key |rounded-corners| of the command |\Block| (cf. p.~\ref{block-rounded-corners},~\pageref{block-rounded-corners}).
 
 \smallskip
 The key \Definition{rounded-corners} specifies that the tabular should have

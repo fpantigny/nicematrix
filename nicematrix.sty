@@ -369,6 +369,7 @@
 \tl_new:N \l__nicematrix_rule_color_tl
 \bool_new:N \g__nicematrix_rotate_bool
 \bool_new:N \g__nicematrix_rotate_c_bool
+\bool_new:N \g__nicematrix_rotate_minus_bool
 \bool_new:N \l__nicematrix_X_bool
 \bool_new:N \l__nicematrix_V_of_X_bool
 \bool_new:N \g__nicematrix_V_of_X_bool
@@ -388,7 +389,6 @@
 \tl_new:N \l__nicematrix_xdots_up_tl
 \tl_new:N \l__nicematrix_xdots_middle_tl
 \seq_new:N \g__nicematrix_rowlistcolors_seq
-\tl_new:N \l__nicematrix_rowlistcolors_tl
 \cs_new_protected:Npn \__nicematrix_test_if_math_mode:
   {
     \if_mode_math: \else:
@@ -1386,7 +1386,8 @@
   }
 \cs_new_protected:Npn \__nicematrix_rotate_cell_box:
   {
-    \box_rotate:Nn \l__nicematrix_cell_box { 90 }
+    \box_rotate:Nn \l__nicematrix_cell_box
+      { \bool_if:NTF \g__nicematrix_rotate_minus_bool { -90 } { 90 } }
     \bool_if:NTF \g__nicematrix_rotate_c_bool
       {
         \hbox_set:Nn \l__nicematrix_cell_box
@@ -1410,6 +1411,7 @@
        }
     \bool_gset_false:N \g__nicematrix_rotate_bool
     \bool_gset_false:N \g__nicematrix_rotate_c_bool
+    \bool_gset_false:N \g__nicematrix_rotate_minus_bool
   }
 \cs_set_protected:Npn \__nicematrix_adjust_size_box:
   {
@@ -1441,7 +1443,7 @@
 \cs_new_protected:Npn \__nicematrix_cell_end_i:
   {
     \g__nicematrix_cell_after_hook_tl
-    \bool_if:NT \g__nicematrix_rotate_bool { \__nicematrix_rotate_cell_box: }
+    \bool_if:NT \g__nicematrix_rotate_bool \__nicematrix_rotate_cell_box:
     \__nicematrix_adjust_size_box:
     \box_set_ht:Nn \l__nicematrix_cell_box
       { \box_ht:N \l__nicematrix_cell_box + \l__nicematrix_cell_space_top_limit_dim }
@@ -2727,23 +2729,24 @@
     \dim_compare:nNnT { \box_wd:N \l__nicematrix_cell_box } > \l__nicematrix_col_width_dim
       { \__nicematrix_warning:n { W~warning } }
   }
-\cs_new_protected:Npn \__nicematrix_S: #1 #2
+\AtBeginDocument
   {
-    \str_if_eq:nnTF { #2 } { [ }
-      { \__nicematrix_make_preamble_S:w [ }
-      { \__nicematrix_make_preamble_S:w [ ] { #2 } }
+    \IfPackageLoadedT { siunitx }
+      {
+        \cs_new_protected:Npn \__nicematrix_S: #1 #2
+          {
+            \str_if_eq:nnTF { #2 } { [ }
+              { \__nicematrix_make_preamble_S:w [ }
+              { \__nicematrix_make_preamble_S:w [ ] { #2 } }
+          }
+     }
   }
 \cs_new_protected:Npn \__nicematrix_make_preamble_S:w [ #1 ]
   { \__nicematrix_make_preamble_S_i:n { #1 } }
 \cs_new_protected:Npn \__nicematrix_test_siunitx:
   {
-    \IfPackageLoadedTF
-      { siunitx }
-      {
-        \IfPackageAtLeastF { siunitx } { 2026/03/26 }
-          { \__nicematrix_fatal:n { siunitx~too~old } }
-      }
-      { \__nicematrix_fatal:n { siunitx~not~loaded } }
+    \IfPackageAtLeastF { siunitx } { 2026/03/26 }
+      { \__nicematrix_fatal:n { siunitx~too~old } }
     \cs_gset_eq:NN \__nicematrix_test_siunitx: \prg_do_nothing:
   }
 \cs_new_protected:Npn \__nicematrix_make_preamble_S_i:n #1
@@ -3737,7 +3740,7 @@
       {
         \__nicematrix_math_toggle:
         \hbox_set_end:
-        \bool_if:NT \g__nicematrix_rotate_bool { \__nicematrix_rotate_cell_box: }
+        \bool_if:NT \g__nicematrix_rotate_bool \__nicematrix_rotate_cell_box:
         \__nicematrix_adjust_size_box:
         \__nicematrix_update_for_first_and_last_row:
         \dim_gset:Nn \g__nicematrix_width_first_col_dim
@@ -3783,7 +3786,7 @@
       {
         \__nicematrix_math_toggle:
         \hbox_set_end:
-        \bool_if:NT \g__nicematrix_rotate_bool { \__nicematrix_rotate_cell_box: }
+        \bool_if:NT \g__nicematrix_rotate_bool \__nicematrix_rotate_cell_box:
         \__nicematrix_adjust_size_box:
         \__nicematrix_update_for_first_and_last_row:
         \dim_gset:Nn \g__nicematrix_width_last_col_dim
@@ -4061,14 +4064,13 @@
               }
           }
       }
-        \cs_set_eq:NN \ar@ialign \__nicematrix_old_ar@ialign:
-        \cs_set_eq:NN \SubMatrix \__nicematrix_SubMatrix
-        \cs_set_eq:NN \UnderBrace \__nicematrix_UnderBrace
-        \cs_set_eq:NN \OverBrace \__nicematrix_OverBrace
-        \cs_set_eq:NN \ShowCellNames \__nicematrix_ShowCellNames
-        \cs_set_eq:NN \TikzEveryCell \__nicematrix_TikzEveryCell
-        \cs_set_eq:NN \line \__nicematrix_line
-
+    \cs_set_eq:NN \ar@ialign \__nicematrix_old_ar@ialign:
+    \cs_set_eq:NN \SubMatrix \__nicematrix_SubMatrix
+    \cs_set_eq:NN \UnderBrace \__nicematrix_UnderBrace
+    \cs_set_eq:NN \OverBrace \__nicematrix_OverBrace
+    \cs_set_eq:NN \ShowCellNames \__nicematrix_ShowCellNames
+    \cs_set_eq:NN \TikzEveryCell \__nicematrix_TikzEveryCell
+    \cs_set_eq:NN \line \__nicematrix_line
     \legacy_if:nF { measuring@ } \g__nicematrix_pre_code_after_tl
     \tl_gclear:N \g__nicematrix_pre_code_after_tl
     \cs_set_eq:NN \CodeAfter \prg_do_nothing:
@@ -4081,7 +4083,7 @@
     \tl_gclear:N \g_nicematrix_code_after_tl
     \clist_if_empty:NF \g__nicematrix_col_with_trees_clist \__nicematrix_draw_trees:
     \group_end:
-    \seq_if_empty:NF \g__nicematrix_rowlistcolors_seq { \__nicematrix_clear_rowlistcolors_seq: }
+    \seq_if_empty:NF \g__nicematrix_rowlistcolors_seq \__nicematrix_clear_rowlistcolors_seq:
     \tl_if_empty:NF \g__nicematrix_pre_code_before_tl
       {
         \tl_gput_right:Ne \g__nicematrix_aux_tl
@@ -4403,7 +4405,8 @@
     \int_set_eq:NN \l__nicematrix_col_min_int \c_one_int
     \int_set_eq:NN \l__nicematrix_row_max_int \c@iRow
     \int_set_eq:NN \l__nicematrix_col_max_int \c@jCol
-    \seq_if_empty:NF \g__nicematrix_submatrix_seq
+    \seq_if_empty:NTF \g__nicematrix_submatrix_seq
+      { \cs_set_eq:NN  \__nicematrix_adjust_to_submatrix:nn \use_none:nn }
       {
         \seq_map_inline:Nn \g__nicematrix_submatrix_seq
           { \__nicematrix_adjust_to_submatrix:nnnnnn { #1 } { #2 } ##1 }
@@ -5502,6 +5505,8 @@
   {
     c .code:n = \bool_gset_true:N \g__nicematrix_rotate_c_bool ,
     c .value_forbidden:n = true ,
+    -90 .code:n = \bool_gset_true:N \g__nicematrix_rotate_minus_bool ,
+    -90 .value_forbidden:n = true ,
     unknown .code:n = \__nicematrix_error:n { Unknown~key~for~rotate }
   }
 \cs_new:Npn \__nicematrix_double_int_eval:n #1-#2 \q_stop
@@ -5768,7 +5773,6 @@
   {
     \pgfpicture
     \pgf@relevantforpicturesizefalse
-    \l__nicematrix_rowlistcolors_tl
     \__nicematrix_clip_with_rounded_corners:
     \seq_map_indexed_inline:Nn \g__nicematrix_colors_seq
       {
@@ -5893,11 +5897,6 @@
     unknown .code:n = \__nicematrix_error:n { Unknown~key~for~rowcolors }
   }
 \NewDocumentCommand \__nicematrix_rowlistcolors { O { } m m O { } }
-  {
-    \tl_put_right:Nn \l__nicematrix_rowlistcolors_tl
-      { \__nicematrix_rowlistcolors:nnnn { #1 } { #2 } { #3 } { #4 } }
-  }
-\cs_new_protected:Npn \__nicematrix_rowlistcolors:nnnn #1 #2 #3 #4
   {
     \seq_clear_new:N \l__nicematrix_colors_seq
     \seq_set_split:Nnn \l__nicematrix_colors_seq { , } { #3 }
@@ -7920,7 +7919,7 @@
   {
     \box_grotate:cn
       { g__nicematrix_ block _ box _ \int_use:N \g__nicematrix_block_box_int _ box }
-      { 90 }
+      { \bool_if:NTF \g__nicematrix_rotate_minus_bool { -90 } { 90 } }
     \int_compare:nNnT \c@iRow = \l__nicematrix_last_row_int
       {
         \vbox_gset_top:cn
@@ -9338,16 +9337,22 @@
               }
           }
         \dim_compare:nNnTF \l__nicematrix_x_initial_dim = \c_max_dim
-          { \__nicematrix_error:nn { Impossible~delimiter } { left } }
+          { \__nicematrix_impossible_delimiter:n { left } }
           {
             \dim_compare:nNnTF \l__nicematrix_x_final_dim = { - \c_max_dim }
-              { \__nicematrix_error:nn { Impossible~delimiter } { right } }
+              { \__nicematrix_impossible_delimiter:n { right } }
               { \__nicematrix_sub_matrix_i:nnnn { #1 } { #4 } { #6 } { #7 } }
           }
         \endpgfpicture
       }
     \group_end:
     \ignorespaces
+  }
+\cs_new_protected:Npn \__nicematrix_impossible_delimiter:n #1
+  {
+    \bool_if:NTF \l__nicematrix_no_cell_nodes_bool
+      { \__nicematrix_error:n { Impossible~SubMatrix~no~cell~nodes } }
+      { \__nicematrix_error:nn { Impossible~SubMatrix } { #1 } }
   }
 \cs_new_protected:Npn \__nicematrix_sub_matrix_i:nnnn #1 #2 #3 #4
   {
@@ -10588,7 +10593,8 @@
     \token_to_str:N \rotate\ forbidden.\\
     You~should~not~use~\token_to_str:N \rotate\ in~a~column~of~type~'p',~
     'b',~'m'\IfPackageLoadedTF { varwidth } { ,~'X'~or~'V' } { ~or~'X'}.~
-    If~you~go~on,~maybe~you~won't~have~the~expected~output.
+    If~you~go~on,~maybe~you~won't~have~the~expected~output.~You~should~
+    consider~the~classical~command~\token_to_str:N \rotatebox.
   }
 \__nicematrix_msg_new:nn { TopRule~without~tikz }
   {
@@ -10698,7 +10704,7 @@
 \__nicematrix_msg_new:nn { Unknown~key~for~rotate }
   {
     Unknown~key.\\
-    The~only~key~available~here~is~'c'.\\
+    The~only~keys~available~here~are~'c'~and~'-90'.\\
     Your~key~' \l_keys_key_str '~will~be~ignored.
   }
 \__nicematrix_msg_new:nnn { Unknown~key~for~custom-line }
@@ -10844,14 +10850,6 @@
     in~order~to~use~the~key~' \l_keys_key_str '.\\
     That~key~will~be~ignored.
   }
-\__nicematrix_msg_new:nn { siunitx~not~loaded }
-  {
-    siunitx~not~loaded\\
-    You~can't~use~the~columns~'S'~because~'siunitx'~is~not~loaded.\\
-    That~error~is~fatal.\\
-    You~can~load~'siunitx'~with~\token_to_str:N \usepackage \{siunitx\},~
-    before~or~after~'nicematrix'. \\
-  }
 \__nicematrix_msg_new:nn { siunitx~too~old }
   {
     siunitx~too~old\\
@@ -10895,14 +10893,21 @@
     \token_to_str:N \SubMatrix \ of~your~ \__nicematrix_full_name_env: \ but~that~
     number~is~not~valid.~It~will~be~ignored.
   }
-\__nicematrix_msg_new:nn { Impossible~delimiter }
+\__nicematrix_msg_new:nn { Impossible~SubMatrix }
   {
-    Impossible~delimiter.\\
-    It's~impossible~to~draw~the~#1~delimiter~of~your~
-    \token_to_str:N \SubMatrix \ because~all~the~cells~are~empty~
-    in~that~column.
+    Impossible~SubMatrix.\\
+    It's~impossible~to~draw~your~\token_to_str:N \SubMatrix \
+    because~all~the~cells~are~empty~in~the~column~on~the~#1~
+    side~of~that~\token_to_str:N \SubMatrix.
     \bool_if:NT \l__nicematrix_submatrix_slim_bool
       { ~Maybe~you~should~try~without~the~key~'slim'. } \\
+    This~ \token_to_str:N \SubMatrix \ will~be~ignored.
+  }
+\__nicematrix_msg_new:nn { Impossible~SubMatrix~no~cell~nodes }
+  {
+    Impossible~SubMatrix.\\
+    It's~impossible~to~draw~your~ \token_to_str:N \SubMatrix \
+    because~the~key~'no-cell-nodes'~is~in~force. \\
     This~ \token_to_str:N \SubMatrix \ will~be~ignored.
   }
 \__nicematrix_msg_new:nnn { width~without~X~columns }
