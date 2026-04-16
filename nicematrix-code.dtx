@@ -1050,7 +1050,7 @@ version 2005/12/01 or later.
 % During the second run, if information concerning the current environment has
 % been found in the |aux| file, the following flag will be raised. It will be
 % used, for instance to disable several constructions (continuous dotted lines,
-% and colored backgrounds) during the first compilation (in order to speed up it).
+% and colored backgrounds) during the first compilation (in order to speed it up).
 %    \begin{macrocode}
 \bool_new:N \g_@@_aux_found_bool
 %    \end{macrocode}
@@ -2965,7 +2965,7 @@ version 2005/12/01 or later.
 %
 % 
 % \bigskip
-% |\NiceMatrixOptions| is the command of the \pkg{nicematrix} package to fix
+% |\NiceMatrixOptions| is the command of the package \pkg{nicematrix} to fix
 % options at the document level. The scope of these specifications is the
 % current TeX group. 
 %    \begin{macrocode}
@@ -6898,7 +6898,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \endpgfpicture
     \box_move_up:nn \g_tmpa_dim { \box_use_drop:N \l_tmpa_box } 
-    \box_use_drop:N \l_tmpa_box 
+    % \box_use_drop:N \l_tmpa_box  % 2026/04/13
   }
 %    \end{macrocode}
 %
@@ -9089,7 +9089,7 @@ version 2005/12/01 or later.
     \int_set_eq:NN \l_@@_row_max_int \c@iRow
     \int_set_eq:NN \l_@@_col_max_int \c@jCol 
 %    \end{macrocode}
-% If there is no submatrices, we will speed-up a little for the potential other
+% If there is no submatrices, we will speed~up a little for the potential other
 % dotted lines to draw.
 % 
 %    \begin{macrocode}
@@ -11302,12 +11302,12 @@ version 2005/12/01 or later.
             \cs_set_eq:NN \@@_cartesian_path:n \@@_cartesian_path_normal:n
           }
           {
-            \begin { pgfscope }
+            \pgfscope 
               \@@_color_opacity: ##2
               \use:c { g_@@_color _ ##1 _tl }
               \tl_gclear:c { g_@@_color _ ##1 _tl }
               \pgfusepath { fill }
-            \end { pgfscope }
+            \endpgfscope
          }
       }
     \endpgfpicture
@@ -18166,6 +18166,15 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_draw_trees:
   {
+    \bool_if:NTF \l_@@_no_cell_nodes_bool
+      { \@@_error:n { draw-trees~with~no-cell-nodes } }
+      \@@_draw_trees_i:
+  }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_draw_trees_i:
+  {
     \@@_expand_clist_hvlines:NN \g_@@_col_with_trees_clist \c@jCol
     \dim_zero_new:N \l_@@_em_dim
     \dim_set:Nn \l_@@_em_dim { 1 em }
@@ -19086,6 +19095,17 @@ version 2005/12/01 or later.
     before~or~after~'nicematrix'.\\
   }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { draw-trees~with~no-cell-nodes }
+  {
+     Incompatible~keys.\\
+    You~can't~use~the~key~'draw-trees-in-col'~here~because~the~key~'no-cell-nodes'~
+    is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
+    is~to~speed~compilation~up).\\
+    If~you~go~on,~that~key~will~be~ignored.
+  }
+%    \end{macrocode}        
 % 
 %    \begin{macrocode}
 \@@_msg_new:nn { corners~with~no-cell-nodes }
@@ -19093,7 +19113,7 @@ version 2005/12/01 or later.
     Incompatible~keys.\\
     You~can't~use~the~key~'corners'~here~because~the~key~'no-cell-nodes'~
     is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
-    is~to~speed-up~compilation).\\
+    is~to~speed~compilation~up).\\
     If~you~go~on,~that~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -19104,7 +19124,7 @@ version 2005/12/01 or later.
     Incompatible~keys.\\
     You~can't~create~'extra~nodes'~here~because~the~key~'no-cell-nodes'~
     is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
-    is~to~speed-up~compilation).\\
+    is~to~speed~compilation~up).\\
     If~you~go~on,~those~extra~nodes~won't~be~created.
   }
 %    \end{macrocode}

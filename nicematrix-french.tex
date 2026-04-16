@@ -5756,7 +5756,7 @@ coins arrondis avec un rayon égal à la valeur de cette clé (la valeur par dé
 décrit maintenant.
 \begin{itemize}[beginpenalty=10000]
 \item Toutes les commandes de coloriage de cases, colonnes et rangées (que ce
-soit dans le |\CodeBefore| ou bien directement dans le tableau respectent ces
+soit dans le |\CodeBefore| ou bien directement dans le tableau) respectent ces
 coins arrondis pour le tableau. 
 
 \item Quand la clé |hvlines| est utilisée, les filets extérieurs sont tracés
@@ -6001,6 +6001,11 @@ espaces sont supprimés après |\rotate[c]|). Quand cette clé est utilisée, le
 contenu, après rotation, est composé dans une |\vcenter| (une primitive de TeX),
 ce qui fait que, le plus souvent, on obtiendra un centrage vertical.
 
+
+\medskip
+\colorbox{yellow!50}{\bfseries Nouveau 7.9}\enskip La commande |\rotate| admet
+aussi une clé nommée \Definition{-90}. Avec cette clé, le contenu subit une rotation d'angle
+$-90°$ au lieu d'une rotation d'angle $90°$.
 
 \medskip
 Attention : la commande |\rotate| est prévue pour être utilisée dans un |\Block|
@@ -6917,6 +6922,52 @@ a été créée avec |\SubMatrix\{{2-2}{3-3}\}|).
 
 
 \section{API pour les développeurs}
+
+
+\subsection{Jeux de clés publics}
+
+L'extension \pkg{nicematrix} propose plusieurs jeux de clés publics :
+\begin{itemize}
+\item \Definition{nicematrix/environments} qui s'applique à tous les environnements de
+\pkg{nicematrix} ;
+\item \Definition{nicematrix/NiceMatrix} qui s'applique spécifiquement à l'environnement 
+|{NiceMatrix}| et à ses variantes avec délimiteurs (|{pNiceMatrix}|, etc.);
+\item \Definition{nicematrix/NiceTabular} qui s'applique spécifiquement aux
+environnements |{NiceTabular}|, |{NiceTabularX}| et |{NiceTabular*}|.
+\end{itemize}
+
+\bigskip
+Par exemple, si on veut pouvoir fixer le paramètre |\arraystretch| avec une clé
+|arraystretch| dans les environnements de \pkg{nicematrix}, on peut utiliser la
+définition suivante dans le préambule du document LaTeX.
+
+\bigskip
+\begin{Code}
+\DeclareKeys[\emph{nicematrix/environments}]{arraystretch.store=\arraystretch}
+\end{Code}
+
+
+\bigskip
+On peut alors écrire :
+
+\medskip
+\begin{Code}[width=11cm]
+\begin{NiceTabular}{cc}[hvlines,\emph{arraystretch=2}]
+a & b \\
+c & d 
+\end{NiceTabular}
+\end{Code}
+\begin{scope}
+\renewcommand{\arraystretch}{2}
+\begin{NiceTabular}{cc}[hvlines]
+a & b \\
+c & d 
+\end{NiceTabular}
+\end{scope}
+
+
+
+\subsection{CodeBefore et CodeAfter}
 
 \indexcommand{g\_nicematrix\_code\_before\_tl}
 \indexcommand{g\_nicematrix\_code\_after\_tl}

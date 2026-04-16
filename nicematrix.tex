@@ -5567,7 +5567,7 @@ rounded corners with a radius equal to the value of that key (the default value 
   TikZ.}). More precisely, that key has two effects that we describe now.
 \begin{itemize}
 \item All the commands for coloring the cells, columns and rows (in the
-|\CodeBefore| but also directly in the array will respect those rounded corners. 
+|\CodeBefore| but also directly in the array) will respect those rounded corners. 
 
 \item When the key |hvlines| is used, the exterior rules will be drawn with
 rounded corners.\footnote{Of course, when used in an environment with delimiters
@@ -5814,6 +5814,11 @@ The command |\rotate| has a key |c|: |\rotate[c]| (spaces are deleted after
 |\rotate[c]|). When that key is used, the content is composed in a |\vcenter|
 and, therefore, in most cases, we will have a vertical alignment.
 
+\medskip
+\colorbox{yellow!50}{\textbf{New 7.9}}\enskip
+The command |\rotate| also supports a key called \Definition{-90}. With that key,
+the content is rotated by an angle of $-90$° and not $90$°.
+
 \bigskip
 Caution: the command |\rotate| is designed to be used in a |\Block| or in
 columns of type |l|, |r|, |c|, |w| ou |W|; if it is used in other column types
@@ -5889,7 +5894,7 @@ section \ref{delimiters-in-preamble}, p.~\pageref{delimiters-in-preamble}).
 \index{jCol (LaTeX counter)}
 
 In the cells of the array, it's possible to use the LaTeX counters |iRow| and
-|jCol|\footnote{There counters are actual LaTeX counters: the underlying TeX
+|jCol|\footnote{These counters are actual LaTeX counters: the underlying TeX
   counters are |\c@iRow| and |\c@jCol|} which represent the number of the
 current row and the number of the current column. We recall that the exterior
 ``first row'' (if it exists) has the number~$0$ and that the exterior ``first
@@ -6713,6 +6718,51 @@ been created with |\SubMatrix\{{2-2}{3-3}\}|).
 \index{node@\textbf{Nodes of PGF/TikZ}|)}
 
 \section{API for the developers}
+
+
+\subsection{Public sets of keys}
+
+The extension \pkg{nicematrix} provies several public sets of keys:
+\begin{itemize}
+\item \Definition{nicematrix/environments} which applies to all the
+environments of \pkg{nicematrix};
+\item \Definition{nicematrix/NiceMatrix} which applies specifically to the
+environment |{NiceMatrix}| and its variants with delimiters (|{pNiceMatrix}|,
+etc.);
+\item \Definition{nicematrix/NiceTabular} which applies specifically to the
+environements |{NiceTabular}|, |{NiceTabularX}| and |{NiceTabular*}|.
+\end{itemize}
+
+\bigskip
+For example, if you wish to be able to fix the parameter |\arraystretch| with
+ a key |arraystretch|, you only have to add the following instructions in the preamble
+of the LaTeX document.
+
+\bigskip
+\begin{Code}
+\DeclareKeys[\emph{nicematrix/environments}]{arraystretch.store=\arraystretch}
+\end{Code}
+
+\bigskip
+Then, it's possible to write, for example:
+
+\medskip
+\begin{Code}[width=11cm]
+\begin{NiceTabular}{cc}[hvlines,\emph{arraystretch=2}]
+a & b \\
+c & d 
+\end{NiceTabular}
+\end{Code}
+\begin{scope}
+\renewcommand{\arraystretch}{2}
+\begin{NiceTabular}{cc}[hvlines]
+a & b \\
+c & d 
+\end{NiceTabular}
+\end{scope}
+
+
+\subsection{CodeBefore and CodeAfter}
 
 The package \pkg{nicematrix} provides two variables which are internal but
 public\footnote{According to the LaTeX3 conventions,

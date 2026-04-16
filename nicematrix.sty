@@ -3228,7 +3228,7 @@
       \dim_gsub:Nn \g_tmpa_dim \pgf@y
     \endpgfpicture
     \box_move_up:nn \g_tmpa_dim { \box_use_drop:N \l_tmpa_box }
-    \box_use_drop:N \l_tmpa_box
+    % \box_use_drop:N \l_tmpa_box  % 2026/04/13
   }
 \cs_new_protected:Npn \__nicematrix_use_arraybox_with_notes_c:
   {
@@ -5783,12 +5783,12 @@
             \cs_set_eq:NN \__nicematrix_cartesian_path:n \__nicematrix_cartesian_path_normal:n
           }
           {
-            \begin { pgfscope }
+            \pgfscope
               \__nicematrix_color_opacity: ##2
               \use:c { g__nicematrix_color _ ##1 _tl }
               \tl_gclear:c { g__nicematrix_color _ ##1 _tl }
               \pgfusepath { fill }
-            \end { pgfscope }
+            \endpgfscope
          }
       }
     \endpgfpicture
@@ -10014,6 +10014,12 @@
   }
 \cs_new_protected:Npn \__nicematrix_draw_trees:
   {
+    \bool_if:NTF \l__nicematrix_no_cell_nodes_bool
+      { \__nicematrix_error:n { draw-trees~with~no-cell-nodes } }
+      \__nicematrix_draw_trees_i:
+  }
+\cs_new_protected:Npn \__nicematrix_draw_trees_i:
+  {
     \__nicematrix_expand_clist_hvlines:NN \g__nicematrix_col_with_trees_clist \c@jCol
     \dim_zero_new:N \l__nicematrix_em_dim
     \dim_set:Nn \l__nicematrix_em_dim { 1 em }
@@ -10637,12 +10643,20 @@
     You~can~load~TikZ~with~\token_to_str:N \usepackage \{tikz\},~
     before~or~after~'nicematrix'.\\
   }
+\__nicematrix_msg_new:nn { draw-trees~with~no-cell-nodes }
+  {
+     Incompatible~keys.\\
+    You~can't~use~the~key~'draw-trees-in-col'~here~because~the~key~'no-cell-nodes'~
+    is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
+    is~to~speed~compilation~up).\\
+    If~you~go~on,~that~key~will~be~ignored.
+  }
 \__nicematrix_msg_new:nn { corners~with~no-cell-nodes }
   {
     Incompatible~keys.\\
     You~can't~use~the~key~'corners'~here~because~the~key~'no-cell-nodes'~
     is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
-    is~to~speed-up~compilation).\\
+    is~to~speed~compilation~up).\\
     If~you~go~on,~that~key~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { extra-nodes~with~no-cell-nodes }
@@ -10650,7 +10664,7 @@
     Incompatible~keys.\\
     You~can't~create~'extra~nodes'~here~because~the~key~'no-cell-nodes'~
     is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
-    is~to~speed-up~compilation).\\
+    is~to~speed~compilation~up).\\
     If~you~go~on,~those~extra~nodes~won't~be~created.
   }
 \__nicematrix_msg_new:nn { Identical~notes~in~caption }
