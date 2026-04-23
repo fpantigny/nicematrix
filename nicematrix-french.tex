@@ -3514,6 +3514,7 @@ particulièrement intéressant pour les matrices (mathématiques).
 Si elle est présente, la «première rangée» (extérieure) est numérotée par~$0$
 (et non $1$). Il en est de même pour la «première colonne».
 
+\medskip
 \begin{Code}
 $\begin{pNiceMatrix}[\emph{first-row,last-row,first-col,last-col},xdots/nullify]
        & C_1    & \Cdots &        & C_4    &        \\
@@ -6003,7 +6004,7 @@ ce qui fait que, le plus souvent, on obtiendra un centrage vertical.
 
 
 \medskip
-\colorbox{yellow!50}{\bfseries Nouveau 7.9}\enskip La commande |\rotate| admet
+La commande |\rotate| admet
 aussi une clé nommée \Definition{-90}. Avec cette clé, le contenu subit une rotation d'angle
 $-90°$ au lieu d'une rotation d'angle $90°$.
 
@@ -7683,6 +7684,8 @@ tous les filets sauf ceux sur les bords (qui sont, bien entendu, ajoutés par
 \end{center}
 
 
+
+
 \subsection{Un tableau de signes}
 
 
@@ -7746,6 +7749,7 @@ Dans l'exemple suivant, on utilise des commandes |\Block| pour tracer des filets
                  3 & 4 \\
 0 & 0 & 0  & 0 & 1 & 4 
 \end{pNiceMatrix}\]
+
 
 
 
@@ -7833,6 +7837,7 @@ etc. (mais les lignes sont quand même tracées, en dépit du nom !).
 
 
 
+
 \subsection{Des lignes pointillées qui ne sont plus pointillées}
 
 \label{ex:no-longer-dotted-rules}
@@ -7886,6 +7891,7 @@ pointillées (TikZ doit être chargé).
 & & & \blue \overset{\uparrow}{i} & & & & \blue \overset{\uparrow}{j} \\
 \end{pNiceMatrix}\]
 \end{scope}
+
 
 
 
@@ -7954,7 +7960,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \end{pNiceArray}$}
 
 
-\interitem
+\bigskip
 \label{ex:hbrace}
 Si on préfère des accolades comme celles proposées par la bibliothèque
 \pkg{decorations.pathreplacing} de TikZ, le mieux est d'utiliser les commandes
@@ -7995,7 +8001,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \end{pNiceArray}$}
 
 
-\medskip
+\bigskip
 Il est possible de changer le style TikZ des accolades en changeant le style
 |nicematrix/brace|. L'exemple suivant utilise des accolades «calligraphiques»
 (l'extension TikZ \pkg{calligraphy} doit être chargée après
@@ -8105,18 +8111,13 @@ $\begin{pNiceArray}{ccc|cc}[margin,last-col]
 
 On a souvent besoin de présenter des matrices empilées les unes au-dessus des
 autres (par exemple pour la résolution  de systèmes linéaires).
-
-
-\medskip
 Pour avoir les colonnes alignées les unes sous les autres, on peut imposer une
 largeur commune à toutes les colonnes, ce que l'on fait dans l'exemple suivant
 avec l'environnement |{NiceMatrixBlock}| et l'option |auto-columns-width|.
 
 \index{NiceMatrixBlock@\texttt{\{NiceMatrixBlock\}}|textit}
 
-\bigskip
-
-
+\medskip
 
 \begin{scope}
 \small
@@ -8124,11 +8125,10 @@ avec l'environnement |{NiceMatrixBlock}| et l'option |auto-columns-width|.
 \emph{\begin{NiceMatrixBlock}[auto-columns-width]}
 \NiceMatrixOptions
   {
-    light-syntax,
+    light-syntax, no-cell-nodes , % no-cell-nodes est facultatif
     last-col, code-for-last-col = \color{blue}\scriptstyle,
     vlines = 5 ,
-    matrix/columns-type = r ,
-    no-cell-nodes % facultatif
+    matrix/columns-type = r 
   }
 \setlength{\extrarowheight}{1mm}
 
@@ -8624,6 +8624,7 @@ a & a + b & a + b + c & L_1 \\
 a & a     & a + b     & L_2 \\
 a & a     & a         & L_3
 \end{pNiceArray}\]
+
 
 
 

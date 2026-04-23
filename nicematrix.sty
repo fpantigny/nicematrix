@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.8a}
-\def\myfiledate{2026/03/29}
+\def\myfileversion{7.8b}
+\def\myfiledate{2026/04/23}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -7623,7 +7623,7 @@
           { \int_use:N \g__nicematrix_env_int - \__nicematrix_i: - \__nicematrix_j: \l__nicematrix_suffix_tl }
       }
   }
-\keys_define:nn { nicematrix / Block / FirstPass }
+\keys_define:nn { nicematrix / BlockFirstPass }
   {
     j .code:n = \str_set:Nn \l__nicematrix_hpos_block_str j
                 \bool_set_true:N \l__nicematrix_p_block_bool ,
@@ -7708,7 +7708,7 @@
           { \str_set:No \l__nicematrix_hpos_block_str \l__nicematrix_hpos_cell_tl }
       }
       { \str_set_eq:NN \l__nicematrix_hpos_block_str \c__nicematrix_c_str }
-    \keys_set_known:nn { nicematrix / Block / FirstPass } { #3 }
+    \keys_set_known:nn { nicematrix / BlockFirstPass } { #3 }
     \tl_set:Ne \l_tmpa_tl
       {
         { \int_use:N \c@iRow }
@@ -8015,7 +8015,7 @@
       }
   }
 \cs_generate_variant:Nn \__nicematrix_Block_vii:nnnnn { e e }
-\keys_define:nn { nicematrix / Block / SecondPass }
+\keys_define:nn { nicematrix / Block }
   {
     ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
     &-in-blocks .meta:n = ampersand-in-blocks ,
@@ -8083,7 +8083,7 @@
     transparent .bool_set:N = \l__nicematrix_transparent_bool ,
     unknown .code:n =
       \__nicematrix_unknown_key:nn
-        { nicematrix / Block / SecondPass }
+        { nicematrix / Block }
         { Unknown~key~for~Block }
   }
 \cs_new_protected:Npn \__nicematrix_draw_blocks:
@@ -8138,7 +8138,7 @@
     \group_begin:
     \int_compare:nNnT { #1 } = { #3 }
       { \str_set:Nn \l__nicematrix_vpos_block_str { t } }
-    \keys_set:nn { nicematrix / Block / SecondPass } { #5 }
+    \keys_set:nn { nicematrix / Block } { #5 }
     \bool_if:NT \l__nicematrix_amp_in_blocks_bool
       { \tl_if_in:nnT { #6 } { & } { \bool_set_true:N \l__nicematrix_ampersand_bool } }
     \bool_lazy_and:nnT
@@ -9068,7 +9068,7 @@
   }
 \cs_new_protected:Npn \__nicematrix_draw_diagbox:nnnnnn #1 #2 #3 #4 #5 #6
   {
-    \group_begin:
+    \begin { pgfscope }
     \__nicematrix_qpoint:n { row - #1 }
     \dim_set_eq:NN \l_tmpa_dim \pgf@y
     \__nicematrix_qpoint:n { col - #2 }
@@ -9106,7 +9106,7 @@
       }
       { }
       { }
-    \group_end:
+    \end { pgfscope }
   }
 \cs_new:Npn \__nicematrix_CodeAfter: { \omit \__nicematrix_CodeAfter_ii:n }
 \cs_new_protected:Npn \__nicematrix_CodeAfter_i: { \\ \omit \__nicematrix_CodeAfter_ii:n }

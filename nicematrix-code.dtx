@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.8a}
-\def\myfiledate{2026/03/29}
+\def\myfileversion{7.8b}
+\def\myfiledate{2026/04/23}
 %
 %
 %<*batchfile>  
@@ -14478,7 +14478,7 @@ version 2005/12/01 or later.
 % array (and once again when the block will be put in the array).
 % Here is the set of keys for the first pass (in the cell of the array).
 %    \begin{macrocode}
-\keys_define:nn { nicematrix / Block / FirstPass }
+\keys_define:nn { nicematrix / BlockFirstPass }
   {
     j .code:n = \str_set:Nn \l_@@_hpos_block_str j 
                 \bool_set_true:N \l_@@_p_block_bool , 
@@ -14625,7 +14625,7 @@ version 2005/12/01 or later.
 %
 % \medskip
 %    \begin{macrocode}
-    \keys_set_known:nn { nicematrix / Block / FirstPass } { #3 } 
+    \keys_set_known:nn { nicematrix / BlockFirstPass } { #3 } 
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -15168,7 +15168,7 @@ version 2005/12/01 or later.
 % 
 % \medskip
 %   \begin{macrocode}
-\keys_define:nn { nicematrix / Block / SecondPass }
+\keys_define:nn { nicematrix / Block }
   {
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
     &-in-blocks .meta:n = ampersand-in-blocks ,
@@ -15220,7 +15220,7 @@ version 2005/12/01 or later.
     line-width .dim_set:N = \arrayrulewidth ,
 %    \end{macrocode}
 % Some keys have not a property |.value_required:n| (or similar) because they
-% are in |FirstPass|. 
+% are in |BlockFirstPass|. 
 %    \begin{macrocode}
     j .code:n = \str_set:Nn \l_@@_hpos_block_str j 
                 \bool_set_true:N \l_@@_p_block_bool ,
@@ -15250,7 +15250,7 @@ version 2005/12/01 or later.
     transparent .bool_set:N = \l_@@_transparent_bool ,
     unknown .code:n =
       \@@_unknown_key:nn
-        { nicematrix / Block / SecondPass }
+        { nicematrix / Block }
         { Unknown~key~for~Block } 
   }
 %    \end{macrocode}
@@ -15353,7 +15353,7 @@ version 2005/12/01 or later.
     \group_begin:
     \int_compare:nNnT { #1 } = { #3 }
       { \str_set:Nn \l_@@_vpos_block_str { t } }
-    \keys_set:nn { nicematrix / Block / SecondPass } { #5 }
+    \keys_set:nn { nicematrix / Block } { #5 }
 %    \end{macrocode}
 % 
 %
@@ -16737,7 +16737,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_draw_diagbox:nnnnnn #1 #2 #3 #4 #5 #6
   {
-    \group_begin:
+%    \end{macrocode}
+% We \emph{must} us an environment |{pgfscope}| and not a simple group of TeX.
+%    \begin{macrocode}
+    \begin { pgfscope }
     \@@_qpoint:n { row - #1 }
     \dim_set_eq:NN \l_tmpa_dim \pgf@y
     \@@_qpoint:n { col - #2 }
@@ -16783,7 +16786,7 @@ version 2005/12/01 or later.
       } 
       { } 
       { }
-    \group_end:
+    \end { pgfscope }
   }
 %    \end{macrocode}
 %
