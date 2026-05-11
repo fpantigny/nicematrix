@@ -15,7 +15,7 @@
     patterns,
     arrows.meta,
     decorations.pathreplacing, % for \Hbrace and \Vbrace
-    decorations.pathmorphing, % for zigzag
+    decorations.pathmorphing, % for zigzag and random steps
     calligraphy
   }
 
@@ -542,11 +542,11 @@ Here is an example of utilisation of the command |\Block| in mathematical matric
 \medskip
 \begin{Code}[width=10.6cm]
 $\begin{bNiceArray}{cw{c}{1cm}c|c}[margin]
-\emph{\Block{3-3}{A}} & & & 0 \\
-& & & \Vdots \\
-& & & 0 \\
-\hline
-0 & \Cdots& 0 & 0
+  \emph{\Block{3-3}{A}} & & & 0 \\
+  & & & \Vdots \\
+  & & & 0 \\
+  \hline
+  0 & \Cdots& 0 & 0
 \end{bNiceArray}$
 \end{Code}
 $\begin{bNiceArray}{cw{c}{1cm}c|c}[margin]
@@ -572,11 +572,11 @@ p.~\pageref{rotate}).}
 \medskip
 \begin{Code}[width=10.6cm]
 $\begin{bNiceArray}{cw{c}{1cm}c|c}[margin]
-\Block{3-3}\emph{<\Large>}{A} & & & 0 \\
-0 & & & \Vdots \\
-& & & 0 \\
-\hline
-0 & \Cdots& 0 & 0
+  \Block{3-3}\emph{<\Large>}{A} & & & 0 \\
+  0 & & & \Vdots \\
+  & & & 0 \\
+  \hline
+  0 & \Cdots& 0 & 0
 \end{bNiceArray}$
 \end{Code}
 \begin{scope}
@@ -635,10 +635,6 @@ requires rounded corners (for the frame drawn by |draw| and the shape drawn by
 which is the initial value of the \emph{rounded corners} of
 TikZ)\footnote{There is also a key |rounded-corners| available for an
   environment of \pkg{nicematrix}: cf.~p.~\pageref{tabular-rounded-corners}.} ;
-\item \index{color!key of \texttt{\textbackslash Block}} 
-the key \Definition{color} has a behaviour which is a bit strange for historical reasons:
-it takes in as argument a color and applies it to the content of the block
-and also draws the frame of the block with that color (we don't recommend to use it).
 \end{itemize}
 
 \medskip
@@ -657,7 +653,8 @@ elements covered by |left|, |right|, |top|, |bottom| and |all|; it's possible, i
 fact, in the list which is the value of the key |borders|, to add an entry of
 the form |tikz={|\textsl{list}|}| where \textsl{list} is a list of couples
 \textsl{key=value} of TikZ specifying the graphical characteristics of the
-lines that will be drawn (for an example, see p.~\pageref{ex:borders}).
+lines that will be drawn (for an example, see p.~\pageref{ex:borders}). When the key
+|borders| is used without value, it is equivalent to the key |draw| (without value).
 
 \item \index{tikzz@tikz!key of \texttt{\textbackslash Block}}
 When the key \Definition{tikz} is used, the TikZ path corresponding of
@@ -713,13 +710,13 @@ In the following example, we have had to enlarge by hand the columns 2 and 3
 \bigskip
 \begin{Code}
 \begin{NiceTabular}{cw{c}{2cm}w{c}{3cm}c}
-rose & tulip & daisy & dahlia \\
-violet 
-  & \emph{\Block[C,draw=red,fill=[RGB]{204,204,255},rounded-corners]{2-2}
-          {\LARGE Some beautiful flowers}} & & marigold \\
-   & & marigold \\
-iris & & & lis \\
-arum & periwinkle & forget-me-not &  hyacinth
+  rose & tulip & daisy & dahlia \\
+  violet 
+    & \emph{\Block[C,draw=red,fill=[RGB]{204,204,255},rounded-corners]{2-2}
+            {\LARGE Some beautiful flowers}} & & marigold \\
+     & & marigold \\
+  iris & & & lis \\
+  arum & periwinkle & forget-me-not &  hyacinth
 \end{NiceTabular}
 \end{Code}
 
@@ -767,16 +764,16 @@ mono-column blocks of that column (this behaviour is probably expected).
 \hfuzz=10cm
 \begin{Code}[width=12cm]
 \begin{NiceTabular}{@{}>{\bfseries}lr@{}} \hline
-\Block{2-1}{John}    & 12 \\
-                     & 13 \\ \hline
-Steph                &  8 \\ \hline
-\Block{3-1}{Sarah}   & 18 \\
-                     & 17 \\
-                     & 15 \\ \hline
-Ashley               & 20 \\ \hline
-Henry                & 14 \\ \hline
-\Block{2-1}{Madison} & 15 \\
-                     & 19 \\ \hline
+  \Block{2-1}{John}    & 12 \\
+                       & 13 \\ \hline
+  Steph                &  8 \\ \hline
+  \Block{3-1}{Sarah}   & 18 \\
+                       & 17 \\
+                       & 15 \\ \hline
+  Ashley               & 20 \\ \hline
+  Henry                & 14 \\ \hline
+  \Block{2-1}{Madison} & 15 \\
+                       & 19 \\ \hline
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{@{}>{\bfseries}lr@{}}[baseline=c] \hline
@@ -841,11 +838,11 @@ The command |\Block| accepts the keys \Definition{l}, \Definition{c} and
 \medskip
 \begin{Code}[width=10.6cm]
 $\begin{bNiceArray}{cw{c}{1cm}c|c}[margin]
-\Block\emph{[r]}{3-3}<\LARGE>{A} & & & 0 \\
-& & & \Vdots \\
-& & & 0 \\
-\hline
-0 & \Cdots& 0 & 0
+  \Block\emph{[r]}{3-3}<\LARGE>{A} & & & 0 \\
+  & & & \Vdots \\
+  & & & 0 \\
+  \hline
+  0 & \Cdots& 0 & 0
 \end{bNiceArray}$
 \end{Code}
 $\begin{bNiceArray}{cw{c}{1cm}c|c}[margin]
@@ -870,13 +867,13 @@ is not the behaviour of |\multicolumn|).
 \begin{Code}
 \begin{NiceTabular}{@{}c!{\qquad}ccc\emph{!{\qquad}}ccc@{}}
 \toprule
-Rank & \emph{\Block{1-3}{First group}} & & & \Block{1-3}{Second group} \\
-     & 1A & 1B & 1C & 2A & 2B & 2C \\
+  Rank & \emph{\Block{1-3}{First group}} & & & \Block{1-3}{Second group} \\
+       & 1A & 1B & 1C & 2A & 2B & 2C \\
 \midrule
- 1 & 0.657 & 0.913 & 0.733 & 0.830 & 0.387 & 0.893\\
- 2 & 0.343 & 0.537 & 0.655 & 0.690 & 0.471 & 0.333\\
- 3 & 0.783 & 0.885 & 0.015 & 0.306 & 0.643 & 0.263\\
- 4 & 0.161 & 0.708 & 0.386 & 0.257 & 0.074 & 0.336\\
+  1 & 0.657 & 0.913 & 0.733 & 0.830 & 0.387 & 0.893\\
+  2 & 0.343 & 0.537 & 0.655 & 0.690 & 0.471 & 0.333\\
+  3 & 0.783 & 0.885 & 0.015 & 0.306 & 0.643 & 0.263\\
+  4 & 0.161 & 0.708 & 0.386 & 0.257 & 0.074 & 0.336\\
 \bottomrule
 \end{NiceTabular}
 \end{Code}
@@ -913,13 +910,13 @@ Here is the same example with the key |C| for the first block.
 \begin{Code}
 \begin{NiceTabular}{@{}c!{\qquad}ccc\emph{!{\qquad}}ccc@{}}
 \toprule
-Rank & \emph{\Block[C]{1-3}{First group}} & & & \Block{1-3}{Second group} \\
-     & 1A & 1B & 1C & 2A & 2B & 2C \\
+  Rank & \emph{\Block[C]{1-3}{First group}} & & & \Block{1-3}{Second group} \\
+       & 1A & 1B & 1C & 2A & 2B & 2C \\
 \midrule
- 1 & 0.657 & 0.913 & 0.733 & 0.830 & 0.387 & 0.893\\
- 2 & 0.343 & 0.537 & 0.655 & 0.690 & 0.471 & 0.333\\
- 3 & 0.783 & 0.885 & 0.015 & 0.306 & 0.643 & 0.263\\
- 4 & 0.161 & 0.708 & 0.386 & 0.257 & 0.074 & 0.336\\
+  1 & 0.657 & 0.913 & 0.733 & 0.830 & 0.387 & 0.893\\
+  2 & 0.343 & 0.537 & 0.655 & 0.690 & 0.471 & 0.333\\
+  3 & 0.783 & 0.885 & 0.015 & 0.306 & 0.643 & 0.263\\
+  4 & 0.161 & 0.708 & 0.386 & 0.257 & 0.074 & 0.336\\
 \bottomrule
 \end{NiceTabular}
 \end{Code}
@@ -941,13 +938,13 @@ Rank & \Block[C]{1-3}{First group} & & & \Block{1-3}{Second group} \\
 \end{center}
 
 \bigskip
-The command |\Block| supports also the keys |p| and |j|. With the key
-\Definition{p}, the content of the block is formatted like a paragraph (as in a
-column of type |p|). That key may be used in conjunction with a key |l|, |c|
-or |r|, and, in that case, the paragraph is formatted with |\raggedright|,
-|\centering| or |\raggedleft| (or |\RaggedRight|, |\Centering| and |\RaggedLeft|
-when \pkg{ragged2e}) est chargée. With the key \Definition{j} (which inforces
-the key |p|), the paragraph is justified.
+The command |\Block| supports also the keys |p| and |j|. With the key \Definition{p}, the
+content of the block is formatted like a paragraph (as in a column of type |p|).
+That key may be used in conjunction with a key |l|, |c| or |r|, and, in that
+case, the paragraph is formatted with |\raggedright|, |\centering| or
+|\raggedleft| (or |\RaggedRight|, |\Centering| and |\RaggedLeft| when \pkg{ragged2e}
+is loaded). With the key \Definition{j} (which inforces the key |p|), the paragraph is
+justified.
 
 \bigskip
 It's possible to put an environment |{itemize}| or |{enumerate}| in a block
@@ -955,23 +952,29 @@ which uses the key~|p| or |j| (in the other case, you will have a LaTeX error:
 |Not allowed in LR mode|). For the following example, we have loaded the package
 \pkg{enumitem} (for the key |left| of the environment |{itemize}|).
 
+\smallskip
+\begin{Verbatim}[formatcom = \footnotesize\color{gray}]
+\usepackage{enumitem} % in the preamble
+\end{Verbatim}
+
+\smallskip
 \begin{Code}
 \begin{NiceTabular}[hvlines]{ccc}
-one & two two & three three \\
-one & 
-\Block\emph{[p]}{*-2}{%
-\begin{itemize}[\emph{left=0pt}]
-\item one two three four five 
-\item two 
-\item three
-\end{itemize}
-} \\
-one & \\
-one & \\
-one & \\
-one & \\
-one & \\
-one & \\
+  one & two two & three three \\
+  one & 
+  \Block\emph{[p]}{*-2}{%
+  \begin{itemize}[\emph{left=0pt}]
+  \item one two three four five 
+  \item two 
+  \item three
+  \end{itemize}
+  } \\
+  one & \\
+  one & \\
+  one & \\
+  one & \\
+  one & \\
+  one & \\
 \end{NiceTabular}
 \end{Code}
 
@@ -1001,8 +1004,8 @@ one & \\
 
 \label{vertical-pos-block}
 
-For the vertical position, the command |\Blocks| accepts the keys
-|m|, |t|, |b|, |T| and |B|.
+For the vertical position, the command |\Blocks| supports the keys |m|, |t|,
+|b|, |T| and |B|.
 
 
 \begin{itemize}
@@ -1041,12 +1044,12 @@ When no key is given, the key |m| applies (except in the mono-row blocks).
 
 \begin{Code}[width=10cm]
 \begin{NiceTabular}{ccc}
-\Block[fill=red!10,\emph{t},l]{4-2}{two\\lines}
- & & \Huge Un\\
- & & deux  \\
- & & trois  \\
- & & \Huge quatre  \\
-text & text \\
+  \Block[fill=red!10,\emph{t},l]{4-2}{two\\lines}
+   & & \Huge Un\\
+   & & deux  \\
+   & & trois  \\
+   & & \Huge quatre  \\
+  text & text \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}
@@ -1063,11 +1066,11 @@ text & text \\
 \begin{Code}[width=10cm]
 \begin{NiceTabular}{ccc}
 \Block[fill=red!10,\emph{b},r]{4-2}{two\\lines}
- & & \Huge Un\\
- & & deux  \\
- & & trois  \\
- & & \Huge quatre  \\
-text & text \\
+   & & \Huge Un\\
+   & & deux  \\
+   & & trois  \\
+   & & \Huge quatre  \\
+  text & text \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}
@@ -1082,12 +1085,12 @@ text & text \\
 \bigskip
 \begin{Code}[width=10cm]
 \begin{NiceTabular}{ccc}
-\Block[fill=red!10,\emph{T},\emph{L}]{4-2}{two\\lines}
- & & \Huge Un\\
- & & deux  \\
- & & trois  \\
- & & \Huge quatre  \\
-text & text \\
+  \Block[fill=red!10,\emph{T},\emph{L}]{4-2}{two\\lines}
+   & & \Huge Un\\
+   & & deux  \\
+   & & trois  \\
+   & & \Huge quatre  \\
+  text & text \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}
@@ -1104,11 +1107,11 @@ text & text \\
 \begin{Code}[width=10cm]
 \begin{NiceTabular}{ccc}
 \Block[fill=red!10,\emph{B},\emph{R}]{4-2}{two\\lines}
- & & \Huge Un\\
- & & deux  \\
- & & trois  \\
- & & \Huge quatre  \\
-text & text \\
+   & & \Huge Un\\
+   & & deux  \\
+   & & trois  \\
+   & & \Huge quatre  \\
+  text & text \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}
@@ -1162,10 +1165,10 @@ sub-blocks of \emph{the same size}.
 \begin{Code}[width=90mm]
 \begin{NiceTabular}{ll}%
    [hvlines,\emph{ampersand-in-blocks}]
-  & the five first naturels numbers \\ 
-3 & \Block{}{one & two & three} \\
-4 & \Block{}{one& two & three & four} \\
-5 & \Block{}{one & two & three & four & five} \\
+    & the five first naturels numbers \\ 
+  3 & \Block{}{one & two & three} \\
+  4 & \Block{}{one& two & three & four} \\
+  5 & \Block{}{one & two & three & four & five} \\
 \end{NiceTabular}
 \end{Code}
 %
@@ -1186,12 +1189,12 @@ be prefered.
 \begin{Code}[width=90mm]
 \begin{NiceTabular}{lccccc}%
    [hvlines,\emph{ampersand-in-blocks}]
-  & \Block{1-5}{the five first
-                 natural numbers} \\ 
-3 & \Block{1-5}{one & two & three} \\
-4 & \Block{1-5}{one& two &
-       \cellcolor{red!15} three & four} \\
-5 & one & two & three & four & five \\
+    & \Block{1-5}{the five first
+                   natural numbers} \\ 
+  3 & \Block{1-5}{one & two & three} \\
+  4 & \Block{1-5}{one& two &
+         \cellcolor{red!15} three & four} \\
+  5 & one & two & three & four & five \\
 \end{NiceTabular}
 \end{Code}
 %
@@ -1216,7 +1219,6 @@ of the block by using the key |\cellcolor|.
 \index{create-blocks-in-col}
 \label{create-blocks-in-col}
 
-\colorbox{yellow!50}{\textbf{New 7.6}}\enskip
 The key \Definition{create-blocks-in-col} takes in as argument a list of numbers of columns
 and, for each of those columns, creates within that column a block for each non-empty cell
 (that block will enclose that non-empty cell and all the following empty cells in the column).
@@ -1232,16 +1234,16 @@ That the point using the key |create-blocks-in-col|.
 \begin{Code}[width=11cm]
 \begin{NiceTabular}{lr}[hvlines,\emph{create-blocks-in-col=1}]
 \rowcolors{blue!10}{}[respect-blocks]
-John      & 12 \\
-          & 13 \\
-Steph     &  8 \\
-Sarach    & 18 \\
-          & 17 \\
-          & 15 \\
-Ashley    & 20 \\
-Henry     & 14 \\
-Madison   & 15 \\
-          & 19
+  John      & 12 \\
+            & 13 \\
+  Steph     &  8 \\
+  Sarach    & 18 \\
+            & 17 \\
+            & 15 \\
+  Ashley    & 20 \\
+  Henry     & 14 \\
+  Madison   & 15 \\
+            & 19
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{lr}[hvlines,baseline=c,create-blocks-in-col=1]
@@ -1287,9 +1289,9 @@ incomplete row or by a double horizontal rule specified by |\hline\hline|
 \bigskip
 \begin{Code}[width=10cm]
 \begin{NiceTabular}{|c|c|} \hline
-First & Second \\ \emph{\hline\hline}
-Peter \\ \hline
-Mary & George\\ \hline
+  First & Second \\ \emph{\hline\hline}
+  Peter \\ \hline
+  Mary & George\\ \hline
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{|c|c|}[c] \hline
@@ -1316,9 +1318,9 @@ drawn by \pkg{nicematrix} are compatible with \pkg{booktabs}. Remark that
 \medskip
 \begin{Code}[width=10.5cm]
 $\begin{NiceArray}{\emph{c|ccc}} \toprule
-a & b & c & d \\ \midrule
-1 & 2 & 3 & 4 \\
-1 & 2 & 3 & 4 \\ \bottomrule
+  a & b & c & d \\ \midrule
+  1 & 2 & 3 & 4 \\
+  1 & 2 & 3 & 4 \\ \bottomrule
 \end{NiceArray}$
 \end{Code}
 $\begin{NiceArray}{c|ccc}[no-cell-nodes]
@@ -1332,12 +1334,39 @@ a & b & c & d \\
 
 \bigskip
 However, it's still possible to define a specifier (named, for instance, |I|)
-to draw vertical rules with the standard behaviour of \pkg{array}.
+to draw vertical rules with the standard behaviour of \pkg{array}. In this aim, we use
+the standard command |\newcolumntype| of \pkg{array}.
 
-\begin{Verbatim}
+\medskip
+\begin{Code}[width=10cm]
+\emph{\newcolumntype{I}{!{\vrule}}}
+\begin{NiceTabular}{IcIcI} \hline
+  First & Second \\ \hline\hline
+  Peter & \\ \hline
+  Mary  & George\\ \hline
+Premier & Deuxième \\ \hline\hline
+Paul  & \\ \hline
+Marie & Pauline \\ \hline
+\end{NiceTabular}
+\end{Code}
+%
+\begin{scope}
 \newcolumntype{I}{!{\vrule}}
-\end{Verbatim}
+\begin{NiceTabular}{IcIcI} \hline
+  First & Second \\ \hline\hline
+  Peter & \\ \hline
+  Mary  & George\\ \hline
+Premier & Deuxième \\ \hline\hline
+Paul  & \\ \hline
+Marie & Pauline \\ \hline
+\end{NiceTabular}
+\end{scope}
 
+\medskip
+Of course, in this case, there is no point using |{NiceTabular}| and it's better
+to use the standard environment |{tabular}| but maybe we will have to use other
+functionalities provided by \pkg{nicematrix}. One should also consider the
+command |\EmptyRow| in the |\CodeBefore|, described on the page~\pageref{EmptyRow}.
 
 \bigskip
 \subsubsection{The command \textbackslash cline}
@@ -1357,8 +1386,8 @@ shown by the following example.
 \begin{Code}[width=10cm]
 \setlength{\arrayrulewidth}{2pt}
 \begin{tabular}{cccc} \hline
-A&B&C&D \\ \emph{\cline{2-2}}
-A&B&C&D \\ \hline
+  A&B&C&D \\ \emph{\cline{2-2}}
+  A&B&C&D \\ \hline
 \end{tabular}
 \end{Code}
 \begin{scope}
@@ -1382,8 +1411,8 @@ still possible to go to the standard behaviour of |\cline| with the key
 \begin{Code}[width=10cm]
 \setlength{\arrayrulewidth}{2pt}
 \begin{NiceTabular}{cccc} \hline
-A&B&C&D \\ \emph{\cline{2}}
-A&B&C&D \\ \hline
+  A&B&C&D \\ \emph{\cline{2}}
+  A&B&C&D \\ \hline
 \end{NiceTabular}
 \end{Code}
 \begin{scope}
@@ -1429,9 +1458,9 @@ environment, to fix the color of the rules. This key sets the value locally
 \begin{Code}[width=15cm]
 \begin{NiceTabular}{|ccc|}[\emph{rules/color=[gray]{0.9},rules/width=1pt}]
 \hline
-rose & tulipe & lys \\
-arum & iris & violette \\
-muguet & dahlia & souci \\
+  rose & tulipe & lys \\
+  arum & iris & violette \\
+  muguet & dahlia & souci \\
 \hline
 \end{NiceTabular}
 \end{Code}
@@ -1548,9 +1577,9 @@ certainly the expected behaviour).
 \medskip
 \begin{Code}[width=10.6cm]
 $\begin{pNiceMatrix}[\emph{vlines},rules/width=0.2pt]
-1 & 2 & 3 & 4 & 5 & 6 \\
-1 & 2 & 3 & 4 & 5 & 6 \\
-1 & 2 & 3 & 4 & 5 & 6 
+  1 & 2 & 3 & 4 & 5 & 6 \\
+  1 & 2 & 3 & 4 & 5 & 6 \\
+  1 & 2 & 3 & 4 & 5 & 6 
 \end{pNiceMatrix}$
 \end{Code}
 $\begin{pNiceMatrix}[vlines,rules/width=0.2pt,no-cell-nodes]
@@ -1569,13 +1598,13 @@ when the key |vlines| is in force.
 \medskip
 \begin{Code}[width=10.6cm]
 $\begin{NiceArray}{c\emph{||}ccccc}[hlines,vlines]
-  & a & b & c & d & e \\ \emph{\Hline\Hline}
-x & 0 & 0 & 0 & 0 & 0 \\
-y & 0 & 0 & 0 & 0 & 0 \\
-z & 0 & 0 & 0 & 0 & 0 \\
+    & a & b & c & d & e \\ \emph{\Hline\Hline}
+  x & 0 & 0 & 0 & 0 & 0 \\
+  y & 0 & 0 & 0 & 0 & 0 \\
+  z & 0 & 0 & 0 & 0 & 0 \\
 \end{NiceArray}$
 \end{Code}
-$\begin{NiceArray}{c||ccccc}[hlines,vlines,no-cell-nodes]
+$\begin{NiceArray}{c||ccccc}[hvlines,no-cell-nodes]
   & a & b & c & d & e \\ \Hline\Hline
 x & 0 & 0 & 0 & 0 & 0 \\
 y & 0 & 0 & 0 & 0 & 0 \\
@@ -1598,18 +1627,17 @@ and |vlines|.
 
 \smallskip
 \begin{Code}
-\setlength{\arrayrulewidth}{1pt}
-\begin{NiceTabular}{cccc}[\emph{hvlines},rules/color=blue]
-rose      & tulip & sunflower & lily \\
-violet    & \Block[C,draw=red]{2-2}{\LARGE flowers} & & orchid \\
-carnation & & & lys \\
-daisy     & peony & jasmine & magnolia 
+\begin{NiceTabular}{cccc}[\emph{hvlines},rules={color=blue,width=1pt}]
+  rose      & tulip & sunflower & lily \\
+  violet    & \Block[C,draw=red]{2-2}{\LARGE flowers} & & orchid \\
+  carnation & & & lys \\
+  daisy     & peony & jasmine & magnolia 
 \end{NiceTabular}
 \end{Code}
 
 \begin{center}
 \setlength{\arrayrulewidth}{1pt}
-\begin{NiceTabular}{cccc}[hvlines,rules/color=blue]
+\begin{NiceTabular}{cccc}[hvlines,rules={color=blue,width=1pt}]
 rose      & tulip & sunflower & lily \\
 violet  & \Block[C,draw=red]{2-2}{\LARGE flowers}  & & orchid \\
 carnation & & & lys \\
@@ -1693,15 +1721,15 @@ the corners).
 \begin{Code}[width=11cm]
 \NiceMatrixOptions{cell-space-top-limit=3pt}
 \begin{NiceTabular}{*{6}{c}}[\emph{corners},hvlines]
-  &   &   &   & A \\
-  &   & A & A & A \\
-  &   &   & A \\
-  &   & A & A & A & A \\
-A & A & A & A & A & A \\
-A & A & A & A & A & A \\
-  & A & A & A \\
-  & \Block[C]{2-2}{B} & & A \\
-  &   &   & A \\
+    &   &   &   & A \\
+    &   & A & A & A \\
+    &   &   & A \\
+    &   & A & A & A & A \\
+  A & A & A & A & A & A \\
+  A & A & A & A & A & A \\
+    & A & A & A \\
+    & \Block[C]{2-2}{B} & & A \\
+    &   &   & A \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{*{6}{c}}%
@@ -1730,12 +1758,12 @@ corners (designed by |NW|, |SW|, |NE| and |SE|).
 \begin{Code}[width=11cm]
 \NiceMatrixOptions{cell-space-top-limit=3pt}
 \begin{NiceTabular}{*{6}{c}}[\emph{corners=NE},hvlines]
-1\\
-1&1\\
-1&2&1\\
-1&3&3&1\\
-1&4&6&4&1\\
- & & & & &1
+  1\\
+  1&1\\
+  1&2&1\\
+  1&3&3&1\\
+  1&4&6&4&1\\
+   & & & & &1
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{*{6}{c}}%
@@ -1766,11 +1794,11 @@ allows, when it is used in a cell, to slash that cell diagonally downwards.
 \medskip
 \begin{Code}[width=10cm]
 $\begin{NiceArray}{*{5}{c}}[hvlines]
-\emph{\diagbox{x}{y}}  & e & a & b & c \\
-e & e & a & b & c \\
-a & a & e & c & b \\
-b & b & c & e & a \\
-c & c & b & a & e 
+  \emph{\diagbox{x}{y}}  & e & a & b & c \\
+  e & e & a & b & c \\
+  a & a & e & c & b \\
+  b & b & c & e & a \\
+  c & c & b & a & e 
 \end{NiceArray}$
 \end{Code}
 $\begin{NiceArray}{*{5}{c}}[hvlines,no-cell-nodes]
@@ -1787,11 +1815,11 @@ It's possible to use the command |\diagbox| in a |\Block|.
 \medskip
 \begin{Code}[width=10cm]
 $\begin{NiceArray}{*{5}{c}}[hvlines]
-\emph{\Block{2-2}{\diagbox{x}{y}}} &  & a & b & c \\
-  &   & a & b & c \\
-a & a & e & c & b \\
-b & b & c & e & a \\
-c & c & b & a & e
+  \emph{\Block{2-2}{\diagbox{x}{y}}} &  & a & b & c \\
+    &   & a & b & c \\
+  a & a & e & c & b \\
+  b & b & c & e & a \\
+  c & c & b & a & e
 \end{NiceArray}$
 \end{Code}
 $\begin{NiceArray}{*{5}{c}}[hvlines,no-cell-nodes]
@@ -1804,16 +1832,16 @@ c & c & b & a & e
 
 \medskip
 But it's also possible to use |\diagbox| for the diagonal rule only (and the
-labels are put but the usual way, that is to say in cells of the tabular).
+labels are put but the usual way, that is to say in the cells of the tabular).
 
 \medskip
 \begin{Code}[width=10cm]
 $\begin{NiceArray}{*{5}{c}}[hvlines]
-\emph{\Block{2-2}{\diagbox{}{}}} & y & a & b & c \\
-x &   & a & b & c \\
-a & a & e & c & b \\
-b & b & c & e & a \\
-c & c & b & a & e
+  \emph{\Block{2-2}{\diagbox{}{}}} & y & a & b & c \\
+  x &   & a & b & c \\
+  a & a & e & c & b \\
+  b & b & c & e & a \\
+  c & c & b & a & e
 \end{NiceArray}$
 \end{Code}
 $\begin{NiceArray}{*{5}{c}}[hvlines,no-cell-nodes]
@@ -1874,9 +1902,19 @@ the (optional) argument of a specifier ``\verb+|+'' in the preamble of an
 environment. 
 
 \bigskip
-There are three possibilities.
+There are four possibilities:
+\begin{itemize}[beginpenalty=10000]
+\item the basic rules, which may be drawn by using (for example) \pkg{colortbl}:
+these are simple or multiple rules, with color and a color between the rules;
+\item the dashed rules (key |dashed|);
+\item the dotted rules (key |dotted|);
+\item all the rules which may be draw with TikZ (key |tikz|).
+\end{itemize}
 
-\begin{itemize}
+
+\bigskip
+We will now describe these four kinds of rules.
+\begin{itemize}[beginpenalty=10000]
 \item \emph{First possibility}
 
 \nobreak
@@ -1907,12 +1945,12 @@ blocks and corners as do all the rules of \pkg{nicematrix}).
 \begin{Code}
 \begin{NiceTabular}{lcIcIc}\emph{[custom-line = {letter=I, color=red}]}
 \Hline
-          & \Block{1-3}{dimensions} \\
-          & L & l & h \\
+            & \Block{1-3}{dimensions} \\
+            & L & l & h \\
 \Hline
-Product A & 3 & 1 & 2 \\
-Product B & 1 & 3 & 4 \\
-Product C & 5 & 4 & 1 \\
+  Product A & 3 & 1 & 2 \\
+  Product B & 1 & 3 & 4 \\
+  Product C & 5 & 4 & 1 \\
 \Hline
 \end{NiceTabular}
 \end{Code}
@@ -1961,9 +1999,9 @@ between both rules above the cell not colored by the color of the cell).
   }
 
 \begin{NiceTabular}{ccc}
-one & two & three \\
+  one & two & three \\
 \emph{\DoubleRule}
-four & \cellcolor{yellow} five & six \\
+  four & \cellcolor{yellow} five & six \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}
@@ -1975,10 +2013,189 @@ four & \cellcolor{yellow} five & six \\
 \end{scope}
 
 
+\bigskip
+\item \emph{Second possibilité} : the key |dashed|
+
+\indexcommand{hdashedline}
+\indexcommand{cdashedline}
+
+\nobreak
+\smallskip
+The extension \pkg{nicematrix} provides the commands
+\DefinitionCommand{hdashedline} and \DefinitionCommand{cdashedline} and the 
+letter «|;|» for dashed rules. They are available when TikZ is loaded because
+it's merely a line of TikZ with the style
+|dash pattern = on 4 pt off 2pt|. In fact, when the TikZ library \pkg{decorations}
+is loaded (with |\usetikzlibrary{decorations}|), the key |dash expand off| is added
+for a better output.
+
+\bigskip
+Thus, it's possible to use the commands |\hdashedline| and |\cdashedline|
+to draw horizontal dashed rules.
+
+\medskip
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz}            % in the preamble
+\usetikzlibrary{decorations} % in the preamble
+\end{Verbatim}
+
+\smallskip
+\begin{Code}[width=9.5cm]
+\begin{pNiceMatrix}
+1 & 2 & 3 & 4 & 5 \\
+\emph{\hdashedline}
+6 & 7 & 8 & 9 & 10 \\
+\emph{\cdashedline{1,4-5}}
+11 & 12 & 13 & 14 & 15
+\end{pNiceMatrix}
+\end{Code}
+$\begin{pNiceMatrix}[no-cell-nodes]
+1 & 2 & 3 & 4 & 5 \\
+\hdashedline
+6 & 7 & 8 & 9 & 10 \\
+\cdashedline{1,4-5}
+11 & 12 & 13 & 14 & 15
+\end{pNiceMatrix}$
+
+
+\medskip
+In the environments with an explicit preamble (like |{NiceTabular}|, |{NiceArray}|, etc.),
+it's possible to draw a vertical dashed rule with the specifier ``|;|''.
+
+\medskip
+\begin{Code}[width=9.5cm]
+\begin{pNiceArray}{cccc\emph{;}c}
+1 & 2 & 3 & 4 & 5 \\
+6 & 7 & 8 & 9 & 10 \\
+11 & 12 & 13 & 14 & 15
+\end{pNiceArray}
+\end{Code}
+$\begin{pNiceArray}{cccc;c}[no-cell-nodes]
+1 & 2 & 3 & 4 & 5 \\
+6 & 7 & 8 & 9 & 10 \\
+11 & 12 & 13 & 14 & 15
+\end{pNiceArray}$
+
+\medskip
+If you wish a more important reservation of space for those rules, you should
+define, with |custom-line|, some new commands by using the key |dashed| in conjonction
+with the key |total-width|.
+
+\smallskip
+\begin{Code}
+\NiceMatrixOptions
+  {
+    custom-line =
+     {
+       command = \myhdashedline ,
+       ccommand = \mycdashedline ,
+       dashed,
+       \emph{total-width = 10 pt}
+     }
+  }
+\end{Code}
+
+
+\NiceMatrixOptions
+  {
+    custom-line =
+     {
+       command = \myhdashedline ,
+       ccommand = \mycdashedline ,
+       dashed,
+       total-width = 10 pt 
+     }
+  }
+
+
+\smallskip
+\begin{Code}[width=9.5cm]
+\begin{pNiceMatrix}
+1 & 2 & 3 & 4 & 5 \\
+\emph{\myhdashedline}
+6 & 7 & 8 & 9 & 10 \\
+\emph{\mycdashedline{1,4-5}}
+11 & 12 & 13 & 14 & 15
+\end{pNiceMatrix}
+\end{Code}
+$\begin{pNiceMatrix}[no-cell-nodes]
+1 & 2 & 3 & 4 & 5 \\
+\myhdashedline
+6 & 7 & 8 & 9 & 10 \\
+\mycdashedline{1,4-5}
+11 & 12 & 13 & 14 & 15
+\end{pNiceMatrix}$
+
+
+
 
 
 \bigskip
-\item \emph{Second possibility}
+\item \emph{Troisième possibilité} : the key |dotted|
+
+\label{dotted}
+\index{dotted (clé de «custom-line»)}
+\indexcommand{hdottedline}
+\indexcommand{cdottedline}
+
+\nobreak
+\smallskip
+The extension \pkg{nicematrix} provides the commands
+\DefinitionCommand{hdottedline} and \DefinitionCommand{cdottedline} and
+the letter «|:|» for dotted lines. For these lines, \pkg{nicematrix} does not use TikZ
+but an internal system. In fact, it's the same as the system used by the commands
+|\Cdots|, |\Vdots|, etc. (cf p.~\pageref{Cdots}).
+
+\bigskip
+Thus, it's possible to use the commands |\hdottedline| and |\cdottedline|
+to draw horizontal dotted rules.
+
+
+\smallskip
+\begin{Code}[width=9.5cm]
+\begin{pNiceMatrix}
+1 & 2 & 3 & 4 & 5 \\
+\emph{\hdottedline}
+6 & 7 & 8 & 9 & 10 \\
+\emph{\cdottedline{1,4-5}}
+11 & 12 & 13 & 14 & 15
+\end{pNiceMatrix}
+\end{Code}
+$\begin{pNiceMatrix}[no-cell-nodes]
+1 & 2 & 3 & 4 & 5 \\
+\hdottedline
+6 & 7 & 8 & 9 & 10 \\
+\cdottedline{1,4-5}
+11 & 12 & 13 & 14 & 15
+\end{pNiceMatrix}$
+
+
+\medskip
+\medskip
+In the environments with an explicit preamble (like |{NiceTabular}|, |{NiceArray}|, etc.),
+it's possible to draw a vertical dotted rule with the specifier ``|:|''.
+
+\medskip
+\begin{Code}[width=9.5cm]
+\begin{pNiceArray}{cccc\emph{:}c}
+1 & 2 & 3 & 4 & 5 \\
+6 & 7 & 8 & 9 & 10 \\
+11 & 12 & 13 & 14 & 15
+\end{pNiceArray}
+\end{Code}
+$\begin{pNiceArray}{cccc:c}[no-cell-nodes]
+1 & 2 & 3 & 4 & 5 \\
+6 & 7 & 8 & 9 & 10 \\
+11 & 12 & 13 & 14 & 15
+\end{pNiceArray}$
+
+\medskip
+Like with the key |dashed| described previously, it's possible to use this
+key in conjunction with the key |total-width|.
+
+
+\bigskip
+\item \emph{Fourth possibility} : the key |tikz|
 
 \index{tikzz@tikz!key of ``custom-line''}
 \index{total-width (key of ``custom-line'')}
@@ -2015,9 +2232,9 @@ rule specified in |tikz|).
   }
 
 \begin{NiceTabular}{cIcIc}
-one & two & three \\
-four & five & six \\
-seven & eight & nine
+  one & two & three \\
+  four & five & six \\
+  seven & eight & nine
 \end{NiceTabular}
 \end{Code}
 \begin{scope}
@@ -2031,144 +2248,14 @@ seven & eight & nine
      }
   }
 \begin{NiceTabular}{cIcIc}[no-cell-nodes]
-one & two & three \\
-four & five & six \\
-seven & eight & nine
+  one & two & three \\
+  four & five & six \\
+  seven & eight & nine
 \end{NiceTabular}
 \end{scope}
-
-\medskip
-\colorbox{yellow!50}{\bfseries New 7.7}
-
-\nobreak
-\smallskip
-In fact, \pkg{nicematrix} defines by default the commands
-\DefinitionCommand{hdashedline} and \DefinitionCommand{cdashedline} and the
-letter ``|;|'' for dashed rules. They are available when TikZ is loaded (if they are used
-when TikZ is not loaded, an error message for unknown command will be displayed).
-
-\medskip
-\begin{footnotesize}
-\begin{Code}[annotation = false]
-\emph{% \textsl{yet present in nicematrix.sty}}
-\NiceMatrixOptions 
-  { 
-    custom-line = 
-      { 
-        letter = ; , 
-        command = \hdashedline , 
-        ccommand = \cdashedline ,
-        tikz = { dash pattern = on 4 pt off 2pt } ,        
-        total-width = \pgflinewidth
-      }
-  } 
-\end{Code}
-\end{footnotesize}
-
-\smallskip
-When the TikZ library \pkg{decorations} has been loaded (with
-|\usetikzlibrary{decorations}|), the key |dash expand off| is added.
-
-
-\bigskip
-Thus, it's possible to use the commands |\hdashedline| and |\cdashedline| to
-draw horizontal dashed rules.
-
-\medskip
-\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
-\usepackage{tikz} % in the preamble
-\usetikzlibrary{decorations} % in the preamble
-\end{Verbatim}
-
-\smallskip
-\begin{Code}[width=9.5cm]
-\begin{pNiceMatrix}
-1 & 2 & 3 & 4 & 5 \\
-\emph{\hdashedline}
-6 & 7 & 8 & 9 & 10 \\
-\emph{\cdashedline{1,4-5}}
-11 & 12 & 13 & 14 & 15 
-\end{pNiceMatrix}
-\end{Code}
-$\begin{pNiceMatrix}[no-cell-nodes]
-1 & 2 & 3 & 4 & 5 \\
-\hdashedline
-6 & 7 & 8 & 9 & 10 \\
-\cdashedline{1,4-5}
-11 & 12 & 13 & 14 & 15 
-\end{pNiceMatrix}$
-
-
-\bigskip
-In the environments with an explicit preamble (like |{NiceTabular}|,
-|{NiceArray}|, etc.), it's possible to draw a vertical dashed line with the
-specifier ``|;|''.
-
-\medskip
-\begin{Code}[width=9.5cm]
-$\left(\begin{NiceArray}{cccc\emph{;}c}
-1 & 2 & 3 & 4 & 5 \\
-6 & 7 & 8 & 9 & 10 \\
-11 & 12 & 13 & 14 & 15 
-\end{NiceArray}\right)
-\end{Code}
-$\left(\begin{NiceArray}{cccc;c}[no-cell-nodes]
-1 & 2 & 3 & 4 & 5 \\
-6 & 7 & 8 & 9 & 10 \\
-11 & 12 & 13 & 14 & 15 
-\end{NiceArray}\right)$
-
-
-
-
-
-\bigskip
-\item \emph{Third possibility} : the key \Definition{dotted}
-\label{dotted}
-\index{dotted (key of ``custom-line'')}
-\indexcommand{hdottedline}
-\indexcommand{cdottedline}
-
-\nobreak
-The extension \pkg{nicematrix} provides ``continuous dotted lines'' for leading
-rules in the mathematical matrices (with the commands |\Cdots|, |\Vdots|, etc.:
-cf. p.~\pageref{Cdots}). For these lines, \pkg{nicematrix} does not use TikZ but
-an internal system.
-
-Even though that system was not designed for the rules of a tabular, \pkg{nicematrix}
-provides that type of line to the final user with a key |dotted| in the key |custom-line|.
-
-The initial value of the key |total-width| is, in this case, equal to the
-diameter of the dots (but the user may change the value with the key
-|total-width| if needed). Those dotted rules are also used by \pkg{nicematrix}
-to draw continuous dotted rules between cells of the matrix with |\Cdots|,
-|\Vdots|, etc. (cf. p.~\pageref{Cdots}).
-
-In fact, \pkg{nicematrix} defines by default the commands
-\DefinitionCommand{hdottedline} and \DefinitionCommand{cdottedline} and the
-letter ``|:|'' for those dotted rules.\footnote{However, it's possible to
-  overwrite those definitions with a |custom-line| (in order, for example, to
-  switch to dashed lines).}
-
-\smallskip
-\begin{footnotesize}
-\begin{Code}[annotation = false]
-\emph{% \textsl{yet present in nicematrix.sty}}
-\NiceMatrixOptions 
-  { 
-    custom-line = 
-      { 
-        letter = : , 
-        command = \hdottedline , 
-        ccommand = \cdottedline ,
-        dotted 
-      }
-  } 
-\end{Code}
-\end{footnotesize}
 \end{itemize}
 
-\bigskip
+\vspace{1cm}
 \index{start (key for the rules)}
 \index{end (key for the rules)}
 
@@ -2182,23 +2269,207 @@ and \Definition{end}, which specify the extremities of the rule.
 \medskip
 \begin{Code}[width=9.5cm]
 \begin{NiceTabular}{cc\emph{|[color=blue,start=2]}ccc}
-one & two & three & four 
+  one & two & three & four 
 \emph{\Hline[start=2,end=3]}
-five & six & seven & eight \\
-nine & ten & eleven & twelve 
+  five & six & seven & eight \\
+  nine & ten & eleven & twelve 
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{cc|[color=blue,start=2]cc}
-one & two & three & four \\
+  one & two & three & four \\
 \Hline[start=2,end=3]
-five & six & seven & eight \\
-nine & ten & eleven & twelve 
+  five & six & seven & eight \\
+  nine & ten & eleven & twelve 
+\end{NiceTabular}
+
+
+
+\subsubsection{The key fix-vertex}
+
+\index{fix-vertex (subkey of rules)}
+
+\colorbox{yellow!50}{\bfseries New 7.9}
+
+\nobreak
+\smallskip
+Assume that we have defined a command |\RandomLine| for a line which zigzags randomly:
+
+\medskip
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz}                         % in the preamble
+\usetikzlibrary{decorations.pathmorphing} % in the preamble
+\end{Verbatim}
+
+\medskip
+\begin{footnotesize}
+\begin{Code}
+\NiceMatrixOptions
+  {
+    custom-line =
+     {
+       command = \emph{\RandomLine} ,
+       tikz =
+         {
+           decorate ,
+           decoration = { random steps, segment length = 5pt, amplitude = 3pt } 
+         }
+     }
+  }
+\end{Code}
+\end{footnotesize}
+
+\NiceMatrixOptions
+  {
+    custom-line =
+     {
+       command = \RandomLine ,
+       tikz =
+         {
+           decorate ,
+           decoration = { random steps, segment length = 5pt, amplitude = 3pt } 
+         }
+     }
+  }
+
+\medskip
+Let's consider the following tabular, with |\RandomLine| used at the end:
+
+\medskip
+\pgfmathsetseed{47}
+\begin{Code}[width=9.5cm]
+\begin{NiceTabular}{ccc}[vlines]
+\Hline
+  Name & First name & Age \\
+\Hline
+  Dubourg & Claude & 88 \\
+  Challa & Remy & 72 \\
+  Ducar & Estelle & 75 \\
+  Migaud & Sophie & 18 \\[1mm]
+\emph{\RandomLine}
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{ccc}[vlines]
+\Hline
+Name & First name & Age \\
+\Hline
+Dubourg & Claude & 88 \\
+Challa & Remy & 72 \\
+Ducar & Estelle & 75 \\
+Migaud & Sophie & 18 \\[1mm]
+\RandomLine
+\end{NiceTabular}
+
+\bigskip
+The internal vertical rules won't always stop exactly at the bottom line 
+since that line goes randomly from the bottom left corner to the bottom right one.
+
+In order to address this problem, \pkg{nicematrix} provides the key
+\Definition{rules/fix-vertex}. When that key is in force, the rules are divided
+in segments between the vertices and those segments are drawn independently of each other.
+
+\nobreak
+\medskip
+\begin{Code}[width=9.5cm]
+\begin{NiceTabular}{ccc}[vlines,\emph{rules/fix-vertex}]
+\Hline
+  Name & First name & Age \\
+\Hline
+  Dubourg & Claude & 88 \\
+  Challa & Remy & 72 \\
+  Ducar & Estelle & 75 \\
+  Migaud & Sophie & 18 \\[1mm]
+\emph{\RandomLine}
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{ccc}[vlines,rules/fix-vertex]
+\Hline
+Name & First name & Age \\
+\Hline
+Dubourg & Claude & 88 \\
+Challa & Remy & 72 \\
+Ducar & Estelle & 75 \\
+Migaud & Sophie & 18 \\[1mm]
+\RandomLine
 \end{NiceTabular}
 
 
 
 
 \index{custom-line|)}
+
+
+\subsubsection{The key default-line}
+
+\index{default-line}
+
+\colorbox{yellow!50}{\bfseries New 7.9}
+
+\nobreak
+\smallskip
+The package \pkg{nicematrix} provides the key \Definition{default-line} which
+sets the style of all the rules that will be drawn by the command |\Hline|, the
+specifier \verb+|+ in the preambles of the environments and the keys |hvlines|,
+|vlines|, |hlines|, etc. The different ways for the specification of the rules
+are the sames as those for the key |custom-line| (cf. p.~\pageref{custom-line}).
+
+
+\bigskip
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz}                         % in the preamble
+\usetikzlibrary{decorations.pathmorphing} % in the preamble
+\end{Verbatim}
+
+
+\begin{footnotesize}
+\begin{Code}
+\NiceMatrixOptions
+  {
+    \emph{default-line} =
+      {
+        tikz =
+          {
+            decorate ,
+            decoration = { random steps, segment length = 3pt, amplitude = 1pt }
+          }
+      }
+  }
+\end{Code}
+\end{footnotesize}
+
+\bigskip
+\begin{scope}
+\NiceMatrixOptions
+  {
+    default-line =
+      {
+        tikz =
+          {
+            decorate ,
+            decoration = { random steps, segment length = 3pt, amplitude = 1pt }
+          }
+      }
+  }
+
+\renewcommand{\arraystretch}{1.3}%
+
+\begin{Code}[width=11cm]
+\renewcommand{\arraystretch}{1.3}
+\begin{NiceTabular}{ccc}[\emph{hvlines,rules/fix-vertex}]
+  one   & two  & three \\
+  four  & five & six \\
+  seven & \Block{1-2}{eight} \\
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{ccc}[hvlines,rules/fix-vertex]
+one   & two  & three \\
+four  & five & six \\
+seven & \Block{1-2}{eight} \\
+\end{NiceTabular}
+ 
+\end{scope}
+
+
+
 \index{Rules@\textbf{Rules in the tabulars}|)}
 
 
@@ -2267,6 +2538,7 @@ An alternative syntax is provided: it's possible to put the content of that
 |code-before| between the keywords |\CodeBefore| and |\Body| at the beginning
 of the environment.
 
+\smallskip
 \begin{Code}
 \begin{pNiceArray}{\textsl{preamble}}
 \emph{\CodeBefore [\textsl{options}]}
@@ -2357,18 +2629,18 @@ syntax -$j$).
 \CodeBefore
   \emph{\cellcolor[HTML]{FFFF88}{3-1,2-2,-3}}
 \Body
-a & b & c \\ 
-e & f & g \\ 
-h & i & j \\ 
+  a & b & c \\ 
+  e & f & g \\ 
+  h & i & j \\ 
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}[hvlines,no-cell-nodes]
 \CodeBefore
   \cellcolor[HTML]{FFFF88}{3-1,2-2,-3}
 \Body
-a & b & c \\ 
-e & f & g \\ 
-h & i & j \\ 
+  a & b & c \\ 
+  e & f & g \\ 
+  h & i & j \\ 
 \end{NiceTabular}
 \end{scope}
 
@@ -2385,18 +2657,18 @@ of the rectangle and the third is the lower-right cell of the rectangle.
 \CodeBefore
   \emph{\rectanglecolor{blue!15}{2-2}{3-3}}
 \Body
-a & b & c \\ 
-e & f & g \\ 
-h & i & j \\ 
+  a & b & c \\ 
+  e & f & g \\ 
+  h & i & j \\ 
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}[hvlines,no-cell-nodes]
 \CodeBefore
   \rectanglecolor{blue!15}{2-2}{3-3}
 \Body
-a & b & c \\ 
-e & f & g \\ 
-h & i & j \\ 
+  a & b & c \\ 
+  e & f & g \\ 
+  h & i & j \\ 
 \end{NiceTabular}
 \end{scope}
 
@@ -2420,9 +2692,9 @@ $\begin{pNiceMatrix}[r,margin]
 \CodeBefore
   \emph{\chessboardcolors{red!15}{blue!15}}
 \Body
-1 & -1 & 1 \\
--1 & 1 & -1 \\
-1 & -1 & 1 
+  1  & -1 & 1 \\
+  -1 & 1  & -1 \\
+  1  & -1 & 1 
 \end{pNiceMatrix}$
 \end{Code}
 $\begin{pNiceMatrix}[r,baseline=1, margin,no-cell-nodes] 
@@ -2455,32 +2727,32 @@ $\begin{NiceArray}{lll}[hvlines]
 \CodeBefore
   \emph{\rowcolor{red!15}{1,3-5,8-}}
 \Body
-a_1 & b_1 & c_1 \\
-a_2 & b_2 & c_2 \\
-a_3 & b_3 & c_3 \\
-a_4 & b_4 & c_4 \\
-a_5 & b_5 & c_5 \\
-a_6 & b_6 & c_6 \\
-a_7 & b_7 & c_7 \\
-a_8 & b_8 & c_8 \\
-a_9 & b_9 & c_9 \\
-a_{10} & b_{10} & c_{10} \\
+  a_1 & b_1 & c_1 \\
+  a_2 & b_2 & c_2 \\
+  a_3 & b_3 & c_3 \\
+  a_4 & b_4 & c_4 \\
+  a_5 & b_5 & c_5 \\
+  a_6 & b_6 & c_6 \\
+  a_7 & b_7 & c_7 \\
+  a_8 & b_8 & c_8 \\
+  a_9 & b_9 & c_9 \\
+  a_{10} & b_{10} & c_{10} \\
 \end{NiceArray}$
 \end{Code}
 $\begin{NiceArray}{lll}[baseline=4,hvlines,no-cell-nodes] 
 \CodeBefore 
   \rowcolor{red!15}{1,3-5,8-}
 \Body
-a_1 & b_1 & c_1 \\
-a_2 & b_2 & c_2 \\
-a_3 & b_3 & c_3 \\
-a_4 & b_4 & c_4 \\
-a_5 & b_5 & c_5 \\
-a_6 & b_6 & c_6 \\
-a_7 & b_7 & c_7 \\
-a_8 & b_8 & c_8 \\
-a_9 & b_9 & c_9 \\
-a_{10} & b_{10} & c_{10} \\
+  a_1 & b_1 & c_1 \\
+  a_2 & b_2 & c_2 \\
+  a_3 & b_3 & c_3 \\
+  a_4 & b_4 & c_4 \\
+  a_5 & b_5 & c_5 \\
+  a_6 & b_6 & c_6 \\
+  a_7 & b_7 & c_7 \\
+  a_8 & b_8 & c_8 \\
+  a_9 & b_9 & c_9 \\
+  a_{10} & b_{10} & c_{10} \\
 \end{NiceArray}$
 \end{scope}
 
@@ -2536,62 +2808,30 @@ the command |\Block|: cf.~p.~\pageref{Block}).
 \CodeBefore
   \emph{\rowcolors[gray]{2}{0.8}{}[cols=2-3,restart]}
 \Body
-\Block{1-*}{Results} \\
-John & 12 \\
-Stephen & 8 \\
-Sarah & 18 \\
-Ashley & 20 \\
-Henry & 14 \\
-Madison & 15 
+  \Block{1-*}{Results} \\
+  John & 12 \\
+  Stephen & 8 \\
+  Sarah & 18 \\
+  Ashley & 20 \\
+  Henry & 14 \\
+  Madison & 15 
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{clr}[hvlines,baseline=2,no-cell-nodes]
 \CodeBefore
  \rowcolors[gray]{2}{0.8}{}[cols=2-3,restart]
 \Body
-\Block{1-*}{Results} \\
-\Block{2-1}{A}& John & 12 \\
-              & Stephen & 8 \\
-\Block{4-1}{B}& Sarah & 18 \\
-              & Ashley & 20 \\
-              & Henry & 14 \\
-              & Madison & 15 
+  \Block{1-*}{Results} \\
+  \Block{2-1}{A}& John & 12 \\
+                & Stephen & 8 \\
+  \Block{4-1}{B}& Sarah & 18 \\
+                & Ashley & 20 \\
+                & Henry & 14 \\
+                & Madison & 15 
 \end{NiceTabular}
 \end{scope}
 
 
-\bigskip
-\begin{scope}
-\hfuzz=10cm
-\begin{Code}[width=11cm]
-\begin{NiceTabular}{lr}[hvlines,create-blocks-in-col=1]
-\emph{\rowcolors{blue!10}{}[respect-blocks]}
-John      & 12 \\
-          & 13 \\
-Steph     &  8 \\
-Sarach    & 18 \\
-          & 17 \\
-          & 15 \\
-Ashley    & 20 \\
-Henry     & 14 \\
-Madison   & 15 \\
-          & 19
-\end{NiceTabular}
-\end{Code}
-\begin{NiceTabular}{lr}[hvlines,baseline=c,create-blocks-in-col=1]
-\rowcolors{blue!10}{}[respect-blocks]
-John      & 12 \\
-          & 13 \\
-Steph     &  8 \\
-Sarah     & 18 \\
-          & 17 \\
-          & 15 \\
-Ashley    & 20 \\
-Henry     & 14 \\
-Madison   & 15 \\
-          & 19
-\end{NiceTabular}
-\end{scope}
 
 
 
@@ -2600,7 +2840,7 @@ Madison   & 15 \\
 \Definition{\textbackslash rowlistcolors}. This command generalises the
 command |\rowcolors|: instead of two successive arguments for the colors, this
 command takes in an argument which is a (comma-separated) list of colors. In
-that list, the symbol |=| represent a color identical to the previous one.
+that list, the symbol |=| represents a color identical to the previous one.
 
 \smallskip
 \begin{Code}[width=10cm]
@@ -2608,33 +2848,33 @@ that list, the symbol |=| represent a color identical to the previous one.
 \CodeBefore
   \emph{\rowlistcolors{1}{red!15,blue!15,green!15}}
 \Body
-Peter \\
-James \\
-Abigail \\
-Elisabeth \\
-Claudius \\
-Jane \\
-Alexandra \\
+  Peter \\
+  James \\
+  Abigail \\
+  Elisabeth \\
+  Claudius \\
+  Jane \\
+  Alexandra \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{c}[rounded-corners,no-cell-nodes]
 \CodeBefore
   \rowlistcolors{1}{red!15,blue!15,green!15}
 \Body
-Peter \\
-James \\
-Abigail \\
-Elisabeth \\
-Claudius \\
-Jane \\
-Alexandra \\
+  Peter \\
+  James \\
+  Abigail \\
+  Elisabeth \\
+  Claudius \\
+  Jane \\
+  Alexandra \\
 \end{NiceTabular}
 
 \bigskip
 It's also possible to use in the command |\rowlistcolors| a color series
 defined by the command |\definecolorseries| of \pkg{xcolor} (and initialized
 with the command |\resetcolorseries|\footnote{For the initialization, in the
-following example, you have used the counter |iRow| (which corresponds to the
+following example, you have used the LaTeX counter |iRow| (which corresponds to the
 internal TeX counter |\c@iRow|) which, when used in the
 |\CodeBefore| (and in the |\CodeAfter|) corresponds to the number of rows of
 the array: cf.~p~\pageref{iRow}. That leads to an adjustment of the gradation
@@ -2647,17 +2887,17 @@ of the colors to the size of the tabular.}).
 \begin{Code}[width=12.5cm]
 \begin{NiceTabular}{c}
 \CodeBefore
-   \emph{\definecolorseries{BlueWhite}{rgb}{last}{blue}{white}
-   \resetcolorseries[\value{iRow}]{BlueWhite}
-   \rowlistcolors{1}{BlueWhite!!+}}
+  \emph{\definecolorseries{BlueWhite}{rgb}{last}{blue}{white}
+  \resetcolorseries[\value{iRow}]{BlueWhite}
+  \rowlistcolors{1}{BlueWhite!!+}}
 \Body
-Peter \\
-James \\
-Abigail \\
-Elisabeth \\
-Claudius \\
-Jane \\
-Alexandra \\
+  Peter \\
+  James \\
+  Abigail \\
+  Elisabeth \\
+  Claudius \\
+  Jane \\
+  Alexandra \\
 \end{NiceTabular}
 \end{Code}
 \hspace{-1cm}
@@ -2667,18 +2907,18 @@ Alexandra \\
    \resetcolorseries[\value{iRow}]{BlueWhite}
    \rowlistcolors{1}{BlueWhite!!+}
 \Body
-Peter \\
-James \\
-Abigail \\
-Elisabeth \\
-Claudius \\
-Jane \\
-Alexandra \\
+  Peter \\
+  James \\
+  Abigail \\
+  Elisabeth \\
+  Claudius \\
+  Jane \\
+  Alexandra \\
 \end{NiceTabular}
 \end{itemize}
 
 \vspace{1cm}
-We recall that all the color commands we have described don't color the cells
+We recall that all the color commands that we have described don't color the cells
 which are in the ``corners''. In the following example, we use the key
 |corners| to require the determination of the corner \emph{north east} (NE).
 
@@ -2689,14 +2929,14 @@ which are in the ``corners''. In the following example, we use the key
 \CodeBefore
   \emph{\rowlistcolors{1}{blue!15, }}
 \Body
-  & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
-0 & 1 \\
-1 & 1 & 1 \\
-2 & 1 & 2 & 1 \\
-3 & 1 & 3 & 3 & 1 \\
-4 & 1 & 4 & 6 & 4 & 1 \\
-5 & 1 & 5 & 10 & 10 & 5 & 1 \\
-6 & 1 & 6 & 15 & 20 & 15 & 6 & 1 \\
+    & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
+  0 & 1 \\
+  1 & 1 & 1 \\
+  2 & 1 & 2 & 1 \\
+  3 & 1 & 3 & 3 & 1 \\
+  4 & 1 & 4 & 6 & 4 & 1 \\
+  5 & 1 & 5 & 10 & 10 & 5 & 1 \\
+  6 & 1 & 6 & 15 & 20 & 15 & 6 & 1 \\
 \end{NiceTabular}
 \end{Code}
 \hspace{-6cm}
@@ -2705,14 +2945,14 @@ which are in the ``corners''. In the following example, we use the key
 \CodeBefore
   \rowlistcolors{1}{blue!15, }
 \Body
-  & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
-0 & 1 \\
-1 & 1 & 1 \\
-2 & 1 & 2 & 1 \\
-3 & 1 & 3 & 3 & 1 \\
-4 & 1 & 4 & 6 & 4 & 1 \\
-5 & 1 & 5 & 10 & 10 & 5 & 1 \\
-6 & 1 & 6 & 15 & 20 & 15 & 6 & 1 \\
+    & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
+  0 & 1 \\
+  1 & 1 & 1 \\
+  2 & 1 & 2 & 1 \\
+  3 & 1 & 3 & 3 & 1 \\
+  4 & 1 & 4 & 6 & 4 & 1 \\
+  5 & 1 & 5 & 10 & 10 & 5 & 1 \\
+  6 & 1 & 6 & 15 & 20 & 15 & 6 & 1 \\
 \end{NiceTabular}
 
 \medskip
@@ -2736,14 +2976,14 @@ In the following example, we require a color in the column~$0$ (which is the
   \rowlistcolors{1}{blue!15, }
   \emph{\columncolor{red!15}{0}}
 \Body
-  & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
-0 & 1 \\
-1 & 1 & 1 \\
-2 & 1 & 2 & 1 \\
-3 & 1 & 3 & 3 & 1 \\
-4 & 1 & 4 & 6 & 4 & 1 \\
-5 & 1 & 5 & 10 & 10 & 5 & 1 \\
-6 & 1 & 6 & 15 & 20 & 15 & 6 & 1 \\
+    & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
+  0 & 1 \\
+  1 & 1 & 1 \\
+  2 & 1 & 2 & 1 \\
+  3 & 1 & 3 & 3 & 1 \\
+  4 & 1 & 4 & 6 & 4 & 1 \\
+  5 & 1 & 5 & 10 & 10 & 5 & 1 \\
+  6 & 1 & 6 & 15 & 20 & 15 & 6 & 1 \\
 \end{NiceTabular}
 \end{Code}
 \hspace{-6cm}
@@ -2753,14 +2993,14 @@ In the following example, we require a color in the column~$0$ (which is the
   \rowlistcolors{1}{blue!15, }
   \columncolor{red!15}{0}
 \Body
-  & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
-0 & 1 \\
-1 & 1 & 1 \\
-2 & 1 & 2 & 1 \\
-3 & 1 & 3 & 3 & 1 \\
-4 & 1 & 4 & 6 & 4 & 1 \\
-5 & 1 & 5 & 10 & 10 & 5 & 1 \\
-6 & 1 & 6 & 15 & 20 & 15 & 6 & 1 \\
+    & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
+  0 & 1 \\
+  1 & 1 & 1 \\
+  2 & 1 & 2 & 1 \\
+  3 & 1 & 3 & 3 & 1 \\
+  4 & 1 & 4 & 6 & 4 & 1 \\
+  5 & 1 & 5 & 10 & 10 & 5 & 1 \\
+  6 & 1 & 6 & 15 & 20 & 15 & 6 & 1 \\
 \end{NiceTabular}
 
 
@@ -2780,19 +3020,19 @@ However, \pkg{booktabs} is \emph{not} loaded by \pkg{nicematrix}.
   \rowcolor{red!15}{1-2} 
   \rowcolors{3}{blue!15}{}
 \Body
-\emph{\toprule}
-\Block[C]{2-1}{Product} & 
-\Block{1-3}{dimensions (cm)} & & & 
-\Block{2-1}{\rotate Price} \\
-\emph{\cmidrule(rl){2-4}}
- & L & l & h \\
-\emph{\midrule}
-small    & 3   & 5.5  & 1   & 30    \\
-standard & 5.5 & 8    & 1.5 & 50.5  \\
-premium  & 8.5 & 10.5 & 2   & 80    \\
-extra    & 8.5 & 10   & 1.5 & 85.5  \\
-special  & 12  & 12   & 0.5 & 70    \\
-\emph{\bottomrule}
+  \emph{\toprule}
+  \Block[C]{2-1}{Product} & 
+  \Block{1-3}{dimensions (cm)} & & & 
+  \Block{2-1}{\rotate Price} \\
+  \emph{\cmidrule(rl){2-4}}
+   & L & l & h \\
+  \emph{\midrule}
+  small    & 3   & 5.5  & 1   & 30    \\
+  standard & 5.5 & 8    & 1.5 & 50.5  \\
+  premium  & 8.5 & 10.5 & 2   & 80    \\
+  extra    & 8.5 & 10   & 1.5 & 85.5  \\
+  special  & 12  & 12   & 0.5 & 70    \\
+  \emph{\bottomrule}
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}[c]{lSSSS}[no-cell-nodes]
@@ -2823,6 +3063,7 @@ the user).
 
 
 \bigskip
+\label{EmptyRow}
 \index{EmptyRow@\texttt{\textbackslash EmptyRow} (command of \texttt{\textbackslash CodeBefore})}
 \index{EmptyColumn@\texttt{\textbackslash EmptyColumn} (command of \texttt{\textbackslash CodeBefore})}
 
@@ -2839,8 +3080,8 @@ corresponding columns. The command |\EmptyRow| is similar for the rows.
   \rowcolor{blue!15}{1}
   \emph{\EmptyColumn{3}}
 \Body
-   one & two && three & four \\
-   one & \Block{}{two\\ rows} && three & four \\
+  one & two && three & four \\
+  one & \Block{}{two\\ rows} && three & four \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccccc}[hvlines,no-cell-nodes]
@@ -2865,17 +3106,17 @@ corresponding columns. The command |\EmptyRow| is similar for the rows.
 The extension \pkg{nicematrix} also provides commands to be used directly in the
 tabular (as does \pkg{colortbl}).
 
-These commands are the following several commands available (the first three
-ones are inspired by the similar commands of \pkg{colortbl}).
+These available commands are the following ones (the first three ones are
+inspired by the similar commands of \pkg{colortbl}).
 \begin{itemize}
 \item \DefinitionCommand{cellcolor} which colorizes a cell;\footnote{That
   command |\cellcolor| will delete the following spaces (which does not the
   command |\cellcolor| of \pkg{colortbl}). Moreover, if one wishes to define a
   command above that command |\cellcolor|, it must be protected in the TeX sens
   (whereas, if it were the command |\cellcolor| of \pkg{colortbl}, one should,
-  no the contrary, write a \emph{fully expandable} command).}
+  on the contrary, write a \emph{fully expandable} command).}
 \item \DefinitionCommand{rowcolor} which must be used in a cell and which
-colorizes the end of the row;\footnote{If you want a commande to color the
+colorizes the end of the row;\footnote{If you want a command to color the
   following $n$~rows, consider the command |\RowStyle| and its key |fillcolor|,
   p.~\pageref{RowStyle}} 
 \item \DefinitionCommand{columncolor} which must be used in the preamble of the
@@ -2901,13 +3142,13 @@ These commands are compatible with the commands for the overlays of Beamer
 \NewDocumentCommand { \Blue } { } { \emph{\columncolor{blue!15}} }
 \begin{NiceTabular}{>{\Blue}c>{\Blue}cc} 
 \toprule
-\emph{\rowcolor{red!15}}
-Last name & First name & Birth day \\
+  \emph{\rowcolor{red!15}}
+  Last name & First name & Birth day \\
 \midrule
-Achard  & Jacques & 5 juin 1962 \\
-Lefebvre & Mathilde & 23 mai 1988 \\
-Vanesse & Stephany & 30 octobre 1994 \\
-Dupont & Chantal & 15 janvier 1998 \\
+  Achard  & Jacques & 5 juin 1962 \\
+  Lefebvre & Mathilde & 23 mai 1988 \\
+  Vanesse & Stephany & 30 octobre 1994 \\
+  Dupont & Chantal & 15 janvier 1998 \\
 \bottomrule
 \end{NiceTabular}
 \end{Code}
@@ -2940,15 +3181,15 @@ coloring by a command |\rowlistcolors| with an empty argument.
 \bigskip
 \begin{Code}[width=10cm]
 \begin{NiceTabular}{c}[hvlines]
-one \\
-two \\
+  one \\
+  two \\
 \emph{\rowlistcolors{red!15}}
-three \\
-four \\
-five \\
+  three \\
+  four \\
+  five \\
 \emph{\rowlistcolors{}}
-six \\
-seven \\
+  six \\
+  seven \\
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{c}[hvlines]
@@ -2962,6 +3203,44 @@ five \\
 six \\
 seven \\
 \end{NiceTabular}
+
+
+
+\bigskip
+Here is an example of use of |\rowcolors| in conjunction with |create-blocks-in-col|.
+
+
+\begin{scope}
+\hfuzz=10cm
+\begin{Code}[width=11cm]
+\begin{NiceTabular}{lr}[hvlines,create-blocks-in-col=1]
+\emph{\rowcolors{blue!10}{}[respect-blocks]}
+  John      & 12 \\
+            & 13 \\
+  Steph     &  8 \\
+  Sarach    & 18 \\
+            & 17 \\
+            & 15 \\
+  Ashley    & 20 \\
+  Henry     & 14 \\
+  Madison   & 15 \\
+            & 19
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{lr}[hvlines,baseline=c,create-blocks-in-col=1]
+\rowcolors{blue!10}{}[respect-blocks]
+John      & 12 \\
+          & 13 \\
+Steph     &  8 \\
+Sarah     & 18 \\
+          & 17 \\
+          & 15 \\
+Ashley    & 20 \\
+Henry     & 14 \\
+Madison   & 15 \\
+          & 19
+\end{NiceTabular}
+\end{scope}
 
 
 \subsection{The special color ``nocolor''}
@@ -3016,7 +3295,7 @@ possible to write, for example, |cell-space-limits = 2pt| but also |cell-space-l
 
 
 \item If the key \Definition{rounded-corners} is used, that background will have
-rounded-corners.
+rounded corners.
 
 \item 
 \index{color!key of \texttt{\textbackslash RowStyle}}
@@ -3035,12 +3314,12 @@ math and text mode.
 \medskip
 \begin{Code}[width=12cm]
 \begin{NiceTabular}{cccc}
-\hline
-\emph{\RowStyle[cell-space-limits=3pt]{\rotate}}
-first & second & third & fourth \\
-\emph{\RowStyle[nb-rows=2,fill=blue!50,color=white]{\sffamily}}
-1 & 2 & 3 & 4 \\
-I & II & III & IV 
+  \hline
+  \emph{\RowStyle[cell-space-limits=3pt]{\rotate}}
+  first & second & third & fourth \\
+  \emph{\RowStyle[nb-rows=2,fill=blue!50,color=white]{\sffamily}}
+  1 & 2 & 3 & 4 \\
+  I & II & III & IV 
 \end{NiceTabular}
 \end{Code}
 \index{rotate@\texttt{\textbackslash rotate}|textit}
@@ -3071,9 +3350,9 @@ the standard letters |w|, |W|, |p|, |b| and |m| of the package \pkg{array}
 \medskip
 \begin{Code}[width=9cm]
 \begin{NiceTabular}{\emph{W{c}{2cm}}cc}[hvlines]
-Paris  & New York & Madrid \\
-Berlin & London   & Roma   \\
-Rio    & Tokyo    & Oslo 
+  Paris  & New York & Madrid \\
+  Berlin & London   & Roma   \\
+  Rio    & Tokyo    & Oslo 
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{W{c}{2cm}cc}[hvlines,no-cell-nodes]
@@ -3092,9 +3371,9 @@ with the key \Definition{columns-width}.
 \medskip
 \begin{Code}[width=10cm]
 $\begin{pNiceMatrix}[\emph{columns-width = 1cm}]
-1  & 12 & -123 \\
-12 & 0  & 0    \\
-4  & 1  & 2 
+  1  & 12 & -123 \\
+  12 & 0  & 0    \\
+  4  & 1  & 2 
 \end{pNiceMatrix}$
 \end{Code}
 $\begin{pNiceMatrix}[columns-width = 1cm,no-cell-nodes]
@@ -3120,9 +3399,9 @@ widest cell of the array.\footnote{The result is achieved with only one
 \medskip
 \begin{Code}[width=10cm]
 $\begin{pNiceMatrix}[\emph{columns-width = auto}]
-1  & 12 & -123 \\
-12 & 0  & 0    \\
-4  & 1  & 2 
+  1  & 12 & -123 \\
+  12 & 0  & 0    \\
+  4  & 1  & 2 
 \end{pNiceMatrix}$
 \end{Code}
 $\begin{pNiceMatrix}[columns-width = auto,no-cell-nodes]
@@ -3261,9 +3540,9 @@ are supported by \pkg{nicematrix}.
 \medskip
 \begin{Code}
 \begin{NiceTabular}[corners=NW,hvlines]{\emph{V{3cm}V{3cm}V{3cm}}}
-& some text & some very very very long text \\
-some very very very long text \\
-some very very very long text 
+  & some text & some very very very long text \\
+  some very very very long text \\
+  some very very very long text 
 \end{NiceTabular}
 \end{Code}
 
@@ -3277,15 +3556,15 @@ some very very very long text
 \end{center}
 
 \bigskip
-Concerning \pkg{nicematrix}, one of the
-interests of this type of columns is that, for a cell of a column of type~|V|,
-the PGF/TikZ node created by \pkg{nicematrix} for the content of that cell has
-a width adjusted to the content of the cell : cf. p.~\pageref{node-V}. 
+Concerning \pkg{nicematrix}, one of the benefits of this type of columns is
+that, for a cell of a column of type~|V|, the PGF/TikZ node created by
+\pkg{nicematrix} for the content of that cell has a width adjusted to the
+content of the cell : cf. p.~\pageref{node-V}.
 
 
 \bigskip
 The columns |V| of \pkg{nicematrix} supports the keys |t|, |p|, |m|, |b|, |l|,
-|c| and |r| also supported by the columns |X|: see their description in the
+|c| and |r| also supported by the columns~|X|: see their description in the
 section~\ref{X-columns}, p.~\pageref{X-columns}.
 
 \bigskip
@@ -3341,15 +3620,15 @@ commands |\raggedright|, |\centering| and |\raggedleft|. That ensures a better o
 
 \item It's possible to use the key |V| in a column of type |X|. When that key is used,
 the column~|X| behaves in fact like a column~|V| of the extension \pkg{varwidth}
-(which must have been loaded by the user). Henece, the widht of the columns, as
-computed by the |X|~process, is in fact the \emph{maximal} widht of the column.
+(which must have been loaded by the user). Henece, the width of the columns, as
+computed by the |X|~process, is in fact the \emph{maximal} width of the column.
 \end{itemize}
 
 \begin{Code}
-\emph{\begin{NiceTabular}\emph{[width=9cm]{X[c,m]X[0.5,c,m]}}[hvlines]}
-a rather long text which fits on several lines 
-& a rather long text which fits on several lines \\
-a shorter text & a shorter text
+\begin{NiceTabular}\emph{[width=9cm]{X[c,m]X[0.5,c,m]}}[hvlines]
+  a rather long text which fits on several lines 
+  & a rather long text which fits on several lines \\
+  a shorter text & a shorter text
 \end{NiceTabular}
 \end{Code}
 
@@ -3374,7 +3653,7 @@ a shorter text & a shorter text
 \index{first-col}
 \index{last-col}
 
-The options \Definition{first-row}, \Definition{last-row},
+The keys \Definition{first-row}, \Definition{last-row},
 \Definition{first-col} and \Definition{last-col} allow the composition of
 exterior rows and columns in the environments of \pkg{nicematrix}. It's
 particularly interesting for the (mathematical) matrices.
@@ -3383,6 +3662,7 @@ particularly interesting for the (mathematical) matrices.
 A potential ``first row'' (exterior) has the number $0$ (and not $1$). Idem
 for the potential ``first column''. 
 
+\smallskip
 \begin{Code}
 $\begin{pNiceMatrix}[\emph{first-row,last-row,first-col,last-col},xdots/nullify]
        & C_1    & \Cdots &        & C_4    &        \\
@@ -3404,7 +3684,8 @@ L_4    & a_{41} & a_{42} & a_{43} & a_{44} & L_4    \\
 \end{pNiceMatrix}\]
 
 \medskip
-The dotted lines have been drawn with the tools presented p.~\pageref{Cdots}.
+The dotted lines of this example have been drawn with the tools presented
+p.~\pageref{Cdots}.
 
 \bigskip
 We have several remarks to do.
@@ -3956,8 +4237,7 @@ $\begin{bNiceMatrix}
 
 
 \bigskip
-With the key \Definition{horizontal-label}, the labels stay
-horizontal.
+With the key \Definition{horizontal-label}, the label stays horizontal.
 
 \nobreak
 \medskip
@@ -4024,18 +4304,17 @@ must be prefixed by |xdots| (\textsl{xdots} to remind that it works for
 
 For the clarity of the explanations, we will use those names.
 
+\bigskip
+The key \Definition{xdots/nullify} has yet been described in the part
+\ref{nullify-dots}, p.~\pageref{nullify-dots}.
 
 \bigskip
 With the key \Definition{xdots/horizontal-labels}, the labels (introduced by~|_|,
 |^| and~|:|) stay horizontal.
 
 \bigskip
-The key \Definition{xdots/nullify} has yet been described in the part
-\ref{nullify-dots}, p.~\pageref{nullify-dots}.
-
-\bigskip
-The option \Definition{xdots/color} fixes the color or the dotted line. It's
-possible to use a color definied ``on the fly'' 
+The option \Definition{xdots/color} fixes the color of the dotted line. It's
+possible to use a color defined ``on the fly'' 
 (e.g.: |xdots/color = { [RGB]{204,204,255} }|). One should remark that
 the dotted lines drawn in the exterior rows and columns have a special
 treatment: cf. p.~\pageref{exterior}. 
@@ -4135,7 +4414,7 @@ preamble, by the command |\Hline|, by the keys |hlines|, |vlines|,
 |hvlines| and |hvlines-except-borders| and by the tools created by
 |custom-line| are not drawn within the
 blocks).\footnote{On the other side, the command |\line| in the
-|\CodeAfter| (cf.~p.~\pageref{line-in-code-after}) does \emph{not} create
+|\CodeAfter| (cf.~p.~\pageref{line-in-code-after}) does \emph{not} create any
 block.}
 
 \medskip
@@ -4168,10 +4447,10 @@ $\begin{bNiceMatrix}[margin,hvlines]
 
 
 \smallskip
-Since, as said in the previous part, it's possible to use, with the commands
-|\Cdots|, |\Ldots|, |\Vdots|, etc. all the styles of lines provided by TikZ, one
-may wish to use those commands to draw braces with the decoration |brace|
-provided by the library \pkg{decorations.pathreplacing} of TikZ.
+Since, as said previously, it's possible to use, with the commands |\Cdots|,
+|\Ldots|, |\Vdots|, etc. all the styles of lines provided by TikZ, one may wish
+to use those commands to draw braces with the decoration |brace| provided by the
+library \pkg{decorations.pathreplacing} of TikZ.
 
 \smallskip
 In order to facilitate that use, \pkg{nicematrix} provides two commands
@@ -4265,7 +4544,7 @@ The TikZ style used by \pkg{nicematrix} to draw those braces is called
 \emph{decorate }
 \end{Code}
 
-The final user can change that style TikZ as he wishes (respecting the structure
+The final user can change that TikZ style as he wishes (respecting the structure
 with the keys |decorate| and |decoration|).
 
 
@@ -4452,18 +4731,16 @@ adjacent cells.
 
 \medskip
 \begin{Code}[width=11cm]
-\NiceMatrixOptions{xdots/shorten += 0.3 em}
-\begin{pNiceMatrix}
-I       & 0      & \Cdots  &0     \\
-0       & I      & \Ddots  &\Vdots\\
-\Vdots  &\Ddots  & I       &0     \\
-0       &\Cdots  & 0       &I
+\begin{pNiceMatrix}[xdots/shorten += 0.3 em]
+  I       & 0      & \Cdots  &0     \\
+  0       & I      & \Ddots  &\Vdots\\
+  \Vdots  &\Ddots  & I       &0     \\
+  0       &\Cdots  & 0       &I
 \emph{\CodeAfter \line{2-2}{3-3}}
 \end{pNiceMatrix}
 \end{Code}
 \begin{scope}
-\NiceMatrixOptions{xdots/shorten += 0.3 em}
-$\begin{pNiceMatrix}
+$\begin{pNiceMatrix}[xdots/shorten += 0.3 em]
 I       & 0      & \Cdots  &0     \\
 0       & I      & \Ddots  &\Vdots\\
 \Vdots  &\Ddots  & I       &0     \\
@@ -4480,10 +4757,10 @@ cf.~p.~\pageref{parallelization}).
 \medskip
 \begin{Code}
 \begin{bNiceMatrix}
-1      & \Cdots &   & 1      & 2      & \Cdots          & 2      \\
-0      & \Ddots &   & \Vdots & \Vdots & \hspace*{2.5cm} & \Vdots \\
-\Vdots & \Ddots &   &        &        &                 &        \\
-0      & \Cdots & 0 & 1      & 2      & \Cdots          & 2 
+  1      & \Cdots &   & 1      & 2      & \Cdots          & 2      \\
+  0      & \Ddots &   & \Vdots & \Vdots & \hspace*{2.5cm} & \Vdots \\
+  \Vdots & \Ddots &   &        &        &                 &        \\
+  0      & \Cdots & 0 & 1      & 2      & \Cdots          & 2 
 \emph{\CodeAfter \line[shorten=6pt]{1-5}{4-7}}
 \end{bNiceMatrix}
 \end{Code}
@@ -4537,9 +4814,9 @@ and you have added by hand some space between the third and fourth column with
 \medskip
 \begin{Code}[width=15cm]
 \[\begin{NiceArray}{ccc\emph{@{\hspace{1.5em}}}c}[cell-space-limits += 2pt,\emph{margin}]
- 1           & 1            & 1            & x \\
-\dfrac{1}{4} & \dfrac{1}{2} & \dfrac{1}{4} & y \\
- 1           & 2            & 3            & z 
+   1           & 1            & 1            & x \\
+  \dfrac{1}{4} & \dfrac{1}{2} & \dfrac{1}{4} & y \\
+   1           & 2            & 3            & z 
 \CodeAfter
   \emph{\SubMatrix({1-1}{3-3})
   \SubMatrix({1-4}{3-4})}
@@ -4566,9 +4843,9 @@ with the following construction.
 \hfuzz=15cm
 \begin{Code}[width=11cm]
 $\begin{NiceArray}{\emph{(ccc)(c)}}[cell-space-limits += 2pt]
- 1          & 1           & 1           & x \\
-\dfrac{1}{4} & \dfrac{1}{2} & \dfrac{1}{4} & y \\
- 1          & 2           & 3           & z 
+   1          & 1           & 1           & x \\
+  \dfrac{1}{4} & \dfrac{1}{2} & \dfrac{1}{4} & y \\
+   1          & 2           & 3           & z 
 \end{NiceArray}$
 \end{Code}
 \end{scope}
@@ -4589,9 +4866,9 @@ following example, you have used the key |right-margin|).
 \hfuzz=15cm
 \begin{Code}[width=11cm]
 $\begin{bNiceMatrix}[right-margin=1em]
-1 & 1 & 1 \\
-1 & a & b \\
-1 & c & d 
+  1 & 1 & 1 \\
+  1 & a & b \\
+  1 & c & d 
 \CodeAfter
   \emph{\SubMatrix[{2-2}{3-3}]^{T}}
 \end{bNiceMatrix}$
@@ -4656,10 +4933,10 @@ the prefix |sub-matrix| which means that their names are therefore
 
 \begin{Code}[width=15cm]
 $\begin{NiceArray}{cc@{\hspace{5mm}}l}[cell-space-limits=2pt]
-  &   & \frac{1}{2} \\
-  &   & \frac{1}{4} \\[1mm]
-a & b & \frac{1}{2}a+\frac{1}{4}b \\
-c & d & \frac{1}{2}c+\frac{1}{4}d \\
+    &   & \frac{1}{2} \\
+    &   & \frac{1}{4} \\[1mm]
+  a & b & \frac{1}{2}a+\frac{1}{4}b \\
+  c & d & \frac{1}{2}c+\frac{1}{4}d \\
 \CodeAfter 
   \SubMatrix({1-3}{2-3}) 
   \SubMatrix({3-1}{4-2}) 
@@ -4684,10 +4961,10 @@ Here is the same example with the key |slim| used for one of the submatrices.
 \medskip
 \begin{Code}[width=15cm]
 $\begin{NiceArray}{cc@{\hspace{5mm}}l}[cell-space-limits=2pt]
-  &   & \frac12 \\
-  &   & \frac14 \\[1mm]
-a & b & \frac12a+\frac14b \\
-c & d & \frac12c+\frac14d \\
+    &   & \frac12 \\
+    &   & \frac14 \\[1mm]
+  a & b & \frac12a+\frac14b \\
+  c & d & \frac12c+\frac14d \\
 \CodeAfter
   \SubMatrix({1-3}{2-3})[\emph{slim}]
   \SubMatrix({3-1}{4-2})
@@ -4708,7 +4985,7 @@ c & d & \frac12c+\frac14d \\
 
 
 \bigskip
-There is also a key |name| which gives a name to the submatrix created by
+There is also a key \Definition{name} which gives a name to the submatrix created by
 |\SubMatrix|. That name is used to create PGF/TikZ nodes: cf
 p.~\pageref{node-sub-matrix}. 
 
@@ -4719,18 +4996,18 @@ Despite its name, the command |\SubMatrix| may also be used within a
 |\toprule| of \pkg{booktabs}). 
 
 \medskip
-\begin{Code}[width=8cm]
+\begin{Code}[width=8.5cm]
 \begin{NiceTabular}{@{}ll@{}}
 \toprule
-Part A              & the first part \\
-\Block{2-1}{Part B} & a first sub-part \\
-                    & a second sub-part \\
+  Part A              & the first part \\
+  \Block{2-1}{Part B} & a first sub-part \\
+                      & a second sub-part \\
 \bottomrule
 \CodeAfter
   \emph{\SubMatrix{\lbrace}{2-2}{3-2}{.}}
 \end{NiceTabular}
 \end{Code}
-\hspace{2cm}
+\hspace{15mm}
 \begin{NiceTabular}{@{}ll@{}}
 \toprule
 Part A              & the first part \\
@@ -4773,8 +5050,7 @@ $\begin{NiceArray}{ccc@{}w{c}{5mm}@{}ccc}
   0 & 4 & 5 && 0  & 12 & 41 \\
   0 & 0 & 6 && 0  & 0  & 30  
 \CodeAfter
-  \emph{\NewDocumentCommand{\MyDraw}{}{\tikz \draw [blue] (2-|1) -| (3-|2) -|
-      (4-|3) ;}}
+  \emph{\NewDocumentCommand{\MyDraw}{}{\tikz \draw [blue] (2-|1) -| (3-|2) -| (4-|3) ;}}
   \SubMatrix({1-5}{3-7})[\emph{code = \MyDraw} ]
   \SubMatrix({4-1}{6-3})[\emph{code = \MyDraw} ]
   \SubMatrix({4-5}{6-7})[\emph{code = \MyDraw} ]
@@ -4833,16 +5109,16 @@ the label on several lines.
 \bigskip
 \begin{Code}[width=9cm]
 \begin{pNiceMatrix}
-1  & 2  & 3  & 4  & 5  & 6  \\
-11 & 12 & 13 & 14 & 15 & 16 \\
+  1  & 2  & 3  & 4  & 5  & 6  \\
+  11 & 12 & 13 & 14 & 15 & 16 \\
 \CodeAfter
   \emph{\OverBrace{1-1}{2-3}{A}
   \OverBrace{1-4}{2-6}{B}}
 \end{pNiceMatrix}
 \end{Code}
 $\begin{pNiceMatrix}
-1  & 2  & 3  & 4  & 5  & 6  \\
-11 & 12 & 13 & 14 & 15 & 16 \\
+  1  & 2  & 3  & 4  & 5  & 6  \\
+  11 & 12 & 13 & 14 & 15 & 16 \\
 \CodeAfter
   \OverBrace{1-1}{2-3}{A}
   \OverBrace{1-4}{2-6}{B}
@@ -4851,8 +5127,6 @@ $\begin{pNiceMatrix}
 \bigskip
 Caution: There is no vertical space reserved for those braces and their labels.\footnote{See:
   \url{https://tex.stackexchange.com/questions/685755}} 
-
-
 \bigskip
 \index{color!key of \texttt{\textbackslash OverBrace} and \texttt{\textbackslash
   UnderBrace}}
@@ -4884,16 +5158,16 @@ and |right-shorten|;
 \bigskip
 \begin{Code}[width=9cm]
 \begin{pNiceMatrix}
-1  & 2  & 3  & 4  & 5  & 6  \\
-11 & 12 & 13 & 14 & 15 & 16 \\
+  1  & 2  & 3  & 4  & 5  & 6  \\
+  11 & 12 & 13 & 14 & 15 & 16 \\
 \CodeAfter
   \OverBrace[\emph{shorten,yshift=3pt}]{1-1}{2-3}{A}
   \OverBrace[\emph{shorten,yshift=3pt}]{1-4}{2-6}{B}
 \end{pNiceMatrix}
 \end{Code}
 $\begin{pNiceMatrix}
-1  & 2  & 3  & 4  & 5  & 6  \\
-11 & 12 & 13 & 14 & 15 & 16 \\
+  1  & 2  & 3  & 4  & 5  & 6  \\
+  11 & 12 & 13 & 14 & 15 & 16 \\
 \CodeAfter
   \OverBrace[shorten,yshift=3pt]{1-1}{2-3}{A}
   \OverBrace[shorten,yshift=3pt]{1-4}{2-6}{B}
@@ -4903,13 +5177,12 @@ $\begin{pNiceMatrix}
 $\triangleright$\enskip The commands |\OverBrace| and |\UnderBrace| use the
 standard braces of the mathematical mode of LaTeX on which they are based.
 However, \pkg{nicematrix} provides also a command |\Hbrace| which should be used
-directly in the tabular and which draws braces of TikZ (cf.~part.~\ref{Hbrace},
+directly in the tabular and which draws braces of TikZ (cf.~part~\ref{Hbrace},
 p.~\pageref{Hbrace}).
 
 
 
-\subsection{The command \textbackslash TikzEveryCell in the \textbackslash
-  CodeAfter}
+\subsection{The command \textbackslash TikzEveryCell}
 
 
 \index{tikzeverycell@\texttt{\textbackslash TikzEveryCell} (command of 
@@ -4922,7 +5195,7 @@ p.~\pageref{Hbrace}).
 The command \DefinitionCommand{TikzEveryCell} executes with TikZ the rectangular
 path corresponding to each cell of the tabular with parameters of TikZ the
 argument of |\TikzEveryCell|. That argument must be a list of \textsl{key=value}
-pairs which may be applied to a TikZ path. In fact, the command applies to each
+pairs which may be applied to a TikZ path. In fact, the command applies to each cell
 of the tabular, except those in the exterior rows and columns
 (cf.~p.~\pageref{exterior}) and those in the empty corners (when the key
 |corners| is used: cf.~p.~\pageref{corners}). It applies in fact to each block
@@ -4937,9 +5210,8 @@ block by a margin (horizontally and vertically) equal to the value (of that key
 |offset|). That new frame, a bit narrower, will be executed by TikZ with options
 which are the other keys in the argument of |\TikzEveryCell|.
 
-\medskip
-\begingroup
 \bigskip
+\begingroup
 \begin{Code}[width=9cm]
 \renewcommand{\arraystretch}{1.3}
 \begin{NiceTabular}{ccc}[corners]
@@ -4963,13 +5235,49 @@ which are the other keys in the argument of |\TikzEveryCell|.
 \endgroup
 
 \bigskip
+The command |\TikzEveryCell| is, in fact, also available in the |\CodeBefore|.
+
+\smallskip
+\begingroup
+\begin{Code}[width=9cm]
+\renewcommand{\arraystretch}{1.3}
+\begin{NiceTabular}{ccc}[corners]
+\CodeBefore
+\CodeBefore
+  \emph{\TikzEveryCell
+    {
+      offset=1pt,
+      fill=blue!15,
+      rounded corners=2pt
+    }}
+\Body
+  & \Block{1-2}{columns} \\
+  \Block{2-1}{rows}
+  & cell 1 1 & cell 1 2 \\
+  & cell 2 1 & cell 2 2
+\end{NiceTabular}
+\end{Code}
+\renewcommand{\arraystretch}{1.3}
+\begin{NiceTabular}{ccc}[corners]
+\CodeBefore
+  \TikzEveryCell{offset=1pt,fill=blue!15,rounded corners=2pt}
+\Body
+  & \Block{1-2}{columns} \\
+  \Block{2-1}{rows}
+  & cell 1 1 & cell 1 2 \\
+  & cell 2 1 & cell 2 2
+\end{NiceTabular}
+\endgroup
+
+
+\bigskip
 The command |\TikzEveryCell| has two optional keys, available between square brackets.
 \begin{itemize}
 \item with the key \Definition{empty}, the command only acts on the empty cells
 (the exact definition of an ``empty cell'' is given in part~\ref{empty-cells},
 p.~\pageref{empty-cells}); 
 
-\item with key \Definition{non-empty}, the command only acts on the non-empty cells.
+\item with key \Definition{not-empty}, the command only acts on the not-empty cells.
 \end{itemize}
 
 \medskip
@@ -5001,8 +5309,28 @@ p.~\pageref{empty-cells});
 \end{scope}
 
 
-\medskip
-The command |\TikzEveryCell| is, in fact, also available in the |\CodeBefore|.
+\bigskip
+\bigskip
+\begin{Code}[width=9cm]
+\begin{NiceTabular}{cccc}
+1 & 2 \\
+1 & 2 & 3 \\
+1 & 3 \\
+1 \\
+1 & 2 & 3 & 4 \\
+\CodeAfter
+  \emph{\TikzEveryCell[not-empty]{draw}}
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{cccc}
+1 & 2 \\
+1 & 2 & 3 \\
+1 & 3 \\
+1 \\
+1 & 2 & 3 & 4 \\
+\CodeAfter
+  \TikzEveryCell[not-empty]{draw}
+\end{NiceTabular}
 
 
 \index{CodeAfter@\texttt{\textbackslash CodeAfter}|)}
@@ -5089,7 +5417,6 @@ perfectly compatible with \pkg{hyperref}.
 \index{nota@\textbf{Notes in the tabulars}|(}
 \index{tabularnote@\texttt{\textbackslash tabularnote}}
 
-
 The package \pkg{nicematrix} also provides a command
 \DefinitionCommand{tabularnote} which gives the ability to specify notes that
 will be composed at the end of the array with a width of text equal to the width
@@ -5102,10 +5429,10 @@ In fact, this command is available only if the extension \pkg{enumitem}
 \index{enumitem@\pkg{enumitem} (package required to use\newline \texttt{\textbackslash tabularnote})} has
 been loaded (before or after \pkg{nicematrix}). Indeed, the notes are composed
 at the end of the array with a type of list provided by the package
-\pkg{enumitem}. If \pkg{enumitem} has not been loaded, an error will be raise.
+\pkg{enumitem}. If \pkg{enumitem} has not been loaded, an error will be raised.
 
 
-
+\medskip
 \begin{Code}
 \begin{NiceTabular}{@{}llr@{}}
 \toprule \RowStyle{\bfseries}
@@ -5174,7 +5501,7 @@ command |\captionof| of the package \pkg{caption}). It's also possible, as
 expected, to use the command |\tabularnote| in the caption provided by the
 \emph{key} |caption| of the environment |{NiceTabaular}|.
 
-If several commands |\tabularnote| are used in a tabular with the same
+\item If several commands |\tabularnote| are used in a tabular with the same
 argument, only one note is inserted at the end of the tabular (but all the
 labels are composed, of course). It's possible to control that feature with
 the key |notes/detect-duplicates|.\footnote{For technical reasons, the final
@@ -5210,15 +5537,15 @@ with the following code (the package \pkg{caption} has been loaded in this docum
     notes/bottomrule
   ]
 \toprule
-Last name & First name & Length of life \\
+  Last name & First name & Length of life \\
 \midrule
-Churchill & Wiston &  91\\
-Nightingale\emph{\tabularnote{Considered as the first nurse of history}}%
-\emph{\tabularnote{Nicknamed ``the Lady with the Lamp''.}}
-& Florence\emph{\tabularnote{This note is shared by two references.}} & 90 \\
-Schoelcher & Victor & 89\emph{\tabularnote{The label of the note is overlapping.}}\\
-Touchet & Marie\emph{\tabularnote{This note is shared by two references.}} & 89 \\
-Wallis & John & 87 \\
+  Churchill & Wiston &  91\\
+  Nightingale\emph{\tabularnote{Considered as the first nurse of history}}%
+  \emph{\tabularnote{Nicknamed ``the Lady with the Lamp''.}}
+  & Florence\emph{\tabularnote{This note is shared by two references.}} & 90 \\
+  Schoelcher & Victor & 89\emph{\tabularnote{The label of the note is overlapping.}}\\
+  Touchet & Marie\emph{\tabularnote{This note is shared by two references.}} & 89 \\
+  Wallis & John & 87 \\
 \bottomrule
 \end{NiceTabular}
 \end{table}
@@ -5278,7 +5605,7 @@ The tabular notes can be customized with a set of keys available in
 \item |notes/enumitem-keys| 
 \item |notes/enumitem-keys-para| 
 \item |notes/code-before|
-\item |notex/no-print|
+\item |notes/no-print|
 \end{itemize}
 For sake of commodity, it is also possible to set these keys in
 |\NiceMatrixOptions| via a key |notes| which takes in as value a list of 
@@ -5309,7 +5636,7 @@ prefixed by |notes|:
 \bigskip
 We detail these keys.
 
-\begin{itemize}[itemsep=\medskipamount]
+\begin{itemize}[itemsep=\medskipamount,beginpenalty=10000]
 \item The key \Definition{notes/para} requires the composition of the notes (at
 the end of the tabular) in a single paragraph.
 
@@ -5318,7 +5645,7 @@ Initial value: |false|
 That key is also available within a given environment.
 
 \item The key \Definition{notes/bottomrule} adds a |\bottomrule| of \pkg{booktabs}
-\emph{after} the notes. Of course, that rule is drawn only if there is really
+\emph{after} the notes. Of course, that rule is drawn only if there actually are 
 notes in the tabular. The package \pkg{booktabs} must have been loaded (before
 or after the package \pkg{nicematrix}). If it is not, an error is raised.
 
@@ -5409,7 +5736,7 @@ he should use that key:
 It's also possible to add |\raggedright| or |\RaggedRight| in that key (|\RaggedRight|
 is a command of \pkg{ragged2e}).
 
-The key |nodes/code-before| has a normal syntax, but also a ``additive syntax'',
+The key |nodes/code-before| has a normal syntax, but also an ``additive syntax'',
 which means that it's possible to write, for example
 |notes/code-before += \footnotesize|. With that syntax, the tokens are appended
 on the \emph{right} of the current value of the parameter |notes/code-before|.
@@ -5452,7 +5779,7 @@ For an example of customisation of the tabular notes, see p.~\pageref{ex:notes}.
 
 The key \Definition{draw-trees-in-col} takes in as argument a list of
 numbers of columns and, in each of those columns, will draw a tree
-in the style the trees drawn by the package \pkg{dirtree}.
+in the style the trees drawn by the packages \pkg{dirtree} and \pkg{dirtreex}.
 
 \medskip
 \begin{Verbatim}[formatcom=\footnotesize \color{gray}]
@@ -5463,18 +5790,18 @@ in the style the trees drawn by the package \pkg{dirtree}.
 \renewcommand{\arraystretch}{1.3}
 \begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[\emph{draw-trees-in-col=1-2}]
 \toprule
-Category &&&  \% \\
+  Category &&&  \% \\
 \midrule
-Animal   &&& 100 \\
-& Human   &&  50 \\
-&& Man     &  20 \\
-&& Woman   &  30 \\
-& Fox     &&  30 \\
-&& Vixen   &  16 \\
-&& Dog     &  14 \\
-& Chicken &&  20 \\
-&& Cock    &   8 \\
-&& Hen     &  12 \\
+  Animal   &&& 100 \\
+  & Human   &&  50 \\
+  && Man     &  20 \\
+  && Woman   &  30 \\
+  & Fox     &&  30 \\
+  && Vixen   &  16 \\
+  && Dog     &  14 \\
+  & Chicken &&  20 \\
+  && Cock    &   8 \\
+  && Hen     &  12 \\
 \bottomrule
 \end{NiceTabular}
 \end{Code}
@@ -5502,7 +5829,8 @@ Animal   &&& 100 \\
 
 \bigskip
 Three keys \Definition{trees/line-width}, \Definition{trees/color} and
-\Definition{trees/rounded-corners} are provided for the customization of those rules.
+\Definition{trees/rounded-corners} are provided for the customization of those rules
+(the prefix |trees| may be factorized).
 
 \medskip
 \begin{Code}
@@ -5510,18 +5838,18 @@ Three keys \Definition{trees/line-width}, \Definition{trees/color} and
 \NiceMatrixOptions{\emph{trees= {line-width = 0.4pt, color = red , rounded-corners}}}
 \begin{NiceTabular}{w{l}{2.5mm}w{l}{2.5mm}lr}[\emph{draw-trees-in-col=1-2}]
 \toprule
-Category &&&  \% \\
+  Category &&&  \% \\
 \midrule
-Animal   &&& 100 \\
-& Human   &&  50 \\
-&& Man     &  20 \\
-&& Woman   &  30 \\
-& Fox     &&  30 \\
-&& Vixen   &  16 \\
-&& Dog     &  14 \\
-& Chicken &&  20 \\
-&& Cock    &   8 \\
-&& Hen     &  12 \\
+  Animal   &&& 100 \\
+  & Human   &&  50 \\
+  && Man     &  20 \\
+  && Woman   &  30 \\
+  & Fox     &&  30 \\
+  && Vixen   &  16 \\
+  && Dog     &  14 \\
+  & Chicken &&  20 \\
+  && Cock    &   8 \\
+  && Hen     &  12 \\
 \bottomrule
 \end{NiceTabular}
 \end{Code}
@@ -5588,9 +5916,9 @@ That key is available in all the environments and commands (e.g.
 \CodeBefore
   \rowcolor{red!15}{1}
 \Body
-Last name & First name & Profession \\
-Arvy & Jacques & Physicist \\
-Jalon & Amandine & Physicist
+  Last name & First name & Profession \\
+  Arvy & Jacques & Physicist \\
+  Jalon & Amandine & Physicist
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}[hvlines,rounded-corners,no-cell-nodes]
@@ -5685,11 +6013,11 @@ of \pkg{nicematrix}.
 \medskip
 \begin{Code}[width = 11cm]
 $\begin{pNiceArray}{\emph{S}cW{c}{1cm}c}[xdots/nullify,first-row]
-{C_1} & \Cdots &  & C_n \\
-2.3  & 0 & \Cdots & 0 \\
-12.4 & \Vdots & & \Vdots \\
-1.45 \\
-7.2  & 0 & \Cdots & 0 
+  {C_1} & \Cdots &  & C_n \\
+  2.3  & 0 & \Cdots & 0 \\
+  12.4 & \Vdots & & \Vdots \\
+  1.45 \\
+  7.2  & 0 & \Cdots & 0 
 \end{pNiceArray}$
 \end{Code}
 $\begin{pNiceArray}{ScW{c}{1cm}c}[xdots/nullify,first-row]
@@ -5722,8 +6050,8 @@ and |columns-type=r|.
 \medskip
 \begin{Code}[width=10cm]
 $\begin{bNiceMatrix}\emph{[r]}
-\cos x & - \sin x \\
-\sin x & \cos x 
+  \cos x & - \sin x \\
+  \sin x & \cos x 
 \end{bNiceMatrix}$
 \end{Code}
 $\begin{bNiceMatrix}[r,no-cell-nodes]
@@ -5747,25 +6075,29 @@ after a rotation of 90° in the direct sens.
 
 In the following command, we use that command in the
 |code-for-first-row|.\footnote{It can also be used in |\RowStyle|
-(cf.~p.~\pageref{RowStyle}.)} 
+(cf.~p.~\pageref{RowStyle}).} 
 
 \bigskip
 
 \begin{Code}[width=12cm]
-\NiceMatrixOptions%
- {code-for-first-row = \scriptstyle \emph{\rotate} \text{image of },
-  code-for-last-col = \scriptstyle }
+\NiceMatrixOptions
+ {
+   code-for-first-row = \scriptstyle \emph{\rotate} \text{image of },
+   code-for-last-col = \scriptstyle
+ }
 $A = \begin{pNiceMatrix}[first-row,last-col=4]
-e_1 & e_2 & e_3       \\
-1   & 2   & 3   & e_1 \\
-4   & 5   & 6   & e_2 \\
-7   & 8   & 9   & e_3 
+  e_1 & e_2 & e_3       \\
+  1   & 2   & 3   & e_1 \\
+  4   & 5   & 6   & e_2 \\
+  7   & 8   & 9   & e_3 
 \end{pNiceMatrix}$
 \end{Code}
 \begin{varwidth}{10cm}
-\NiceMatrixOptions%
- {code-for-first-row = \scriptstyle\rotate \text{image of },
-  code-for-last-col = \scriptstyle }
+\NiceMatrixOptions
+  {
+    code-for-first-row = \scriptstyle\rotate \text{image of },
+    code-for-last-col = \scriptstyle
+  }
 $ A = \begin{pNiceMatrix}[first-row,last-col=4,no-cell-nodes]
 e_1 & e_2 & e_3 \\
 1   & 2   & 3  & e_1 \\
@@ -5787,20 +6119,24 @@ the corresponding elements are aligned upwards as shown below.
 \index{code-for-last-col|textit}
 
 \begin{Code}[width=12cm]
-\NiceMatrixOptions%
- {code-for-last-row = \scriptstyle \emph{\rotate} ,
-  code-for-last-col = \scriptstyle }
+\NiceMatrixOptions
+  {
+    code-for-last-row = \scriptstyle \emph{\rotate} ,
+    code-for-last-col = \scriptstyle
+  }
 $A = \begin{pNiceMatrix}[last-row=4,last-col=4]
-1   & 2   & 3   & e_1 \\
-4   & 5   & 6   & e_2 \\
-7   & 8   & 9   & e_3 \\
-\text{image of } e_1 & e_2 & e_3 
+  1   & 2   & 3   & e_1 \\
+  4   & 5   & 6   & e_2 \\
+  7   & 8   & 9   & e_3 \\
+  \text{image of } e_1 & e_2 & e_3 
 \end{pNiceMatrix}$
 \end{Code}
 \begin{varwidth}{10cm}
-\NiceMatrixOptions%
- {code-for-last-row = \scriptstyle\rotate ,
-  code-for-last-col = \scriptstyle }%
+\NiceMatrixOptions
+  {
+    code-for-last-row = \scriptstyle\rotate ,
+    code-for-last-col = \scriptstyle
+  }
 $A = \begin{pNiceMatrix}[last-row=4,last-col=4,no-cell-nodes]
 1   & 2   & 3  & e_1 \\
 4   & 5   & 6  & e_2 \\
@@ -5819,10 +6155,10 @@ The command |\rotate| also supports a key called \Definition{-90}. With that key
 the content is rotated by an angle of $-90$° and not $90$°.
 
 \bigskip
-Caution: the command |\rotate| is designed to be used in a |\Block| or in
-columns of type |l|, |r|, |c|, |w| ou |W|; if it is used in other column types
+\emph{Caution: } the command |\rotate| is designed to be used in a |\Block| or in
+columns of type |l|, |r|, |c|, |w| or |W|; if it is used in other column types
 (such as |p{...}|), the result will maybe differ from what is expected. In that case,
-it will valuable to consider the command |\rotatebox| of the package \pkg{graphicx}
+it will be valuable to consider the command |\rotatebox| of the package \pkg{graphicx}
 (that package is loaded by \pkg{nicematrix}).
 
 \subsection{The option small}
@@ -5843,9 +6179,9 @@ $\begin{bNiceArray}{cccc|c}[\emph{small},
                             last-col , 
                             code-for-last-col = \scriptscriptstyle, 
                             columns-width = 3mm ] 
-1 & -2 & 3 & 4 & 5 \\
-0 & 3  & 2 & 1 & 2 & L_2 \gets 2 L_1 - L_2 \\
-0 & 1  & 1 & 2 & 3 & L_3 \gets L_1 + L_3 
+  1 & -2 & 3 & 4 & 5 \\
+  0 & 3  & 2 & 1 & 2 & L_2 \gets 2 L_1 - L_2 \\
+  0 & 1  & 1 & 2 & 3 & L_3 \gets L_1 + L_3 
 \end{bNiceArray}$
 \end{Code}
 %
@@ -5913,10 +6249,10 @@ $\begin{pNiceMatrix}% don’t forget the %
      first-col,
      code-for-first-row = \mathbf{\emph{\alph{jCol}}} ,
      code-for-first-col = \mathbf{\emph{\arabic{iRow}}} ]
-&   &    &    &   \\
-& 1 & 2  & 3  & 4 \\
-& 5 & 6  & 7  & 8 \\
-& 9 & 10 & 11 & 12
+  &   &    &    &   \\
+  & 1 & 2  & 3  & 4 \\
+  & 5 & 6  & 7  & 8 \\
+  & 9 & 10 & 11 & 12
 \end{pNiceMatrix}$
 \end{Code}
 $\begin{pNiceMatrix}[first-row,
@@ -5983,9 +6319,9 @@ between curly braces are considered as a whole.
 \medskip
 \begin{Code}[width=10cm]
 $\begin{bNiceMatrix}[\emph{light-syntax},first-row,first-col]
-{} a             b                 ;
-a  2\cos a       {\cos a + \cos b} ;
-b \cos a+\cos b  { 2 \cos b }
+  {} a             b                 ;
+  a  2\cos a       {\cos a + \cos b} ;
+  b \cos a+\cos b  { 2 \cos b }
 \end{bNiceMatrix}$
 \end{Code}
 $\begin{bNiceMatrix}[light-syntax,first-row,first-col,no-cell-nodes]
@@ -6030,8 +6366,8 @@ it's possible to change the color of the delimiters with the key
 \medskip
 \begin{Code}[width=12cm]
 $\begin{bNiceMatrix}[delimiters/color=red]
-1 & 2 \\
-3 & 4 
+  1 & 2 \\
+  3 & 4 
 \end{bNiceMatrix}$
 \end{Code}
 $\begin{bNiceMatrix}[delimiters/color=red]
@@ -6062,9 +6398,9 @@ asymmetrical delimiters.
 \begin{Code}[width=11cm]
 $\begin{\emph{NiceArrayWithDelims}}
    {\downarrow}{\uparrow}{ccc}[margin]
-1 & 2 & 3 \\
-4 & 5 & 6 \\
-7 & 8 & 9 
+  1 & 2 & 3 \\
+  4 & 5 & 6 \\
+  7 & 8 & 9 
 \end{\emph{NiceArrayWithDelims}}$
 \end{Code}
 $\begin{NiceArrayWithDelims}
@@ -6158,9 +6494,9 @@ In the following examples, we assume that TikZ has been loaded.
 \bigskip
 \begin{Code}[width=11cm]
 $\begin{pNiceMatrix}[name=\emph{mymatrix}]
-1 & 2 & 3 \\
-4 & 5 & 6 \\
-7 & 8 & 9 
+  1 & 2 & 3 \\
+  4 & 5 & 6 \\
+  7 & 8 & 9 
 \end{pNiceMatrix}$
 \tikz[remember picture,overlay] 
      \draw \emph{(mymatrix-2-2)} circle (2mm) ; 
@@ -6185,9 +6521,9 @@ course the current environment).
 \medskip
 \begin{Code}[width=11cm]
 $\begin{pNiceMatrix}
-1 & 2 & 3 \\
-4 & 5 & 6 \\
-7 & 8 & 9 
+  1 & 2 & 3 \\
+  4 & 5 & 6 \\
+  7 & 8 & 9 
 \CodeAfter
   \tikz \draw \emph{(2-2)} circle (2mm) ; 
 \end{pNiceMatrix}$
@@ -6278,9 +6614,9 @@ provided by the eponymous package.
 
 \begin{Verbatim}
 \begin{NiceTabular}{V{10cm}}
-\bfseries \large 
-Titre \\
-\lipsum[1][1-4] 
+  \bfseries \large 
+  Titre \\
+  \lipsum[1][1-4] 
 \CodeAfter 
   \tikz \draw [rounded corners] (1-1) -| (last-|2) -- (last-|1) |- (1-1) ; 
 \end{NiceTabular}
@@ -6454,9 +6790,9 @@ Here is an array composed with the following code:
 \begin{BVerbatim}
 \large
 \begin{NiceTabular}{wl{2cm}ll}[hvlines]
-fraise & amande & abricot \\
-prune & pêche & poire  \\[1ex]
-noix & noisette & brugnon
+  fraise & amande & abricot \\
+  prune & pêche & poire  \\[1ex]
+  noix & noisette & brugnon
 \end{NiceTabular}
 \end{BVerbatim}
 \end{minipage}
@@ -6535,21 +6871,21 @@ Here is an example which uses these nodes in the |\CodeAfter|.
 \begin{center}
 \begin{Code}
 \begin{NiceArray}{c@{\;}c@{\;}c@{\;}c@{\;}c}[create-medium-nodes]
-    u_1 &-& u_0 &=& r     \\
-    u_2 &-& u_1 &=& r     \\
-    u_3 &-& u_2 &=& r     \\
-    u_4 &-& u_3 &=& r     \\
-    \phantom{u_5} & &  \phantom{u_4}    &\smash{\vdots} &       \\
-    u_n &-& u_{n-1} &=& r \\[3pt]
-    \hline
-    u_n &-& u_0 &=& nr \\
+   u_1 &-& u_0 &=& r     \\
+   u_2 &-& u_1 &=& r     \\
+   u_3 &-& u_2 &=& r     \\
+   u_4 &-& u_3 &=& r     \\
+   \phantom{u_5} & &  \phantom{u_4}    &\smash{\vdots} &       \\
+   u_n &-& u_{n-1} &=& r \\[3pt]
+   \hline
+   u_n &-& u_0 &=& nr \\
 \CodeAfter
-    \tikz[very thick, red, opacity=0.4, name suffix = -medium]
-    \draw (1-1.north west) -- (2-3.south east)
-    (2-1.north west) -- (3-3.south east)
-    (3-1.north west) -- (4-3.south east)
-    (4-1.north west) -- (5-3.south east)
-    (5-1.north west) -- (6-3.south east) ;
+   \tikz[very thick, red, opacity=0.4, name suffix = -medium]
+     \draw (1-1.north west) -- (2-3.south east)
+       (2-1.north west) -- (3-3.south east)
+       (3-1.north west) -- (4-3.south east)
+       (4-1.north west) -- (5-3.south east)
+       (5-1.north west) -- (6-3.south east) ;
 \end{NiceArray}
 \end{Code}
 \end{center}
@@ -6593,9 +6929,9 @@ These nodes are available in the |\CodeBefore| and the |\CodeAfter|.
 
 \begin{center}
 \begin{NiceTabular}{ccc}[hvlines,rules/width=1pt,rules/color=gray]
-     & tulipe   & lys \\
-arum &          & violette mauve \\
-muguet & dahlia 
+       & tulipe   & lys \\
+  arum &          & violette mauve \\
+  muguet & dahlia 
 \CodeAfter
   \tiny
   \begin{tikzpicture}
@@ -6621,15 +6957,15 @@ syntax |(|$i$\verb+-|+$j$|)|.
 \CodeBefore
   \emph{\tikz \draw [fill=red!15] (7-|4) |- (8-|5) |- (9-|6) |- cycle ;}
 \Body
-1 \\
-1 & 1 \\
-1 & 2 &  1 \\
-1 & 3 &  3 &  1 \\
-1 & 4 &  6 &  4 &  1 \\
-1 & 5 & 10 & 10 &  5 &  1 \\
-1 & 6 & 15 & 20 & 15 &  6 &  1 \\
-1 & 7 & 21 & 35 & 35 & 21 &  7 & 1 \\
-1 & 8 & 28 & 56 & 70 & 56 & 28 & 8 & 1
+  1 \\
+  1 & 1 \\
+  1 & 2 &  1 \\
+  1 & 3 &  3 &  1 \\
+  1 & 4 &  6 &  4 &  1 \\
+  1 & 5 & 10 & 10 &  5 &  1 \\
+  1 & 6 & 15 & 20 & 15 &  6 &  1 \\
+  1 & 7 & 21 & 35 & 35 & 21 &  7 & 1 \\
+  1 & 8 & 28 & 56 & 70 & 56 & 28 & 8 & 1
 \end{NiceMatrix}
 \end{Code}
 % 
@@ -6656,9 +6992,9 @@ a matrix (if TikZ is loaded).
 \smallskip
 \begin{Code}[width=11cm]
 $\begin{pNiceArray}{ccc|c}
-2 & 1 & 3 & 0 \\
-3 & 3 & 1 & 0 \\
-3 & 3 & 1 & 0 
+  2 & 1 & 3 & 0 \\
+  3 & 3 & 1 & 0 \\
+  3 & 3 & 1 & 0 
 \CodeAfter 
   \tikz \draw [red] (\emph{3.4}-|1) -- (\emph{3.4}-|last) ;
 \end{pNiceArray}$
@@ -6699,10 +7035,10 @@ In the following example, we have highlighted these nodes (the submatrix itself 
 been created with |\SubMatrix\{{2-2}{3-3}\}|). 
 
 \[\begin{pNiceMatrix}
-121 & 23 & 345 & 345\\
-45 & 346 & 863 & 444\\
-3462 & 38458 & 34 & 294 \\
-34 & 7 & 78 & 309 \\
+  121 & 23 & 345 & 345\\
+  45 & 346 & 863 & 444\\
+  3462 & 38458 & 34 & 294 \\
+  34 & 7 & 78 & 309 \\
 \CodeAfter
   \SubMatrix\{{2-2}{3-3}\}[name=A]
   \begin{tikzpicture}
@@ -6721,7 +7057,7 @@ been created with |\SubMatrix\{{2-2}{3-3}\}|).
 
 \subsection{Public sets of keys}
 
-The extension \pkg{nicematrix} provies several public sets of keys:
+The extension \pkg{nicematrix} provides several public sets of keys:
 \begin{itemize}
 \item \Definition{nicematrix/environments} which applies to all the
 environments of \pkg{nicematrix};
@@ -6861,9 +7197,9 @@ Here is an example of utilisation:
 \CodeBefore
   \arraycolor{gray!10}
 \Body
-merlan & requin & cabillaud \\
-baleine & \emph{\crossbox[red]} & morue \\
-mante & raie & poule 
+  merlan & requin & cabillaud \\
+  baleine & \emph{\crossbox[red]} & morue \\
+  mante & raie & poule 
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{ccc}[hvlines]
@@ -6905,10 +7241,10 @@ In the following examples, the first |\Ddots| instruction is written in color.
 Example with parallelization (default):
 \begin{Code}
 $A = \begin{pNiceMatrix}
-1      & \Cdots &        & 1      \\
-a+b    & \emph{\Ddots} &        & \Vdots \\
-\Vdots & \Ddots &        &        \\
-a+b    & \Cdots & a+b    & 1
+  1      & \Cdots &        & 1      \\
+  a+b    & \emph{\Ddots} &        & \Vdots \\
+  \Vdots & \Ddots &        &        \\
+  a+b    & \Cdots & a+b    & 1
 \end{pNiceMatrix}$
 \end{Code}
 \end{minipage}
@@ -6924,10 +7260,10 @@ a+b    & \Cdots & a+b & 1
 \begin{minipage}{9.5cm}
 \begin{Code}
 $A = \begin{pNiceMatrix}
-1      & \Cdots &        & 1      \\
-a+b    &        &        & \Vdots \\
-\Vdots & \emph{\Ddots} & \Ddots &        \\
-a+b    & \Cdots & a+b    & 1
+  1      & \Cdots &        & 1      \\
+  a+b    &        &        & \Vdots \\
+  \Vdots & \emph{\Ddots} & \Ddots &        \\
+  a+b    & \Cdots & a+b    & 1
 \end{pNiceMatrix}$
 \end{Code}
 \end{minipage}
@@ -7150,11 +7486,11 @@ Here is a example of code which will generate a tagged PDF.
 \begin{center}
 \emph{\tagpdfsetup{table/header-rows=1}}
 \begin{NiceTabular}{ccc}[hvlines]
-First name & Last name & Age \\
-Paul       & Imbert    & $66$ \\
-John       & Sarrus    & $23$ \\
-Liz        & Taylor    & $100$ \\
-George     & Adams     & $34$ 
+  First name & Last name & Age \\
+  Paul       & Imbert    & $66$ \\
+  John       & Sarrus    & $23$ \\
+  Liz        & Taylor    & $100$ \\
+  George     & Adams     & $34$ 
 \end{NiceTabular}
 \end{center}
 
@@ -7249,14 +7585,14 @@ require a width equal to that value: |widest*=\value{tabularnote}|.
 \begin{Code}
 \begin{NiceTabular}{@{}llr@{}}
 \toprule \RowStyle{\bfseries}
-Last name & First name & Birth day \\
+  Last name & First name & Birth day \\
 \midrule
-Achard\tabularnote{\emph{Achard is an old family of the Poitou.}} 
-& Jacques & 5 juin 1962 \\
-Lefebvre\tabularnote{\emph{The name Lefebvre is an alteration of the name Lefebure.}} 
-& Mathilde & 23 mai 1988 \\
-Vanesse & Stephany & 30 octobre 1994 \\
-Dupont & Chantal & 15 janvier 1998 \\
+  Achard\tabularnote{\emph{Achard is an old family of the Poitou.}} 
+  & Jacques & 5 juin 1962 \\
+  Lefebvre\tabularnote{\emph{The name Lefebvre is an alteration of the name Lefebure.}} 
+  & Mathilde & 23 mai 1988 \\
+  Vanesse & Stephany & 30 octobre 1994 \\
+  Dupont & Chantal & 15 janvier 1998 \\
 \bottomrule
 \end{NiceTabular}
 \end{Code}
@@ -7284,14 +7620,15 @@ Block}]{Utilisation of the key ``tikz'' of the command \texttt{\textbackslash Bl
 
 \index{tikzz@tikz!key of \texttt{\textbackslash Block}|textit}
 
-The key |TikZ| of the command |\Block| is available only when TikZ is
+The key |tikz| of the command |\Block| is available only when TikZ is
 loaded.\footnote{By default, \pkg{nicematrix} only loads \textsc{pgf}, which is
 a sub-layer of TikZ.}
 
 For the following example, we also need the TikZ library |patterns|.
 
-\begin{Verbatim}
-\usetikzlibrary{patterns}
+\begin{Verbatim}[formatcom = \footnotesize\color{gray}]
+\usepackage{tikz}         % in the preamble
+\usetikzlibrary{patterns} % in the preamble
 \end{Verbatim}
 
 
@@ -7346,10 +7683,10 @@ becomes \emph{transparent} to the exterior rules).}
 \CodeBefore
   \columncolor[RGB]{169,208,142}{2}
 \Body
-one & two & three \\
-\Block[\emph{transparent, tikz={pattern = north west lines, pattern color = gray}}]{1-*}{}
-four & five & six \\
-seven & eight & nine
+  one & two & three \\
+  \Block[\emph{transparent,tikz={pattern = north west lines, pattern color = red}}]{1-*}{}
+  four & five & six \\
+  seven & eight & nine
 \end{NiceTabular}
 \end{Code}
 
@@ -7359,7 +7696,7 @@ seven & eight & nine
   \columncolor[RGB]{169,208,142}{2}
 \Body
 one & two & three \\
-\Block[transparent, tikz={pattern = north west lines, pattern color = gray}]{1-*}{}
+\Block[transparent,tikz={pattern = north west lines, pattern color = red}]{1-*}{}
 four & five & six \\
 seven & eight & nine
 \end{NiceTabular}
@@ -7454,9 +7791,9 @@ the rules, except on the borders (which are, of course, added by \pkg{tcolorbox}
 
 \begin{Code}
 \[\begin{NiceMatrix}[columns-width=1cm,hvlines]
-f(x)   & \Block[C]{1-5}{+} \\
-f'(x)  & \Block[C]{1-2}{+} && \Block[C]{1-2}{+} && + \\
-f''(x) & - & \Block[C]{1-2}{-} && \Block[C]{1-2}{+} \\
+  f(x)   & \Block[C]{1-5}{+} \\
+  f'(x)  & \Block[C]{1-2}{+} && \Block[C]{1-2}{+} && + \\
+  f''(x) & - & \Block[C]{1-2}{-} && \Block[C]{1-2}{+} \\
 \end{NiceMatrix}\]
 \end{Code}
 
@@ -7485,15 +7822,15 @@ In the following example, we use the command |\Block| to draw rules.
 
 \begin{Code}
 \begin{pNiceMatrix}
-\emph{\Block[borders={bottom,right,tikz=dotted}]{2-2}{}}
-1 & 2 & 0  & 0 & 0 & 0 \\
-4 & 5 & 0  & 0 & 0 & 0 \\
-0 & 0 & \emph{\Block[borders={all,tikz=dotted}]{2-2}{}}
-        7  & 1 & 0 & 0 \\
-0 & 0 & -1 & 2 & 0 & 0 \\
-0 & 0 & 0  & 0 & \emph{\Block[borders={left,top,tikz=dotted}]{2-2}{}}
-                 3 & 4 \\
-0 & 0 & 0  & 0 & 1 & 4 
+  \emph{\Block[borders={bottom,right,tikz=dotted}]{2-2}{}}
+  1 & 2 & 0  & 0 & 0 & 0 \\
+  4 & 5 & 0  & 0 & 0 & 0 \\
+  0 & 0 & \emph{\Block[borders={all,tikz=dotted}]{2-2}{}}
+          7  & 1 & 0 & 0 \\
+  0 & 0 & -1 & 2 & 0 & 0 \\
+  0 & 0 & 0  & 0 & \emph{\Block[borders={left,top,tikz=dotted}]{2-2}{}}
+                   3 & 4 \\
+  0 & 0 & 0  & 0 & 1 & 4 
 \end{pNiceMatrix}
 \end{Code}
 
@@ -7530,13 +7867,13 @@ for the dashed rule specified by the letter ``|;|'' in the preamble of the array
 \begin{Code}
 \setlength{\extrarowheight}{1mm}
 \[\begin{vNiceArray}{cccc;ccc}[columns-width=6mm, xdots/shorten += 3pt]
-a_0   &      &&       &b_0    &      &     \\
-a_1   &\Ddots&&       &b_1    &\Ddots&     \\
-\Vdots&\Ddots&&       &\Vdots &\Ddots&b_0  \\
-a_p   &      &&a_0    &       &      &b_1   \\
-      &\Ddots&&a_1    &b_q    &      &\Vdots\\
-      &      &&\Vdots &       &\Ddots&      \\
-      &      &&a_p    &       &      &b_q    
+  a_0   &      &&       &b_0    &      &     \\
+  a_1   &\Ddots&&       &b_1    &\Ddots&     \\
+  \Vdots&\Ddots&&       &\Vdots &\Ddots&b_0  \\
+  a_p   &      &&a_0    &       &      &b_1   \\
+        &\Ddots&&a_1    &b_q    &      &\Vdots\\
+        &      &&\Vdots &       &\Ddots&      \\
+        &      &&a_p    &       &      &b_q    
 \end{vNiceArray}\]
 \end{Code}
 
@@ -7568,12 +7905,12 @@ lines are drawn, despite the name |nullify|!).
 \begin{Code}
 \NiceMatrixOptions{code-for-last-col=\scriptstyle}
 $\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col]
-1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
-0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
-0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
-       &   &   &\Ddots &   &        & \Vdots & \Vdots \\
-\Vdots &   &   &\Ddots &   & 0      & \\
-0      &   &   &\Cdots & 0 & 1      & 0      & L_n \gets L_n-L_1
+  1      & 1 & 1 &\Cdots &   & 1      & 0      & \\
+  0      & 1 & 0 &\Cdots &   & 0      &        & L_2 \gets L_2-L_1 \\
+  0      & 0 & 1 &\Ddots &   & \Vdots &        & L_3 \gets L_3-L_1 \\
+         &   &   &\Ddots &   &        & \Vdots & \Vdots \\
+  \Vdots &   &   &\Ddots &   & 0      & \\
+  0      &   &   &\Cdots & 0 & 1      & 0      & L_n \gets L_n-L_1
 \end{pNiceMatrix}$
 \end{Code}
 
@@ -7595,29 +7932,37 @@ $\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col]
 
 The option |line-style| controls the style of the lines drawn by |\Ldots|,
 |\Cdots|, etc. Thus, it's possible with these commands to draw lines which are
-not longer dotted (TikZ should be loaded).
+not longer dotted. 
 
 \index{line-style (key for the dotted rules)|textit}
 
+\medskip
+\begin{Verbatim}[formatcom=\footnotesize \color{gray}]
+\usepackage{tikz}             % in the preamble
+\usetikzlibrary{decorations}  % in the preamble
+\end{Verbatim}
+
+\medskip
 \begin{small}
-\begin{Verbatim}
+\begin{Code}
 \setcounter{MaxMatrixCols}{12}
 \newcommand{\blue}{\color{blue}}
-\[\begin{pNiceMatrix}[last-row,last-col,xdots={nullify,line-style={dashed,blue}}]
-1& & & \Vdots & & & & \Vdots \\
-& \Ddots[line-style=standard] \\
-& & 1 \\
-\Cdots & & & \blue 0 & \Cdots & & & \blue 1 & & & \Cdots & \blue \leftarrow i \\
-& & & & 1 \\
-& & &\Vdots & & \Ddots[line-style=standard] & & \Vdots \\
-& & & & & & 1 \\
-\Cdots & & & \blue 1 & \Cdots & & \Cdots & \blue 0 & & & \Cdots & \blue \leftarrow j \\
-& & & & & & & & 1 \\
-& & & & & & & & & \Ddots[line-style=standard] \\
-& & & \Vdots & & & & \Vdots & & & 1 \\
-& & & \blue \overset{\uparrow}{i} & & & & \blue \overset{\uparrow}{j} \\
+\[\begin{pNiceMatrix}%
+    [last-row,last-col,xdots={nullify,line-style={dashed,dash expand off,blue}}]
+  1& & & \Vdots & & & & \Vdots \\
+  & \Ddots[line-style=standard] \\
+  & & 1 \\
+  \Cdots & & & \blue 0 & \Cdots & & & \blue 1 & & & \Cdots & \blue \leftarrow i \\
+  & & & & 1 \\
+  & & &\Vdots & & \Ddots[line-style=standard] & & \Vdots \\
+  & & & & & & 1 \\
+  \Cdots & & & \blue 1 & \Cdots & & \Cdots & \blue 0 & & & \Cdots & \blue \leftarrow j \\
+  & & & & & & & & 1 \\
+  & & & & & & & & & \Ddots[line-style=standard] \\
+  & & & \Vdots & & & & \Vdots & & & 1 \\
+  & & & \blue \overset{\uparrow}{i} & & & & \blue \overset{\uparrow}{j} \\
 \end{pNiceMatrix}\]
-\end{Verbatim}
+\end{Code}
 \end{small}
 
 \index{code-for-first-row|textit}
@@ -7627,7 +7972,8 @@ not longer dotted (TikZ should be loaded).
 \begin{scope}
 \setcounter{MaxMatrixCols}{12}
 \newcommand{\blue}{\color{blue}}
-\[\begin{pNiceMatrix}[last-row,last-col,xdots={nullify,line-style={dashed,blue}}]
+\[\begin{pNiceMatrix}%
+  [last-row,last-col,xdots={nullify,line-style={dashed,dash expand off,blue}}]
 1& & & \Vdots & & & & \Vdots \\
 & \Ddots[line-style=standard] \\
 & & 1 \\
@@ -7655,13 +8001,13 @@ has been loaded, which impacts the shape of the arrow tips.
 \end{Code}
 \begin{Code}[width=11cm]
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
-\emph{\Hdotsfor{3}^{3}} & \emph{\Hdotsfor{2}^{2}} \\
-2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}^{3}}\\
-1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 \\
+  \emph{\Hdotsfor{3}^{3}} & \emph{\Hdotsfor{2}^{2}} \\
+  2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}^{3}}\\
+  1 & 1 & 1 & 1 & 1 \\
+  1 & 1 & 1 & 1 & 1 \\
 \Hline
-1 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{2}^{2}} \\
-1 & 1 & 1 & 1 & 1 \\
+  1 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{2}^{2}} \\
+  1 & 1 & 1 & 1 & 1 \\
 \end{pNiceArray}$
 \end{Code}
 {\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
@@ -7689,14 +8035,14 @@ token~``|:|'' instead of~``|^|'':
 \medskip
 \begin{Code}[width=11cm]
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
-\emph{\Hdotsfor{3}:{3}} & \emph{\Hdotsfor{2}:{2}} \\
-2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}:{3}} \\
-1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 \\
+  \emph{\Hdotsfor{3}:{3}} & \emph{\Hdotsfor{2}:{2}} \\
+  2 & 1 & 1 & 1 & 1 & \emph{\Vdotsfor{3}:{3}} \\
+  1 & 1 & 1 & 1 & 1 \\
+  1 & 1 & 1 & 1 & 1 \\
 \Hline
-1 & 1 & 1 & 1 & 1 & 
-\emph{\Vdotsfor{2}:{2 \rlap{ \smash{rows}}}} \\
-1 & 1 & 1 & 1 & 1 \\
+  1 & 1 & 1 & 1 & 1 & 
+  \emph{\Vdotsfor{2}:{2 \rlap{ \smash{rows}}}} \\
+  1 & 1 & 1 & 1 & 1 \\
 \end{pNiceArray}$
 \end{Code}
 {\NiceMatrixOptions{xdots={horizontal-labels,line-style = <->}}
@@ -7728,13 +8074,13 @@ best way is to use the commands |\Hbrace| and |\Vbrace| provided by
 \begin{Code}[width=11cm]
 \NiceMatrixOptions{xdots/horizontal-labels}
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
-\emph{\Hbrace{3}{3}} & \emph{\Hbrace{2}{2}} \\
-2 & 1 & 1 & 1 & 1 & \emph{\Vbrace{3}{3}} \\
-1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 \\
+  \emph{\Hbrace{3}{3}} & \emph{\Hbrace{2}{2}} \\
+  2 & 1 & 1 & 1 & 1 & \emph{\Vbrace{3}{3}} \\
+  1 & 1 & 1 & 1 & 1 \\
+  1 & 1 & 1 & 1 & 1 \\
 \Hline
-1 & 1 & 1 & 1 & 1 & \emph{\Vbrace{2}{2}} \\
-1 & 1 & 1 & 1 & 1 \\
+  1 & 1 & 1 & 1 & 1 & \emph{\Vbrace{2}{2}} \\
+  1 & 1 & 1 & 1 & 1 \\
 \end{pNiceArray}$
 \end{Code}
 {\NiceMatrixOptions{xdots/horizontal-labels}
@@ -7781,13 +8127,13 @@ style |nicematrix/brace|. In the following example, we use
 \end{Code}
 \begin{Code}[width=11cm]
 $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
-\emph{\Hbrace{3}{3}} & \emph{\Hbrace{2}{2}} \\
-2 & 1 & 1 & 1 & 1 & \emph{\Vbrace{3}{3}} \\
-1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 \\
+  \emph{\Hbrace{3}{3}} & \emph{\Hbrace{2}{2}} \\
+  2 & 1 & 1 & 1 & 1 & \emph{\Vbrace{3}{3}} \\
+  1 & 1 & 1 & 1 & 1 \\
+  1 & 1 & 1 & 1 & 1 \\
 \Hline
-1 & 1 & 1 & 1 & 1 & \emph{\Vbrace{2}{2}} \\
-1 & 1 & 1 & 1 & 1 \\
+  1 & 1 & 1 & 1 & 1 & \emph{\Vbrace{2}{2}} \\
+  1 & 1 & 1 & 1 & 1 \\
 \end{pNiceArray}$
 \end{Code}
 {\NiceMatrixOptions{xdots/horizontal-labels}
@@ -7828,12 +8174,12 @@ should use the commands |\SubMatrix|, |\OverBrace| and |\UnderBrace| in the
 \medskip
 \begin{Code}[width=11cm]
 $\begin{pNiceArray}{ccc|cc}[margin,last-col]
-2 & 1 & 1 & 1 & 1 & \Block{3-1}{\quad 3} \\
-1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 \\
+  2 & 1 & 1 & 1 & 1 & \Block{3-1}{\quad 3} \\
+  1 & 1 & 1 & 1 & 1 \\
+  1 & 1 & 1 & 1 & 1 \\
 \Hline
-1 & 1 & 1 & 1 & 1 & \Block{2-1}{\quad 2} \\
-1 & 1 & 1 & 1 & 1 \\
+  1 & 1 & 1 & 1 & 1 & \Block{2-1}{\quad 2} \\
+  1 & 1 & 1 & 1 & 1 \\
 \CodeAfter
   \emph{\OverBrace[shorten,yshift=1.5mm]{1-1}{1-3}{3}}
   \emph{\OverBrace[shorten,yshift=1.5mm]{1-4}{1-5}{2}}
@@ -8218,7 +8564,7 @@ see the remark p.~\pageref{remark-cline}.}
 
 
 \vspace{1cm}
-It's possible to color a row with |\rowcolor| in the |code-before| (or with
+It's possible to color a row with |\rowcolor| in the |\CodeBefore| (or with
 |\rowcolor| in the first cell of the row.
 
 \index{rowcolor@\texttt{\textbackslash rowcolor}!command in tabular|textit}
@@ -8282,9 +8628,9 @@ $\begin{bNiceMatrix}
 \emph{\CodeBefore [create-cell-nodes] 
   \tikz \node [highlight = (2-1) (2-last)] {} ; 
 \Body}
-0 & \Cdots & 0 \\
-1 & \Cdots & 1 \\
-0 & \Cdots & 0 \\
+  0 & \Cdots & 0 \\
+  1 & \Cdots & 1 \\
+  0 & \Cdots & 0 \\
 \end{bNiceMatrix}$
 \end{Code}
 \index{create-cell-nodes (key of \texttt{\textbackslash CodeBefore})|textit}
@@ -8294,9 +8640,9 @@ $\begin{bNiceMatrix}
 \CodeBefore [create-cell-nodes] 
   \tikz \node [highlight = (2-1) (2-last)] {} ;
 \Body
-0 & \Cdots & 0 \\
-1 & \Cdots & 1 \\
-0 & \Cdots & 0 \\
+  0 & \Cdots & 0 \\
+  1 & \Cdots & 1 \\
+  0 & \Cdots & 0 \\
 \end{bNiceMatrix}\]
 
 
@@ -8308,14 +8654,14 @@ this matrix, we can use the previous technique three times.
 \begin{pNiceArray}{ccc}[last-col, margin = 2pt]
 \CodeBefore [create-cell-nodes]
   \begin{tikzpicture}
-  \emph{\node [highlight = (1-1) (1-last)] {} ;
-  \node [highlight = (2-1) (2-last)] {} ;
-  \node [highlight = (3-1) (3-last)] {} ;}
+    \emph{\node [highlight = (1-1) (1-last)] {} ;
+    \node [highlight = (2-1) (2-last)] {} ;
+    \node [highlight = (3-1) (3-last)] {} ;}
   \end{tikzpicture}
 \Body
-a & a + b & a + b + c & L_1 \\
-a & a     & a + b     & L_2 \\
-a & a     & a         & L_3
+  a & a + b & a + b + c & L_1 \\
+  a & a     & a + b     & L_2 \\
+  a & a     & a         & L_3
 \end{pNiceArray}
 \end{Code}
 
@@ -8323,14 +8669,14 @@ a & a     & a         & L_3
 \[\begin{pNiceArray}{ccc}[last-col, margin = 2pt]
 \CodeBefore [create-cell-nodes]
   \begin{tikzpicture}
-  \node [highlight = (1-1) (1-last)] {} ;
-  \node [highlight = (2-1) (2-last)] {} ;
-  \node [highlight = (3-1) (3-last)] {} ;
+    \node [highlight = (1-1) (1-last)] {} ;
+    \node [highlight = (2-1) (2-last)] {} ;
+    \node [highlight = (3-1) (3-last)] {} ;
   \end{tikzpicture}
 \Body
-a & a + b & a + b + c & L_1 \\
-a & a     & a + b     & L_2 \\
-a & a     & a         & L_3
+  a & a + b & a + b + c & L_1 \\
+  a & a     & a + b     & L_2 \\
+  a & a     & a         & L_3
 \end{pNiceArray}\]
 
 \medskip
@@ -8345,14 +8691,14 @@ nodes'' instead of the ``normal nodes''.
 \[\begin{pNiceArray}{ccc}[last-col, margin = 2pt, create-medium-nodes]
 \CodeBefore [create-cell-nodes]
   \begin{tikzpicture} \emph{[name suffix = -medium]}
-  \node [highlight = (1-1) (1-last)] {} ;
-  \node [highlight = (2-1) (2-last)] {} ;
-  \node [highlight = (3-1) (3-last)] {} ;
+    \node [highlight = (1-1) (1-last)] {} ;
+    \node [highlight = (2-1) (2-last)] {} ;
+    \node [highlight = (3-1) (3-last)] {} ;
   \end{tikzpicture}
 \Body
-a & a + b & a + b + c & L_1 \\
-a & a     & a + b     & L_2 \\
-a & a     & a         & L_3
+  a & a + b & a + b + c & L_1 \\
+  a & a     & a + b     & L_2 \\
+  a & a     & a         & L_3
 \end{pNiceArray}\]
 \end{Code}
 
@@ -8360,14 +8706,14 @@ a & a     & a         & L_3
 \[\begin{pNiceArray}{ccc}[last-col, margin = 2pt, create-medium-nodes]
 \CodeBefore [create-cell-nodes]
   \begin{tikzpicture} [name suffix = -medium]
-  \node [highlight = (1-1) (1-last)] {} ;
-  \node [highlight = (2-1) (2-last)] {} ;
-  \node [highlight = (3-1) (3-last)] {} ;
+    \node [highlight = (1-1) (1-last)] {} ;
+    \node [highlight = (2-1) (2-last)] {} ;
+    \node [highlight = (3-1) (3-last)] {} ;
   \end{tikzpicture}
 \Body
-a & a + b & a + b + c & L_1 \\
-a & a     & a + b     & L_2 \\
-a & a     & a         & L_3
+  a & a + b & a + b + c & L_1 \\
+  a & a     & a + b     & L_2 \\
+  a & a     & a         & L_3
 \end{pNiceArray}\]
 
 
@@ -8558,6 +8904,11 @@ also available on the
 \small
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
+
+
+\subsection*{Changes between version 7.8 and 7.9}
+
+New keys |default-line| and |rules/fix-vertex|
 
 \subsection*{Changes between version 7.7 and 7.8}
 
