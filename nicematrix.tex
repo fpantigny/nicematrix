@@ -269,14 +269,15 @@ corresponding environments of \pkg{amsmath} (which is loaded by
 \pkg{nicematrix}): |{matrix}|, |{pmatrix}|, etc. 
 
 \medskip
-The environment |{NiceTabularX}| is similar to the environment |{tabularx}|
-from the eponymous package.\footnote{In fact, it's possible to use directly the
-|X| columns in the environment |{NiceTabular}| (and the required
-width for the tabular is fixed by the key |width|): cf. p.~\pageref{X-columns}}.
+The environment |{NiceTabularX}| is similar to the environment |{tabularx}| from
+the eponymous package.\footnote{In fact, it's possible to use directly the |X|
+  columns in the environment |{NiceTabular}| (and the required width for the
+  tabular is fixed by the key |width|): cf.~\ref{X-columns},
+  p.~\pageref{X-columns}. Thus, it's possible to always avoid the environnement |{NiceTabularX}|}.
 
 \medskip
 The environment |\{NiceArrayWithDelims\}| is a generalisation of the environment
-|{NiceArray}| and its variants (cf. p.~\pageref{NiceArrayWithDelims}).
+|{NiceArray}| and its variants (cf.~\ref{NiceArrayWithDelims}, p.~\pageref{NiceArrayWithDelims}).
 
 \medskip
 \textbf{It's recommended to use primarily the classical environments and to use
@@ -288,8 +289,8 @@ The environment |\{NiceArrayWithDelims\}| is a generalisation of the environment
 By the way, when using an environment of \pkg{nicematrix} it's often possible to
 speed up the compilation by using the key \Definition{no-cell-nodes} (the
 compilation time may be reduced by a factor of 3 or 4). Indeed, numerous
-functionalities of \pkg{nicematrix} do not use the PGF-TikZ nodes created under
-the contents of the cells (cf.~p.~\pageref{no-cell-nodes}) and the key
+functionalities of \pkg{nicematrix} do not use the PGF/TikZ nodes created under
+the contents of the cells (cf.~\ref{no-cell-nodes}, p.~\pageref{no-cell-nodes}) and the key
 |no-cell-nodes| avoids their creation which is expensive (the creation of those
 nodes can't be desactivated by \pkg{nicematrix} because \pkg{nicematrix} has no
 way to know whether those nodes are used directly by the final user in an
@@ -361,7 +362,7 @@ $\begin{pNiceMatrix}[no-cell-nodes,cell-space-limits = 1pt]
 
 \bigskip
 It's also possible to change these parameters for only a few rows by using the 
-command |\RowStyle| provided by \pkg{nicematrix} (cf.~p.~\pageref{RowStyle}).
+command |\RowStyle| provided by \pkg{nicematrix} (cf.~\ref{RowStyle}, p.~\pageref{RowStyle}).
 
 
 
@@ -432,6 +433,7 @@ u_n & 1 & 2 & 4 & 8 & 16 & 32 \\
 \end{minipage}
 
 \medskip
+\clearpage
 However, it's also possible to use the tools of
 \pkg{booktabs}\footnote{The extension \pkg{booktabs} is \emph{not} loaded
 by \pkg{nicematrix}.}: |\toprule|,
@@ -537,7 +539,8 @@ beginnning of the content of the block (but it's possible to use
 
 
 \interitem
-Here is an example of utilisation of the command |\Block| in mathematical matrices.
+\clearpage
+Here is an example of use of the command |\Block| in mathematical matrices.
 
 \medskip
 \begin{Code}[width=10.6cm]
@@ -566,8 +569,7 @@ specify some TeX code which will be inserted before the beginning of the
 math mode.\footnote{This argument between angular brackets may also be used to
 insert a command of font such as |\bfseries| when the command |\\| is used in
 the content of the block. It's also possible to put in that optional argument
-the command |\rotate| provided by \pkg{nicematrix} (cf. part~\ref{rotate},
-p.~\pageref{rotate}).} 
+the command |\rotate| provided by \pkg{nicematrix} (cf.~\ref{rotate}, p.~\pageref{rotate}).} 
 
 \medskip
 \begin{Code}[width=10.6cm]
@@ -618,7 +620,7 @@ the keys \Definition{hlines}, \Definition{vlines} and
 block;\footnote{However, the rules are not drawn in the sub-blocks of the
 block, as always with \pkg{nicematrix}: the rules are not drawn in the blocks,
 except when they have the key |transparent|
-(cf. section~\ref{rules} p.~\pageref{rules}).}
+(cf.~\ref{rules} p.~\pageref{rules}).}
 \item \index{rules/width (key of \texttt{\textbackslash Block})}
 the key \Definition{rules/width} is the width of the rules (is relevant
 only when one of the keys |draw|, |hvlines|, |vlines| and |hlines| is used);
@@ -634,7 +636,7 @@ requires rounded corners (for the frame drawn by |draw| and the shape drawn by
 |fill|) with a radius equal to the value of that key (the default value is 4~pt,
 which is the initial value of the \emph{rounded corners} of
 TikZ)\footnote{There is also a key |rounded-corners| available for an
-  environment of \pkg{nicematrix}: cf.~p.~\pageref{tabular-rounded-corners}.} ;
+  environment of \pkg{nicematrix} (cf.~\ref{tabular-rounded-corners}, p.~\pageref{tabular-rounded-corners}).} ;
 \end{itemize}
 
 \medskip
@@ -653,7 +655,7 @@ elements covered by |left|, |right|, |top|, |bottom| and |all|; it's possible, i
 fact, in the list which is the value of the key |borders|, to add an entry of
 the form |tikz={|\textsl{list}|}| where \textsl{list} is a list of couples
 \textsl{key=value} of TikZ specifying the graphical characteristics of the
-lines that will be drawn (for an example, see p.~\pageref{ex:borders}). When the key
+lines that will be drawn (cf.~example~\ref{ex:borders}, p.~\pageref{ex:borders}). When the key
 |borders| is used without value, it is equivalent to the key |draw| (without value).
 
 \item \index{tikzz@tikz!key of \texttt{\textbackslash Block}}
@@ -671,7 +673,7 @@ block by a margin (horizontally and vertically) equal to the value (of that key
 which are the other keys in the list of keys provided as value to the key |tikz|
 of |\Block|.
 
-For examples, cf. p.~\pageref{tikz-key-examples}.
+For examples, cf.~\ref{tikz-key-examples}, p.~\pageref{tikz-key-examples}.
 \end{itemize}
 
 
@@ -682,21 +684,21 @@ There is also some technical keys:
 \item \index{name!key of \texttt{\textbackslash Block}}
 the key \Definition{name} provides a name to the rectangular TikZ node
 corresponding to the block; it's possible to use that name with TikZ in the
-|\CodeAfter| of the environment (cf.~p.~\pageref{code-after});
+|\CodeAfter| of the environment (cf.~\ref{code-after}, p.~\pageref{code-after});
 \item \index{respect-arraystretch (key of \texttt{\textbackslash Block})}
 the key \Definition{respect-arraystretch} prevents the setting of
 |\arraystretch| to $1$ at the beginning of the block (which is the behaviour
 by default) ;
 \item \index{transparent (key of \texttt{\textbackslash Block})}
 By default, the rules are not drawn in the blocks (see the section about
-the rules: section~\ref{rules} p.~\pageref{rules}). However, if the key
+the rules: section~\ref{rules}, p.~\pageref{rules}). However, if the key
 \Definition{transparent} is used, the rules are drawn. For an example, see
-section~\ref{tikz-key-examples} on page~\pageref{tikz-key-examples}. Caution:
+section~\ref{tikz-key-examples}, p.~\pageref{tikz-key-examples}. Caution:
 that key does not imply that the content of the block will be transparent!
 \end{itemize}
 
 There is also keys for the horizontal and vertical positions of the content of
-the block: cf.~\ref{horizontal-block} p.~\pageref{horizontal-block}.
+the block: cf.~\ref{horizontal-block}, p.~\pageref{horizontal-block}.
 
 \interitem
 {\bfseries One must remark that, by default, the commands |\Blocks| don't create
@@ -751,7 +753,7 @@ argument for the horizontal alignment (eg: |p[l]{...}|) and, in that case, that
 type of alignement is passed to the block.
 
 Of course, the |\Block| may also have its own specification of alignment:
-cf.~\ref{horizontal-block} p.~\pageref{horizontal-block}.
+cf.~\ref{horizontal-block}, p.~\pageref{horizontal-block}.
 
 \item The specifications of font specified for the column by a construction
 |>{...}| in the preamble of the array are taken into account for the
@@ -812,7 +814,7 @@ However, there are some good reasons to use such a block.
 \item It's possible to use the command |\\| in a (mono-cell) block.
 
 \item It's possible to split the cell in several sub-cells with |&| when the
-key |&-in-blocks| is in force (cf p.~\pageref{ampersand-in-blocks}).
+key |&-in-blocks| is in force (cf.~\ref{ampersand-in-blocks}, p.~\pageref{ampersand-in-blocks}).
 
 \item It's possible to use the option of horizontal alignment of the block in
 derogation of the type of column given in the preamble of the array.
@@ -1126,7 +1128,7 @@ text & text \\
 
 \end{scope}
 
-\subsection{\textbackslash\textbackslash\ and \& in the blocks}
+\subsection{\texttt{\textbackslash\textbackslash} and \texttt{\&} in the blocks}
 
 \label{ampersand-in-blocks}
 \index{ampersand-in-blocks}
@@ -1224,8 +1226,8 @@ and, for each of those columns, creates within that column a block for each non-
 (that block will enclose that non-empty cell and all the following empty cells in the column).
 
 These blocks will be, as all the blocks, taken into account for the rules (drawn by |vlines|,
-|hlines|, etc.: cf. part~\ref{rules}, p.~\pageref{rules}) and the commands that color the
-background of the cells (cf. part~\ref{color-in-code-before}, p.~\pageref{color-in-code-before}).
+|hlines|, etc.: cf.~\ref{rules}, p.~\pageref{rules}) and the commands that color the
+background of the cells (cf.~\ref{color-in-code-before}, p.~\pageref{color-in-code-before}).
 That the point using the key |create-blocks-in-col|.
 
 \bigskip
@@ -1300,14 +1302,18 @@ Peter \\ \hline
 Mary  & George \\ \hline
 \end{NiceTabular}
 
-
-\bigskip
+\bigbreak
 However, the vertical rules are not drawn in the blocks (created by |\Block|:
-cf.~p.~\pageref{Block}) nor in the corners (created by the key |corner|:
-cf.~p.~\pageref{corners}) nor in the potential exterior rows (created by the
-keys |first-row| and |last-row|: cf.~p.~\pageref{exterior}).
+cf.~\ref{Block}, p.~\pageref{Block}) nor in the corners (created by the key |corner|:
+cf.~\ref{corners}, p.~\pageref{corners}) nor in the potential exterior rows (created by the
+keys |first-row| and |last-row|: cf.~\ref{exterior}, p.~\pageref{exterior}).
 
-\bigskip
+\medskip
+If you use |\multicolumn| there is no need to add the potential \verb+|+ or
+\verb+||+ at the end of the little preamble (but it's recommanded to use the
+command |\Block| in the environments of \pkg{nicematrix}).
+
+\bigbreak
 \index{booktabs@\pkg{booktabs} (package)}
 If you use \pkg{booktabs} (which provides |\toprule|, |\midrule|,
 |\bottomrule|, etc.) and if you actually want to add vertical rules (which is
@@ -1366,10 +1372,10 @@ Marie & Pauline \\ \hline
 Of course, in this case, there is no point using |{NiceTabular}| and it's better
 to use the standard environment |{tabular}| but maybe we will have to use other
 functionalities provided by \pkg{nicematrix}. One should also consider the
-command |\EmptyRow| in the |\CodeBefore|, described on the page~\pageref{EmptyRow}.
+command |\EmptyRow| in the |\CodeBefore| (cf.~\ref{EmptyRow}, p.~\pageref{EmptyRow}).
 
 \bigskip
-\subsubsection{The command \textbackslash cline}
+\subsubsection{The command \texttt{\textbackslash cline}}
 
 \label{remark-cline}
 \index{cline@\texttt{\textbackslash cline} (LaTeX command)}
@@ -1480,7 +1486,7 @@ In fact, in that example, instead of |\hline|, it would have a better choice to
 use |\Hline|, provided by \pkg{nicematrix} and described just below, because it
 ensures a better output in the PDF viewers at the low levels of zoom.
 
-\subsection{The tools of nicematrix for the rules}
+\subsection{The tools of \texorpdfstring{\pkg{nicematrix}}{nicematrix} for the rules}
 
 Here are the tools provided by \pkg{nicematrix} for the rules.
 \begin{itemize}
@@ -1500,16 +1506,15 @@ columns.}
 \begin{itemize}
 \item the blocks created by the command |\Block|\footnote{And also the command |\multicolumn| but
 it's recommended to use instead |\Block| in the environments of
-\pkg{nicematrix}.} presented
-p.~\pageref{Block};
+\pkg{nicematrix}.} (cf.~\ref{Block}, p.~\pageref{Block});
 \item the blocks createad by the key |create-blocks-in-col|:
-cf.~p.~\pageref{create-blocks-in-col};
-\item the blocks implicitly delimited by the continuous dotted lines created
-by |\Cdots|, |\Vdots|, etc. (cf.~p.~\pageref{Cdots}).
+(cf.~\ref{create-blocks-in-col}, p.~\pageref{create-blocks-in-col});
+\item the blocks implicitly delimited by the dotted leaders created
+by |\Cdots|, |\Vdots|, etc. (cf.~\ref{Cdots}, p.~\pageref{Cdots}).
 \end{itemize}
-\item The corners are created by the key |corners| explained below (see
+\item The corners are created by the key |corners| explained below (cf.~\ref{corners}, 
 p.~\pageref{corners}).
-\item For the exterior rows and columns, see~p.~\pageref{exterior}.
+\item For the exterior rows and columns, cf.~\ref{exterior}, p.~\pageref{exterior}.
 \end{itemize}
 
 In particular, this remark exhibits a first difference between the standard
@@ -1517,7 +1522,7 @@ command |\hline| and the command |\Hline| provided by \pkg{nicematrix}.
 
 Moreover, the key |\Hline| takes in an optional argument (between square
 brackets) which is a list of \textsl{key=value} pairs. For the description of
-those keys, see |custom-line| on p.~\pageref{custom-line}.\footnote{Technical
+those keys, see |custom-line|, in the section~\ref{custom-line}, p.~\pageref{custom-line}.\footnote{Technical
   remark: If the user wants to write a command over the command |\Hline|, it
   shall be ensured that this new command is expandable in the TeX sens (by
   using, for instance, |\NewExpandableDocumentCommand| of LaTeX3, |\newcommand|
@@ -1648,16 +1653,16 @@ daisy      & peony & jasmine & magnolia
 \bigskip
 It's worth noting that, when the key |rounded-corners| is used for the
 environment |{NiceTabular}|, the key |hvlines| draws rounded corners for the
-exterior frame of the tabular: cf. part~\ref{tabular-rounded-corners},
-p.~\pageref{tabular-rounded-corners}.
+exterior frame of the tabular (cf.~\ref{tabular-rounded-corners},
+p.~\pageref{tabular-rounded-corners}).
 
 \bigskip
 The key \Definition{hlines-except-borders} is similar to the key |hlines| but
 does not draw the rules on the horizontal borders of the array. The key
 \Definition{hvlines-except-borders} is similar to the key |hvlines| but does not
 draw the rules on the horizontal and vertical borders of the array. For an
-example of use of that key, see the part ``Use with tcolorbox'',
-p.~\pageref{tcolorbox}.
+example of use of that key, see the part ``Use with tcolorbox''
+(\ref{tcolorbox}, p.~\pageref{tcolorbox}).
 
 \subsubsection{The (empty) corners}
 
@@ -1673,7 +1678,7 @@ For each of these corners, we will call \emph{empty corner} (or simply
 actually in the corner of the array.\footnote{For sake of completeness, we
 should also say that a cell contained in a block (even an empty cell) is not
 taken into account for the determination of the corners. That behaviour is
-natural. The precise definition of a ``non-empty cell'' is given below (cf.
+natural. The precise definition of a ``non-empty cell'' is given below (cf.~\ref{empty-cells},
 p.~\pageref{empty-cells}).}
 
 However, it's possible, for a cell without content, to require \pkg{nicematrix}
@@ -1712,7 +1717,7 @@ A & A & A & A & A & A \\
 \bigskip
 When the key \Definition{corners}\footnote{The key |corners| that we describe now
 has no direct link with the key |rounded-corners| described in the part
-\ref{tabular-rounded-corners}, p.~\pageref{tabular-rounded-corners}} is used,
+\ref{tabular-rounded-corners}, p.~\pageref{tabular-rounded-corners}.} is used,
 \pkg{nicematrix} computes the (empty) corners and these corners will be taken
 into account by the tools for drawing the rules (the rules won't be drawn in
 the corners).
@@ -1780,11 +1785,12 @@ corners (designed by |NW|, |SW|, |NE| and |SE|).
 \medskip
 $\triangleright$ The corners are also taken into account by the tools provided
 by \pkg{nicematrix} to color cells, rows and columns. These tools don't color
-the cells which are in the corners (cf.~p.~\pageref{color-in-code-before}). The
-command |\TikzEveryCell| available in the |\CodeBefore| and the |\CodeAfter|
-(cf. p.~\pageref{TikzEveryCell}) takes also into account the empty corners.
+the cells which are in the corners (cf.~\ref{color-in-code-before},
+p.~\pageref{color-in-code-before}). The command |\TikzEveryCell| available in
+the |\CodeBefore| and the |\CodeAfter| (cf.~\ref{TikzEveryCell},
+p.~\pageref{TikzEveryCell}) takes also into account the empty corners.
 
-\subsubsection{The command \textbackslash diagbox}
+\subsubsection{The command \texttt{\textbackslash diagbox}}
 
 \indexcommand{diagbox}
 
@@ -1855,7 +1861,7 @@ c & c & b & a & e
 \medskip
 Nevertheless, it's always possible to draw whatever rule we wish with TikZ in
 the |\CodeAfter| (or the |\CodeBefore|) by using the PGF/TikZ nodes created by
-\pkg{nicematrix}: cf. p.~\pageref{PGF-nodes}.
+\pkg{nicematrix}: cf.~\ref{PGF-nodes}, p.~\pageref{PGF-nodes}.
 
 
 \subsubsection{Commands for customized rules}
@@ -2014,7 +2020,7 @@ four & \cellcolor{yellow} five & six \\
 
 
 \bigskip
-\item \emph{Second possibilité} : the key |dashed|
+\item \emph{Second possibilité} : the key \Definition{dashed}
 
 \indexcommand{hdashedline}
 \indexcommand{cdashedline}
@@ -2131,7 +2137,7 @@ $\begin{pNiceMatrix}[no-cell-nodes]
 
 
 \bigskip
-\item \emph{Troisième possibilité} : the key |dotted|
+\item \emph{Troisième possibilité} : the key \Definition{dotted}
 
 \label{dotted}
 \index{dotted (clé de «custom-line»)}
@@ -2144,7 +2150,7 @@ The extension \pkg{nicematrix} provides the commands
 \DefinitionCommand{hdottedline} and \DefinitionCommand{cdottedline} and
 the letter «|:|» for dotted lines. For these lines, \pkg{nicematrix} does not use TikZ
 but an internal system. In fact, it's the same as the system used by the commands
-|\Cdots|, |\Vdots|, etc. (cf p.~\pageref{Cdots}).
+|\Cdots|, |\Vdots|, etc. (cf.~\ref{Cdots}, p.~\pageref{Cdots}).
 
 \bigskip
 Thus, it's possible to use the commands |\hdottedline| and |\cdottedline|
@@ -2195,13 +2201,13 @@ key in conjunction with the key |total-width|.
 
 
 \bigskip
-\item \emph{Fourth possibility} : the key |tikz|
+\item \emph{Fourth possibility} : the key \Definition{tikz}
 
 \index{tikzz@tikz!key of ``custom-line''}
 \index{total-width (key of ``custom-line'')}
 
 \nobreak
-It's possible to use the key \Definition{tikz} (if TikZ is loaded). In that
+It's possible to use the key |tikz| (if TikZ is loaded). In that
 case, the rule is drawn directly with TikZ by using as parameters the value of
 the key |tikz| which must be a list of \textsl{key=value} pairs which may be
 applied to a TikZ path.
@@ -2259,7 +2265,7 @@ rule specified in |tikz|).
 \index{start (key for the rules)}
 \index{end (key for the rules)}
 
-As previously said, the previous keys may be used in the optional argument
+As we have said, the previous keys may be used in the optional argument
 of an individual command |\Hline| and in the optional argument of a specifier
 ``\verb+|+'' in the preamble of an environment (for instance |{NiceTabular}|).
 
@@ -2331,6 +2337,7 @@ Assume that we have defined a command |\RandomLine| for a line which zigzags ran
      }
   }
 
+\clearpage
 \medskip
 Let's consider the following tabular, with |\RandomLine| used at the end:
 
@@ -2410,7 +2417,8 @@ The package \pkg{nicematrix} provides the key \Definition{default-line} which
 sets the style of all the rules that will be drawn by the command |\Hline|, the
 specifier \verb+|+ in the preambles of the environments and the keys |hvlines|,
 |vlines|, |hlines|, etc. The different ways for the specification of the rules
-are the sames as those for the key |custom-line| (cf. p.~\pageref{custom-line}).
+are the sames as those for the key |custom-line| (cf.~\ref{custom-line},
+p.~\pageref{custom-line}).
 
 
 \bigskip
@@ -2460,7 +2468,7 @@ are the sames as those for the key |custom-line| (cf. p.~\pageref{custom-line}).
   seven & \Block{1-2}{eight} \\
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{ccc}[hvlines,rules/fix-vertex]
+\begin{NiceTabular}{ccc}[hvlines,rules/fix-vertex,no-cell-nodes]
 one   & two  & three \\
 four  & five & six \\
 seven & \Block{1-2}{eight} \\
@@ -2477,7 +2485,7 @@ seven & \Block{1-2}{eight} \\
 
 \index{Colour!of the cells}
 
-\subsection{Use of colortbl}
+\subsection{Use of \texorpdfstring{\pkg{colortbl}}{colortbl}}
 
 \index{colortbl@\pkg{colortbl} (package)}
 
@@ -2515,7 +2523,7 @@ been solved...).
 The package \pkg{nicematrix} provides tools to avoid both problems.
 \end{itemize}
 
-\subsection{The tools of nicematrix in the \textbackslash CodeBefore}
+\subsection{The tools of \texorpdfstring{\pkg{nicematrix}}{nicematrix} in the \texttt{\textbackslash CodeBefore}}
 
 \label{color-in-code-before}
 \index{code-before!key for an environment}
@@ -2560,7 +2568,7 @@ New commands are available in that |\CodeBefore|: |\cellcolor|,
 |\rowlistcolors|, |\chessboardcolors| and |\arraycolor|.\footnote{Remark that,
 in the |\CodeBefore|, PGF/TikZ nodes of the form ``\verb+(i-|j)+'' are
 also available to indicate the position to the potential rules:
-cf.~p.~\pageref{nodes-i}.}
+cf.~\ref{nodes-i}, p.~\pageref{nodes-i}.}
 \label{code-before}
 
 \index{cellcolor@\texttt{\textbackslash cellcolor}!command of
@@ -2584,12 +2592,11 @@ by \pkg{colortbl}.
 
 \medskip
 These commands don't color the cells which are in the ``corners'' if the key
-|corners| is used. That key has been described p.~\pageref{corners}.
+|corners| is used (cf.~\ref{corners}, p.~\pageref{corners}).
 
 \medskip
 These commands respect the rounded corners if the key |rounded-corners|
-(described in the part \ref{tabular-rounded-corners} at the
-page~\pageref{tabular-rounded-corners}) has been used.
+(cf.~\ref{tabular-rounded-corners}, p.~\pageref{tabular-rounded-corners}) has been used.
 
 \medskip
 All these commands accept an optional argument, between square brackets and
@@ -2675,8 +2682,8 @@ of the rectangle and the third is the lower-right cell of the rectangle.
 \bigskip
 \item The command \Definition{\textbackslash arraycolor} takes in as mandatory
 argument a color and color the whole tabular with that color (except the
-potential exterior rows and columns: cf.~p.~\pageref{exterior}). It's only a
-particular case of |\rectanglecolor|.
+potential exterior rows and columns: cf.~\ref{exterior}, p.~\pageref{exterior}).
+It's only a particular case of |\rectanglecolor|.
 
 
 \bigskip
@@ -2708,7 +2715,7 @@ $\begin{pNiceMatrix}[r,baseline=1, margin,no-cell-nodes]
 \end{scope}
 
 \medskip
-We have used the key |r| which aligns all the columns rightwards (cf.
+We have used the key |r| which aligns all the columns rightwards (cf.~\ref{columns-width}, 
 p.~\pageref{columns-width}).
 
 
@@ -2797,7 +2804,7 @@ first mandatory argument) begins with the same color.\footnote{Otherwise, the co
 of a given row relies only upon the parity of its absolute number.}
 \item With the key \Definition{respect-blocks} the ``rows'' alternately colored
 may extend over several rows if they have to incorporate blocks (created with
-the command |\Block|: cf.~p.~\pageref{Block}).
+the command |\Block|: cf.~\ref{Block}, p.~\pageref{Block}).
 \end{itemize}
 
 \medskip
@@ -2877,7 +2884,7 @@ with the command |\resetcolorseries|\footnote{For the initialization, in the
 following example, you have used the LaTeX counter |iRow| (which corresponds to the
 internal TeX counter |\c@iRow|) which, when used in the
 |\CodeBefore| (and in the |\CodeAfter|) corresponds to the number of rows of
-the array: cf.~p~\pageref{iRow}. That leads to an adjustment of the gradation
+the array: cf.~\ref{iRow},~p.~\pageref{iRow}. That leads to an adjustment of the gradation
 of the colors to the size of the tabular.}).
 
 \index{definecolorseries@\texttt{\textbackslash definecolorseries} (command of \pkg{xcolor})}
@@ -2957,8 +2964,8 @@ which are in the ``corners''. In the following example, we use the key
 
 \medskip
 The previous example uses the keys |first-row| and |first-col| which are
-described in the chapter concerning the «exterior» rows and columns
-(cf.~p.~\pageref{exterior}). 
+described in the chapter concerning the ``exterior'' rows and columns
+(cf.~\ref{exterior}, p.~\pageref{exterior}). 
 
 As one can see, \emph{by default}, the coloring commands that we have described
 don't apply in those exterior rows and columns.
@@ -2967,7 +2974,7 @@ However, it may still be possible to color in those rows and columns by
 providing explicitly the numbers of those rows and columns.
 
 In the following example, we require a color in the column~$0$ (which is the
-«first column» and which exists because the key |first-col| has been used).
+``first column'' and which exists because the key |first-col| has been used).
 
 \medskip
 \begin{Code}[width=15cm]
@@ -3070,7 +3077,7 @@ the user).
 It's also possible, in the |\CodeBefore|, to use the commands
 \DefinitionCommand{EmptyColumn} and \DefinitionCommand{EmptyRow}. The command
 |\EmptyColumn| takes in as argument a (comma-separated) list of numbers of
-columns and requires that no rules nor background colors will be drawn in the
+columns and requires that no rule nor background colors will be drawn in the
 corresponding columns. The command |\EmptyRow| is similar for the rows.
 
 \medskip
@@ -3117,8 +3124,8 @@ inspired by the similar commands of \pkg{colortbl}).
   on the contrary, write a \emph{fully expandable} command).}
 \item \DefinitionCommand{rowcolor} which must be used in a cell and which
 colorizes the end of the row;\footnote{If you want a command to color the
-  following $n$~rows, consider the command |\RowStyle| and its key |fillcolor|,
-  p.~\pageref{RowStyle}} 
+  following $n$~rows, consider the command |\RowStyle| and its key |fillcolor|:
+  cf.~\ref{RowStyle}, p.~\pageref{RowStyle}} 
 \item \DefinitionCommand{columncolor} which must be used in the preamble of the
 environment with the same syntax as the corresponding command of \pkg{colortbl}
 (however, unlike the command |\columncolor| of \pkg{colortbl}, this command
@@ -3257,7 +3264,7 @@ of coloring which may apply to these cells.
 Therefore, the color |nocolor| is an easy way to add an exception to a more
 general coloring command.
 
-\section{The command \textbackslash RowStyle}
+\section{The command \texttt{\textbackslash RowStyle}}
 
 \label{RowStyle}
 \indexcommand{RowStyle}
@@ -3278,7 +3285,7 @@ the current command will apply (with the special value |*|, it will apply to all
 the following rows).
 \item The keys \Definition{cell-space-top-limit}$^+$, \Definition{cell-space-bottom-limit}$^+$
 and \Definition{cell-space-limits}$^+$ are available with the same meaning that the
-corresponding global keys (cf. p.~\pageref{cell-space}).
+corresponding global keys (cf.~\ref{cell-space}, p.~\pageref{cell-space}).
 \item \index{rowcolor (key of \texttt{\textbackslash RowStyle})}
 \index{fill!key of \texttt{\textbackslash RowStyle}}
 \index{opacity!key of \texttt{\textbackslash RowStyle}}
@@ -3333,7 +3340,7 @@ I & II & III & IV \\
 \end{NiceTabular}
 
 \medskip
-The command |\rotate| is described p.~\pageref{rotate}.
+The command |\rotate| is described in the section~\ref{rotate}, p.~\pageref{rotate}.
 
 \section{The width of the columns}
 
@@ -3363,10 +3370,10 @@ Rio    & Tokyo    & Oslo
 
 
 \bigskip
-\index{columns-width}
-In the environments of \pkg{nicematrix}, it's also possible to fix the \emph{minimal}
-width of all the columns (except the potential exterior columns: cf. p.~\pageref{exterior}) directly
-with the key \Definition{columns-width}. 
+\index{columns-width} In the environments of \pkg{nicematrix}, it's also
+possible to fix the \emph{minimal} width of all the columns (except the
+potential exterior columns: cf.~\ref{exterior}, p.~\pageref{exterior}) directly
+with the key \Definition{columns-width}.
 
 \medskip
 \begin{Code}[width=10cm]
@@ -3450,7 +3457,7 @@ construction uses the environment |{NiceMatrixBlock}| with the option
 |auto-columns-width|\footnote{At this time, this is the only usage of the
 environment |{NiceMatrixBlock}| but it may have other usages in the future.}.
 The environment |{NiceMatrixBlock}| has no direct link with the command
-|\Block| presented previously in this document (cf.~p.~\pageref{Block}).
+|\Block| presented previously in this document (cf.~\ref{Block}, p.~\pageref{Block}).
 
 \medskip
 \begin{Code}[width=8.5cm]
@@ -3476,7 +3483,7 @@ $\begin{array}{c}
 \end{array}$
 \end{NiceMatrixBlock}
 
-\subsection{The columns V of varwidth}
+\subsection{The columns V of \texorpdfstring{\pkg{varwidth}}{varwidth}}
 
 \label{varwidth}
 \index{varwidth@\pkg{varwidth} (package)}
@@ -3559,7 +3566,7 @@ some very very very long text
 Concerning \pkg{nicematrix}, one of the benefits of this type of columns is
 that, for a cell of a column of type~|V|, the PGF/TikZ node created by
 \pkg{nicematrix} for the content of that cell has a width adjusted to the
-content of the cell : cf. p.~\pageref{node-V}.
+content of the cell : cf.~\ref{node-V}, p.~\pageref{node-V}.
 
 
 \bigskip
@@ -3684,8 +3691,8 @@ L_4    & a_{41} & a_{42} & a_{43} & a_{44} & L_4    \\
 \end{pNiceMatrix}\]
 
 \medskip
-The dotted lines of this example have been drawn with the tools presented
-p.~\pageref{Cdots}.
+The dotted lines of this example have been drawn with the tools presented in the
+section~\ref{Cdots}, p.~\pageref{Cdots}.
 
 \bigskip
 We have several remarks to do.
@@ -3696,8 +3703,8 @@ the potential first column and the potential last column: they will
 automatically (and necessarily) be of type |r| for the first column and |l|
 for the last one.\footnote{The users wishing exterior columns with another
 type of alignment should consider the command |\SubMatrix| available in the
-|\CodeAfter| and in the |\CodeBefore| (cf.~p.~\pageref{sub-matrix}) or try to put
-delimiter directly in the preamble of the array (cf.~p.~\pageref{delimiters-in-preamble}).} 
+|\CodeAfter| and in the |\CodeBefore| (cf.~\ref{sub-matrix}, p.~\pageref{sub-matrix}) or try to put
+delimiter directly in the preamble of the array (cf.~\ref{delimiters-in-preamble}, p.~\pageref{delimiters-in-preamble}).} 
 \item One may wonder how \pkg{nicematrix} determines the number of rows and
 columns which are needed for the composition of the ``last row'' and ``last
 column''.
@@ -3706,7 +3713,7 @@ column''.
 |{pNiceArray}|, the number of columns can obviously be computed from the
 preamble.
 
-\item When the option |light-syntax| (cf. p. \pageref{light-syntax}) is used,
+\item When the option |light-syntax| (cf.~\ref{light-syntax}, p.~\pageref{light-syntax}) is used,
 \pkg{nicematrix} has, in any case, to load the whole body of the environment
 (and that's why it's not possible to put verbatim material in the array with
 the option |light-syntax|). The analysis of this whole body gives the number
@@ -3783,27 +3790,27 @@ L_4    & a_{41} & a_{42} & a_{43} & a_{44} & L_4    \\
 \item As shown in the previous example, the horizontal and vertical rules
 don't extend in the exterior rows and columns. This remark also applies to the
 customized rules created by the key |custom-line|
-(cf.~p.~\pageref{custom-line}). 
+(cf.~\ref{custom-line}, p.~\pageref{custom-line}). 
 
 \item A specification of color present in |code-for-first-row| also applies to
 a dotted line drawn in that exterior ``first row'' (except if a value has
 been given to |xdots/color|). Idem for the other exterior rows and columns.
 
-\item Logically, the potential option |columns-width| (described
+\item Logically, the potential option |columns-width| (cf.~\ref{width}, 
 p.~\pageref{width}) doesn't apply to the ``first column'' and ``last column''.
 
 \item For technical reasons, it's not possible to use the option of the
 command |\\| after the ``first row'' or before the ``last row''. The placement
 of the delimiters would be wrong. If you are looking for a workaround,
 consider the command |\SubMatrix| in the |\CodeAfter| (and the |\CodeBefore|)
-described p.~\pageref{sub-matrix}. 
+described in the section~\ref{sub-matrix}, p.~\pageref{sub-matrix}. 
 \end{itemize}
 
 
 
 
 
-\section{The continuous dotted lines in the matrices}
+\section{Dotted leaders in the matrices}
 
 \label{Cdots}
 \index{dotted@\textbf{Dotted lines}|(}
@@ -3828,15 +3835,15 @@ version of |mathdots| is used. It corresponds to the command |\adots| of
 
 \smallskip
 Each of them must be used alone in the cell of the array and it draws a dotted
-line between the first non-empty cells\footnote{The precise definition of a
-``non-empty cell'' is given below (cf. p.~\pageref{empty-cells}).} on both
+line as leader between the first non-empty cells\footnote{The precise definition of a
+``non-empty cell'' is given below (cf.~\ref{empty-cells}, p.~\pageref{empty-cells}).} on both
 sides of the current cell. Of course, for |\Ldots| and |\Cdots|, it's an
 horizontal line; for |\Vdots|, it's a vertical line and for |\Ddots| and
 |\Iddots| diagonal ones. It's possible to change the color of these lines
 with the option |color|.\footnote{It's also possible to change the color of
 all these dotted lines with the option |xdots/color| (\textsl{xdots} to
-remind that it works for |\Cdots|, |\Ldots|, |\Vdots|, etc.): cf. p.
-\pageref{customisation}.}
+remind that it works for |\Cdots|, |\Ldots|, |\Vdots|, etc.):
+cf.~\ref{customisation}, p.~\pageref{customisation}.}
 
 \nobreak
 \bigskip
@@ -3857,9 +3864,8 @@ a_1      & \Cdots &        & & a_1    \\
 a_1      & a_2    &        & & a_n 
 \end{bNiceMatrix}$
 
-\interitem 
-In order to represent the null matrix, one can use the following
-codage:
+\interitem In order to represent the null matrix, one can use the following
+code:
 
 \nobreak
 \bigskip
@@ -3877,7 +3883,7 @@ $\begin{bNiceMatrix}
 \end{bNiceMatrix}$
 
 \bigskip
-However, one may want a larger matrix. Usually, in such a case, the users of
+However, one may prefer a larger matrix. Usually, in such a case, the users of
 LaTeX add a new row and a new column. It's possible to use the same method
 with \pkg{nicematrix}:
 
@@ -3931,13 +3937,13 @@ dimension.\footnote{In \pkg{nicematrix}, one should use |\hspace*| and not
 |\hspace| for such an usage because \pkg{nicematrix} loads \pkg{array}. One
 may also remark that it's possible to fix the width of a column by using the
 environment |{NiceArray}| (or one of its variants) with a column of type~|w|
-or~|W|: see p.~\pageref{width}} 
+or~|W|: cf.~\ref{width}, p.~\pageref{width}} 
 
 \indexcommand{Hspace}
 However, a command~|\hspace*| might interfere with the construction of the
 dotted lines. That's why the package \pkg{nicematrix} provides a
-command~|\Hspace| which is a variant of |\hspace| transparent for the dotted
-lines of \pkg{nicematrix}.
+command~\DefinitionCommand{Hspace} which is a variant of |\hspace| transparent
+for the dotted lines of \pkg{nicematrix}.
 
 \nobreak
 \bigskip
@@ -4044,7 +4050,7 @@ key does not imply that the dotted rules won't be drawn!
 
 
 
-\subsection{The commands \textbackslash Hdotsfor and \textbackslash Vdotsfor}
+\subsection{The commands \texttt{\textbackslash Hdotsfor} and \texttt{\textbackslash Vdotsfor}}
 
 \indexcommand{Hdotsfor}
 \indexcommand{Vdotsfor}
@@ -4052,8 +4058,8 @@ key does not imply that the dotted rules won't be drawn!
 Some people commonly use the command |\hdotsfor| of \pkg{amsmath} in order to
 draw horizontal dotted lines in a matrix. In the environments of
 \pkg{nicematrix}, one should use instead \DefinitionCommand{Hdotsfor} in order
-to draw dotted lines similar to the other dotted lines drawn by the package
-\pkg{nicematrix}.
+to draw dotted lines similar to the other dotted lines drawn by |\Cdots|, |\Vdots|, etc.
+
 
 As with the other commands of \pkg{nicematrix} (like |\Cdots|, |\Ldots|,
 |\Vdots|, etc.), the dotted line drawn with |\Hdotsfor| extends until the
@@ -4100,13 +4106,14 @@ Remark: Unlike the command |\hdotsfor| of \pkg{amsmath}, the command |\Hdotsfor|
 may be used even when the package \pkg{colortbl}\footnote{We recall that when
   \pkg{xcolor} is loaded with the option |table|, the package \pkg{colortbl} is
   loaded.} is loaded (however, with \pkg{nicematrix}, loading \pkg{colortbl} is
-rather point-less since \pkg{nicematrix} provides its own coloring tools: cf.
+rather point-less since \pkg{nicematrix} provides its own coloring tools: cf.~\ref{color-in-code-before},
 p.~\pageref{color-in-code-before}).
 
 \bigskip
 The package \pkg{nicematrix} also provides a command
 \DefinitionCommand{Vdotsfor} similar to |\Hdotsfor| but for the vertical dotted
 lines.
+
 \bigskip
 The following example uses both |\Hdotsfor| and |\Vdotsfor|:
 
@@ -4145,7 +4152,7 @@ C[a_n^{(p)},a_1] & \Cdots & C[a_n^{(p)},a_n] & & C[a_n^{(p)},a_1^{(p)}] & \Cdots
 
 
 
-\subsection{How to generate the continuous dotted lines transparently}
+\subsection{How to generate the dotted leaders transparently}
 
 \index{renew-matrix}
 \index{renew-dots}
@@ -4174,7 +4181,7 @@ environments provided by \pkg{nicematrix} and behave like |\Ldots|, |\Cdots|,
 
 \nobreak
 With this option, the environment |{matrix}| is redefined and behave like
-|{NiceMatrix}|, and so on for the five variants.
+|{NiceMatrix}|, and so on for the five variants with delimiters.
 \end{itemize}
 
 \bigskip 
@@ -4208,18 +4215,19 @@ nested, and, therefore, it's not possible to use |renew-matrix| if we have, for
 example, an environment |{pmatrix}| nested within another environment |{pmatrix}|.
 
 
-\subsection{The labels of the dotted lines}
+\subsection{The labels of the dotted leaders}
 
 
 
 The commands |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|, |\Iddots|, |\Hdotsfor| and
-|\Vdotsfor| (and the command |\line| in the |\CodeAfter| which is described
-p.~\pageref{line-in-code-after}) accept three optional arguments specified by the
-tokens |_|, |^| and |:| for labels positioned below, above or on the line. The
-arguments are composed in math mode with |\scriptstyle|.
+|\Vdotsfor| (and the command |\line| in the |\CodeAfter| which is described in
+the section~\ref{line-in-code-after}, p.~\pageref{line-in-code-after}) accept
+three optional arguments specified by the tokens |_|, |^| and |:| for labels
+positioned below, above or on the line. The arguments are composed in math mode
+with |\scriptstyle|.
 
 The label specified by ``|:|'' is composed on a white background which is put on
-the line previously drawn (see example on p.~\pageref{ex:colon}).
+the line previously drawn (cf. example~\ref{ex:colon}, p.~\pageref{ex:colon}).
 
 \bigskip
 \begin{Code}[width=10cm]
@@ -4256,7 +4264,7 @@ $\begin{bNiceMatrix}
 
 
 
-\subsection{Customisation of the dotted lines}
+\subsection{Customisation of the dotted leaders}
 
 \label{customisation} 
 \index{color!key for dotted rules}
@@ -4271,8 +4279,9 @@ $\begin{bNiceMatrix}
 
 The dotted lines drawn by |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|, |\Iddots|,
 |\Hdotsfor| and |\Vdotsfor| (and by the command |\line| in the |\CodeAfter|
-which is described p.~\pageref{line-in-code-after}) may be customized by the following
-options (specified between square brackets after the command):
+which is described in the section~\ref{line-in-code-after},
+p.~\pageref{line-in-code-after}) may be customized by the following options
+(specified between square brackets after the command):
 \begin{itemize}
 \item |nullify|; 
 \item |horizontal-label(s)|;
@@ -4305,8 +4314,8 @@ must be prefixed by |xdots| (\textsl{xdots} to remind that it works for
 For the clarity of the explanations, we will use those names.
 
 \bigskip
-The key \Definition{xdots/nullify} has yet been described in the part
-\ref{nullify-dots}, p.~\pageref{nullify-dots}.
+The key \Definition{xdots/nullify} has yet been described in the
+part~\ref{nullify-dots}, p.~\pageref{nullify-dots}.
 
 \bigskip
 With the key \Definition{xdots/horizontal-labels}, the labels (introduced by~|_|,
@@ -4317,7 +4326,7 @@ The option \Definition{xdots/color} fixes the color of the dotted line. It's
 possible to use a color defined ``on the fly'' 
 (e.g.: |xdots/color = { [RGB]{204,204,255} }|). One should remark that
 the dotted lines drawn in the exterior rows and columns have a special
-treatment: cf. p.~\pageref{exterior}. 
+treatment: cf.~\ref{exterior}, p.~\pageref{exterior}. 
 
 \bigskip
 The option \Definition{xdots/radius} fixes the radius of the dots. The initial value
@@ -4404,18 +4413,17 @@ b      & a      & b      & \Ddots &        & \Vdots \\
 0      & \Cdots &        & 0      & b      & a
 \end{pNiceMatrix}\]
 
-\subsection{The dotted lines and the rules}
+\subsection{The dotted leaders and the rules}
 
 \label{dotted-and-rules}
 
 The dotted lines determine virtual blocks which have the same behaviour
 regarding the rules (the rules specified by the specifier \verb+|+ in the
-preamble, by the command |\Hline|, by the keys |hlines|, |vlines|,
-|hvlines| and |hvlines-except-borders| and by the tools created by
-|custom-line| are not drawn within the
-blocks).\footnote{On the other side, the command |\line| in the
-|\CodeAfter| (cf.~p.~\pageref{line-in-code-after}) does \emph{not} create any
-block.}
+preamble, by the command |\Hline|, by the keys |hlines|, |vlines|, |hvlines| and
+|hvlines-except-borders| and by the tools created by |custom-line| are not drawn
+within the blocks).\footnote{On the other side, the command |\line| in the
+  |\CodeAfter| (cf.~\ref{line-in-code-after}, p.~\pageref{line-in-code-after})
+  does \emph{not} create any block.}
 
 \medskip
 \begin{Code}[width=10.6cm]
@@ -4435,7 +4443,7 @@ $\begin{bNiceMatrix}[margin,hvlines]
 
 
 
-\subsection{The commands \textbackslash Hbrace and \textbackslash Vbrace}
+\subsection{The commands \texttt{\textbackslash Hbrace} and \texttt{\textbackslash Vbrace}}
 
 
 \indexcommand{Hbrace}
@@ -4549,15 +4557,14 @@ with the keys |decorate| and |decoration|).
 
 
 \medskip
-For another example of use of |\Hbrace| and |\Vbrace|, see
-the section ``Dotted lines that are no longer dotted'',
-p.~\pageref{ex:no-longer-dotted-rules}. 
+For another example of use of |\Hbrace| and |\Vbrace|,
+see~(\ref{ex:no-longer-dotted-rules} p.~\pageref{ex:no-longer-dotted-rules}). 
 
 
 \medskip
 It's also possible to draw braces of the mathematical mode of LaTeX by using the
-commands |\OverBrace| and |\UnderBrace| (cf.~\ref{OverBrace}
-p.~\pageref{OverBrace}) and the command |\SubMatrix| (cf.~\ref{SubMatrix}
+commands |\OverBrace| and |\UnderBrace| (cf.~\ref{OverBrace},
+p.~\pageref{OverBrace}) and the command |\SubMatrix| (cf.~\ref{SubMatrix},
 p.~\pageref{sub-matrix}) in the |\CodeAfter|.
 
 
@@ -4607,8 +4614,9 @@ $\begin{NiceArray}{\emph{\left\lgroup} ccc\emph{\right\rgroup} l}
 
 \medskip
 For this example, it would also have been possible to use the environment
-|{NiceArrayWithDelims}| (cf. the section \ref{NiceArrayWithDelims},
-p.~\pageref{NiceArrayWithDelims}) and the key |last-col| (cf. p.~\pageref{exterior}).
+|{NiceArrayWithDelims}| (cf.~\ref{NiceArrayWithDelims},
+p.~\pageref{NiceArrayWithDelims}) and the key |last-col| (cf.~\ref{exterior},
+p.~\pageref{exterior}).
 
 \bigskip
 There is a particular case: for the delimiters |(|, |[| and |\{|\footnote{For
@@ -4678,7 +4686,7 @@ section~\ref{sub-matrix}, p.~\pageref{sub-matrix}.
 \label{code-after}
 The option \Definition{code-after} may be used to give some code that will be
 executed \emph{after} the construction of the matrix.\footnote{There is also a
-key |code-before| described p.~\pageref{code-before}.}
+key |code-before| described in the section~\ref{code-before}, p.~\pageref{code-before}.}
 
 \medskip
 \index{sub-matrix (key of \texttt{\textbackslash CodeAfter}, with subkeys)}
@@ -4696,7 +4704,7 @@ its sub-keys.}
 \medskip
 The experienced users may, for instance, use the PGF/TikZ nodes created by
 \pkg{nicematrix} in the |\CodeAfter|. These nodes are described further
-beginning on p.~\pageref{PGF-nodes}.
+in the section~\ref{PGF-nodes}, p.~\pageref{PGF-nodes}.
 
 \medskip
 The |\CodeAfter| provides several special commands: |\line|, 
@@ -4708,13 +4716,15 @@ One should avoid spurious spaces in that |\CodeAfter|.\footnote{See:
   \url{https://tex.stackexchange.com/questions/689336}} 
 
 
-\subsection{The command \textbackslash line in the \textbackslash CodeAfter}
+\subsection{The command \texttt{\textbackslash line} in the \texttt{\textbackslash CodeAfter}}
 
 \label{line-in-code-after}
 \index{line@\texttt{\textbackslash line} (command of \texttt{\textbackslash CodeAfter})}
 The command \DefinitionCommand{line} draws directly dotted lines between cells
-or blocks. It takes in two arguments for the cells or blocks to link. Both
-argument may be: 
+or blocks. The mechanism for those dotted lines is the same as the mechanism used
+for the dotted leaders created by the commands |\Cdots|, |\Ldots|, etc.
+(cf.~\ref{Cdots}, p.~\pageref{Cdots}). The command |\lines| takes in
+two arguments for the cells or blocks to link. Both arguments may be: 
 \begin{itemize}
 \item a specification of cell of the form  $i$-$j$ where is the
 number of the row and $j$ is the number of the column;
@@ -4722,7 +4732,7 @@ number of the row and $j$ is the number of the column;
 of that command).
 \end{itemize}
 The options available for the customisation of the dotted lines created by
-|\Cdots|, |\Vdots|, etc. are also available for this command (cf.
+|\Cdots|, |\Vdots|, etc. are also available for this command (cf.~\ref{customisation},
 p.~\pageref{customisation}).
 
 \bigskip
@@ -4752,7 +4762,7 @@ I       & 0      & \Cdots  &0     \\
 \bigskip
 It can also be used to draw a diagonal line not parallel to the other diagonal
 lines (by default, the dotted lines drawn by |\Ddots| are ``parallelized'':
-cf.~p.~\pageref{parallelization}).
+cf.~\ref{parallelization}, p.~\pageref{parallelization}).
 
 \medskip
 \begin{Code}
@@ -4775,8 +4785,8 @@ cf.~p.~\pageref{parallelization}).
 
 
 
-\subsection{The command \textbackslash SubMatrix in the \textbackslash
-CodeAfter (and the \textbackslash CodeBefore)}
+\subsection{The command \texttt{\textbackslash SubMatrix}
+in the \texttt{\textbackslash CodeAfter} (and the \texttt{\textbackslash CodeBefore})}
 
 \label{SubMatrix}
 \label{sub-matrix}
@@ -4834,8 +4844,7 @@ $\begin{NiceArray}{ccc@{\hspace{1.5em}}c}[cell-space-limits += 2pt,margin]
 
 \medskip
 Eventually, in this example, it would probably have been easier to put the
-delimiters directly in the preamble of |{NiceArray}| (see
-section~\ref{delimiters-in-preamble}, p.~\pageref{delimiters-in-preamble})
+delimiters directly in the preamble of |{NiceArray}| (cf.~\ref{delimiters-in-preamble}, p.~\pageref{delimiters-in-preamble})
 with the following construction.
 
 \medskip
@@ -4986,7 +4995,7 @@ c & d & \frac12c+\frac14d \\
 
 \bigskip
 There is also a key \Definition{name} which gives a name to the submatrix created by
-|\SubMatrix|. That name is used to create PGF/TikZ nodes: cf
+|\SubMatrix|. That name is used to create PGF/TikZ nodes: cf.~\ref{node-sub-matrix},
 p.~\pageref{node-sub-matrix}. 
 
 
@@ -5023,7 +5032,7 @@ The command |\SubMatrix| is, in fact, also available in the |\CodeBefore|. By
 using |\SubMatrix| in the |\CodeBefore|, the delimiters drawn by those
 commands |\SubMatrix| are taken into account to limit the continuous dotted
 lines (drawn by |\Cdots|, |\Vdots|, etc.) which have an open extremity.
-For an example, see voir \ref{submatrix-in-codebefore} 
+For an example, see~\ref{submatrix-in-codebefore},
 p.~\pageref{submatrix-in-codebefore}.
 
 
@@ -5077,8 +5086,8 @@ $\begin{NiceArray}{ccc@{}w{c}{5mm}@{}ccc}
 As we see, the drawing done by our command |\MyDraw| is \emph{relative} to the
 submatrix to which it is applied.
 
-\subsection{The commands \textbackslash OverBrace and \textbackslash
-UnderBrace in the \textbackslash CodeAfter}
+\subsection{The commands \texttt{\textbackslash OverBrace} and
+\texttt{\textbackslash UnderBrace} in the \texttt{\textbackslash CodeAfter}}
 
 
 \label{Overbrace}
@@ -5177,12 +5186,12 @@ $\begin{pNiceMatrix}
 $\triangleright$\enskip The commands |\OverBrace| and |\UnderBrace| use the
 standard braces of the mathematical mode of LaTeX on which they are based.
 However, \pkg{nicematrix} provides also a command |\Hbrace| which should be used
-directly in the tabular and which draws braces of TikZ (cf.~part~\ref{Hbrace},
+directly in the tabular and which draws braces of TikZ (cf.~\ref{Hbrace},
 p.~\pageref{Hbrace}).
 
 
 
-\subsection{The command \textbackslash TikzEveryCell}
+\subsection{The command \texttt{\textbackslash TikzEveryCell}}
 
 
 \index{tikzeverycell@\texttt{\textbackslash TikzEveryCell} (command of 
@@ -5197,14 +5206,14 @@ path corresponding to each cell of the tabular with parameters of TikZ the
 argument of |\TikzEveryCell|. That argument must be a list of \textsl{key=value}
 pairs which may be applied to a TikZ path. In fact, the command applies to each cell
 of the tabular, except those in the exterior rows and columns
-(cf.~p.~\pageref{exterior}) and those in the empty corners (when the key
-|corners| is used: cf.~p.~\pageref{corners}). It applies in fact to each block
+(cf.~\ref{exterior}, p.~\pageref{exterior}) and those in the empty corners (when the key
+|corners| is used: cf.~\ref{corners}, p.~\pageref{corners}). It applies in fact to each block
 (excepted those with the key |transparent|) and does not apply to the individual
 cells located within these blocks.  
 
 \medskip
 In fact, in the list of keys provided as argument of |\TikzEveryCell|, it's
-possible to put a key \Definition{offset}. That key is not provided by TikZ but by
+possible to put a key \Definition{offset}. That key is \emph{not} provided by TikZ but by
 \pkg{nicematrix}. It will narrow the rectangular frame corresponding to the
 block by a margin (horizontally and vertically) equal to the value (of that key
 |offset|). That new frame, a bit narrower, will be executed by TikZ with options
@@ -5243,7 +5252,6 @@ The command |\TikzEveryCell| is, in fact, also available in the |\CodeBefore|.
 \renewcommand{\arraystretch}{1.3}
 \begin{NiceTabular}{ccc}[corners]
 \CodeBefore
-\CodeBefore
   \emph{\TikzEveryCell
     {
       offset=1pt,
@@ -5277,7 +5285,7 @@ The command |\TikzEveryCell| has two optional keys, available between square bra
 (the exact definition of an ``empty cell'' is given in part~\ref{empty-cells},
 p.~\pageref{empty-cells}); 
 
-\item with key \Definition{not-empty}, the command only acts on the not-empty cells.
+\item with the key \Definition{not-empty}, the command only acts on the not-empty cells.
 \end{itemize}
 
 \medskip
@@ -5499,7 +5507,7 @@ the environment of \pkg{nicematrix}. Thus, it's possible to use it on the
 title inserted by |\caption| in an environment |{table}| of LaTeX (or in a
 command |\captionof| of the package \pkg{caption}). It's also possible, as
 expected, to use the command |\tabularnote| in the caption provided by the
-\emph{key} |caption| of the environment |{NiceTabaular}|.
+\emph{key} |caption| of the environment |{NiceTabular}|.
 
 \item If several commands |\tabularnote| are used in a tabular with the same
 argument, only one note is inserted at the end of the tabular (but all the
@@ -5517,8 +5525,8 @@ brackets) to change the symbol of the reference of the note.
 \emph{Example}: |\tabularnote[$\star$]{A footnote...}|
 \end{itemize}
 %
-For an illustration of some of those remarks, see table
-\ref{t:tabularnote}, p.~\pageref{t:tabularnote}. This table has been composed
+For an illustration of some of those remarks, see table~\ref{t:tabularnote},
+p.~\pageref{t:tabularnote}. This table has been composed
 with the following code (the package \pkg{caption} has been loaded in this document).
 
 \begin{center}
@@ -5595,8 +5603,8 @@ Wallis & John & 87 \\
 
 
 The tabular notes can be customized with a set of keys available in
-|\NiceMatrixOptions|. The name of these keys is prefixed by |notes|.
-\begin{itemize}
+|\NiceMatrixOptions|. The name of these keys is prefixed by |notes|.f
+\begin{itemize}[beginpenalty=10000]
 \item |notes/para| 
 \item |notes/bottomrule| 
 \item |notes/style| 
@@ -5704,7 +5712,7 @@ The specification |align = left| in that style requires a
 composition of the label leftwards in the box affected to that label.
 With that tuning, the notes are composed flush left, which is pleasant when
 composing tabulars in the spirit of \pkg{booktabs} (see for example the 
-table \ref{t:tabularnote}, p.~\pageref{t:tabularnote}).
+table~\ref{t:tabularnote}, p.~\pageref{t:tabularnote}).
 
 \medskip
 The key \Definition{notes/enumitem-keys} specifies a list of pairs 
@@ -5746,9 +5754,7 @@ the commands |\tabularnotes| with the same argument.
 
 Initial value: |true|
 
-\item \colorbox{yellow!50}{\bfseries New 7.7}
-
-\indexcommand{NiceTabularNotes}
+\item \indexcommand{NiceTabularNotes}
 When the key \Definition{notes/no-print} is in force, the notes are \emph{not} composed
 by \pkg{nicematrix} under the tabular. However, the final user may use the
 command \DefinitionCommand{NiceTabularNotes} in order to insert these notes where he wishes
@@ -5760,7 +5766,8 @@ Initial value: |false|
 \index{nota@\textbf{Notes in the tabulars}|)}
 
 \bigskip
-For an example of customisation of the tabular notes, see p.~\pageref{ex:notes}.
+For an example of customisation of the tabular notes,
+see~\ref{ex:notes}, p.~\pageref{ex:notes}.
 
 
 \section{Other features}
@@ -5886,7 +5893,8 @@ Animal   &&& 100 \\
 The key |rounded-corners| that we will describe now has no direct link with
 the key |corners| (which is used to specify ``empty corners'') described in
 the part~\ref{corners}, p.~\pageref{corners}. On the other side, it is similar with the
-key |rounded-corners| of the command |\Block| (cf. p.~\ref{block-rounded-corners},~\pageref{block-rounded-corners}).
+key |rounded-corners| of the command |\Block|
+(cf.~\ref{block-rounded-corners},~\pageref{block-rounded-corners}).
 
 \smallskip
 The key \Definition{rounded-corners} specifies that the tabular should have
@@ -5931,7 +5939,7 @@ Jalon & Amandine & Physicist
 \end{NiceTabular}
 
 
-\subsection{Command \textbackslash ShowCellNames}
+\subsection{The command \texttt{\textbackslash ShowCellNames}}
 
 \index{ShowCellNames@\texttt{\textbackslash ShowCellNames} (command of 
 \texttt{\textbackslash CodeAfter}\newline and 
@@ -5999,7 +6007,7 @@ transparency) and, then, the names of the cells are drawn above.
 
 
 
-\subsection{Use of the column type S of siunitx}
+\subsection{Use of the column type S of \texorpdfstring{\pkg{siunitx}}{siunitx}}
 
 \index{S (the columns S of \pkg{siunitx})}
 \index{siunitx@\pkg{siunitx} (package)}
@@ -6033,7 +6041,7 @@ On the other hand, the |d| columns of the package \pkg{dcolumn} are not
 supported by \pkg{nicematrix}.
 
 
-\subsection{Default column type in \{NiceMatrix\}}
+\subsection{Default column type in \texttt{\{NiceMatrix\}}}
 
 \label{columns-width}
 \index{columns-type (key of \texttt{\{NiceMatrix\}}, etc.)}
@@ -6064,7 +6072,7 @@ The key |columns-type| is available in |\NiceMatrixOptions| but with the
 prefix |matrix|, which means that its name is, within |\NiceMatrixOptions| :
 |matrix/columns-type|. 
 
-\subsection{The command \textbackslash rotate}
+\subsection{The command \texttt{\textbackslash rotate}}
 
 \label{rotate}
 \index{rotate@\texttt{\textbackslash rotate}}
@@ -6075,7 +6083,7 @@ after a rotation of 90° in the direct sens.
 
 In the following command, we use that command in the
 |code-for-first-row|.\footnote{It can also be used in |\RowStyle|
-(cf.~p.~\pageref{RowStyle}).} 
+(cf.~\ref{RowStyle}, p.~\pageref{RowStyle}).} 
 
 \bigskip
 
@@ -6161,7 +6169,7 @@ columns of type |l|, |r|, |c|, |w| or |W|; if it is used in other column types
 it will be valuable to consider the command |\rotatebox| of the package \pkg{graphicx}
 (that package is loaded by \pkg{nicematrix}).
 
-\subsection{The option small}
+\subsection{The key small}
 
 \label{small}
 \index{small (key for an environment)}
@@ -6218,18 +6226,18 @@ In fact, the option |small| corresponds to the following tuning:
 \medskip
 When the key |small| is in force, some functionalities of \pkg{nicematrix} are
 no longer available: for example, it's no longer possible to put vertical
-delimiters directly in the preamble of an environment with preamble (cf. 
-section \ref{delimiters-in-preamble}, p.~\pageref{delimiters-in-preamble}).
+delimiters directly in the preamble of an environment with preamble
+(cf.~\ref{delimiters-in-preamble}, p.~\pageref{delimiters-in-preamble}).
 
 
-\subsection{The counters iRow and jCol}
+\subsection{\texttt{\textbackslash AutoNiceMatrix} and the counters iRow and jCol}
 
 \label{iRow}
 \index{iRow (LaTeX counter)}
 \index{jCol (LaTeX counter)}
 
-In the cells of the array, it's possible to use the LaTeX counters |iRow| and
-|jCol|\footnote{These counters are actual LaTeX counters: the underlying TeX
+In the cells of the array, it's possible to use the LaTeX counters \Definition{iRow} and
+\Definition{jCol}\footnote{These counters are actual LaTeX counters: the underlying TeX
   counters are |\c@iRow| and |\c@jCol|} which represent the number of the
 current row and the number of the current column. We recall that the exterior
 ``first row'' (if it exists) has the number~$0$ and that the exterior ``first
@@ -6237,10 +6245,10 @@ column'' (if it exists) has also the number~$0$. Of course, the user must not
 change the value of these counters |iRow| and |jCol| which are used internally
 by \pkg{nicematrix}.
 
-In the |\CodeBefore| (cf. p. \pageref{code-before}) and in the |\CodeAfter| (cf.
-p. \pageref{code-after}), |iRow| represents the total number of rows (except the
-potential exterior rows: cf. p.~\pageref{exterior}) and |jCol| represents the
-total number of columns (except the potential exterior columns).
+In the |\CodeBefore| (cf.~\ref{code-before}, p.~\pageref{code-before}) and in the |\CodeAfter|
+(cf.~\ref{code-after}, p.~\pageref{code-after}), |iRow| represents the total number of
+rows (except the potential exterior rows: cf.~\ref{exterior}, p.~\pageref{exterior})
+and |jCol| represents the total number of columns (except the potential exterior columns).
 
 \medskip
 \begin{Code}[width=10.6cm]
@@ -6377,11 +6385,11 @@ $\begin{bNiceMatrix}[delimiters/color=red]
 
 \medskip
 This color also applies to the delimiters drawn by the command |\SubMatrix|
-(cf.~p.~\pageref{sub-matrix}) and for the delimiters directly specified in the
-preamble of the environments with preamble
-(cf.~p.~\pageref{delimiters-in-preamble}). 
+(cf.~\ref{sub-matrix}, p.~\pageref{sub-matrix}) and for the delimiters directly specified in the
+preamble of the environments with preamble (cf.~\ref{delimiters-in-preamble},
+p.~\pageref{delimiters-in-preamble}). 
 
-\subsection{The environment \{NiceArrayWithDelims\}}
+\subsection{The environment \texttt{\{NiceArrayWithDelims\}}}
 
 \label{NiceArrayWithDelims}
 \index{NiceArrayWithDelims@\texttt{\{NiceArrayWithDelims\}}}
@@ -6410,7 +6418,7 @@ $\begin{NiceArrayWithDelims}
 7 & 8 & 9 
 \end{NiceArrayWithDelims}$
 
-\subsection{The command \textbackslash OnlyMainNiceMatrix}
+\subsection{The command \texttt{\textbackslash OnlyMainNiceMatrix}}
 
 \indexcommand{OnlyMainNiceMatrix}
 
@@ -6419,13 +6427,13 @@ when it is in the main part of the array, that is to say when it is not in one
 of the exterior rows or one of the exterior columns. If it is used outside an
 environment of \pkg{nicematrix}, that command is no-op.
 
-For an example of utilisation, see \url{tex.stackexchange.com/questions/488566}
+For an example of use, see \url{tex.stackexchange.com/questions/488566}
 
 \section{Use of TikZ with nicematrix}
 
 \label{name}
 \label{PGF-nodes}
-\index{tikza@TikZ (utilisation with \pkg{nicematrix})}
+\index{tikza@TikZ (use with \pkg{nicematrix})}
 \index{node@\textbf{Nodes of PGF/TikZ}|(}
 
 \subsection{The nodes corresponding to the contents of the cells}
@@ -6453,8 +6461,8 @@ use the key |create-cell-nodes| of the keyword |\CodeBefore|.
 However, it's possible to impose the creation of a node with the command
 |\NotEmpty|. \footnote{One should note that, with that command, the cell is
 considered as non-empty, which has consequencies for the continuous dotted
-lines (cf. p.~\pageref{Cdots}) and the computation of the ``corners''
-(cf.~p.~\pageref{corners}).}
+lines (cf.~\ref{Cdots}, p.~\pageref{Cdots}) and the computation of the ``corners''
+(cf.~\ref{corners}, p.~\pageref{corners}).}
 
 \medskip
 The creation of those nodes needs time and memory. It's possible to desactive
@@ -6538,9 +6546,9 @@ $\begin{pNiceMatrix}
 
 \medskip
 The nodes of the last column (except the potential ``last column'' specified
-by |last-col|\footnote{For the exterior columns, cf. part~\ref{exterior},
-p.~\pageref{exterior}.}) may also be indicated by $i$-|last|. Similarly, the
-nodes of the last row may be indicated by |last|-$j$.
+by |last-col|\footnote{For the exterior columns, cf.~\ref{exterior}, p.~\pageref{exterior}.})
+may also be indicated by $i$-|last|. Similarly, the nodes of the last row
+may be indicated by |last|-$j$.
 
 \bigskip
 In the following example, we have stroken all the nodes of the matrix.
@@ -6582,7 +6590,7 @@ The final user may modify that style by changing the values of the keys |text/ro
 |minimum width|, |minimum height| and |minimum size|.
 
 \medskip
-For an example of utilisation, see part~\ref{triangular}, p.~\pageref{triangular}.
+For an example of use, see part~\ref{triangular}, p.~\pageref{triangular}.
 
 
 \subsubsection{The key pgf-node-code}
@@ -6634,7 +6642,7 @@ Titre \\
 \end{center}
 
 We have used the nodes corresponding to the position of the potential rules,
-which are described below (cf. p.~\pageref{nodes-i}).
+which are described below (cf.~\ref{nodes-i}, p.~\pageref{nodes-i}).
 
 Of course, there are dedicated packages to such constructions (for example \pkg{tcolorbox}).
 
@@ -6690,7 +6698,7 @@ The names of the ``large nodes'' are constructed by adding the suffix
 ``|-large|'' to the names of the ``normal nodes''. In the following example,
 we have underlined the ``large nodes''. We consider that this example is
 self-explanatory.\footnote{There is no ``large nodes'' created in the exterior
-rows and columns (for these rows and columns, cf. p.~\pageref{exterior}).}
+rows and columns (for these rows and columns, cf.~\ref{exterior}, p.~\pageref{exterior}).}
 \[\begin{pNiceMatrix}[create-large-nodes]
 \CodeBefore [create-cell-nodes]
    \begin{tikzpicture}
@@ -6854,7 +6862,7 @@ noix & noisette & brugnon
 
 \vspace{1cm}
 The nodes we have described are not available by default in the |\CodeBefore|
-(described p.~\pageref{code-before}).
+(cf.~\ref{code-before}, p.~\pageref{code-before}).
 
 \nobreak
 \index{create-cell-nodes (key of \texttt{\textbackslash CodeBefore})}
@@ -7007,7 +7015,7 @@ $\begin{pNiceArray}{ccc|c}
   \tikz \draw [red] (3.4-|1) -- (3.4-|last) ;
 \end{pNiceArray}$
 
-\subsection{The nodes corresponding to the command  \textbackslash SubMatrix}
+\subsection{The nodes corresponding to the command  \texttt{\textbackslash SubMatrix}}
 
 \label{node-sub-matrix}
 \index{SubMatrix@\texttt{\textbackslash SubMatrix} (command of 
@@ -7017,7 +7025,7 @@ $\begin{pNiceArray}{ccc|c}
 
 
 The command |\SubMatrix| available in the |\CodeAfter| has been described
-p.~\pageref{sub-matrix}.  
+in the section~\ref{sub-matrix}, p.~\pageref{sub-matrix}. 
 
 \smallskip
 If a command |\SubMatrix| has been used with the key |name| with an expression
@@ -7097,7 +7105,7 @@ c & d
 \end{scope}
 
 
-\subsection{CodeBefore and CodeAfter}
+\subsection{\texttt{\textbackslash CodeBefore} and \texttt{\textbackslash CodeAfter}}
 
 The package \pkg{nicematrix} provides two variables which are internal but
 public\footnote{According to the LaTeX3 conventions,
@@ -7186,10 +7194,11 @@ a perfect output).
 \ExplSyntaxOff
 
 \medskip
-We have used the  LaTeX |counters iRow| and |jCol| provided by \pkg{nicematrix} (cf.~p.~\pageref{iRow}).
+We have used the  LaTeX |counters iRow| and |jCol| provided by \pkg{nicematrix}
+(cf.~\ref{iRow}, p.~\pageref{iRow}).
 
 \bigskip
-Here is an example of utilisation:
+Here is an example of use:
 
 \medskip
 \begin{Code}[width=9cm]
@@ -7301,10 +7310,11 @@ parallelization is in force) with the key \Definition{draw-first}:
 
 \label{empty-cells}
 The package \pkg{nicematrix} uses, in several circunstancies, the concept of
-``empty cell'. For example, an instruction like |\Ldots|, |\Cdots|, etc. (cf.
-p.~\pageref{Cdots}) tries to determine the first non-empty cell on both sides.
-In the same way, when the key |corners| is used (cf.~p.~\pageref{corners}),
-\pkg{nicematrix} computes corners consisting of empty cells. 
+``empty cell''. For example, an instruction like |\Ldots|, |\Cdots|,
+etc. (cf.~\ref{Cdots}, p.~\pageref{Cdots}) tries to determine the first non-empty
+cell on both sides. In the same way, when the key |corners| is used
+(cf.~\ref{corners}, p.~\pageref{corners}), \pkg{nicematrix} computes corners
+consisting of empty cells. 
 
 However, an ``empty cell'' is not necessarily a cell with no TeX
 content (that is to say a cell with no token between the two ampersands~|&|).
@@ -7325,7 +7335,8 @@ the last cell (second row and second column) is empty.
 \medskip
 \item For the columns of type |p|, |m|, |b|, |V|\footnote{The columns of type
   |V| are provided by \pkg{varwidth}, which must be loaded:
-  cf.~p.~\pageref{varwidth}.} and |X|\footnote{See p.~\pageref{X-columns}}, the
+  cf.~\ref{varwidth}, p.~\pageref{varwidth}.} and
+|X|\footnote{See~\ref{X-columns}, p.~\pageref{X-columns}}, the
 cell is empty if (and only if) its content in the TeX code is empty (there is
 only spaces between the ampersands |&|).
 
@@ -7444,7 +7455,7 @@ let\textbackslash begin\textbackslash BeginEnvironment\}
 
 \medskip
 The package \pkg{nicematrix} is not fully compatible with the packages and classes
-of LuaTeX-ja: the detection of the empty corners (cf. p.~\pageref{corners})
+of LuaTeX-ja: the detection of the empty corners (cf.~\ref{corners}, p.~\pageref{corners})
 may be wrong in some circonstances.
 
 \medskip
@@ -7452,7 +7463,7 @@ The package \pkg{nicematrix} is not fully compatible with the package
 \pkg{arydshln} (because this package redefines many internals of \pkg{array})
 and does not support the columns~|V| of \pkg{boldline} (because the letter |V| is
 reserved for the columns~|V| of \pkg{varwidth}). By any means, \pkg{nicematrix}
-provides, with the key |custom-line| (cf. part~\ref{custom-line},
+provides, with the key |custom-line| (cf.~\ref{custom-line},
 p.~\pageref{custom-line}), tools to draw dashed rules and rules of different
 widths. 
 
@@ -7517,7 +7528,7 @@ Here is a example of code which will generate a tagged PDF.
 \label{ex:notes}
 
 The tools provided by \pkg{nicematrix} for the composition of the tabular
-notes have been presented in the section \ref{s:notes} p.~\pageref{s:notes}.
+notes have been presented in the section~\ref{s:notes}, p.~\pageref{s:notes}.
 
 \medskip
 Let's consider that we wish to number the notes of a tabular with
@@ -7614,8 +7625,8 @@ Dupont & Chantal & January 15, 1998 \\
 \end{scope}
 
 
-\subsection[{Utilisation of the key 'tikz' of the command \textbackslash
-Block}]{Utilisation of the key ``tikz'' of the command \texttt{\textbackslash Block}} 
+\subsection[{Use of the key 'tikz' of the command \textbackslash
+Block}]{Use of the key ``tikz'' of the command \texttt{\textbackslash Block}} 
 \label{tikz-key-examples}
 
 \index{tikzz@tikz!key of \texttt{\textbackslash Block}|textit}
@@ -7668,7 +7679,7 @@ For the following example, we also need the TikZ library |patterns|.
 In the following example, we use the key |tikz| to hatch a row of the tabular.
 Remark that you use the key |transparent| of the command |\Block| in order to
 have the rules drawn in the block.\footnote{By default, the rules are not
-drawn in the blocks created by the command |\Block| (cf.~section~\ref{rules}
+drawn in the blocks created by the command |\Block| (cf.~\ref{rules},
 p.~\pageref{rules}): with the key |transparent|, they are drawn (the block
 becomes \emph{transparent} to the exterior rules).} 
 
@@ -7702,7 +7713,7 @@ seven & eight & nine
 \end{NiceTabular}
 \end{center}
 
-\subsection{Use with tcolorbox}
+\subsection{Use with \texorpdfstring{\pkg{tcolorbox}}{tcolorbox}}
 
 \label{tcolorbox}
 \index{tcolorbox@\pkg{tcolorbox} (package)|textit}
@@ -7798,12 +7809,67 @@ the rules, except on the borders (which are, of course, added by \pkg{tcolorbox}
 \end{Code}
 
 \bigskip
+With the key |C| of the command |\Block|, the content of the block is centered according
+to the absolute limits of the columns (whereas, with the key |c|, the content is centered
+according to the \emph{contents} of the cells of the corresponding columns --- and, here,
+there are many columns without content).
+
+\bigskip
 
 \[\begin{NiceMatrix}[columns-width=1cm,hvlines]
 f(x)   & \Block[C]{1-5}{+} \\
 f'(x)  & \Block[C]{1-2}{+} && \Block[C]{1-2}{+} && + \\
 f''(x) & - & \Block[C]{1-2}{-} && \Block[C]{1-2}{+} \\
 \end{NiceMatrix}\]
+
+
+
+\subsection{A variation table}
+
+
+In the following variation table, you draw the arrows (and some additional rules)
+with TikZ by using the PGF/TikZ nodes created by \pkg{nicematrix} 
+(cf.~\ref{PGF-nodes}, p.~\pageref{PGF-nodes}).
+
+\medskip
+\begin{Code}
+\begin{NiceArray}{r|cw{c}{1cm}cw{c}{1cm}c}[cell-space-limits=2pt]
+x     & 0 & - & \frac{1}{e} & +  & +\infty \\
+\Hline
+f'(x) &   & - & 0 & + & \\
+\Hline
+      & 1 &   &   &   & +\infty \\
+f     &   &   &   &   &         \\
+      &   &   & (1/e)^{1/e} \\
+\CodeAfter
+  \begin{tikzpicture}
+  \draw (3-|4.5) -- (5-|4.5) ;
+  \draw ([xshift=3pt]2-|2) -- ([xshift=3pt]3-|2) ; 
+  \draw [->,red,shorten < = 3pt] (3-2) -- (5-4) ;
+  \draw [->,red,shorten < = 3pt] (5-4) -- (3-6) ;   
+  \end{tikzpicture}
+\end{NiceArray}
+\end{Code}
+
+
+\[
+\begin{NiceArray}{r|cw{c}{1cm}cw{c}{1cm}c}[cell-space-limits=2pt]
+x     & 0 & - & \frac{1}{e} & +  & +\infty \\
+\Hline
+f'(x) &   & - & 0 & + & \\
+\Hline
+      & 1 &   &   &   & +\infty \\
+f     &   &   &   &   &         \\
+      &   &   & (1/e)^{1/e} \\
+\CodeAfter
+  \begin{tikzpicture}
+  \draw (3-|4.5) -- (5-|4.5) ;
+  \draw ([xshift=3pt]2-|2) -- ([xshift=3pt]3-|2) ; 
+  \draw [->,red,shorten < = 3pt] (3-2) -- (5-4) ;
+  \draw [->,red,shorten < = 3pt] (5-4) -- (3-6) ;   
+  \end{tikzpicture}
+\end{NiceArray}
+\]
 
 
 
@@ -7848,9 +7914,9 @@ In the following example, we use the command |\Block| to draw rules.
 \end{pNiceMatrix}\]
 
 
-\subsection{Continuous dotted lines in the matrices}
+\subsection{Dotted leaders in the matrices}
 
-\index{dotted@\textbf{Dotted lines}|textit}
+\index{dotted@\textbf{Dotted leaders}|textit}
 
 An example with the resultant of two polynoms (this example requires TikZ
 for the dashed rule specified by the letter ``|;|'' in the preamble of the array).
@@ -7894,9 +7960,9 @@ a_p   &      &&a_0    &       &      &b_1   \\
 \end{scope}   
 
 \vspace{2cm}
-An example for a linear system. We recall that the command |xdots/nullify| nullifies the
-horizontal and vertical spaces created by the commands |\Cdots|, |\Vdots|, etc. (but the dotted
-lines are drawn, despite the name |nullify|!).
+An example for a linear system. We recall that the key |xdots/nullify| nullifies the
+horizontal and vertical spaces created by the commands |\Cdots|, |\Vdots|, etc.
+in the tabular (but the dotted lines are actually drawn, despite the name |nullify|!).
 
 \index{last-col|textit}
 \index{code-for-last-col|textit}
@@ -7926,11 +7992,11 @@ $\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col]
 
 
 
-\subsection{Dotted lines which are no longer dotted}
+\subsection{Dotted leaders which are no longer dotted}
 
 \label{ex:no-longer-dotted-rules}
 
-The option |line-style| controls the style of the lines drawn by |\Ldots|,
+The option |line-style| controls the style of the leaders drawn by |\Ldots|,
 |\Cdots|, etc. Thus, it's possible with these commands to draw lines which are
 not longer dotted. 
 
@@ -8061,7 +8127,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 If one prefers the braces of the library \pkg{decorations.pathreplacing} of TikZ, the
 best way is to use the commands |\Hbrace| and |\Vbrace| provided by
-\pkg{nicematrix} (cf. p.~\pageref{Hbrace}).
+\pkg{nicematrix} (cf.~\ref{Hbrace}, p.~\pageref{Hbrace}).
 
 \smallskip
 \begin{Verbatim}[formatcom=\footnotesize \color{gray}]
@@ -8098,7 +8164,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \bigskip
 It's possible to change the TikZ style of those braces by changing the TikZ
 style |nicematrix/brace|. In the following example, we use
-``calligraphic'' braces (the TikZ library \pkg{calligraphy} must be loaded after
+``calligraphic'' braces (the TikZ library \pkg{calligraphy} must be loaded \emph{after}
 \pkg{decorations.pathreplacing}).
 
 \smallskip
@@ -8163,10 +8229,7 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 
 
 
-
-
-\newpage
-
+\bigskip
 If one prefers the curly braces of the current mathematical font of LaTeX, one
 should use the commands |\SubMatrix|, |\OverBrace| and |\UnderBrace| in the
 |\CodeAfter|.
@@ -8220,6 +8283,7 @@ In order to have the columns aligned one above the other, it's possible to
 fix a width for all the columns. That's what is done in the following example
 with the environment |{NiceMatrixBlock}| and its option |auto-columns-width|.
 
+\medskip
 \begin{small}
 \begin{Code}
 \emph{\begin{NiceMatrixBlock}[auto-columns-width]}
@@ -8308,7 +8372,7 @@ with the environment |{NiceMatrixBlock}| and its option |auto-columns-width|.
 
 \bigskip
 However, one can see that the last matrix is not perfectly aligned with
-others. That's why, in LaTeX, the parenthesis have not exactly the same width
+others. That's because, in LaTeX, the parenthesis have not exactly the same width
 (smaller parenthesis are a bit slimer).
 
 \medskip
@@ -8318,6 +8382,7 @@ In order the solve that problem, it's possible to require the delimiters to be
 composed with the maximal width, thanks to the boolean key
 \Definition{delimiters/max-width}.
 
+\medskip
 \begin{small}
 \begin{Code}
 \emph{\begin{NiceMatrixBlock}[auto-columns-width]}
@@ -8455,7 +8520,8 @@ adding space between the columns.
 \bigskip
 In fact, it's possible, with the key \Definition{vlines-in-sub-matrix}, to
 choice a letter in the preamble of the array to specify vertical rules which
-will be drawn in the |\SubMatrix| only (by adding space between the columns).
+will be drawn in the |\SubMatrix| only (and it will add space between the columns
+for that rule).
 
 \index{vlines-in-sub-matrix}
 \medskip
@@ -8463,7 +8529,7 @@ will be drawn in the |\SubMatrix| only (by adding space between the columns).
 \setlength{\extrarowheight}{1mm}
 \[\begin{NiceArray}
    [ 
-     \emph{vlines-in-sub-matrix=I},
+     \emph{vlines-in-sub-matrix = I},
      last-col, 
      code-for-last-col = \scriptstyle \color{blue} 
    ]
@@ -8535,11 +8601,11 @@ will be drawn in the |\SubMatrix| only (by adding space between the columns).
 In order to highlight a cell of a matrix, it's possible to ``draw'' that cell
 with the key |draw| of the command |\Block| (this is one of the uses of a
 mono-cell block\footnote{We recall that, if the first mandatory argument of
-the command |\Block| is left empty, that means that the block is a mono-cell block}).
+the command |\Block| is left empty, that means that the block is a mono-cell block.}).
 
 \label{example-CodeAfter}
 
-
+\medskip
 \begin{Code}
 $\begin{pNiceArray}{>{\strut}cccc}[margin,rules/color=blue,no-cell-nodes]
 \emph{\Block[draw]{}{a_{11}}} & a_{12} & a_{13} & a_{14} \\
@@ -8558,14 +8624,16 @@ a_{41} & a_{42} & a_{43} & \Block[draw]{}{a_{44}} \\
 We should remark that the rules we have drawn are drawn \emph{after} the
 construction of the array and thus, they don't spread the cells of the array.
 We recall that, on the other side, the commands |\hline| and |\Hline|, the
-specifier ``\verb+|+'' and the options |hlines|, |vlines|, |hvlines| and
-|hvlines-except-borders| spread the cells.\footnote{For the command |\cline|,
-see the remark p.~\pageref{remark-cline}.}
+specifier ``\verb+|+'' and the options |hlines|, |vlines|, |hvlines|,
+|hvlines-except-borders| and |hlines-except-borders| spread the
+cells.\footnote{For the command |\cline|, see the remark in the
+section~\ref{remark-cline}, p.~\pageref{remark-cline}.}
 
 
 \vspace{1cm}
-It's possible to color a row with |\rowcolor| in the |\CodeBefore| (or with
-|\rowcolor| in the first cell of the row.
+It's possible to color a row with |\rowcolor| in the |\CodeBefore|, or with
+|\rowcolor| in the first cell of the row (if used in another cell of the row
+|\rowcolor| will color till the end of the row).
 
 \index{rowcolor@\texttt{\textbackslash rowcolor}!command in tabular|textit}
 
@@ -8650,6 +8718,7 @@ $\begin{bNiceMatrix}
 We consider now the following matrix. If we want to highlight each row of
 this matrix, we can use the previous technique three times.
 
+\medskip
 \begin{Code}
 \begin{pNiceArray}{ccc}[last-col, margin = 2pt]
 \CodeBefore [create-cell-nodes]
@@ -8719,7 +8788,7 @@ nodes'' instead of the ``normal nodes''.
 
 
 
-\subsection{Utilisation of \textbackslash SubMatrix in the \textbackslash CodeBefore}
+\subsection{Use of \texttt{\textbackslash SubMatrix} in the \texttt{\textbackslash CodeBefore}}
 
 \label{submatrix-in-codebefore}
 
@@ -8736,7 +8805,7 @@ matrices.
 
 The whole figure is an environment |{NiceArray}| and the three pairs of
 parenthesis have been added with |\SubMatrix| in the |\CodeBefore| (since you have put
-these |\SubMatrix| in the |\CodeBefore| --- and not the |\CodeAfter| --- the dotted lines
+these |\SubMatrix| in the |\CodeBefore| --- and not the |\CodeAfter| --- the dotted leaders
 specified in the the matrix product $C$ will be limited to that matrix).
 
 \tikzset{highlight/.style={rectangle,
