@@ -13895,7 +13895,15 @@ version 2005/12/01 or later.
             { SW } 
             { \@@_compute_corner:nnnnnn \c@iRow 1 { -1 } 1 1 \c@jCol }
             { SE } 
-            { \@@_compute_corner:nnnnnn \c@iRow \c@jCol { -1 } { -1 } 1 1 } 
+            { \@@_compute_corner:nnnnnn \c@iRow \c@jCol { -1 } { -1 } 1 1 }
+            { N }
+            { \@@_compute_corner_NS:nnnn \c@jCol 1 1 \c@iRow }
+            { S }
+            { \@@_compute_corner_NS:nnnn \c@jCol \c@iRow { -1 } 1 }
+            { E }
+            { \@@_compute_corner_EW:nnnn \c@iRow \c@jCol { -1 } 1 }
+            { W }
+            { \@@_compute_corner_EW:nnnn \c@iRow 1 1 \c@jCol}
           }
           { \@@_error:nn { bad~corner } { ##1 } }
       }
@@ -14051,6 +14059,69 @@ version 2005/12/01 or later.
 % but it's less efficient:
 % 
 % \verb|\clist_if_in:NeT \l_@@_corners_cells_clist { #1 } ...|
+%
+%
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_compute_corner_NS:nnnn #1 #2 #3 #4 
+  {
+    \int_step_inline:nn { #1 }
+      {
+%    \end{macrocode}
+% We will raise the flag: |\l_tmpa_bool| when we will find an non-empty cell.
+%    \begin{macrocode}
+        \bool_set_false:N \l_tmpa_bool 
+        \int_step_inline:nnnn  { #2 } { #3 } { #4 }
+          {
+            \bool_lazy_or:nnTF
+              { \cs_if_exist_p:c { pgf @ sh @ ns @ \@@_env: - ####1 - ##1 } }
+              { \@@_if_in_block_p:nn  { ####1 } { ##1 } }
+              { \bool_set_true:N \l_tmpa_bool }
+              {
+                \bool_if:NF \l_tmpa_bool
+                  {
+                    \clist_put_right:Nn
+                      \l_@@_corners_cells_clist
+                      { ####1 - ##1 }
+                    \cs_set_nopar:cpn { @@ _ corner _ ####1 - ##1 } { }
+                  }
+              }
+          }
+      }
+  }
+%    \end{macrocode}
+%
+% \bigskip
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_compute_corner_EW:nnnn #1 #2 #3 #4
+  {
+    \int_step_inline:nn { #1 } 
+      {
+%    \end{macrocode}
+% We will raise the flag: |\l_tmpa_bool| when we will find an non-empty cell.
+%    \begin{macrocode}
+        \bool_set_false:N \l_tmpa_bool 
+        \int_step_inline:nnnn { #2 } { #3 } { #4 }
+          {
+            \bool_lazy_or:nnTF
+              { \cs_if_exist_p:c { pgf @ sh @ ns @ \@@_env: - ##1 - ####1 } }
+              { \@@_if_in_block_p:nn  { ##1 } { ####1 } }
+              { \bool_set_true:N \l_tmpa_bool }
+              {
+                \bool_if:NF \l_tmpa_bool
+                  {
+                    \clist_put_right:Nn
+                      \l_@@_corners_cells_clist
+                      { ##1 - ####1 }
+                    \cs_set_nopar:cpn { @@ _ corner _ ##1 - ####1 } { }
+                  }
+              }
+          }
+      }
+  }
+%    \end{macrocode}
+%
 %
 % \bigskip 
 % \section{The environment \{NiceMatrixBlock\}}
@@ -19622,7 +19693,7 @@ version 2005/12/01 or later.
   {
     Bad~corner. \\
     '#1'~is~an~incorrect~specification~for~a~corner~(in~the~key~
-    'corners').~The~available~values~are:~NW,~SW,~NE~and~SE.~
+    'corners').~The~available~values~are:~NW,~SW,~NE,~SE,~N,~S,~W~and~E~
     This~specification~of~corner~will~be~ignored.
   }
 %    \end{macrocode}
