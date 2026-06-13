@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.9a}
-\def\myfiledate{2026/05/22}
+\def\myfileversion{7.10}
+\def\myfiledate{2026/06/13}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -39,7 +39,16 @@
   { }
   { \msg_critical:nn { nicematrix } { latex-too-old } }
 \RequirePackage { amsmath }
+\msg_new:nnn { nicematrix } { array-too-old }
+  {
+    Your~version~of~the~package~'array'~is~too~old. \\
+    You~need~at~least~the~version~of~2025-09-25. \\
+    The~package~'nicematrix'~won't~be~loaded.
+  }
 \RequirePackage{array}
+\IfPackageAtLeastF { array }
+  { 2025/09/25 }
+  { \msg_critical:nn { nicematrix } { array-too-old} }
 \cs_new_protected:Npn \__nicematrix_error:n { \msg_error:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_warning:n { \msg_warning:nn { nicematrix } }
 \cs_new_protected:Npn \__nicematrix_error:nn { \msg_error:nnn { nicematrix } }
@@ -3083,6 +3092,7 @@
       {
         c { \__nicematrix_make_m_preamble_i:n #1 }
         l { \__nicematrix_make_m_preamble_i:n #1 }
+        X { \__nicematrix_make_m_preamble_i:n l }
         r { \__nicematrix_make_m_preamble_i:n #1 }
         > { \__nicematrix_make_m_preamble_ii:nn #1 }
         ! { \__nicematrix_make_m_preamble_ii:nn #1 }
@@ -6380,7 +6390,7 @@
         { \seq_if_empty_p:N \g__nicematrix_pos_of_blocks_seq }
         { \seq_if_empty_p:N \g__nicematrix_pos_of_xdots_seq }
         { \seq_if_empty_p:N \g__nicematrix_pos_of_stroken_blocks_seq }
-        { ! \l__nicematrix_fix_vertex_bool } % added 2026/04/28
+        { ! \l__nicematrix_fix_vertex_bool }
       }
       {
         \socket_assign_plug:nn { nicematrix / draw-hrule } { quick }
@@ -6727,7 +6737,7 @@
     \group_end:
   }
 \socket_assign_plug:nn { nicematrix / draw-hrule } { general }
-\socket_new_plug:nnn { nicematrix / draw-hrule}  { quick }
+\socket_new_plug:nnn { nicematrix / draw-hrule }  { quick }
   {
     \group_begin:
     \__nicematrix_qpoint:n { row - \int_use:N \l__nicematrix_position_int }
@@ -7294,6 +7304,14 @@
             { \__nicematrix_compute_corner:nnnnnn \c@iRow 1 { -1 } 1 1 \c@jCol }
             { SE }
             { \__nicematrix_compute_corner:nnnnnn \c@iRow \c@jCol { -1 } { -1 } 1 1 }
+            { N }
+            { \__nicematrix_compute_corner_NS:nnnn \c@jCol 1 1 \c@iRow }
+            { S }
+            { \__nicematrix_compute_corner_NS:nnnn \c@jCol \c@iRow { -1 } 1 }
+            { E }
+            { \__nicematrix_compute_corner_EW:nnnn \c@iRow \c@jCol { -1 } 1 }
+            { W }
+            { \__nicematrix_compute_corner_EW:nnnn \c@iRow 1 1 \c@jCol}
           }
           { \__nicematrix_error:nn { bad~corner } { ##1 } }
       }
@@ -7381,6 +7399,52 @@
   }
 \cs_new:Npn \__nicematrix_if_in_corner:nT #1 { \cs_if_exist:cT { __nicematrix _ corner _ #1 } }
 \cs_new:Npn \__nicematrix_if_in_corner:nF #1 { \cs_if_exist:cF { __nicematrix _ corner _ #1 } }
+\cs_new_protected:Npn \__nicematrix_compute_corner_NS:nnnn #1 #2 #3 #4
+  {
+    \int_step_inline:nn { #1 }
+      {
+        \bool_set_false:N \l_tmpa_bool
+        \int_step_inline:nnnn  { #2 } { #3 } { #4 }
+          {
+            \bool_lazy_or:nnTF
+              { \cs_if_exist_p:c { pgf @ sh @ ns @ \__nicematrix_env: - ####1 - ##1 } }
+              { \__nicematrix_if_in_block_p:nn  { ####1 } { ##1 } }
+              { \bool_set_true:N \l_tmpa_bool }
+              {
+                \bool_if:NF \l_tmpa_bool
+                  {
+                    \clist_put_right:Nn
+                      \l__nicematrix_corners_cells_clist
+                      { ####1 - ##1 }
+                    \cs_set_nopar:cpn { __nicematrix _ corner _ ####1 - ##1 } { }
+                  }
+              }
+          }
+      }
+  }
+\cs_new_protected:Npn \__nicematrix_compute_corner_EW:nnnn #1 #2 #3 #4
+  {
+    \int_step_inline:nn { #1 }
+      {
+        \bool_set_false:N \l_tmpa_bool
+        \int_step_inline:nnnn { #2 } { #3 } { #4 }
+          {
+            \bool_lazy_or:nnTF
+              { \cs_if_exist_p:c { pgf @ sh @ ns @ \__nicematrix_env: - ##1 - ####1 } }
+              { \__nicematrix_if_in_block_p:nn  { ##1 } { ####1 } }
+              { \bool_set_true:N \l_tmpa_bool }
+              {
+                \bool_if:NF \l_tmpa_bool
+                  {
+                    \clist_put_right:Nn
+                      \l__nicematrix_corners_cells_clist
+                      { ##1 - ####1 }
+                    \cs_set_nopar:cpn { __nicematrix _ corner _ ##1 - ####1 } { }
+                  }
+              }
+          }
+      }
+  }
 \bool_new:N \l__nicematrix_block_auto_columns_width_bool
 \keys_define:nn { nicematrix / NiceMatrixBlock }
   {
@@ -8821,6 +8885,7 @@
   {
     \dim_set_eq:NN \l__nicematrix_line_width_dim \arrayrulewidth
     \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
+
     \dim_compare:nNnTF \l__nicematrix_rounded_corners_dim > \c_zero_dim
       { \__nicematrix_error:n { borders~forbidden } }
       {
@@ -8848,22 +8913,33 @@
     \pgf@relevantforpicturesizefalse
     \CT@arc@
     \pgfsetlinewidth { 1.1 \l__nicematrix_line_width_dim }
-    \clist_if_in:NnTF \l__nicematrix_borders_clist { all }
+    \bool_set_false:N \l_tmpa_bool % added 2026/05/25
+    \clist_if_in:NnT \l__nicematrix_borders_clist { right }
+      {
+        \__nicematrix_stroke_vertical:n \l_tmpb_tl
+        \bool_set_true:N \l_tmpa_bool
+      }
+    \clist_if_in:NnT \l__nicematrix_borders_clist { left }
+      {
+        \__nicematrix_stroke_vertical:n \l__nicematrix_tmpd_tl
+        \bool_set_true:N \l_tmpa_bool
+      }
+    \clist_if_in:NnT \l__nicematrix_borders_clist { bottom }
+      {
+        \__nicematrix_stroke_horizontal:n \l_tmpa_tl
+        \bool_set_true:N \l_tmpa_bool
+      }
+    \clist_if_in:NnT \l__nicematrix_borders_clist { top }
+      {
+        \__nicematrix_stroke_horizontal:n \l__nicematrix_tmpc_tl
+        \bool_set_true:N \l_tmpa_bool
+      }
+    \bool_if:NF \l_tmpa_bool
       {
         \__nicematrix_stroke_vertical:n \l_tmpb_tl
         \__nicematrix_stroke_vertical:n \l__nicematrix_tmpd_tl
         \__nicematrix_stroke_horizontal:n \l_tmpa_tl
         \__nicematrix_stroke_horizontal:n \l__nicematrix_tmpc_tl
-      }
-      {
-        \clist_if_in:NnT \l__nicematrix_borders_clist { right }
-          { \__nicematrix_stroke_vertical:n \l_tmpb_tl }
-        \clist_if_in:NnT \l__nicematrix_borders_clist { left }
-          { \__nicematrix_stroke_vertical:n \l__nicematrix_tmpd_tl }
-        \clist_if_in:NnT \l__nicematrix_borders_clist { bottom }
-          { \__nicematrix_stroke_horizontal:n \l_tmpa_tl }
-        \clist_if_in:NnT \l__nicematrix_borders_clist { top }
-          { \__nicematrix_stroke_horizontal:n \l__nicematrix_tmpc_tl }
       }
   }
 \keys_define:nn { nicematrix / OnlyForTikzInBorders }
@@ -8873,6 +8949,7 @@
         { \tl_set:Nn \l__nicematrix_borders_tikz_tl { #1 } }
         { \__nicematrix_error:n { tikz~in~borders~without~tikz } } ,
     tikz .value_required:n = true ,
+    dashed .meta:n = { tikz = dashed } , % added 2026/05/25
     top .code:n = ,
     bottom .code:n = ,
     left .code:n = ,
@@ -10562,7 +10639,8 @@
 \__nicematrix_msg_new:nn { columns~not~used }
   {
     Columns~not~used.\\
-    The~preamble~of~your~ \__nicematrix_full_name_env: \ is~' \g__nicematrix_user_preamble_tl '.~
+    The~preamble~of~your~ \__nicematrix_full_name_env: \ is~
+    '\exp_not:V \g__nicematrix_user_preamble_tl'.~
     It~announces~ \int_use:N \g__nicematrix_static_num_of_col_int \
     columns~but~you~only~used~ \int_use:N \c@jCol .~The~columns~you~did~not~
     used~won't~be~created.~You~won't~have~similar~warning~till~the~end~of~the~document.
@@ -10613,7 +10691,7 @@
   {
     \token_to_str:N \rotate\ forbidden.\\
     You~should~not~use~\token_to_str:N \rotate\ in~a~column~of~type~'p',~
-    'b',~'m'\IfPackageLoadedTF { varwidth } { ,~'X'~or~'V' } { ~or~'X'}.~
+    'b',~'m'\IfPackageLoadedTF { varwidth } { ,~'X'~or~'V' } { ~or~'X' }.~
     If~you~go~on,~maybe~you~won't~have~the~expected~output.~You~should~
     consider~the~classical~command~\token_to_str:N \rotatebox.
   }
@@ -10923,7 +11001,7 @@
 \__nicematrix_msg_new:nnn { width~without~X~columns }
   {
     You~have~used~the~key~'width'~but~you~have~put~no~'X'~column~in~
-   the~preamble~(' \g__nicematrix_user_preamble_tl ')~of~your~ \__nicematrix_full_name_env: .~
+   the~preamble~(' \exp_not:V \g__nicematrix_user_preamble_tl ')~of~your~ \__nicematrix_full_name_env: .~
     Your~key~will~be~ignored.
   }
   {
@@ -11009,7 +11087,7 @@
   {
     Bad~corner. \\
     '#1'~is~an~incorrect~specification~for~a~corner~(in~the~key~
-    'corners').~The~available~values~are:~NW,~SW,~NE~and~SE.~
+    'corners').~The~available~values~are:~NW,~SW,~NE,~SE,~N,~S,~W~and~E~
     This~specification~of~corner~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { bad~border }

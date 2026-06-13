@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.9a}
-\def\myfiledate{2026/05/22}
+\def\myfileversion{7.10}
+\def\myfiledate{2026/06/13}
 %
 %
 %<*batchfile>  
@@ -168,9 +168,23 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
+%
+%    \begin{macrocode}
+\msg_new:nnn { nicematrix } { array-too-old }
+  { 
+    Your~version~of~the~package~'array'~is~too~old. \\
+    You~need~at~least~the~version~of~2025-09-25. \\
+    The~package~'nicematrix'~won't~be~loaded.
+  }
+%    \end{macrocode}
+%
 %    \begin{macrocode}
 \RequirePackage{array}
+\IfPackageAtLeastF { array }
+  { 2025/09/25 }
+  { \msg_critical:nn { nicematrix } { array-too-old} }
 %    \end{macrocode}
+%
 % 
 %
 % \bigskip
@@ -3193,7 +3207,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_tuning_exterior_rows: { }
 %    \end{macrocode}
 % 
-% Here is a version with the standard syntax of L3.
+% Here is a version with the standard syntax of the L3 programming layer.
 %    \begin{Verbatim}[formatcom=\small]
 % \cs_new_protected:Npn \@@_tuning_first_last_row:
 %   {
@@ -3308,7 +3322,7 @@ version 2005/12/01 or later.
 % |last-row|, some lines of code will be dynamically added to this command.
 %
 %
-% Here is a version with the standard syntax of L3.
+% Here is a version with the standard syntax of the L3 programming layer.
 %    \begin{Verbatim}[formatcom = \small]
 % \cs_new_protected:Npn \@@_update_for_first_and_last_row:
 %   {
@@ -6672,13 +6686,14 @@ version 2005/12/01 or later.
 % The following commands will patch the (small) preamble of the |\multicolumn|.
 % All those commands have a |m| in their name to recall that they deal with the
 % redefinition of |\multicolumn|.
-%    \begin{macrocode}
+%    \begin{macrocode}\
 \cs_new_protected:Npn \@@_make_m_preamble:n #1
   {
     \str_case:nnF { #1 }
       {
         c { \@@_make_m_preamble_i:n #1 }
         l { \@@_make_m_preamble_i:n #1 }
+        X { \@@_make_m_preamble_i:n l }        
         r { \@@_make_m_preamble_i:n #1 }
         > { \@@_make_m_preamble_ii:nn #1 }
         ! { \@@_make_m_preamble_ii:nn #1 }
@@ -12354,7 +12369,7 @@ version 2005/12/01 or later.
         { \seq_if_empty_p:N \g_@@_pos_of_blocks_seq }
         { \seq_if_empty_p:N \g_@@_pos_of_xdots_seq }
         { \seq_if_empty_p:N \g_@@_pos_of_stroken_blocks_seq }
-        { ! \l_@@_fix_vertex_bool } % added 2026/04/28
+        { ! \l_@@_fix_vertex_bool } 
       }
       {
         \socket_assign_plug:nn { nicematrix / draw-hrule } { quick }
@@ -12976,7 +12991,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\socket_new_plug:nnn { nicematrix / draw-hrule}  { quick }
+\socket_new_plug:nnn { nicematrix / draw-hrule }  { quick }
   {
     \group_begin:
     \@@_qpoint:n { row - \int_use:N \l_@@_position_int }
@@ -16415,6 +16430,7 @@ version 2005/12/01 or later.
   {
     \dim_set_eq:NN \l_@@_line_width_dim \arrayrulewidth
     \keys_set_known:nn { nicematrix / BlockBorders } { #1 }
+    
     \dim_compare:nNnTF \l_@@_rounded_corners_dim > \c_zero_dim 
       { \@@_error:n { borders~forbidden } }
       {
@@ -16448,22 +16464,38 @@ version 2005/12/01 or later.
     \pgf@relevantforpicturesizefalse
     \CT@arc@
     \pgfsetlinewidth { 1.1 \l_@@_line_width_dim }
-    \clist_if_in:NnTF \l_@@_borders_clist { all }
+%    \end{macrocode}
+% If there is one specification of borders (|right|, |left|, |top| or
+% |bottome|), we will raise the flag |\l_tmpa_bool| (and, if there isn't
+% any specification of border, we will draw all the borders).
+%    \begin{macrocode}
+    \bool_set_false:N \l_tmpa_bool % added 2026/05/25
+    \clist_if_in:NnT \l_@@_borders_clist { right }  
+      {
+        \@@_stroke_vertical:n \l_tmpb_tl
+        \bool_set_true:N \l_tmpa_bool
+      }
+    \clist_if_in:NnT \l_@@_borders_clist { left }  
+      {
+        \@@_stroke_vertical:n \l_@@_tmpd_tl
+        \bool_set_true:N \l_tmpa_bool        
+      }
+    \clist_if_in:NnT \l_@@_borders_clist { bottom }  
+      {
+        \@@_stroke_horizontal:n \l_tmpa_tl
+        \bool_set_true:N \l_tmpa_bool 
+      }
+    \clist_if_in:NnT \l_@@_borders_clist { top }  
+      {
+        \@@_stroke_horizontal:n \l_@@_tmpc_tl
+        \bool_set_true:N \l_tmpa_bool         
+      }
+    \bool_if:NF \l_tmpa_bool
       {
         \@@_stroke_vertical:n \l_tmpb_tl 
         \@@_stroke_vertical:n \l_@@_tmpd_tl 
         \@@_stroke_horizontal:n \l_tmpa_tl 
         \@@_stroke_horizontal:n \l_@@_tmpc_tl 
-      }
-      {
-        \clist_if_in:NnT \l_@@_borders_clist { right }  
-          { \@@_stroke_vertical:n \l_tmpb_tl }
-        \clist_if_in:NnT \l_@@_borders_clist { left }  
-          { \@@_stroke_vertical:n \l_@@_tmpd_tl }
-        \clist_if_in:NnT \l_@@_borders_clist { bottom }  
-          { \@@_stroke_horizontal:n \l_tmpa_tl }
-        \clist_if_in:NnT \l_@@_borders_clist { top }  
-          { \@@_stroke_horizontal:n \l_@@_tmpc_tl }
       }
   }
 %    \end{macrocode}
@@ -16476,6 +16508,7 @@ version 2005/12/01 or later.
         { \tl_set:Nn \l_@@_borders_tikz_tl { #1 } }
         { \@@_error:n { tikz~in~borders~without~tikz } } ,
     tikz .value_required:n = true ,
+    dashed .meta:n = { tikz = dashed } , % added 2026/05/25
     top .code:n = ,
     bottom .code:n = , 
     left .code:n = ,
@@ -19062,7 +19095,8 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { columns~not~used }
   {
     Columns~not~used.\\
-    The~preamble~of~your~ \@@_full_name_env: \ is~' \g_@@_user_preamble_tl '.~
+    The~preamble~of~your~ \@@_full_name_env: \ is~
+    '\exp_not:V \g_@@_user_preamble_tl'.~
     It~announces~ \int_use:N \g_@@_static_num_of_col_int \ 
     columns~but~you~only~used~ \int_use:N \c@jCol .~The~columns~you~did~not~
     used~won't~be~created.~You~won't~have~similar~warning~till~the~end~of~the~document.
@@ -19139,7 +19173,7 @@ version 2005/12/01 or later.
   {
     \token_to_str:N \rotate\ forbidden.\\
     You~should~not~use~\token_to_str:N \rotate\ in~a~column~of~type~'p',~
-    'b',~'m'\IfPackageLoadedTF { varwidth } { ,~'X'~or~'V' } { ~or~'X'}.~
+    'b',~'m'\IfPackageLoadedTF { varwidth } { ,~'X'~or~'V' } { ~or~'X' }.~
     If~you~go~on,~maybe~you~won't~have~the~expected~output.~You~should~
     consider~the~classical~command~\token_to_str:N \rotatebox.
   }
@@ -19572,7 +19606,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nnn { width~without~X~columns }
   {
     You~have~used~the~key~'width'~but~you~have~put~no~'X'~column~in~
-   the~preamble~(' \g_@@_user_preamble_tl ')~of~your~ \@@_full_name_env: .~
+   the~preamble~(' \exp_not:V \g_@@_user_preamble_tl ')~of~your~ \@@_full_name_env: .~
     Your~key~will~be~ignored.
   }
   {

@@ -1816,7 +1816,7 @@ A & A & A & A & A & A \\
   &   &   & A \\
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{*{6}{c}}[corners,hvlines,cell-space-top-limit=3pt]
+\begin{NiceTabular}{*{6}{c}}[corners={N,S},hvlines,cell-space-top-limit=3pt]
   &   &   &   & A \\
   &   & A & A & A \\
   &   &   & A \\
@@ -1846,7 +1846,7 @@ doivent être séparés par des virgules).
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{*{6}{c}}%
-  [c,corners=NE,hvlines,cell-space-top-limit=3pt]
+  [c,corners=N,hvlines,cell-space-top-limit=3pt]
 1\\
 1&1\\
 1&2&1\\
@@ -1865,6 +1865,34 @@ le |\CodeAfter| et le |\CodeBefore| (cf.~\ref{TikzEveryCell},
 p.~\pageref{TikzEveryCell}) tient également compte des coins.
 
 
+\clearpage
+\bigskip
+\colorbox{yellow!50}{\bfseries Nouveau 7.10}
+
+\smallskip
+\nobreak
+Une généralisation des «coins» a été ajoutée avec des valeurs |N|, |S|, |W| et |E|.
+
+\medskip
+\begin{Code}[width=11cm]
+\begin{NiceTabular}{cccc}[hvlines,corners=E]
+1 & 2 \\
+1 & 2 & 3 \\
+1 & 3 \\
+1 \\
+1 & 2 & 3 & 4 \\
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{cccc}[hvlines,corners=E]
+1 & 2 \\
+1 & 2 & 3 \\
+1 & 3 \\
+1 \\
+1 & 2 & 3 & 4 \\
+\end{NiceTabular}
+
+
+
 \subsubsection{La commande \texttt{\textbackslash diagbox}}
 
 \indexcommand{diagbox}
@@ -1874,7 +1902,7 @@ La commande \DefinitionCommande{diagbox} (inspirée par l'extension
 case selon une diagonale descendante.
 
 \medskip
-\begin{Code}[width=10cm]
+\begin{Code}[width=11cm]
 $\begin{NiceArray}{*{5}{c}}[hvlines]
 \emph{\diagbox{x}{y}} & e & a & b & c \\
 e & e & a & b & c \\
@@ -1896,7 +1924,7 @@ Cette commande |\diagbox| peut aussi être utilisée dans un |\Block|.
 
 
 \medskip
-\begin{Code}[width=10cm]
+\begin{Code}[width=11cm]
 $\begin{NiceArray}{*{5}{c}}[hvlines]
 \emph{\Block{2-2}{\diagbox{x}{y}}} &  & a & b & c \\
   &   & a & b & c \\
@@ -1919,7 +1947,7 @@ Mais on peut aussi utiliser |\diagbox| uniquement pour le trait diagonal et
 placer les labels comme habituellement.
 
 \medskip
-\begin{Code}[width=10cm]
+\begin{Code}[width=11cm]
 $\begin{NiceArray}{*{5}{c}}[hvlines]
 \emph{\Block{2-2}{\diagbox{}{}}} & y & a & b & c \\
 x &   & a & b & c \\
@@ -3029,13 +3057,13 @@ Stéphanie \\
 \vspace{1cm}
 On rappelle que toutes les commandes de coloriage que l'on vient de décrire ne
 colorient pas les cases qui sont dans les «coins». Dans l'exemple suivant, on
-utilise la clé |corners| pour demander de considérer le coin \emph{north east} (NE).
+utilise la clé |corners| pour demander de considérer le «coin» \emph{east} (E).
 
 \medskip
 \index{corners (clé d'un environnement)|textit}
 \begin{Code}[width=15cm]
 \begin{NiceTabular}{cccccc}%
- [\emph{corners=NE},margin,hvlines,first-row,first-col]
+ [\emph{corners=E},margin,hvlines,first-row,first-col]
 \CodeBefore
   \emph{\rowlistcolors{1}{blue!15, }}
 \Body
@@ -3051,7 +3079,7 @@ utilise la clé |corners| pour demander de considérer le coin \emph{north east}
 \end{Code}
 \hspace{-6cm}
 \begin{NiceTabular}{ccccccc}%
-  [corners=NE,margin,hvlines,first-row,first-col]
+  [corners=E,margin,hvlines,first-row,first-col]
 \CodeBefore
   \rowlistcolors{1}{blue!15, }
 \Body
@@ -3074,16 +3102,16 @@ décrites dans la partie sur les rangées et colonnes «extérieures»
 Comme on le voit, \emph{par défaut}, les commandes de coloriage décrites précédemment ne
 s'appliquent pas dans ces rangées et colonnes «extérieures».  
 
-Mais on peut \emph{quand même} colorier dans ces rangées et colonnes en
-donnant aux commandes précédentes les numéros explicites de ces rangées et
-colonnes extérieures.
+Mais on peut \emph{quand même} colorier ces rangées et colonnes en donnant aux
+commandes précédentes les numéros explicites de ces rangées et colonnes
+extérieures.
 
 Dans l'exemple suivant, on demande explicitement le coloriage de la colonne~$0$
 (qui est la «première colonne» et qui existe du fait de la clé |first-col|).
 
 \medskip
 \begin{Code}[width=15cm]
-\begin{NiceTabular}{ccccccc}[\emph{corners=NE},margin,hvlines,first-row,first-col]
+\begin{NiceTabular}{ccccccc}[\emph{corners=E},margin,hvlines,first-row,first-col]
 \CodeBefore
   \rowlistcolors{1}{blue!15, }
   \emph{\columncolor{red!15}{0}}
@@ -3100,7 +3128,7 @@ Dans l'exemple suivant, on demande explicitement le coloriage de la colonne~$0$
 \end{Code}
 \hspace{-6cm}
 \begin{NiceTabular}{ccccccc}%
-   [corners=NE,margin,hvlines,first-row,first-col]
+   [corners=E,margin,hvlines,first-row,first-col]
 \CodeBefore
   \rowlistcolors{1}{blue!15, }
   \columncolor{red!15}{0}
@@ -3327,7 +3355,7 @@ sept \\
 \end{NiceTabular}
 
 
-\clearpage
+\bigskip
 Voici un exemple d'utilisation de |\rowcolors| en conjonction avec |create-blocks-in-col|.
 
 \medskip
@@ -5490,23 +5518,23 @@ cases non vides.
 
 
 \bigskip
-\begin{Code}[width=9cm]
-\begin{NiceTabular}{cccc}
-1 & 2 \\
-1 & 2 & 3 \\
-1 & 3 \\
-1 \\
-1 & 2 & 3 & 4 \\
+\begin{Code}[width=10cm]
+\begin{NiceTabular}{ccccc}
+1 & 2 & 3 & 4 &   \\
+1 &   &   & 4 & 5 \\
+1 &   &   &   & 5 \\
+1 & 2 &   & 4 & 5 \\
+1 & 2 & 3 & 4 & 5 \\
 \CodeAfter
   \emph{\TikzEveryCell[not-empty]{draw}}
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{cccc}
-1 & 2 \\
-1 & 2 & 3 \\
-1 & 3 \\
-1 \\
-1 & 2 & 3 & 4 \\
+\begin{NiceTabular}{ccccc}
+1 & 2 & 3 & 4 &   \\
+1 &   &   & 4 & 5 \\
+1 &   &   &   & 5 \\
+1 & 2 &   & 4 & 5 \\
+1 & 2 & 3 & 4 & 5 \\
 \CodeAfter
   \TikzEveryCell[not-empty]{draw}
 \end{NiceTabular}
@@ -6627,7 +6655,7 @@ Pour un exemple d'utilisation, voir \url{tex.stackexchange.com/questions/488566}
 
 
 
-\section{Utilisation de TikZ avec nicematrix}
+\section{Utilisation explicite de TikZ avec nicematrix}
 
 \label{name}
 \label{PGF-nodes}
@@ -8653,6 +8681,14 @@ avec leur largeur maximale grâce à la clé booléenne
 -3 -46 29 -2 -15    ;
  9  10 -5  4   7
 \end{pNiceMatrix}$
+
+\smallskip
+\quad $\begin{pNiceMatrix}
+12  -8   7  5   3                      ;
+0   64 -41  1  19  { L_2 \gets L_1-4L_2  } ;
+0 -192 123 -3 -57  { L_3 \gets L_1+4L_3  } ;
+0 -64   41 -1 -19  { L_4 \gets 3L_1-4L_4 } ;
+\end{pNiceMatrix}$
 ...
 \emph{\end{NiceMatrixBlock}}
 \end{Code}
@@ -9162,7 +9198,7 @@ qui doit donc être chargée préalablement).
 \setlength{\tabcolsep}{0pt}
 
 \emph{\adjustbox}{rotate = -45, set depth = 6mm + 1.414 \arrayrulewidth}
-  {\begin{NiceTabular} [ hvlines, corners=SE, baseline = line-9 ] { cccccccc }
+  {\begin{NiceTabular} [ hvlines, corners=S, baseline = line-9 ] { cccccccc }
    \CodeBefore
      \chessboardcolors{red!15}{blue!15}
    \Body
@@ -9187,7 +9223,7 @@ qui doit donc être chargée préalablement).
   }%
 \setlength{\tabcolsep}{0pt}%
 \adjustbox{rotate = -45, set depth = 6mm + 1.414 \arrayrulewidth}
-  {\begin{NiceTabular} [ hvlines, corners=SE, baseline = line-9 ] { cccccccc }
+  {\begin{NiceTabular} [ hvlines, corners=S, baseline = line-9 ] { cccccccc }
    \CodeBefore
      \chessboardcolors{red!15}{blue!15}
    \Body

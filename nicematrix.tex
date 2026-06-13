@@ -1772,7 +1772,7 @@ corners (designed by |NW|, |SW|, |NE| and |SE|).
 \end{NiceTabular}
 \end{Code}
 \begin{NiceTabular}{*{6}{c}}%
- [c,corners=NE,hvlines,cell-space-top-limit=3pt]
+ [c,corners=E,hvlines,cell-space-top-limit=3pt]
 1\\
 1&1\\
 1&2&1\\
@@ -1789,6 +1789,33 @@ the cells which are in the corners (cf.~\ref{color-in-code-before},
 p.~\pageref{color-in-code-before}). The command |\TikzEveryCell| available in
 the |\CodeBefore| and the |\CodeAfter| (cf.~\ref{TikzEveryCell},
 p.~\pageref{TikzEveryCell}) takes also into account the empty corners.
+
+\medskip
+\colorbox{yellow!50}{\bfseries New 7.10}
+
+\smallskip
+\nobreak
+A generalization of the «corners» has been made with the new values |N|, |S|, |E| and |W|
+for the «corners».
+
+\smallskip
+\begin{Code}[width=11cm]
+\begin{NiceTabular}{cccc}[hvlines,corners=E]
+1 & 2 \\
+1 & 2 & 3 \\
+1 & 3 \\
+1 \\
+1 & 2 & 3 & 4 \\
+\end{NiceTabular}
+\end{Code}
+\begin{NiceTabular}{cccc}[hvlines,corners=E]
+1 & 2 \\
+1 & 2 & 3 \\
+1 & 3 \\
+1 \\
+1 & 2 & 3 & 4 \\
+\end{NiceTabular}
+
 
 \subsubsection{The command \texttt{\textbackslash diagbox}}
 
@@ -2927,12 +2954,12 @@ of the colors to the size of the tabular.}).
 \vspace{1cm}
 We recall that all the color commands that we have described don't color the cells
 which are in the ``corners''. In the following example, we use the key
-|corners| to require the determination of the corner \emph{north east} (NE).
+|corners| to require the determination of the ``corner'' \emph{east} (E).
 
 \medskip
 \index{corners (key of an environment)|textit}
 \begin{Code}[width=15cm]
-\begin{NiceTabular}{ccccccc}[\emph{corners=NE},margin,hvlines,first-row,first-col]
+\begin{NiceTabular}{ccccccc}[\emph{corners=E},margin,hvlines,first-row,first-col]
 \CodeBefore
   \emph{\rowlistcolors{1}{blue!15, }}
 \Body
@@ -2948,7 +2975,7 @@ which are in the ``corners''. In the following example, we use the key
 \end{Code}
 \hspace{-6cm}
 \begin{NiceTabular}{ccccccc}%
-  [corners=NE,margin,hvlines,first-row,first-col]
+  [corners=E,margin,hvlines,first-row,first-col]
 \CodeBefore
   \rowlistcolors{1}{blue!15, }
 \Body
@@ -2978,7 +3005,7 @@ In the following example, we require a color in the column~$0$ (which is the
 
 \medskip
 \begin{Code}[width=15cm]
-\begin{NiceTabular}{ccccccc}[\emph{corners=NE},margin,hvlines,first-row,first-col]
+\begin{NiceTabular}{ccccccc}[\emph{corners=E},margin,hvlines,first-row,first-col]
 \CodeBefore
   \rowlistcolors{1}{blue!15, }
   \emph{\columncolor{red!15}{0}}
@@ -2995,7 +3022,7 @@ In the following example, we require a color in the column~$0$ (which is the
 \end{Code}
 \hspace{-6cm}
 \begin{NiceTabular}{ccccccc}%
-  [corners=NE,margin,hvlines,first-row,first-col]
+  [corners=E,margin,hvlines,first-row,first-col]
 \CodeBefore
   \rowlistcolors{1}{blue!15, }
   \columncolor{red!15}{0}
@@ -5319,23 +5346,23 @@ p.~\pageref{empty-cells});
 
 \bigskip
 \bigskip
-\begin{Code}[width=9cm]
+\begin{Code}[width=10cm]
 \begin{NiceTabular}{cccc}
-1 & 2 \\
-1 & 2 & 3 \\
-1 & 3 \\
-1 \\
-1 & 2 & 3 & 4 \\
+1 & 2 & 3 & 4 &   \\
+1 &   &   & 4 & 5 \\
+1 &   &   &   & 5 \\
+1 & 2 &   & 4 & 5 \\
+1 & 2 & 3 & 4 & 5 \\
 \CodeAfter
   \emph{\TikzEveryCell[not-empty]{draw}}
 \end{NiceTabular}
 \end{Code}
-\begin{NiceTabular}{cccc}
-1 & 2 \\
-1 & 2 & 3 \\
-1 & 3 \\
-1 \\
-1 & 2 & 3 & 4 \\
+\begin{NiceTabular}{ccccc}
+1 & 2 & 3 & 4 &   \\
+1 &   &   & 4 & 5 \\
+1 &   &   &   & 5 \\
+1 & 2 &   & 4 & 5 \\
+1 & 2 & 3 & 4 & 5 \\
 \CodeAfter
   \TikzEveryCell[not-empty]{draw}
 \end{NiceTabular}
@@ -6429,12 +6456,13 @@ environment of \pkg{nicematrix}, that command is no-op.
 
 For an example of use, see \url{tex.stackexchange.com/questions/488566}
 
-\section{Use of TikZ with nicematrix}
+\section{Explicit use of TikZ with nicematrix}
 
 \label{name}
 \label{PGF-nodes}
 \index{tikza@TikZ (use with \pkg{nicematrix})}
 \index{node@\textbf{Nodes of PGF/TikZ}|(}
+
 
 \subsection{The nodes corresponding to the contents of the cells}
 
@@ -8908,7 +8936,7 @@ package, which must be loaded previously).
 \setlength{\tabcolsep}{0pt}
 
 \emph{\adjustbox}{rotate = -45, set depth = 6mm + 1.414 \arrayrulewidth}
-  {\begin{NiceTabular} [ hvlines, corners=SE, baseline = line-9 ] { cccccccc }
+  {\begin{NiceTabular} [ hvlines, corners=S, baseline = line-9 ] { cccccccc }
    \CodeBefore
      \chessboardcolors{red!15}{blue!15}
    \Body
@@ -8932,7 +8960,7 @@ package, which must be loaded previously).
   }%
 \setlength{\tabcolsep}{0pt}%
 \adjustbox{rotate = -45, set depth = 6mm + 1.414 \arrayrulewidth}
-  {\begin{NiceTabular} [ hvlines, corners=SE, baseline = line-9 ] { cccccccc }
+  {\begin{NiceTabular} [ hvlines, corners=S, baseline = line-9 ] { cccccccc }
    \CodeBefore
      \chessboardcolors{red!15}{blue!15}
    \Body
@@ -8974,6 +9002,9 @@ also available on the
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
 
+\subsection*{Changes between version 7.9 and 7.10}
+
+A generalisation of the key |corners| has been added with the values |N|, |S|, |W| and |E|.
 
 \subsection*{Changes between version 7.8 and 7.9}
 
@@ -9237,7 +9268,7 @@ Key |\color| for the command |\RowStyle|.
 \cleardoublepage
 
 \phantomsection
-\addcontentsline{toc}{section}{Index}
+% \addcontentsline{toc}{section}{Index}
 
 \printindex
 
