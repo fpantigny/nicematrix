@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.10}
-\def\myfiledate{2026/06/13}
+\def\myfileversion{7.10x}
+\def\myfiledate{2026/06/20}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -892,11 +892,19 @@
     colortbl-like .code:n = \__nicematrix_fatal:n { key~color-inside } ,
     ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
     &-in-blocks .meta:n = ampersand-in-blocks ,
-    no-cell-nodes .code:n =
-      \bool_set_true:N \l__nicematrix_no_cell_nodes_bool
-      \cs_set_protected:Npn \__nicematrix_node_cell:
-        { \set@color \box_use_drop:N \l__nicematrix_cell_box } ,
-    no-cell-nodes .value_forbidden:n = true ,
+    no-cell-nodes .choices:nn = { true , false }
+      {
+        \tl_if_eq:NnTF \l_keys_choice_tl { true }
+          {
+            \bool_set_true:N \l__nicematrix_no_cell_nodes_bool
+            \cs_set_eq:NN \__nicematrix_node_cell: \__nicematrix_node_cell_inactive:
+          }
+          {
+            \bool_set_false:N \l__nicematrix_no_cell_nodes_bool
+            \cs_set_eq:NN \__nicematrix_node_cell: \__nicematrix_node_cell_active:
+          }
+      } ,
+    no-cell-nodes .default:n = true ,
     rounded-corners .dim_set:N = \l__nicematrix_tab_rounded_corners_dim ,
     rounded-corners .default:n = 4 pt ,
     custom-line .code:n = \__nicematrix_custom_line:n { #1 } ,
@@ -1545,7 +1553,7 @@
     \socket_use:nn { nicematrix / siunitx-wrap }
       { \socket_use:nn { nicematrix / create-cell-nodes } { \__nicematrix_node_cell: } }
   }
-\cs_new_protected:Npn \__nicematrix_node_cell:
+\cs_new_protected:Npn \__nicematrix_node_cell_active:
   {
     \pgfpicture
     \pgfsetbaseline \c_zero_dim
@@ -1568,6 +1576,9 @@
       }
     \endpgfpicture
   }
+\cs_set_eq:NN \__nicematrix_node_cell: \__nicematrix_node_cell_active:
+\cs_new_protected:Npn \__nicematrix_node_cell_inactive:
+  { \set@color \box_use_drop:N \l__nicematrix_cell_box }
 \cs_new_protected:Npn \__nicematrix_instruction_of_type:nnn #1 #2 #3
   {
     \bool_if:nTF { #1 } \tl_gput_left:ce \tl_gput_right:ce

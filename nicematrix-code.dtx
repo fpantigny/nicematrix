@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.10}
-\def\myfiledate{2026/06/13}
+\def\myfileversion{7.10x}
+\def\myfiledate{2026/06/20}
 %
 %
 %<*batchfile>  
@@ -2529,11 +2529,19 @@ version 2005/12/01 or later.
     colortbl-like .code:n = \@@_fatal:n { key~color-inside } ,
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
     &-in-blocks .meta:n = ampersand-in-blocks ,
-    no-cell-nodes .code:n = 
-      \bool_set_true:N \l_@@_no_cell_nodes_bool 
-      \cs_set_protected:Npn \@@_node_cell: 
-        { \set@color \box_use_drop:N \l_@@_cell_box } ,
-    no-cell-nodes .value_forbidden:n = true ,
+    no-cell-nodes .choices:nn = { true , false } 
+      {
+        \tl_if_eq:NnTF \l_keys_choice_tl { true }
+          {
+            \bool_set_true:N \l_@@_no_cell_nodes_bool
+            \cs_set_eq:NN \@@_node_cell: \@@_node_cell_inactive:
+          }
+          {
+            \bool_set_false:N \l_@@_no_cell_nodes_bool
+            \cs_set_eq:NN \@@_node_cell: \@@_node_cell_active:          
+          }
+      } ,
+    no-cell-nodes .default:n = true ,
 %    \end{macrocode}
 % When the key |rounded-corners| is used, a clipping is applied in the
 % |\CodeBefore| of the environment in order to have rounded corners for the
@@ -3697,7 +3705,7 @@ version 2005/12/01 or later.
 % The following command creates the \textsc{pgf} name of the node with, of
 % course, |\l_@@_cell_box| as the content. 
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_node_cell:
+\cs_new_protected:Npn \@@_node_cell_active:
   {
     \pgfpicture 
     \pgfsetbaseline \c_zero_dim
@@ -3724,6 +3732,9 @@ version 2005/12/01 or later.
       }
     \endpgfpicture
   }
+\cs_set_eq:NN \@@_node_cell: \@@_node_cell_active:
+\cs_new_protected:Npn \@@_node_cell_inactive:
+  { \set@color \box_use_drop:N \l_@@_cell_box }
 %    \end{macrocode}
 % 
 % 
