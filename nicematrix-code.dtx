@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.10x}
-\def\myfiledate{2026/06/20}
+\def\myfileversion{7.10a}
+\def\myfiledate{2026/06/25}
 %
 %
 %<*batchfile>  
@@ -2338,7 +2338,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % The boolean |\l_@@_light_syntax_bool| corresponds to the option |light-syntax|
-% and the boolean |\l_@@_light_syntax_expanded_bool| correspond to the the
+% and the boolean |\l_@@_light_syntax_expanded_bool| correspond to the 
 % option |light-syntax-expanded|.
 %    \begin{macrocode}
 \bool_new:N \l_@@_light_syntax_bool
@@ -2586,14 +2586,27 @@ version 2005/12/01 or later.
     cell-space-limits+ .value_required:n = true ,
     cell-space-limits~+ .meta:n = { cell-space-limits+ = #1 } ,    
     xdots .code:n = \keys_set:nn { nicematrix / xdots } { #1 } , 
-    light-syntax .code:n = 
-      \bool_set_true:N \l_@@_light_syntax_bool 
-      \bool_set_false:N \l_@@_light_syntax_expanded_bool ,
-    light-syntax .value_forbidden:n = true ,
-    light-syntax-expanded .code:n = 
-      \bool_set_true:N \l_@@_light_syntax_bool 
-      \bool_set_true:N \l_@@_light_syntax_expanded_bool ,
-    light-syntax-expanded .value_forbidden:n = true ,
+    light-syntax .choices:nn = { true , false }
+      {
+        \tl_if_eq:VnTF \l_keys_value_tl { true }
+          { \bool_set_true:N \l_@@_light_syntax_bool }
+          { \bool_set_false:N \l_@@_light_syntax_bool }
+        \bool_set_false:N \l_@@_light_syntax_expanded_bool
+      } ,
+    light-syntax .default:n = true ,
+    light-syntax-expanded .choices:nn = { true , false }
+      {
+        \tl_if_eq:VnTF \l_keys_value_tl { true }
+          {
+            \bool_set_true:N \l_@@_light_syntax_bool 
+            \bool_set_true:N \l_@@_light_syntax_expanded_bool
+          }
+          {
+            \bool_set_false:N \l_@@_light_syntax_bool 
+            \bool_set_false:N \l_@@_light_syntax_expanded_bool
+          }
+       } ,
+    light-syntax-expanded .default:n = true ,
 %    \end{macrocode}
 % 
 % The key |end-of-row| specifies the symbol used to mark the ends of rows when

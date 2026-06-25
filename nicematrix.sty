@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.10x}
-\def\myfiledate{2026/06/20}
+\def\myfileversion{7.10a}
+\def\myfiledate{2026/06/25}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -938,14 +938,27 @@
     cell-space-limits+ .value_required:n = true ,
     cell-space-limits~+ .meta:n = { cell-space-limits+ = #1 } ,
     xdots .code:n = \keys_set:nn { nicematrix / xdots } { #1 } ,
-    light-syntax .code:n =
-      \bool_set_true:N \l__nicematrix_light_syntax_bool
-      \bool_set_false:N \l__nicematrix_light_syntax_expanded_bool ,
-    light-syntax .value_forbidden:n = true ,
-    light-syntax-expanded .code:n =
-      \bool_set_true:N \l__nicematrix_light_syntax_bool
-      \bool_set_true:N \l__nicematrix_light_syntax_expanded_bool ,
-    light-syntax-expanded .value_forbidden:n = true ,
+    light-syntax .choices:nn = { true , false }
+      {
+        \tl_if_eq:VnTF \l_keys_value_tl { true }
+          { \bool_set_true:N \l__nicematrix_light_syntax_bool }
+          { \bool_set_false:N \l__nicematrix_light_syntax_bool }
+        \bool_set_false:N \l__nicematrix_light_syntax_expanded_bool
+      } ,
+    light-syntax .default:n = true ,
+    light-syntax-expanded .choices:nn = { true , false }
+      {
+        \tl_if_eq:VnTF \l_keys_value_tl { true }
+          {
+            \bool_set_true:N \l__nicematrix_light_syntax_bool
+            \bool_set_true:N \l__nicematrix_light_syntax_expanded_bool
+          }
+          {
+            \bool_set_false:N \l__nicematrix_light_syntax_bool
+            \bool_set_false:N \l__nicematrix_light_syntax_expanded_bool
+          }
+       } ,
+    light-syntax-expanded .default:n = true ,
     end-of-row .tl_set:N = \l__nicematrix_end_of_row_tl ,
     end-of-row .value_required:n = true ,
     end-of-row .initial:n = ; ,
