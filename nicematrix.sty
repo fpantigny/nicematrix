@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.10a}
-\def\myfiledate{2026/06/25}
+\def\myfileversion{7.10x}
+\def\myfiledate{2026/07/01}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -1780,6 +1780,7 @@
     \cs_set_eq:NN \rowcolor \__nicematrix_rowcolor_tabular
     \cs_set_eq:NN \rowcolors \__nicematrix_rowcolors_tabular
     \cs_set_eq:NN \rowlistcolors \__nicematrix_rowlistcolors_tabular
+    \cs_set_eq:NN \EmptyRow \__nicematrix_EmptyRow_tabular
     \int_if_zero:nTF \l__nicematrix_first_row_int
       { \cs_gset_eq:NN \__nicematrix_tuning_exterior_rows: \__nicematrix_tuning_first_last_row: }
       {
@@ -2428,6 +2429,29 @@
   {
     \int_incr:N \l_tmpa_int
     \__nicematrix_make_preamble_i_i:n
+  }
+\cs_new_protected:cpn { __nicematrix _ E : } #1 % added 2026/06/28
+  {
+    \tl_gput_right:Nn \g__nicematrix_array_preamble_tl
+      {
+        > {
+            \skip_horizontal:n { -2 \col@sep + 3 pt }
+            \skip_horizontal:N \c_zero_dim
+            \__nicematrix_cell_begin:
+          }
+        c
+        < {
+            \__nicematrix_cell_end:
+            \columncolor { nocolor }
+          }
+      }
+    \int_gincr:N \c@jCol
+    \tl_gput_left:Ne \g_nicematrix_code_before_tl
+      {
+        \exp_not:N \EmptyColumn { \arabic{jCol} }
+        % \exp_not:N \columncolor { \arabic{jCol} } { nocolor }
+      }
+    \__nicematrix_rec_preamble_after_col:n
   }
 \cs_new_protected:Npn \__nicematrix_make_preamble_i_i:n #1
   {
@@ -6271,6 +6295,14 @@
         \rowcolor { nocolor } { ##1 }
       }
   }
+\cs_new:Npn \__nicematrix_EmptyRow_tabular
+  {
+    \noalign { \skip_vertical:n { -\normalbaselineskip + 3 pt} }
+    \rowcolor { nocolor }
+    \tl_gput_right:Ne \g_nicematrix_code_before_tl
+      { \exp_not:N \EmptyRow { \arabic{iRow} } }
+    \\
+  }
 \cs_new_eq:NN \OnlyMainNiceMatrix \use:n
 \cs_new_protected:Npn \__nicematrix_OnlyMainNiceMatrix:n #1
   {
@@ -9039,16 +9071,16 @@
         \use:e { \exp_not:N \path [ \l_tmpa_tl ] }
               (
                 [
-                  xshift = \dim_use:N \l__nicematrix_offset_dim ,
-                  yshift = - \dim_use:N \l__nicematrix_offset_dim
+                  xshift = \dim_use:N \l__nicematrix_xoffset_dim ,
+                  yshift = - \dim_use:N \l__nicematrix_yoffset_dim
                 ]
                 #2 -| #3
               )
               rectangle
               (
                 [
-                  xshift = - \dim_use:N \l__nicematrix_offset_dim ,
-                  yshift = \dim_use:N \l__nicematrix_offset_dim
+                  xshift = - \dim_use:N \l__nicematrix_xoffset_dim ,
+                  yshift = \dim_use:N \l__nicematrix_yoffset_dim
                 ]
                 \int_eval:n { #4 + 1 } -| \int_eval:n { #5 + 1 }
               ) ;
@@ -9059,7 +9091,9 @@
 
 \keys_define:nn { nicematrix / SpecialOffset }
   {
-    offset .dim_set:N = \l__nicematrix_offset_dim ,
+    xoffset .dim_set:N = \l__nicematrix_xoffset_dim ,
+    yoffset .dim_set:N = \l__nicematrix_yoffset_dim ,
+    offset .meta:n = { xoffset = #1 , yoffset = #1 }
   }
 \cs_new_protected:Npn \__nicematrix_NullBlock:
   { \__nicematrix_collect_options:n { \__nicematrix_NullBlock_i: } }
