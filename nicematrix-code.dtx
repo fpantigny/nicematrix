@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.10a}
-\def\myfiledate{2026/06/25}
+\def\myfileversion{7.11}
+\def\myfiledate{2026/07/14}
 %
 %
 %<*batchfile>  
@@ -2394,8 +2394,14 @@ version 2005/12/01 or later.
 \bool_new:N \l_@@_except_borders_bool
 %    \end{macrocode}
 %
-% 
 %
+% \bigskip
+% The following parameter corresponds to the key |width-of-false|.
+%    \begin{macrocode}
+\dim_new:N \l_@@_width_of_false_dim
+\dim_set:Nn \l_@@_width_of_false_dim { 3 pt }
+%    \end{macrocode}
+% 
 % \bigskip
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / xdots }
@@ -2517,6 +2523,8 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Global }
   {
+    width_of_false .dim_set:N = \l_@@_width_of_false_dim ,
+    width_of_false .value_required:n = true , 
     fix-vertex .value_forbidden:n = true , 
     brace-shift .dim_set:N = \l_@@_brace_shift_dim ,
     brace-shift+ .code:n =
@@ -3251,7 +3259,7 @@ version 2005/12/01 or later.
     \if_int_compare:w \c@iRow = \c_zero_int 
       \if_int_compare:w \c@jCol > \c_zero_int 
         \l_@@_code_for_first_row_tl
-        \@@_tuning_key_small: % 2026/04/06
+        \@@_tuning_key_small:
         \xglobal \colorlet { nicematrix-first-row } { . }
       \fi:
     \else:
@@ -3280,7 +3288,7 @@ version 2005/12/01 or later.
   {
     \if_int_compare:w \c@iRow = \l_@@_last_row_int 
       \l_@@_code_for_last_row_tl
-        \@@_tuning_key_small:  % 2026/04/06
+        \@@_tuning_key_small: 
       \xglobal \colorlet { nicematrix-last-row } { . }
     \fi:
   }
@@ -4011,6 +4019,20 @@ version 2005/12/01 or later.
   { 
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+    % \tag_if_active:T % added on July 7 2026
+    %   {
+    %     \AddToHookWithArguments{tbl/cell/init}
+    %        {
+    %          \int_show:n { ##2 }
+    %          \int_show:N \g_@@_static_num_of_col_int
+    %          \int_compare:nNnT { ##2 } > \g_@@_static_num_of_col_int
+    %            { \SuspendTagging }
+    %        }
+    %   }
+%    \end{macrocode}
+%
+%
 % \medskip
 % The value of |\g_@@_pos_of_blocks_seq| has been written on the |aux| file and
 % loaded before the (potential) execution of the |\CodeBefore|.
@@ -4158,6 +4180,7 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \rowcolor \@@_rowcolor_tabular
     \cs_set_eq:NN \rowcolors \@@_rowcolors_tabular
     \cs_set_eq:NN \rowlistcolors \@@_rowlistcolors_tabular
+    \cs_set_eq:NN \FalseRow \@@_FalseRow
     \int_if_zero:nTF \l_@@_first_row_int
       { \cs_gset_eq:NN \@@_tuning_exterior_rows: \@@_tuning_first_last_row: }
       {
@@ -5462,6 +5485,30 @@ version 2005/12/01 or later.
     \@@_make_preamble_i_i:n
   }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new_protected:cpn { @@ _ F : } #1 % added 2026/06/28
+  {
+    \tl_gput_right:Nn \g_@@_array_preamble_tl
+      {
+        > {
+            \skip_horizontal:n { -2 \col@sep + \l_@@_width_of_false_dim } 
+            \skip_horizontal:N \c_zero_dim
+            \@@_cell_begin: 
+          }
+        c
+        < {
+            \@@_cell_end:
+            \columncolor { nocolor }
+          }
+      }
+    \int_gincr:N \c@jCol
+    \tl_gput_left:Ne \g_nicematrix_code_before_tl
+      { \exp_not:N \EmptyColumn { \arabic{jCol} } } 
+    \@@_rec_preamble_after_col:n
+  }
+%    \end{macrocode}
+% 
 % 
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_make_preamble_i_i:n #1
@@ -6949,7 +6996,6 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \endpgfpicture
     \box_move_up:nn \g_tmpa_dim { \box_use_drop:N \l_tmpa_box } 
-    % \box_use_drop:N \l_tmpa_box  % 2026/04/13
   }
 %    \end{macrocode}
 %
@@ -12164,6 +12210,19 @@ version 2005/12/01 or later.
       }
   }
 %    \end{macrocode}
+%
+% The following command must \emph{not} be protected.
+%    \begin{macrocode}
+\cs_new:Npn \@@_FalseRow
+  {
+    \noalign
+      { \skip_vertical:n { -\normalbaselineskip + \l_@@_width_of_false_dim } }
+    \rowcolor { nocolor }
+    \tl_gput_right:Ne \g_nicematrix_code_before_tl
+      { \exp_not:N \EmptyRow { \arabic{iRow} } }
+    \\
+  }
+%    \end{macrocode}
 % 
 % \bigskip
 % \section{The vertical and horizontal rules}
@@ -13757,30 +13816,27 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\AtBeginDocument
+\AddToHook{ package / tikz / after } 
   {
-    \IfPackageLoadedT { tikz }
+    \keys_define:nn { nicematrix / default-line }
       {
-        \keys_define:nn { nicematrix / default-line }
+        tikz .code:n =
+          \bool_set_true:N \l_@@_tikz_rule_bool
+          \tl_set:Nn \l_@@_tikz_rule_tl { #1 } ,
+        tikz .value_required:n = true ,
+        dashed .meta:n =
           {
-            tikz .code:n =
-              \bool_set_true:N \l_@@_tikz_rule_bool
-              \tl_set:Nn \l_@@_tikz_rule_tl { #1 } ,
-            tikz .value_required:n = true ,
-            dashed .meta:n =
-              {
-                tikz = nicematrix / dashed ,
-                total-width = \pgflinewidth 
-              }
-          }
-        \@@_custom_line:n
-          {
-            letter = ; ,
-            command = \hdashedline ,
-            ccommand = \cdashedline ,
             tikz = nicematrix / dashed ,
-            total-width = \pgflinewidth
+            total-width = \pgflinewidth 
           }
+      }
+    \@@_custom_line:n
+      {
+        letter = ; ,
+        command = \hdashedline ,
+        ccommand = \cdashedline ,
+        tikz = nicematrix / dashed ,
+        total-width = \pgflinewidth
       }
   }
 %    \end{macrocode}
@@ -13816,11 +13872,8 @@ version 2005/12/01 or later.
             \socket_assign_plug:nn { nicematrix / hsegment } { dotted }
           }
           {
-            \bool_if:NTF \l_@@_multiple_rule_bool
-              {
-                \socket_assign_plug:nn { nicematrix / vsegment } { multiple }
-                \socket_assign_plug:nn { nicematrix / hsegment } { multiple }
-              }
+            \socket_assign_plug:nn { nicematrix / vsegment } { multiple }
+            \socket_assign_plug:nn { nicematrix / hsegment } { multiple }
           }
       }
   }
@@ -15012,7 +15065,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
           { 
             $ % $
-            \bool_if:NT \l_@@_small_bool % 2026/04/05
+            \bool_if:NT \l_@@_small_bool 
               {
                 \def \arraystretch { 0.47 }
                 \dim_set:Nn \arraycolsep { 1.45 pt }
@@ -15026,7 +15079,7 @@ version 2005/12/01 or later.
                   [ \str_lowercase:f \l_@@_vpos_block_str ] 
                   { @ { } \l_@@_hpos_block_str @ { } } 
               }
-            \@@_tuning_key_small: % 2026/04/05
+            \@@_tuning_key_small: 
               #5 
             \end { array } 
             $ % $ 
@@ -15274,7 +15327,7 @@ version 2005/12/01 or later.
                         \exp_not:N \begin { array } [ \l_@@_vpos_block_str ]
                         { @ { } \l_@@_hpos_block_str @ { } }
                       }
-                      \@@_tuning_key_small: % 2026/05/04
+                      \@@_tuning_key_small: 
                       #5 
                     \end { array } 
                     $ % $
@@ -15368,7 +15421,7 @@ version 2005/12/01 or later.
         { \char_set_catcode_other:N ! }
         { #1 } ,
     borders .clist_set:N = \l_@@_borders_clist ,
-    borders .default:n = all , % added 2026/05/08
+    borders .default:n = all , 
     hvlines .meta:n = { vlines , hlines } , 
     vlines .bool_set:N = \l_@@_vlines_block_bool,
     hlines .bool_set:N = \l_@@_hlines_block_bool,
@@ -16310,7 +16363,7 @@ version 2005/12/01 or later.
 % with a style of TikZ).
 %    \begin{macrocode}
     \dim_set:Nn \arrayrulewidth { #1 }
-    \pgfsetlinewidth \arrayrulewidth % added 2026-03-28
+    \pgfsetlinewidth \arrayrulewidth 
     \@@_set_CTarc:n { #2 }
     \CT@arc@     
 %    \end{macrocode}
@@ -16386,7 +16439,7 @@ version 2005/12/01 or later.
 % with a style of TikZ).
 %    \begin{macrocode}
     \dim_set:Nn \arrayrulewidth { #1 }
-    \pgfsetlinewidth \arrayrulewidth % added 2026/03/28
+    \pgfsetlinewidth \arrayrulewidth 
     \@@_set_CTarc:n { #2 }
     \CT@arc@     
 %    \end{macrocode}    
@@ -16493,7 +16546,7 @@ version 2005/12/01 or later.
 % |bottome|), we will raise the flag |\l_tmpa_bool| (and, if there isn't
 % any specification of border, we will draw all the borders).
 %    \begin{macrocode}
-    \bool_set_false:N \l_tmpa_bool % added 2026/05/25
+    \bool_set_false:N \l_tmpa_bool 
     \clist_if_in:NnT \l_@@_borders_clist { right }  
       {
         \@@_stroke_vertical:n \l_tmpb_tl
@@ -16532,7 +16585,7 @@ version 2005/12/01 or later.
         { \tl_set:Nn \l_@@_borders_tikz_tl { #1 } }
         { \@@_error:n { tikz~in~borders~without~tikz } } ,
     tikz .value_required:n = true ,
-    dashed .meta:n = { tikz = dashed } , % added 2026/05/25
+    dashed .meta:n = { tikz = dashed } , 
     top .code:n = ,
     bottom .code:n = , 
     left .code:n = ,
@@ -16599,7 +16652,7 @@ version 2005/12/01 or later.
 \keys_define:nn { nicematrix / BlockBorders }
   { 
     borders .clist_set:N = \l_@@_borders_clist ,
-    borders .default:n = all , % 2026/08/05
+    borders .default:n = all , 
     rounded-corners .dim_set:N = \l_@@_rounded_corners_dim ,
     rounded-corners .default:n = 4 pt ,
     rules/width .dim_set:N = \l_@@_line_width_dim ,
@@ -16643,16 +16696,16 @@ version 2005/12/01 or later.
         \use:e { \exp_not:N \path [ \l_tmpa_tl ] }
               ( 
                 [ 
-                  xshift = \dim_use:N \l_@@_offset_dim , 
-                  yshift = - \dim_use:N \l_@@_offset_dim 
+                  xshift = \dim_use:N \l_@@_xoffset_dim , 
+                  yshift = - \dim_use:N \l_@@_yoffset_dim 
                 ] 
                 #2 -| #3
               ) 
               rectangle 
               ( 
                 [ 
-                  xshift = - \dim_use:N \l_@@_offset_dim , 
-                  yshift = \dim_use:N \l_@@_offset_dim 
+                  xshift = - \dim_use:N \l_@@_xoffset_dim , 
+                  yshift = \dim_use:N \l_@@_yoffset_dim 
                 ] 
                 \int_eval:n { #4 + 1 } -| \int_eval:n { #5 + 1 } 
               ) ; 
@@ -16667,7 +16720,9 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / SpecialOffset }
   {
-    offset .dim_set:N = \l_@@_offset_dim ,
+    xoffset .dim_set:N = \l_@@_xoffset_dim ,
+    yoffset .dim_set:N = \l_@@_yoffset_dim ,
+    offset .meta:n = { xoffset = #1 , yoffset = #1 }    
   }
 %    \end{macrocode}
 %
@@ -19387,7 +19442,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\@@_msg_new:nnn { Unknown~key~for~defaut-line }
+\@@_msg_new:nnn { Unknown~key~for~default-line }
   {
     Unknown~key.\\
     The~key~' \l_keys_key_str '~is~unknown~in~a~'default-line'.~
@@ -19400,7 +19455,8 @@ version 2005/12/01 or later.
     dotted,~
     multiplicity,~
     sep-color,~
-    tikz,~and~total-width.
+    tikz~(when~TikZ~is~loaded)~
+    and~total-width.
   }
 %    \end{macrocode}
 %
