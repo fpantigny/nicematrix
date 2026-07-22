@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.11}
-\def\myfiledate{2026/07/14}
+\def\myfileversion{7.11a}
+\def\myfiledate{2026/07/22}
 %
 %
 %<*batchfile>  
@@ -2399,7 +2399,7 @@ version 2005/12/01 or later.
 % The following parameter corresponds to the key |width-of-false|.
 %    \begin{macrocode}
 \dim_new:N \l_@@_width_of_false_dim
-\dim_set:Nn \l_@@_width_of_false_dim { 3 pt }
+\dim_set:Nn \l_@@_width_of_false_dim { 2 pt }
 %    \end{macrocode}
 % 
 % \bigskip
@@ -2523,8 +2523,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Global }
   {
-    width_of_false .dim_set:N = \l_@@_width_of_false_dim ,
-    width_of_false .value_required:n = true , 
+    width-of-false .dim_set:N = \l_@@_width_of_false_dim ,
+    width-of-false .value_required:n = true ,
+    width-of-false+ .code:n =
+      \dim_add:Nn \l_@@_width_of_false_dim { #1 } ,
+    width-of-false+ .value_required:n = true ,
+    width-of-false~+ .meta:n = { width-of-false+ = #1 } ,
     fix-vertex .value_forbidden:n = true , 
     brace-shift .dim_set:N = \l_@@_brace_shift_dim ,
     brace-shift+ .code:n =
@@ -3182,16 +3186,18 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \tl_gclear:N \g_@@_cell_after_hook_tl
 %    \end{macrocode}
-% At the beginning of the cell, we link |\CodeAfter| to a command which do
+% At the beginning of the cell, we link |\CodeAfter| to a command which does
 % begin with |\\| (whereas the standard version of |\CodeAfter| does
 % not).
 %    \begin{macrocode}
     \cs_set_eq:NN \CodeAfter \@@_CodeAfter_i:
 %    \end{macrocode}
+%
 % The following link is done only to have a better error message when |\Hline|
-% is used in another place than the beginning of a line.
+% or |\FalseRow| is used in another place than the beginning of a line.
 %    \begin{macrocode}
     \cs_set_eq:NN \Hline \@@_Hline_in_cell:
+    \cs_set_eq:NN \FalseRow \@@_FalseRow_in_cell: % added 2026-07-17
 %    \end{macrocode}
 % We increment the LaTeX counter |jCol|, which is the counter of the columns. 
 %    \begin{macrocode}
@@ -4458,7 +4464,7 @@ version 2005/12/01 or later.
 %
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_Body: { \@@_fatal:n { Body~alone } }
-\cs_new_protected_nopar:Npn \@@_CodeBefore: { \@@_fatal:n { Bad~use~of~CodeBefore } }
+\cs_new_protected_nopar:Npn \@@_CodeBefore: { \@@_fatal:n { Misuse~of~CodeBefore } }
 %    \end{macrocode}
 % 
 % The following command will be executed if the |\CodeBefore| has to be actually
@@ -4567,6 +4573,7 @@ version 2005/12/01 or later.
     \@@_add_to_colors_seq:nn { { nocolor } } { } 
     \bool_gset_false:N \g_@@_create_cell_nodes_bool
     \group_begin:
+    \@@_security_font_commands:
 %    \end{macrocode}    
 % We compose the |\CodeBefore| in math mode in order to nullify the spaces put
 % by the user between instructions in the |\CodeBefore|.
@@ -7157,7 +7164,7 @@ version 2005/12/01 or later.
 %
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tabular_notes_error:
-  { \@@_error:n { Bad~use~of~NiceTabularNotes } }
+  { \@@_error:n { Misuse~of~NiceTabularNotes } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -7821,6 +7828,8 @@ version 2005/12/01 or later.
 % not).
 %    \begin{macrocode}
         \cs_set_eq:NN \CodeAfter \@@_CodeAfter_i:
+        \cs_set_eq:NN \Hline \@@_Hline_in_cell:
+        \cs_set_eq:NN \FalseRow \@@_FalseRow_in_cell: % added 2026-07-17
         \bool_gset_true:N \g_@@_after_col_zero_bool
         \@@_begin_of_row:
         \hbox_set:Nw \l_@@_cell_box 
@@ -7893,6 +7902,8 @@ version 2005/12/01 or later.
 % not).
 %    \begin{macrocode}
         \cs_set_eq:NN \CodeAfter \@@_CodeAfter_i:
+        \cs_set_eq:NN \Hline \@@_Hline_in_cell:
+        \cs_set_eq:NN \FalseRow \@@_FalseRow_in_cell: % added 2026-07-17
 %    \end{macrocode}
 % With the flag |\g_@@_last_col_found_bool|, we will know that the ``last
 % column'' is really used.
@@ -8460,14 +8471,25 @@ version 2005/12/01 or later.
       { \@@_rescan_for_spanish:N \g_nicematrix_code_after_tl }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+    \bool_set_true:N \l_@@_in_code_after_bool
+    \@@_security_font_commands:
+%    \end{macrocode}
 % \medskip
 % And here's the |\CodeAfter|. Since the |\CodeAfter| may begin with an
 % ``argument'' between square brackets of the options, we extract and treat that
 % potential ``argument'' with the command |\@@_CodeAfter_keys:|.
 %    \begin{macrocode}
     \bool_set_true:N \l_@@_in_code_after_bool
-    \exp_last_unbraced:No \@@_CodeAfter_keys: \g_nicematrix_code_after_tl
-    \scan_stop: 
+    \if_mode_math:
+      \exp_last_unbraced:No \@@_CodeAfter_keys: \g_nicematrix_code_after_tl
+      \scan_stop:
+    \else:
+      $ % $
+      \exp_last_unbraced:No \@@_CodeAfter_keys: \g_nicematrix_code_after_tl
+      \scan_stop:
+      $ % $    
+    \fi:
     \tl_gclear:N \g_nicematrix_code_after_tl
     \clist_if_empty:NF \g_@@_col_with_trees_clist \@@_draw_trees:
     \group_end:
@@ -10651,7 +10673,7 @@ version 2005/12/01 or later.
           { 
             & 
             \multicolumn { 1 } { c } { }
-            \cs_set_eq:NN \CodeAfter \@@_CodeAfter_i: 
+            \cs_set_eq:NN \CodeAfter \@@_CodeAfter_i:
           }
       } 
   }
@@ -12216,12 +12238,22 @@ version 2005/12/01 or later.
 \cs_new:Npn \@@_FalseRow
   {
     \noalign
-      { \skip_vertical:n { -\normalbaselineskip + \l_@@_width_of_false_dim } }
+      {
+        \skip_vertical:n
+          {
+            - \fp_to_dim:n { \normalbaselineskip * \arraystretch }
+            + \l_@@_width_of_false_dim
+          }
+      }
     \rowcolor { nocolor }
     \tl_gput_right:Ne \g_nicematrix_code_before_tl
-      { \exp_not:N \EmptyRow { \arabic{iRow} } }
+      { \exp_not:N \EmptyRow { \arabic { iRow } } }
     \\
   }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new:Npn \@@_FalseRow_in_cell: { \@@_error:n { Misuse~of~FalseRow } }
 %    \end{macrocode}
 % 
 % \bigskip
@@ -12611,7 +12643,7 @@ version 2005/12/01 or later.
 % \verb+|c|c|c|+ but only two columns used).
 %    \begin{macrocode}
       \int_compare:nNnT \l_@@_position_int < { \c@jCol + 2 }
-        \socket_use:n { nicematrix / draw-vrule }
+        { \socket_use:n { nicematrix / draw-vrule } }
     }
   }
 %    \end{macrocode}
@@ -16973,7 +17005,7 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_draw_diagbox:nnnnnn #1 #2 #3 #4 #5 #6
   {
 %    \end{macrocode}
-% We \emph{must} us an environment |{pgfscope}| and not a simple group of TeX.
+% We \emph{must} use an environment |{pgfscope}| and not a simple group of TeX.
 %    \begin{macrocode}
     \begin { pgfscope }
     \@@_qpoint:n { row - #1 }
@@ -17001,7 +17033,7 @@ version 2005/12/01 or later.
     \pgftransformshift { \pgfpoint \l_tmpb_dim \l_@@_tmpc_dim }
     \pgfnode { rectangle } { south~west } 
       { 
-        \begin { minipage } { 20 cm }
+        \begin { minipage } { 20 cm } 
 %    \end{macrocode}
 % The |\scan_stop:| avoids an error in math mode when the argument |#5| is empty.
 %    \begin{macrocode}
@@ -17009,18 +17041,18 @@ version 2005/12/01 or later.
         \end { minipage } 
       } 
       { } 
-      { }
+      { \pgfusepath { discard } } % mandatory
     \endpgfscope
     \pgftransformshift { \pgfpoint \l_@@_tmpd_dim \l_tmpa_dim }
     \pgfnode { rectangle } { north~east } 
       {
-        \begin { minipage } { 20 cm }
+        \begin { minipage } { 20 cm } 
         \raggedleft
         \@@_math_toggle: \scan_stop: #6 \@@_math_toggle: 
         \end { minipage } 
       } 
       { } 
-      { }
+      { \pgfusepath { discard } } % mandatory      
     \end { pgfscope }
   }
 %    \end{macrocode}
@@ -18859,7 +18891,57 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 % 
 % \bigskip
-% \section{Error messages of the package}
+% \section{Gestion of the errors}
+%
+%
+% \subsection{Security in the CodeBefore and the CodeAfter}
+%
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_security_font_commands:
+  {
+    \cs_set_eq:NN \@@_old_small: \small
+    \cs_set_eq:NN \@@_old_footnotesize: \footnotesize
+    \cs_set_eq:NN \@@_old_scriptsize: \scriptsize
+    \cs_set_eq:NN \@@_old_tiny: \tiny
+    \cs_set_eq:NN \small \@@_small:
+    \cs_set_eq:NN \footnotesize \@@_footnotesize:
+    \cs_set_eq:NN \scriptsize \@@_scriptsize:    
+    \cs_set_eq:NN \tiny \@@_tiny:
+    \everyhbox
+      {
+        \cs_set_eq:NN \small \@@_old_small:
+        \cs_set_eq:NN \footnotesize \@@_old_footnotesize:
+        \cs_set_eq:NN \scriptsize \@@_old_scriptsize:
+        \cs_set_eq:NN \tiny \@@_old_tiny:        
+      }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_set_protected:Npn \@@_small: { \@@_font_command_error:N \small }
+\cs_set_protected:Npn \@@_footnotsize: { \@@_font_command_error:N \footnotesize }
+\cs_set_protected:Npn \@@_scriptsize: { \@@_font_command_error:N \scriptsize }
+\cs_set_protected:Npn \@@_tiny: { \@@_font_command_error:N \tiny }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_font_command_error:N #1
+  { \@@_error:nn { font-command } { #1 } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { font-command }
+  {
+    Font~command~not~allowed.\\
+    You~can't~use~the~command~#1 directly~in~the~
+    \bool_if:NTF \l_@@_in_code_after_bool
+      { \token_to_str:N \CodeAfter}
+      { \token_to_str:N \CodeBefore}.~Your~command~will~be~ignored.
+  }
+%    \end{macrocode}
+% 
+% \subsection{The error messages of the package}
 %
 % \bigskip
 % When there is a unknown key, maybe the user has tried to use an inexistent
@@ -19039,9 +19121,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\@@_msg_new:nn { Bad~use~of~CodeBefore }
+\@@_msg_new:nn { Misuse~of~CodeBefore }
   {
-    Bad~use~of~\token_to_str:N \CodeBefore. \\
+    Misuse~of~\token_to_str:N \CodeBefore. \\
     \token_to_str:N \CodeBefore\ must~be~used~only~at~the~beginning~of~
     the~environment.
   }
@@ -19060,7 +19142,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { cellcolor~in~Block } 
   {
-    Bad~use~of~\token_to_str:N \cellcolor \\
+    Misuse~of~\token_to_str:N \cellcolor \\
     You~can't~use~\token_to_str:N \cellcolor\ in~\token_to_str:N \Block\
     \bool_if:NTF \l_@@_amp_in_blocks_bool
       { (but~you~could~use~it~in~a~sub-block~since~'&-in-blocks'~is~in~force) }
@@ -19072,7 +19154,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { rowcolor~in~Block } 
   {
-    Bad~use~of~\token_to_str:N \rowcolor \\
+    Misuse~of~\token_to_str:N \rowcolor \\
     You~can't~use~\token_to_str:N \rowcolor\ in~\token_to_str:N \Block.~
     However,~it's~possible~to~color~the~block~with~its~key~'fill'.~
     Your~command~will~be~ignored.
@@ -19088,6 +19170,16 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\@@_msg_new:nn { Misuse~of~FalseRow }
+  {
+    Misuse~of~\token_to_str:N \FalseRow \\
+    Error~in~the~row~ \int_use:N \c@iRow\ of~your~\@@_full_name_env:.~    
+    \token_to_str:N \FalseRow\ must~be~used~only~at~the~beginning~of~a~row.~
+    Your~command~will~be~ignored.    
+  }
+%    \end{macrocode}
+% 
 %    \begin{macrocode}
 \@@_msg_new:nn { Invalid~argument~for~w }
   {
@@ -19183,9 +19275,9 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}}
-\@@_msg_new:nn { Bad~use~of~NiceTabularNotes }
+\@@_msg_new:nn { Misuse~of~NiceTabularNotes }
   {
-    Bad~use~of~\token_to_str:N \NiceTabularNotes \\
+    Misuse~of~\token_to_str:N \NiceTabularNotes \\
     \token_to_str:N~\NiceTabularNotes\ should~be~used~only~after~at~tabular~
     which~uses~`notes/no-print`.~ Your~command~will~be~ignored.
   }
@@ -19204,7 +19296,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { in~first~col }
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\
     You~can't~use~the~command~#1 in~the~first~column~(number~0)~of~the~array.~
     Your~command~will~be~ignored.~You~can~try~to~delete~the~key~'first-col'.
   }
@@ -19213,7 +19305,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { in~last~col }
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\ 
     You~can't~use~the~command~#1 in~the~last~column~(exterior)~of~the~array.~
     Your~command~will~be~ignored.~You~can~try~to~delete~the~key~'last-col'.    
   }
@@ -19222,7 +19314,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { in~first~row }
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\     
     You~can't~use~the~command~#1 in~the~first~row~(number~0)~of~the~array.~
     Your~command~will~be~ignored.~You~can~try~to~delete~the~key~'first-row'.
   }
@@ -19231,7 +19323,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { in~last~row }
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\ 
     You~can't~use~the~command~#1 in~the~last~row~(exterior)~of~the~array.~
     Your~command~will~be~ignored.~You~can~try~to~delete~the~key~'last-row'. 
   }
@@ -19240,7 +19332,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { TopRule~without~booktabs } 
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\     
     You~can't~use~the~command~ #1 because~'booktabs'~is~not~loaded.~
     You~should~load~'booktabs'~(before~or~after~'nicematrix').~
     Your~command~will~be~ignored.
@@ -19261,7 +19353,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { TopRule~without~tikz } 
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\     
     You~can't~use~the~command~ #1 because~TikZ~is~not~loaded.~
     You~should~load~TikZ~with~\token_to_str:N \usepackage \{tikz\}.~
     \IfPackageLoadedF { booktabs }
@@ -20302,6 +20394,7 @@ version 2005/12/01 or later.
     small,~
     sub-matrix~(several~subkeys),~
     vlines,~
+    width-of-false,~
     xdots~(several~subkeys).
   }
 %    \end{macrocode}
@@ -20361,6 +20454,7 @@ version 2005/12/01 or later.
     small,~
     t,~
     vlines,~
+    width-of-false,~    
     xdots/color,~
     xdots/shorten-start(+),~
     xdots/shorten-end(+),~
@@ -20429,6 +20523,7 @@ version 2005/12/01 or later.
     small,~
     t,~
     vlines,~
+    width-of-false,~    
     xdots/color,~
     xdots/shorten-start(+),~
     xdots/shorten-end(+),~
@@ -20495,6 +20590,7 @@ version 2005/12/01 or later.
     t,~
     tabularnote,~
     vlines,~
+    width-of-false,~
     xdots/color,~
     xdots/shorten-start(+),~
     xdots/shorten-end(+),~

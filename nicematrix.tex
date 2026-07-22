@@ -82,7 +82,9 @@
 \bool_new:N \l__pantigny_show_output_bool
 \bool_new:N \l__pantigny_no_cell_nodes_bool
 \bool_new:N \l__pantigny_small_bool
+\bool_new:N \l__pantigny_footnotesize_bool 
 \bool_new:N \l__pantigny_execute_bool
+
 
 \keys_define:nn { pantigny }
   {
@@ -95,6 +97,7 @@
     no-cell-nodes .bool_set:N = \l__pantigny_no_cell_nodes_bool ,
     no-cell-nodes .default:n = true ,
     small .bool_set:N = \l__pantigny_small_bool ,
+    footnotesize .bool_set:N = \l__pantigny_footnotesize_bool     
   }
 
 \NewPitonEnvironment { Code } { O { } }
@@ -107,6 +110,7 @@
     \cs_set_eq:NN \emph \emphase
     \color{gray}
     \bool_if:NT \l__pantigny_small_bool \small
+    \bool_if:NT \l__pantigny_footnotesize_bool \footnotesize    
     \dim_compare:nNnT \l__pantigny_width_dim > \c_zero_dim 
       { 
         \PitonOptions { width = \l__pantigny_width_dim  } 
@@ -1748,8 +1752,14 @@ four & \cellcolor{yellow} five & six \\
 \end{scope}
 
 
+\medskip
+However, for double rules in conjunction with colored backgrounds, it's probably more
+advisable to use the ``false rows'' provided by the command |\FalseRow| (dans the letter
+|F| for the false columns): cf.~\ref{FalseRow}, p.~\pageref{FalseRow}.
+
+
 \bigskip
-\item \emph{Second possibilité} : the key \Definition{dashed}
+\item \emph{Second possibility} : the key \Definition{dashed}
 
 \indexcommand{hdashedline}
 \indexcommand{cdashedline}
@@ -1845,7 +1855,7 @@ $\begin{pNiceMatrix}
 
 
 \bigskip
-\item \emph{Troisième possibilité} : the key \Definition{dotted}
+\item \emph{Third possibility} : the key \Definition{dotted}
 
 \label{dotted}
 \index{dotted (clé de «custom-line»)}
@@ -2150,6 +2160,7 @@ p.~\pageref{custom-line}).
 \indexcommand{FalseRow}
 \index{F (letter in the preambles)}
 \index{width-of-false}
+\label{FalseRow}
 
 \colorbox{yellow!50}{\textbf{New 7.11}}
 
@@ -2160,8 +2171,9 @@ provides a command |\FalseRow| and a letter |F|.
 \smallskip
 The command |\FalseRow| must be used after a command |\\| of end of row. It
 creates a new empty row with a height equal to \Definition{width-of-false} (the
-initial value of that parameter is 3~pt). The rules and the colored backgrounds
-won't be drawn in that row.
+initial value of that parameter is 2~pt, which is the initial value of
+|\doublerulesep|). The rules and the colored backgrounds won't be drawn in that
+row.
 
 \smallskip
 The letter |F| is available in the environments with preambles (|{NiceTabular}|,
@@ -2184,6 +2196,14 @@ a              && b & a \\
 b              && a & b
 \end{NiceTabular}
 \end{Code}
+
+\medskip
+An additive syntax is provided for the key |width-of-false|. For example, it's
+possible to write:
+
+\begin{Verbatim}
+\NiceMatrixOptions { width-of-false += -1 pt }
+\end{Verbatim}
 
 
 \index{Rules@\textbf{Rules in the tabulars}|)}
@@ -3990,8 +4010,9 @@ The |\CodeAfter| provides several special commands: |\line|,
 present these commands. 
 
 \medskip
-One should avoid spurious spaces in that |\CodeAfter|.\footnote{See:
-  \url{https://tex.stackexchange.com/questions/689336}} 
+\emph{Remark}: Since version 7.11a of \pkg{nicematrix}, that |\CodeAfter| is composed
+in mathematical mode and, therefore, the spurious spaces are deleted after a command such as
+|\SubMatrix|.
 
 
 \subsection{The command \texttt{\textbackslash line} in the \texttt{\textbackslash CodeAfter}}
@@ -5910,12 +5931,11 @@ These nodes are available in the |\CodeBefore| and the |\CodeAfter|.
   arum &          & violette mauve \\
   muguet & dahlia 
 \CodeAfter
-  \tiny
   \begin{tikzpicture}
   \foreach \i in {1,1.5,2,2.5,3,3.5,4}
     { 
       \fill [red] (\i) circle (0.5mm) ; 
-      \node [red,above right] at (\i) {\i} ; 
+      \node [red,above right] at (\i) {\tiny \i} ; 
     } 
   \end{tikzpicture}
 \end{NiceTabular}
@@ -7274,8 +7294,10 @@ $\begin{pNiceArray}{ccc}[last-col, margin = 2pt]
 \end{pNiceArray}$
 \end{Code}
 
+\bigskip
+However, that technic is sometimes not sufficient when we have to underline a part of
+a row or a part of a column.
 
-\subsection{Use of \texttt{\textbackslash SubMatrix} in the \texttt{\textbackslash CodeBefore}}
 
 \label{submatrix-in-codebefore}
 
@@ -7287,65 +7309,40 @@ $\begin{pNiceArray}{ccc}[last-col, margin = 2pt]
 \index{create-cell-nodes (key of \texttt{\textbackslash CodeBefore})|textit}
 
 
-In the following example, we illustrate the mathematical product of two
-matrices. 
-
-The whole figure is an environment |{NiceArray}| and the three pairs of
-parenthesis have been added with |\SubMatrix| in the |\CodeBefore| (since you have put
-these |\SubMatrix| in the |\CodeBefore| --- and not the |\CodeAfter| --- the dotted leaders
-specified in the matrix product $C$ will be limited to that matrix).
-
-\tikzset{highlight/.style={rectangle,
-                           fill=red!15,
-                           rounded corners = 0.5 mm, 
-                           inner sep=1pt,
-                           fit=#1}}%
-\[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[xdots/nullify]
-\CodeBefore [create-cell-nodes]
-  \SubMatrix({2-7}{6-last})
-  \SubMatrix({7-2}{last-6})
-  \SubMatrix({7-7}{last-last})
-  \begin{tikzpicture}
-    \node [highlight = (9-2) (9-6)] { } ; 
-    \node [highlight = (2-9) (6-9)] { } ;
-  \end{tikzpicture}
-\Body
-    &        &        &        &        &        &        &        & \color{blue}\scriptstyle C_j \\
-    &        &        &        &        &        & b_{11} & \Cdots & b_{1j} & \Cdots & b_{1n} \\
-    &        &        &        &        &        & \Vdots &        & \Vdots &        & \Vdots \\
-    &        &        &        &        &        &        &        & b_{kj} \\
-    &        &        &        &        &        &        &        & \Vdots \\
-    &        &        &        &        &        & b_{n1} & \Cdots & b_{nj} & \Cdots & b_{nn} \\[3mm]
-    & a_{11} & \Cdots &        &        & a_{1n} \\
-    & \Vdots &        &        &        & \Vdots &        &        & \Vdots \\
-\color{blue}\scriptstyle L_i 
-    & a_{i1} & \Cdots & a_{ik} & \Cdots & a_{in} & \Cdots &        & c_{ij} \\
-    & \Vdots &        &        &        & \Vdots \\
-    & a_{n1} & \Cdots &        &        & a_{nn}  \\
-\CodeAfter
-\tikz \draw [gray,shorten > = 1mm, shorten < = 1mm] (9-4.north) to [bend left] (4-9.west) ;
-\end{NiceArray}\]
+That's why we present now a more general technic.
 
 
-\vspace{1cm}
-\begin{Verbatim}
-\tikzset{highlight/.style={rectangle,
-                           fill=red!15,
-                           rounded corners = 0.5 mm, 
-                           inner sep=1pt,
-                           fit=~#1}}
+First, we load the TikZ library \pkg{fit} and we define a TikZ style called |highlight|.
+
+\medskip
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz} % dans le préambule
+\usetikzlibrary{fit} % dans le préambule
 \end{Verbatim}
 
-\begin{footnotesize}
-\begin{Code}
+\medskip
+
+\begin{Code}[execute]
+\tikzset{\emph{highlight}/.style={rectangle,
+                           fill=red!15,
+                           rounded corners = 0.5 mm,
+                           inner sep=1pt,
+                           fit = #1}}
+\end{Code}
+
+\bigskip
+We use that style in the |\CodeBefore| of the environment.
+
+\bigskip
+\begin{Code}[show-output,footnotesize]
 \[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[xdots/nullify]
 \CodeBefore [create-cell-nodes]
   \SubMatrix({2-7}{6-last})
   \SubMatrix({7-2}{last-6})
   \SubMatrix({7-7}{last-last})
   \begin{tikzpicture}
-    \node [highlight = (9-2) (9-6)] { } ; 
-    \node [highlight = (2-9) (6-9)] { } ;
+    \node [\emph{highlight} = (9-2) (9-6)] { } ;
+    \node [\emph{highlight} = (2-9) (6-9)] { } ;
   \end{tikzpicture}
 \Body
     &        &        &        &        &        &        &        & \color{blue}\scriptstyle C_j \\
@@ -7356,7 +7353,7 @@ specified in the matrix product $C$ will be limited to that matrix).
     &        &        &        &        &        & b_{n1} & \Cdots & b_{nj} & \Cdots & b_{nn} \\[3mm]
     & a_{11} & \Cdots &        &        & a_{1n} \\
     & \Vdots &        &        &        & \Vdots &        &        & \Vdots \\
-\color{blue}\scriptstyle L_i 
+\color{blue}\scriptstyle L_i
     & a_{i1} & \Cdots & a_{ik} & \Cdots & a_{in} & \Cdots &        & c_{ij} \\
     & \Vdots &        &        &        & \Vdots \\
     & a_{n1} & \Cdots &        &        & a_{nn}  \\
@@ -7364,7 +7361,14 @@ specified in the matrix product $C$ will be limited to that matrix).
 \tikz \draw [gray,shorten > = 1mm, shorten < = 1mm] (9-4.north) to [bend left] (4-9.west) ;
 \end{NiceArray}\]
 \end{Code}
-\end{footnotesize}
+
+
+
+
+The whole figure is an environment |{NiceArray}| and the three pairs of
+parenthesis have been added with |\SubMatrix| in the |\CodeBefore| (since you have put
+these |\SubMatrix| in the |\CodeBefore| --- and not the |\CodeAfter| --- the dotted leaders
+specified in the matrix product $C$ will be limited to that matrix).
 
 
 
@@ -7464,7 +7468,7 @@ also available on the
 \subsection*{Changes between version 7.10 and 7.11}
 
 New keys |xoffset| and |yoffset| in the key |tikz| of the command |\Block| (previously,
-there was only |offset| which now a kind of conjunction of |xoffset| and |yoffset|.
+there was only |offset| which is now a kind of conjunction of |xoffset| and |yoffset|.
 
 New command |\FalseRow| and letter |F| (for a ``false column'').
 
@@ -7746,6 +7750,4 @@ Key |\color| for the command |\RowStyle|.
 % LaTeX-verbatim-environments-local: ("Code")
 % fill-column: 80
 % End:
-
-
 

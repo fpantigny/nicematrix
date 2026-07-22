@@ -90,6 +90,7 @@
 \bool_new:N \l__pantigny_no_cell_nodes_bool
 \bool_new:N \l__pantigny_small_bool
 \bool_new:N \l__pantigny_execute_bool
+\bool_new:N \l__pantigny_footnotesize_bool 
 
 \keys_define:nn { pantigny }
   {
@@ -102,6 +103,7 @@
     no-cell-nodes .bool_set:N = \l__pantigny_no_cell_nodes_bool ,
     no-cell-nodes .default:n = true ,
     small .bool_set:N = \l__pantigny_small_bool ,
+    footnotesize .bool_set:N = \l__pantigny_footnotesize_bool 
   }
 
 \NewPitonEnvironment { Code } { O { } }
@@ -114,6 +116,7 @@
     \cs_set_eq:NN \emph \emphase
     \color{gray}
     \bool_if:NT \l__pantigny_small_bool \small
+    \bool_if:NT \l__pantigny_footnotesize_bool \footnotesize
     \dim_compare:nNnT \l__pantigny_width_dim > \c_zero_dim 
       { 
         \PitonOptions { width = \l__pantigny_width_dim  } 
@@ -1858,6 +1861,11 @@ quatre & \cellcolor{yellow} cinq & six \\
 \end{NiceTabular}
 \end{Code}
 
+\medskip
+Néanmoins, pour des double-filets en conjonction avec des fonds colorés, peut-être vaut-il
+mieux utiliser les «fausses rangées» proposées par la commande |\FalseRow| (et la lettre |F|
+pour les «fausses colonnes») : cf.~\ref{FalseRow}, p.~\pageref{FalseRow}.
+
 
 \bigskip
 \item \emph{Deuxième possibilité} : la clé \Definition{dashed}
@@ -2263,6 +2271,7 @@ sept   & \Block{1-2}{huit} \\
 
 \indexcommand{FalseRow}
 \index{F (lettre dans les préambules)}
+\label{FalseRow}
 
 \colorbox{yellow!50}{\textbf{Nouveau 7.11}}
 
@@ -2272,9 +2281,10 @@ propose une commande |\FalseRow| et une lettre |F|.
 
 \smallskip
 La commande |\FalseRow| est à utiliser après une commande |\\| de fin de rangée.
-Elle crée une nouvelle rangée vidde dans la hauteur est égale au
-paramètre \Definition{width-of-false} (la valeur initial de ce paramètre est égale à 3~pt).
-Les filets et les fonds colorés ne s'appliqueront pas dans cette rangée.
+Elle crée une nouvelle rangée vidde dans la hauteur est égale au paramètre
+\Definition{width-of-false} (la valeur initiale de ce paramètre est égale à
+2~pt, qui est la valeur initiale de |\doublerulesep|). Les filets et les fonds
+colorés ne s'appliqueront pas dans cette rangée.
 
 \smallskip
 La lettre |F| est à utiliser dans le préambule des environnements à préambules
@@ -2298,6 +2308,14 @@ a              && b & a \\
 b              && a & b
 \end{NiceTabular}
 \end{Code}
+
+\medskip
+Une syntaxe additive est disponible pour la clé |width-of-false|. De ce fait, on peut écrire,
+par exemple :
+
+\begin{Verbatim}
+\NiceMatrixOptions { width-of-false += -1 pt }
+\end{Verbatim}
 
   
 \index{Filets@\textbf{Filets dans les tableaux}|)}
@@ -4153,8 +4171,9 @@ Par ailleurs, plusieurs commandes spéciales sont disponibles dans le
 |\TikzEveryCell|. On va maintenant détailler ces commandes.
 
 \medskip
-On veillera à éviter les espaces parasites dans ce |\CodeAfter|.\footnote{Voir
-  \url{https://tex.stackexchange.com/questions/52848}} 
+\emph{Remarque} : Depuis la version 7.11a de \pkg{nicematrix}, le |\CodeAfter|
+est exécuté en mode mathématique, ce qui permet de nullifier les éventuels
+espaces insérés avec, par exemple, une commande |\SubMatrix|.
 
 \subsection{La commande \texttt{\textbackslash line} dans le \texttt{\textbackslash CodeAfter}}
 
@@ -6108,12 +6127,11 @@ Ces nœuds sont accessibles dans le
 arum   &        & violette mauve \\
 muguet & dahlia
 \CodeAfter
-\tiny
 \begin{tikzpicture}
 \foreach \i in {1,1.5,2,2.5,3,3.5,4}
   {
     \fill [red] (\i) circle (0.5mm) ;
-    \node [red,above right] at (\i) {\i} ;
+    \node [red,above right] at (\i) {\tiny\i} ;
   }
 \end{tikzpicture}
 \end{NiceTabular}
@@ -7113,7 +7131,6 @@ $\begin{pNiceArray}{ccc|cc}[first-row,last-col,margin]
 \end{scope}
 
 
-\clearpage
 \interitem
 Si on préfère les accolades de la fonte mathématique courante, il convient
 d'utiliser les commandes |\SubMatrix|, |\OverBrace| et |\UnderBrace| dans le
@@ -7479,8 +7496,11 @@ $\begin{pNiceArray}{ccc}[last-col, margin = 2pt]
 \end{Code}
 
 
+\bigskip
+Cette technique n'est pas parfois pas suffisante quand on veut surligner une partie d'une
+ligne ou bien une partie d'une colonne.
 
-\subsection{Utilisation de \texttt{\textbackslash SubMatrix} dans le \texttt{\textbackslash CodeBefore}}
+
 
 \index{SubMatrix@\texttt{\textbackslash SubMatrix} (commande du 
 \texttt{\textbackslash CodeAfter}\newline et du 
@@ -7488,72 +7508,43 @@ $\begin{pNiceArray}{ccc}[last-col, margin = 2pt]
 \index{CodeBefore@\texttt{\textbackslash CodeBefore}...\texttt{\textbackslash Body}|textit}
 \index{CodeAfter@\texttt{\textbackslash CodeAfter}|textit}
 \index{create-cell-nodes (clé de \texttt{\textbackslash CodeBefore})|textit}
-
-
 \label{ex:submatrix}
 
-Dans l'exemple suivant, on illustre le produit mathématique de deux matrices.
 
-L'ensemble de la figure est un environnement |{NiceArray}| et les trois paires
-de parenthèses ont été rajoutées avec |\SubMatrix| dans le |\CodeBefore| (le
-fait de les mettre dans le |\CodeBefore| et non le |\CodeAfter| permet de
-limiter à la matrice produit $C$ les lignes de conduite pointillées qui y sont spécifiées).
+C'est pourquoi on propose maintenant une technique plus générale.
 
+On commence par charger la bibliothèque \pkg{fit} de TikZ et on définit un style TikZ
+nommé |highlight|.
 
-\tikzset{highlight/.style={rectangle,
-                           fill=red!15,
-                           rounded corners = 0.5 mm,
-                           inner sep=1pt,
-                           fit=#1}}%
-%
-%
-\[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[xdots/nullify]
-\CodeBefore [create-cell-nodes]
-  \SubMatrix({2-7}{6-last})
-  \SubMatrix({7-2}{last-6})
-  \SubMatrix({7-7}{last-last})
-  \begin{tikzpicture}
-    \node [highlight = (9-2) (9-6)] { } ;
-    \node [highlight = (2-9) (6-9)] { } ;
-  \end{tikzpicture}
-\Body
-    &        &        &        &        &        &        &        & \color{blue}\scriptstyle C_j \\
-    &        &        &        &        &        & b_{11} & \Cdots & b_{1j} & \Cdots & b_{1n} \\
-    &        &        &        &        &        & \Vdots &        & \Vdots &        & \Vdots \\
-    &        &        &        &        &        &        &        & b_{kj} \\
-    &        &        &        &        &        &        &        & \Vdots \\
-    &        &        &        &        &        & b_{n1} & \Cdots & b_{nj} & \Cdots & b_{nn} \\[3mm]
-    & a_{11} & \Cdots &        &        & a_{1n} \\
-    & \Vdots &        &        &        & \Vdots &        &        & \Vdots \\
-\color{blue}\scriptstyle L_i
-    & a_{i1} & \Cdots & a_{ik} & \Cdots & a_{in} & \Cdots &        & c_{ij} \\
-    & \Vdots &        &        &        & \Vdots \\
-    & a_{n1} & \Cdots &        &        & a_{nn}  \\
-\CodeAfter
-\tikz \draw [gray,shorten > = 1mm, shorten < = 1mm] (9-4.north) to [bend left] (4-9.west) ;
-\end{NiceArray}\]
-
-
-\vspace{1cm}
-\begin{Verbatim}
-\tikzset{highlight/.style={rectangle,
-                           fill=red!15,
-                           rounded corners = 0.5 mm,
-                           inner sep=1pt,
-                           fit=~#1}}
+\medskip
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{tikz} % dans le préambule
+\usetikzlibrary{fit} % dans le préambule
 \end{Verbatim}
 
-\begin{scope}
-\footnotesize
-\begin{Code}
+\medskip
+
+\begin{Code}[execute]
+\tikzset{\emph{highlight}/.style={rectangle,
+                           fill=red!15,
+                           rounded corners = 0.5 mm,
+                           inner sep=1pt,
+                           fit = #1}}
+\end{Code}
+
+\bigskip
+On utilise alors ce style dans le |\CodeBefore| de l'environnement.
+
+\bigskip
+\begin{Code}[show-output,footnotesize]
 \[\begin{NiceArray}{*{6}{c}@{\hspace{6mm}}*{5}{c}}[xdots/nullify]
 \CodeBefore [create-cell-nodes]
   \SubMatrix({2-7}{6-last})
   \SubMatrix({7-2}{last-6})
   \SubMatrix({7-7}{last-last})
   \begin{tikzpicture}
-    \node [highlight = (9-2) (9-6)] { } ;
-    \node [highlight = (2-9) (6-9)] { } ;
+    \node [\emph{highlight} = (9-2) (9-6)] { } ;
+    \node [\emph{highlight} = (2-9) (6-9)] { } ;
   \end{tikzpicture}
 \Body
     &        &        &        &        &        &        &        & \color{blue}\scriptstyle C_j \\
@@ -7572,7 +7563,15 @@ limiter à la matrice produit $C$ les lignes de conduite pointillées qui y sont
 \tikz \draw [gray,shorten > = 1mm, shorten < = 1mm] (9-4.north) to [bend left] (4-9.west) ;
 \end{NiceArray}\]
 \end{Code}
-\end{scope}
+
+
+\medskip
+L'ensemble de la figure est un environnement |{NiceArray}| et les trois paires
+de parenthèses ont été rajoutées avec |\SubMatrix| dans le |\CodeBefore| (le
+fait de les mettre dans le |\CodeBefore| et non le |\CodeAfter| permet de
+limiter à la matrice produit $C$ les lignes de conduite pointillées qui y sont spécifiées).
+
+
 
 
 \subsection{Un tableau triangulaire}

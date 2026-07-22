@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.11}
-\def\myfiledate{2026/07/14}
+\def\myfileversion{7.11a}
+\def\myfiledate{2026/07/22}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -795,7 +795,7 @@
 \bool_new:N \l__nicematrix_large_nodes_bool
 \bool_new:N \l__nicematrix_except_borders_bool
 \dim_new:N \l__nicematrix_width_of_false_dim
-\dim_set:Nn \l__nicematrix_width_of_false_dim { 3 pt }
+\dim_set:Nn \l__nicematrix_width_of_false_dim { 2 pt }
 \keys_define:nn { nicematrix / xdots }
   {
     nullify .bool_set:N = \l__nicematrix_nullify_dots_bool ,
@@ -882,8 +882,12 @@
   }
 \keys_define:nn { nicematrix / Global }
   {
-    width_of_false .dim_set:N = \l__nicematrix_width_of_false_dim ,
-    width_of_false .value_required:n = true ,
+    width-of-false .dim_set:N = \l__nicematrix_width_of_false_dim ,
+    width-of-false .value_required:n = true ,
+    width-of-false+ .code:n =
+      \dim_add:Nn \l__nicematrix_width_of_false_dim { #1 } ,
+    width-of-false+ .value_required:n = true ,
+    width-of-false~+ .meta:n = { width-of-false+ = #1 } ,
     fix-vertex .value_forbidden:n = true ,
     brace-shift .dim_set:N = \l__nicematrix_brace_shift_dim ,
     brace-shift+ .code:n =
@@ -1341,6 +1345,7 @@
     \tl_gclear:N \g__nicematrix_cell_after_hook_tl
     \cs_set_eq:NN \CodeAfter \__nicematrix_CodeAfter_i:
     \cs_set_eq:NN \Hline \__nicematrix_Hline_in_cell:
+    \cs_set_eq:NN \FalseRow \__nicematrix_FalseRow_in_cell: % added 2026-07-17
     \int_gincr:N \c@jCol
     \if_int_compare:w \c@jCol = \c_one_int
       \if_int_compare:w \l__nicematrix_first_col_int = \c_one_int
@@ -1907,7 +1912,7 @@
     \__nicematrix_pre_array:
   }
 \cs_new_protected_nopar:Npn \__nicematrix_Body: { \__nicematrix_fatal:n { Body~alone } }
-\cs_new_protected_nopar:Npn \__nicematrix_CodeBefore: { \__nicematrix_fatal:n { Bad~use~of~CodeBefore } }
+\cs_new_protected_nopar:Npn \__nicematrix_CodeBefore: { \__nicematrix_fatal:n { Misuse~of~CodeBefore } }
 \cs_new_protected:Npn \__nicematrix_pre_code_before:
   {
     \pgfsys@markposition { \__nicematrix_env: - position }
@@ -1962,6 +1967,7 @@
     \__nicematrix_add_to_colors_seq:nn { { nocolor } } { }
     \bool_gset_false:N \g__nicematrix_create_cell_nodes_bool
     \group_begin:
+    \__nicematrix_security_font_commands:
     \if_mode_math:
       \__nicematrix_exec_code_before_i:
     \else:
@@ -3385,7 +3391,7 @@
     \cs_gset:Npn \__nicematrix_tabularnote_error:n ##1 { }
   }
 \cs_set_protected:Npn \__nicematrix_tabular_notes_error:
-  { \__nicematrix_error:n { Bad~use~of~NiceTabularNotes } }
+  { \__nicematrix_error:n { Misuse~of~NiceTabularNotes } }
 \cs_set_eq:NN \NiceTabularNotes \__nicematrix_tabular_notes_error:
 \cs_set_protected:Npn \__nicematrix_tabular_notes:
   {
@@ -3791,6 +3797,8 @@
     >
       {
         \cs_set_eq:NN \CodeAfter \__nicematrix_CodeAfter_i:
+        \cs_set_eq:NN \Hline \__nicematrix_Hline_in_cell:
+        \cs_set_eq:NN \FalseRow \__nicematrix_FalseRow_in_cell: % added 2026-07-17
         \bool_gset_true:N \g__nicematrix_after_col_zero_bool
         \__nicematrix_begin_of_row:
         \hbox_set:Nw \l__nicematrix_cell_box
@@ -3836,6 +3844,8 @@
       {
         \bool_set_true:N \l__nicematrix_in_last_col_bool
         \cs_set_eq:NN \CodeAfter \__nicematrix_CodeAfter_i:
+        \cs_set_eq:NN \Hline \__nicematrix_Hline_in_cell:
+        \cs_set_eq:NN \FalseRow \__nicematrix_FalseRow_in_cell: % added 2026-07-17
         \bool_gset_true:N \g__nicematrix_last_col_found_bool
         \int_gincr:N \c@jCol
         \int_gset_eq:NN \g__nicematrix_col_total_int \c@jCol
@@ -4150,8 +4160,17 @@
     \int_compare:nNnT { \char_value_catcode:n { 60 } } = { 13 }
       { \__nicematrix_rescan_for_spanish:N \g_nicematrix_code_after_tl }
     \bool_set_true:N \l__nicematrix_in_code_after_bool
-    \exp_last_unbraced:No \__nicematrix_CodeAfter_keys: \g_nicematrix_code_after_tl
-    \scan_stop:
+    \__nicematrix_security_font_commands:
+    \bool_set_true:N \l__nicematrix_in_code_after_bool
+    \if_mode_math:
+      \exp_last_unbraced:No \__nicematrix_CodeAfter_keys: \g_nicematrix_code_after_tl
+      \scan_stop:
+    \else:
+      $ % $
+      \exp_last_unbraced:No \__nicematrix_CodeAfter_keys: \g_nicematrix_code_after_tl
+      \scan_stop:
+      $ % $
+    \fi:
     \tl_gclear:N \g_nicematrix_code_after_tl
     \clist_if_empty:NF \g__nicematrix_col_with_trees_clist \__nicematrix_draw_trees:
     \group_end:
@@ -6308,12 +6327,19 @@
 \cs_new:Npn \__nicematrix_FalseRow
   {
     \noalign
-      { \skip_vertical:n { -\normalbaselineskip + \l__nicematrix_width_of_false_dim } }
+      {
+        \skip_vertical:n
+          {
+            - \fp_to_dim:n { \normalbaselineskip * \arraystretch }
+            + \l__nicematrix_width_of_false_dim
+          }
+      }
     \rowcolor { nocolor }
     \tl_gput_right:Ne \g_nicematrix_code_before_tl
-      { \exp_not:N \EmptyRow { \arabic{iRow} } }
+      { \exp_not:N \EmptyRow { \arabic { iRow } } }
     \\
   }
+\cs_new:Npn \__nicematrix_FalseRow_in_cell: { \__nicematrix_error:n { Misuse~of~FalseRow } }
 \cs_new_eq:NN \OnlyMainNiceMatrix \use:n
 \cs_new_protected:Npn \__nicematrix_OnlyMainNiceMatrix:n #1
   {
@@ -6548,7 +6574,7 @@
       \int_set_eq:NN \l__nicematrix_end_int \c@iRow
       \keys_set:nn { nicematrix / rules-after } { #1 }
       \int_compare:nNnT \l__nicematrix_position_int < { \c@jCol + 2 }
-        \socket_use:n { nicematrix / draw-vrule }
+        { \socket_use:n { nicematrix / draw-vrule } }
     }
   }
 \socket_new:nn { nicematrix / draw-vrule } { 0 }
@@ -9267,7 +9293,7 @@
         \end { minipage }
       }
       { }
-      { }
+      { \pgfusepath { discard } } % mandatory
     \endpgfscope
     \pgftransformshift { \pgfpoint \l__nicematrix_tmpd_dim \l_tmpa_dim }
     \pgfnode { rectangle } { north~east }
@@ -9278,7 +9304,7 @@
         \end { minipage }
       }
       { }
-      { }
+      { \pgfusepath { discard } } % mandatory
     \end { pgfscope }
   }
 \cs_new:Npn \__nicematrix_CodeAfter: { \omit \__nicematrix_CodeAfter_ii:n }
@@ -10496,6 +10522,38 @@
           }
       }
   }
+\cs_new_protected:Npn \__nicematrix_security_font_commands:
+  {
+    \cs_set_eq:NN \__nicematrix_old_small: \small
+    \cs_set_eq:NN \__nicematrix_old_footnotesize: \footnotesize
+    \cs_set_eq:NN \__nicematrix_old_scriptsize: \scriptsize
+    \cs_set_eq:NN \__nicematrix_old_tiny: \tiny
+    \cs_set_eq:NN \small \__nicematrix_small:
+    \cs_set_eq:NN \footnotesize \__nicematrix_footnotesize:
+    \cs_set_eq:NN \scriptsize \__nicematrix_scriptsize:
+    \cs_set_eq:NN \tiny \__nicematrix_tiny:
+    \everyhbox
+      {
+        \cs_set_eq:NN \small \__nicematrix_old_small:
+        \cs_set_eq:NN \footnotesize \__nicematrix_old_footnotesize:
+        \cs_set_eq:NN \scriptsize \__nicematrix_old_scriptsize:
+        \cs_set_eq:NN \tiny \__nicematrix_old_tiny:
+      }
+  }
+\cs_set_protected:Npn \__nicematrix_small: { \__nicematrix_font_command_error:N \small }
+\cs_set_protected:Npn \__nicematrix_footnotsize: { \__nicematrix_font_command_error:N \footnotesize }
+\cs_set_protected:Npn \__nicematrix_scriptsize: { \__nicematrix_font_command_error:N \scriptsize }
+\cs_set_protected:Npn \__nicematrix_tiny: { \__nicematrix_font_command_error:N \tiny }
+\cs_new_protected:Npn \__nicematrix_font_command_error:N #1
+  { \__nicematrix_error:nn { font-command } { #1 } }
+\__nicematrix_msg_new:nn { font-command }
+  {
+    Font~command~not~allowed.\\
+    You~can't~use~the~command~#1 directly~in~the~
+    \bool_if:NTF \l__nicematrix_in_code_after_bool
+      { \token_to_str:N \CodeAfter}
+      { \token_to_str:N \CodeBefore}.~Your~command~will~be~ignored.
+  }
 \cs_new_protected:Npn \__nicematrix_unknown_key:nn #1 #2
   {
     \str_if_eq:eeTF
@@ -10604,9 +10662,9 @@
     \token_to_str:N \Body\ alone. \\
     You~have~used~\token_to_str:N \Body\ without~\token_to_str:N \CodeBefore.
   }
-\__nicematrix_msg_new:nn { Bad~use~of~CodeBefore }
+\__nicematrix_msg_new:nn { Misuse~of~CodeBefore }
   {
-    Bad~use~of~\token_to_str:N \CodeBefore. \\
+    Misuse~of~\token_to_str:N \CodeBefore. \\
     \token_to_str:N \CodeBefore\ must~be~used~only~at~the~beginning~of~
     the~environment.
   }
@@ -10619,7 +10677,7 @@
   }
 \__nicematrix_msg_new:nn { cellcolor~in~Block }
   {
-    Bad~use~of~\token_to_str:N \cellcolor \\
+    Misuse~of~\token_to_str:N \cellcolor \\
     You~can't~use~\token_to_str:N \cellcolor\ in~\token_to_str:N \Block\
     \bool_if:NTF \l__nicematrix_amp_in_blocks_bool
       { (but~you~could~use~it~in~a~sub-block~since~'&-in-blocks'~is~in~force) }
@@ -10628,7 +10686,7 @@
   }
 \__nicematrix_msg_new:nn { rowcolor~in~Block }
   {
-    Bad~use~of~\token_to_str:N \rowcolor \\
+    Misuse~of~\token_to_str:N \rowcolor \\
     You~can't~use~\token_to_str:N \rowcolor\ in~\token_to_str:N \Block.~
     However,~it's~possible~to~color~the~block~with~its~key~'fill'.~
     Your~command~will~be~ignored.
@@ -10638,6 +10696,13 @@
     Deleted~key.\\
     The~key~'color-inside'~(and~its~alias~'colortbl-like')~has~been~deleted~in
     ~'nicematrix'~and~must~not~be~used.
+  }
+\__nicematrix_msg_new:nn { Misuse~of~FalseRow }
+  {
+    Misuse~of~\token_to_str:N \FalseRow \\
+    Error~in~the~row~ \int_use:N \c@iRow\ of~your~\__nicematrix_full_name_env:.~
+    \token_to_str:N \FalseRow\ must~be~used~only~at~the~beginning~of~a~row.~
+    Your~command~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { Invalid~argument~for~w }
   {
@@ -10708,9 +10773,9 @@
     columns~but~you~only~used~ \int_use:N \c@jCol .~The~columns~you~did~not~
     used~won't~be~created.~You~won't~have~similar~warning~till~the~end~of~the~document.
   }
-\__nicematrix_msg_new:nn { Bad~use~of~NiceTabularNotes }
+\__nicematrix_msg_new:nn { Misuse~of~NiceTabularNotes }
   {
-    Bad~use~of~\token_to_str:N \NiceTabularNotes \\
+    Misuse~of~\token_to_str:N \NiceTabularNotes \\
     \token_to_str:N~\NiceTabularNotes\ should~be~used~only~after~at~tabular~
     which~uses~`notes/no-print`.~ Your~command~will~be~ignored.
   }
@@ -10721,31 +10786,31 @@
   }
 \__nicematrix_msg_new:nn { in~first~col }
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\
     You~can't~use~the~command~#1 in~the~first~column~(number~0)~of~the~array.~
     Your~command~will~be~ignored.~You~can~try~to~delete~the~key~'first-col'.
   }
 \__nicematrix_msg_new:nn { in~last~col }
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\
     You~can't~use~the~command~#1 in~the~last~column~(exterior)~of~the~array.~
     Your~command~will~be~ignored.~You~can~try~to~delete~the~key~'last-col'.
   }
 \__nicematrix_msg_new:nn { in~first~row }
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\
     You~can't~use~the~command~#1 in~the~first~row~(number~0)~of~the~array.~
     Your~command~will~be~ignored.~You~can~try~to~delete~the~key~'first-row'.
   }
 \__nicematrix_msg_new:nn { in~last~row }
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\
     You~can't~use~the~command~#1 in~the~last~row~(exterior)~of~the~array.~
     Your~command~will~be~ignored.~You~can~try~to~delete~the~key~'last-row'.
   }
 \__nicematrix_msg_new:nn { TopRule~without~booktabs }
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\
     You~can't~use~the~command~ #1 because~'booktabs'~is~not~loaded.~
     You~should~load~'booktabs'~(before~or~after~'nicematrix').~
     Your~command~will~be~ignored.
@@ -10760,7 +10825,7 @@
   }
 \__nicematrix_msg_new:nn { TopRule~without~tikz }
   {
-    Erroneous~use.\\
+    Misuse~of~#1\\
     You~can't~use~the~command~ #1 because~TikZ~is~not~loaded.~
     You~should~load~TikZ~with~\token_to_str:N \usepackage \{tikz\}.~
     \IfPackageLoadedF { booktabs }
@@ -11529,6 +11594,7 @@
     small,~
     sub-matrix~(several~subkeys),~
     vlines,~
+    width-of-false,~
     xdots~(several~subkeys).
   }
 \__nicematrix_msg_new:nnn { Unknown~key~for~NiceArray }
@@ -11583,6 +11649,7 @@
     small,~
     t,~
     vlines,~
+    width-of-false,~
     xdots/color,~
     xdots/shorten-start(+),~
     xdots/shorten-end(+),~
@@ -11644,6 +11711,7 @@
     small,~
     t,~
     vlines,~
+    width-of-false,~
     xdots/color,~
     xdots/shorten-start(+),~
     xdots/shorten-end(+),~
@@ -11707,6 +11775,7 @@
     t,~
     tabularnote,~
     vlines,~
+    width-of-false,~
     xdots/color,~
     xdots/shorten-start(+),~
     xdots/shorten-end(+),~
