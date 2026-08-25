@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.11a}
-\def\myfiledate{2026/07/22}
+\def\myfileversion{7.11b}
+\def\myfiledate{2026/08/25}
 %
 %
 %<*batchfile>  
@@ -143,21 +143,18 @@ version 2005/12/01 or later.
 \msg_new:nnn { nicematrix } { latex-too-old }
   { 
     Your~LaTeX~release~is~too~old. \\
-    You~need~at~least~the~version~of~2025-06-01. \\
-    If~you~use~Overleaf,~you~need~at~least~"TeXLive~2025".\\
+    You~need~at~least~the~version~of~2026-06-01. \\
+    If~you~use~Overleaf,~you~need~at~least~"TeXLive~2026".\\
     The~package~'nicematrix'~won't~be~loaded.
   }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\providecommand { \IfFormatAtLeastTF } { \@ifl@t@r \fmtversion }
-\IfFormatAtLeastTF { 2025-06-01 }
+\IfFormatAtLeastTF { 2026-06-01 }
   { }
   { \msg_critical:nn { nicematrix } { latex-too-old } }
 %    \end{macrocode}
 % 
-% 
-%
 % \bigskip
 % The command for the treatment of the options of |\usepackage| is at the end of
 % this package for technical reasons. 
@@ -172,8 +169,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \msg_new:nnn { nicematrix } { array-too-old }
   { 
-    Your~version~of~the~package~'array'~is~too~old. \\
-    You~need~at~least~the~version~of~2025-09-25. \\
+    Your~version~of~'array'~is~too~old. \\
+    You~need~at~least~the~version~of~2025-09-25~and~the~version~that~
+    you~have~loaded~has~the~date:~
+    \str_range:cnn { ver @ array . sty } { 1 } { 10 }.~
     The~package~'nicematrix'~won't~be~loaded.
   }
 %    \end{macrocode}
@@ -182,7 +181,7 @@ version 2005/12/01 or later.
 \RequirePackage{array}
 \IfPackageAtLeastF { array }
   { 2025/09/25 }
-  { \msg_critical:nn { nicematrix } { array-too-old} }
+  { \msg_critical:nn { nicematrix } { array-too-old } }
 %    \end{macrocode}
 %
 % 
@@ -191,12 +190,14 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_error:n { \msg_error:nn { nicematrix } }
 \cs_new_protected:Npn \@@_warning:n { \msg_warning:nn { nicematrix } }
+\cs_new_protected:Npn \@@_warning:nnn { \msg_warning:nnnn { nicematrix } }
 \cs_new_protected:Npn \@@_error:nn { \msg_error:nnn { nicematrix } }
 \cs_generate_variant:Nn \@@_error:nn { n e } 
 \cs_new_protected:Npn \@@_error:nnn { \msg_error:nnnn { nicematrix } }
 \cs_new_protected:Npn \@@_fatal:n { \msg_fatal:nn { nicematrix } }
 \cs_new_protected:Npn \@@_fatal:nn { \msg_fatal:nnn { nicematrix } }
 \cs_new_protected:Npn \@@_msg_new:nn { \msg_new:nnn { nicematrix } }
+\cs_new_protected:Npn \@@_critical:n { \msg_critical:nn { nicematrix } }
 %    \end{macrocode}
 %
 % With Overleaf (and also in TeXPage), by default, a document is compiled in
@@ -245,59 +246,46 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 % 
+% \bigskip
+% We test whether the current class is \cls{revtex4-1} (deprecated) or
+% \cls{revtex4-2} because the version 4.2f of \cls{revtex4-2} is incompatible with
+% \pkg{nicematrix}.
 %
+%    \begin{macrocode}
+\@@_msg_new:nn { class~revtex }
+  {
+    nicematrix~is~incompatible~with~REVTeX\\
+    You~can't~use~this~version~of~'nicematrix'~in~a~class~of~REVTeX~because~
+    REVTeX~is~*not*~compatible~with~recent~versions~of~LaTeX.~Sorry...
+    The~package~'nicematrix'~won't~be~loaded.
+  }
+%    \end{macrocode}
 % 
+%    \begin{macrocode}
+\IfClassLoadedT { revtex4-1 } { \@@_critical:n { class~revtex } }
+\IfClassLoadedT { revtex4-2 } { \@@_critical:n { class~revtex } }
+%    \end{macrocode}
+% Maybe one of the previous classes will be loaded inside another class... We
+% try to detect that situation.
+%    \begin{macrocode}
+\cs_if_exist:NT \rvtx@ifformat@geq { \@@_critical:n { class~revtex } }
+%    \end{macrocode}
+%
 % \bigskip
 %    \begin{macrocode}
 \@@_msg_new:nn { mdwtab~loaded }
   { 
-    The~packages~'mdwtab'~and~'nicematrix'~are~incompatible.~
+    'nicematrix'~is~incompatible~with~'mdwtab'\\
     This~error~is~fatal.
   }
 %    \end{macrocode}
 %
 % \bigskip
 %    \begin{macrocode}
-\hook_gput_code:nnn { begindocument / end } { . }
+\AtBeginDocument
   { \IfPackageLoadedT { mdwtab } { \@@_fatal:n { mdwtab~loaded } } }
 %    \end{macrocode}
 %
-% 
-% We test whether the current class is \cls{revtex4-1} (deprecated) or
-% \cls{revtex4-2} because the version 4.2f of \cls{revtex4-2} is incompatible with
-% \pkg{nicematrix}.
-%
-%    \begin{macrocode}
-\IfClassLoadedTF { revtex4-1 }
-  { \bool_const:Nn \c_@@_revtex_bool { \c_true_bool } }
-  {
-    \IfClassLoadedTF { revtex4-2 }
-      { \bool_const:Nn \c_@@_revtex_bool { \c_true_bool } }
-      {
-%    \end{macrocode}
-% Maybe one of the previous classes will be loaded inside another class... We
-% try to detect that situation.
-%    \begin{macrocode}
-        \cs_if_exist:NT \rvtx@ifformat@geq 
-          { \bool_const:Nn \c_@@_revtex_bool { \c_true_bool } }
-          { \bool_const:Nn \c_@@_revtex_bool { \c_false_bool } }
-      }
-  }
-%    \end{macrocode}
-%
-%    \begin{macrocode}
-\@@_msg_new:nn { class~revtex }
-  {
-    You~can't~use~this~version~of~'nicematrix'~in~a~class~of~REVTeX~because~
-    REVTeX~is~*not*~compatible~with~recent~versions~of~LaTeX.~Sorry...\\
-    The~package~'nicematrix'~won't~be~loaded.
-  }
-%    \end{macrocode}
-%
-%    \begin{macrocode}
-\bool_if:NT \c_@@_revtex_bool
-  { \msg_critical:nn { nicematrix } { class~revtex } }
-%    \end{macrocode}
 % 
 % \bigskip
 % \section{Collecting options}
@@ -354,8 +342,6 @@ version 2005/12/01 or later.
 % \bigskip
 % \section{Technical  definitions}
 %
-% Here are definitions that have been added to the LaTeX kernel in February 2006.
-%
 % 
 % The following constants are defined only for efficiency in the tests.
 %   \begin{macrocode}
@@ -388,8 +374,6 @@ version 2005/12/01 or later.
 \cs_generate_variant:Nn \seq_set_split:Nnn { N o }
 \cs_generate_variant:Nn \str_set:Nn { N o }
 \cs_generate_variant:Nn \tl_build_put_right:Nn { N o }
-\prg_generate_conditional_variant:Nnn \clist_if_in:Nn { N e } { T , F, TF }
-\prg_generate_conditional_variant:Nnn \tl_if_empty:n { e } { T }
 \prg_generate_conditional_variant:Nnn \tl_if_head_eq_meaning:nN { o N } { TF }
 \cs_generate_variant:Nn \dim_min:nn { v }
 \cs_generate_variant:Nn \dim_max:nn { v }
@@ -482,7 +466,7 @@ version 2005/12/01 or later.
 % be modified. In order to avoid an error message in this case, we will redefine
 % |\pgfutil@check@rerun| in the |aux| file.
 %    \begin{macrocode}
-\AtBeginDocument 
+\AtBeginDocument
   {     
     \IfPackageLoadedT { booktabs } 
       {
@@ -866,6 +850,7 @@ version 2005/12/01 or later.
 \dim_new:N \l_@@_columns_width_dim
 %    \end{macrocode}
 %
+%
 % \bigskip
 % The dimension |\l_@@_col_width_dim| will be available in each cell which
 % belongs to a column of fixed width: |w{...}{...}|, |W{...}{...}|, |p{...}|,
@@ -1125,6 +1110,12 @@ version 2005/12/01 or later.
 \seq_new:N \g_@@_rowlistcolors_seq
 %    \end{macrocode}
 %
+% \bigskip
+% We keep in memory a list of the |\FalseRow| because we use it with
+% |create-blocks-in-col|.
+%    \begin{macrocode}
+\seq_new:N \g_@@_false_rows_seq
+%    \end{macrocode}
 % 
 % \bigskip
 %    \begin{macrocode}
@@ -1549,6 +1540,14 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \int_new:N \g_@@_static_num_of_col_int
 %    \end{macrocode}
+%
+% \medskip
+% The following parameter will store the ``false columns'' (with the letter |F|)
+% in the premable of the environment. In fact, the parameter will be used only
+% in some error messages.
+%    \begin{macrocode}
+\seq_new:N \g_@@_false_columns_seq
+%    \end{macrocode}
 % 
 % \medskip 
 % The following parameters correspond to the keys |fill|, |opacity|, |draw|,
@@ -1784,8 +1783,8 @@ version 2005/12/01 or later.
                     \def \l_tmpa_tl { ##1 } 
                     \def \l_tmpb_tl { ##1 } 
                   }
-                \int_step_inline:nnn \l_tmpa_tl \l_tmpb_tl
-                  { \clist_put_right:Nn \l_tmpa_clist { ####1 } }
+                \int_step_tokens:nnn \l_tmpa_tl \l_tmpb_tl
+                  { \clist_put_right:Nn \l_tmpa_clist }
               }
           }
         \tl_set_eq:NN #1 \l_tmpa_clist
@@ -1936,75 +1935,73 @@ version 2005/12/01 or later.
 % beginning of the document (we want to allow the user to load \pkg{enumitem}
 % after \pkg{nicematrix}).
 %    \begin{macrocode}
-\AtBeginDocument
-  {
-    \IfPackageLoadedTF { enumitem }
-      { 
+\NewDocumentCommand { \tabularnote } { o m }
+  { \@@_err_enumitem_not_loaded: }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\AddToHook { package / enumitem / after } 
+  { 
 %    \end{macrocode}
 % The type of list |tabularnotes| will be used to format the tabular notes at
 % the end of the array in the general case and |tabularnotes*| will be used if
 % the key |para| is in force.
 %    \begin{macrocode}
-        \newlist { tabularnotes } { enumerate } { 1 }
-        \setlist [ tabularnotes ]
-          {
-            topsep = \c_zero_dim ,
-            noitemsep , 
-            leftmargin = * , 
-            align = left , 
-            labelsep = \c_zero_dim ,
-            label = 
-              \@@_notes_label_in_list:n { \@@_notes_style:n { tabularnotesi } } , 
-          }
-        \newlist { tabularnotes* } { enumerate* } { 1 }
-        \setlist [ tabularnotes* ]
-          { 
-            afterlabel = \nobreak , 
-            itemjoin = \quad ,
-            label = 
-              \@@_notes_label_in_list:n { \@@_notes_style:n { tabularnotes*i } }
-          }
+    \newlist { tabularnotes } { enumerate } { 1 }
+    \setlist [ tabularnotes ]
+      {
+        topsep = \c_zero_dim ,
+        noitemsep , 
+        leftmargin = * , 
+        align = left , 
+        labelsep = \c_zero_dim ,
+        label = 
+          \@@_notes_label_in_list:n { \@@_notes_style:n { tabularnotesi } } , 
+      }
+    \newlist { tabularnotes* } { enumerate* } { 1 }
+    \setlist [ tabularnotes* ]
+      { 
+        afterlabel = \nobreak , 
+        itemjoin = \quad ,
+        label = 
+          \@@_notes_label_in_list:n { \@@_notes_style:n { tabularnotes*i } }
+      }
 %    \end{macrocode}
 % 
 % \bigskip
-% One must remind that we have allowed a |\tabular| in the caption and
+% One must remind that we have allowed a |\tabularnote| in the caption and
 % that caption may also be found in the list of tables (|\listoftables|). We
 % want the command |\tabularnote| be no-op during the composition of that list.
 % That's why we program |\tabularnote| to be no-op excepted in a floating
 % environment or in an environment of \pkg{nicematrix}.
 %    \begin{macrocode}
-        \NewDocumentCommand { \tabularnote } { o m }
-          {
-            \bool_lazy_or:nnT \l_@@_in_env_bool { \cs_if_exist_p:N \@captype } 
-              { 
-                \bool_lazy_and:nnTF \l_@@_in_env_bool  { ! \l_@@_tabular_bool } 
-                  { \@@_error:n { tabularnote~forbidden } }
-                  {
+    \RenewDocumentCommand { \tabularnote } { o m }
+      {
+        \bool_lazy_or:nnT \l_@@_in_env_bool { \cs_if_exist_p:N \@captype } 
+          { 
+            \bool_lazy_and:nnTF \l_@@_in_env_bool  { ! \l_@@_tabular_bool } 
+              { \@@_error:n { tabularnote~forbidden } }
+              {
 %    \end{macrocode}
 % The second argument of |\@@_tabularnote_caption:nn| ou |\@@_tabularnote:nn| is provided
 % by curryfication.
 %    \begin{macrocode}
-                    \bool_if:NTF \l_@@_in_caption_bool
-                      {
-                        \tl_if_novalue:nTF { #1 }
-                          { \@@_tabularnote_caption:nn { #1 } }
-                          { \@@_tabularnote_caption:nn { \exp_not:n { #1 } } } 
-                      }
-                      {
-                        \tl_if_novalue:nTF { #1 }
-                          { \@@_tabularnote:nn { #1 } }
-                          { \@@_tabularnote:nn { \exp_not:n { #1 } } } 
-                      }
-                    { #2 }
+                \bool_if:NTF \l_@@_in_caption_bool
+                  {
+                    \tl_if_novalue:nTF { #1 }
+                      { \@@_tabularnote_caption:nn { #1 } }
+                      { \@@_tabularnote_caption:nn { \exp_not:n { #1 } } } 
                   }
+                  {
+                    \tl_if_novalue:nTF { #1 }
+                      { \@@_tabularnote:nn { #1 } }
+                      { \@@_tabularnote:nn { \exp_not:n { #1 } } } 
+                  }
+                { #2 }
               }
           }
       }
-      { 
-        \NewDocumentCommand \tabularnote { o m }
-          { \@@_err_enumitem_not_loaded: }
-      }
-  }    
+ } 
 %    \end{macrocode}
 %
 %
@@ -2359,6 +2356,10 @@ version 2005/12/01 or later.
 % cell of the array (except the cells of the potential exterior columns).
 %    \begin{macrocode}
 \bool_new:N \l_@@_auto_columns_width_bool
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\bool_new:N \l_@@_row_columns_width_bool
 %    \end{macrocode}
 %
 % \bigskip
@@ -2783,12 +2784,11 @@ version 2005/12/01 or later.
     baseline .value_required:n = true ,
     baseline .initial:n = c ,
     columns-width .code:n = 
-%    \end{macrocode}
-% We use |\str_if_eq:nnTF| which is slightly faster than |\tl_if_eq:nnTF| (and
-% is expandable). |\str_if_eq:ee(TF)| is faster than |\str_if_eq:nn(TF)|.
-%    \begin{macrocode}
-      \str_if_eq:eeTF { #1 } { auto }
-        { \bool_set_true:N \l_@@_auto_columns_width_bool }
+      \str_case:nnF { #1 }
+        {
+          { auto }       { \bool_set_true:N \l_@@_auto_columns_width_bool }
+          { row-height } { \bool_set_true:N \l_@@_row_columns_width_bool }
+        }
         { \dim_set:Nn \l_@@_columns_width_dim { #1 } } , 
     columns-width .value_required:n = true ,
     name .code:n = 
@@ -3197,7 +3197,7 @@ version 2005/12/01 or later.
 % or |\FalseRow| is used in another place than the beginning of a line.
 %    \begin{macrocode}
     \cs_set_eq:NN \Hline \@@_Hline_in_cell:
-    \cs_set_eq:NN \FalseRow \@@_FalseRow_in_cell: % added 2026-07-17
+    \cs_set_eq:NN \FalseRow \@@_FalseRow_in_cell: 
 %    \end{macrocode}
 % We increment the LaTeX counter |jCol|, which is the counter of the columns. 
 %    \begin{macrocode}
@@ -3411,16 +3411,7 @@ version 2005/12/01 or later.
     \bool_if:NTF \g_@@_rotate_c_bool
       {
         \hbox_set:Nn \l_@@_cell_box
-          {
-            \IfFormatAtLeastTF { 2026-04-01 }
-              { \vbox_center:n { \box_use:N \l_@@_cell_box } }
-              {
-                \m@th
-                $ % $
-                \vcenter { \box_use:N \l_@@_cell_box } 
-                $ % $
-              }
-          } 
+          { \vbox_center:n { \box_use:N \l_@@_cell_box } } 
       }
       {
         \int_compare:nNnT \c@iRow = \l_@@_last_row_int 
@@ -3559,8 +3550,8 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % We want to compute in |\g_@@_max_cell_width_dim| the width of the widest cell
-% of the array (except the cells of the ``first column'' and the ``last
-% column''). 
+% of the array (except the cells of the potential ``first column'' and the
+% potential ``last column''). 
 %    \begin{macrocode}
     \@@_update_max_cell_width:
 %    \end{macrocode}
@@ -3602,7 +3593,7 @@ version 2005/12/01 or later.
       {
         \bool_if:NTF \g_@@_not_empty_cell_bool
           \@@_print_node_cell: 
-          { 
+          {
             \if_dim:w \box_wd:N \l_@@_cell_box > \c_zero_dim 
               \@@_print_node_cell:
             \else:
@@ -3976,16 +3967,11 @@ version 2005/12/01 or later.
 % avoid the error messages of that redefinition
 % \footnote{cf. |\nicematrix@redefine@check@rerun|}.
 %    \begin{macrocode}
-\AtBeginDocument
+\cs_new_protected:Npn \@@_patch_booktabs: { } 
+\AddToHook { package / booktabs / after } 
   {
-    \IfPackageLoadedTF { booktabs }
-      { 
-        \cs_new_protected:Npn \@@_patch_booktabs: 
-          { \tl_put_left:Nn \@BTnormal \@@_create_row_node_i: }
-      }
-      { \cs_new_protected:Npn \@@_patch_booktabs: { } }
-%    \end{macrocode}
-%    \begin{macrocode}
+    \cs_set_protected:Npn \@@_patch_booktabs: 
+      { \tl_put_left:Nn \@BTnormal \@@_create_row_node_i: }
   }
 %    \end{macrocode}
 %
@@ -4025,20 +4011,6 @@ version 2005/12/01 or later.
   { 
 %    \end{macrocode}
 %
-%    \begin{macrocode}
-    % \tag_if_active:T % added on July 7 2026
-    %   {
-    %     \AddToHookWithArguments{tbl/cell/init}
-    %        {
-    %          \int_show:n { ##2 }
-    %          \int_show:N \g_@@_static_num_of_col_int
-    %          \int_compare:nNnT { ##2 } > \g_@@_static_num_of_col_int
-    %            { \SuspendTagging }
-    %        }
-    %   }
-%    \end{macrocode}
-%
-%
 % \medskip
 % The value of |\g_@@_pos_of_blocks_seq| has been written on the |aux| file and
 % loaded before the (potential) execution of the |\CodeBefore|.
@@ -4050,11 +4022,6 @@ version 2005/12/01 or later.
     \seq_gclear:N \g_@@_pos_of_blocks_seq
 %    \end{macrocode}
 %
-% Idem for other sequences written on the |aux| file.
-%    \begin{macrocode}
-    \seq_gclear_new:N \g_@@_multicolumn_cells_seq
-    \seq_gclear_new:N \g_@@_multicolumn_sizes_seq
-%    \end{macrocode}
 % 
 % \bigskip
 % The command |\create_row_node:| will create a row-node (and not a row of
@@ -4156,11 +4123,9 @@ version 2005/12/01 or later.
     \bool_if:NTF \l_@@_standard_cline_bool
       { \cs_set_eq:NN \cline \@@_standard_cline: }
       { \cs_set_eq:NN \cline \@@_cline: }
-    \cs_set_eq:NN \Ldots \@@_Ldots:
-    \cs_set_eq:NN \Cdots \@@_Cdots:
-    \cs_set_eq:NN \Vdots \@@_Vdots:
-    \cs_set_eq:NN \Ddots \@@_Ddots:
-    \cs_set_eq:NN \Iddots \@@_Iddots:
+    \bool_if:NTF \l_@@_no_cell_nodes_bool
+      { \@@_redefine_xdots_no_cell_nodes: }    
+      { \@@_redefine_xdots: }
     \cs_set_eq:NN \Hline \@@_Hline:
     \cs_set_eq:NN \Hspace \@@_Hspace:
     \cs_set_eq:NN \Hdotsfor \@@_Hdotsfor:
@@ -4180,6 +4145,8 @@ version 2005/12/01 or later.
     \cs_set_eq:NN \RowStyle \@@_RowStyle:n
     \cs_set_eq:NN \Hbrace \@@_Hbrace
     \cs_set_eq:NN \Vbrace \@@_Vbrace
+    \cs_set_eq:NN \hdashedline \@@_hdashedline:
+    \cs_set_eq:NN \cdashedline \@@_cdashedline:n
     \seq_map_inline:Nn \l_@@_custom_line_commands_seq
       { \cs_set_eq:cc { ##1 } { nicematrix - ##1 } } 
     \cs_set_eq:NN \cellcolor \@@_cellcolor_tabular
@@ -4233,7 +4200,12 @@ version 2005/12/01 or later.
     \seq_gclear:N \g_@@_multicolumn_sizes_seq
 %    \end{macrocode}
 %
-%
+% We keep in memory a list of the |\FalseRow| because we use it with
+% |create-blocks-in-col|.
+%    \begin{macrocode}
+    \seq_gclear:N \g_@@_false_rows_seq 
+%    \end{macrocode}
+% 
 % When we compose a cell which belongs to a column which contains a instruction
 % |\columncolor| (in the preamble of the environment), we add the number of that
 % column in the following sequence (in order to recall that we have written
@@ -4418,7 +4390,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \skip_horizontal:N \l_@@_left_margin_dim % \skip_horizontal:N  ?
+    \skip_horizontal:N \l_@@_left_margin_dim 
     \skip_horizontal:N \l_@@_extra_left_margin_dim 
     \UseTaggingSocket { tbl / hmode / begin } 
 %    \end{macrocode}
@@ -4456,7 +4428,34 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-% 
+%
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_redefine_xdots:
+  {
+    \cs_set_eq:NN \Ldots \@@_Ldots:
+    \cs_set_eq:NN \Cdots \@@_Cdots:
+    \cs_set_eq:NN \Vdots \@@_Vdots:
+    \cs_set_eq:NN \Ddots \@@_Ddots:
+    \cs_set_eq:NN \Iddots \@@_Iddots:
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_redefine_xdots_no_cell_nodes:
+  {
+    \cs_set_protected:Npn \Ldots  { \@@_error_xdots:N \Ldots }
+    \cs_set_protected:Npn \Cdots  { \@@_error_xdots:N \Cdots }
+    \cs_set_protected:Npn \Vdots  { \@@_error_xdots:N \Vdots }
+    \cs_set_protected:Npn \Ddots  { \@@_error_xdots:N \Ddots }
+    \cs_set_protected:Npn \Iddots { \@@_error_xdots:N \Iddots}
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_error_xdots:N #1
+  { \@@_error:nn { dots~without~cell~nodes} { #1 } }
+%    \end{macrocode}
 % 
 % \bigskip
 % \section{The \textbackslash CodeBefore}
@@ -4612,6 +4611,12 @@ version 2005/12/01 or later.
     \exp_last_unbraced:No \@@_CodeBefore_keys: 
       \g_@@_pre_code_before_tl
 %    \end{macrocode}
+% The following |\scan_stop:| is a defensive programmation for the case where the final user
+% has written in the |\CodeBefore| something like |\rowcolor{red!15}| (without the second
+% mandatory argument which should be a list of numbers of rows).
+%    \begin{macrocode}
+      \scan_stop:
+%    \end{macrocode}
 % Now, all the cells which are specified to be colored by instructions in the
 % |\CodeBefore| will actually be colored. It's a two-stages mechanism because we
 % want to draw all the cells with the same color at the same time to absolutely
@@ -4760,7 +4765,7 @@ version 2005/12/01 or later.
     \pgf@relevantforpicturesizefalse
     \pgfrememberpicturepositiononpagetrue
     \seq_map_inline:Nn \g_@@_pos_of_blocks_seq
-      { \@@_create_one_block_node:nnnnn ##1 }
+      { \@@_create_one_block_node:nnnnn ##1 } 
     \endpgfpicture
   }
 %    \end{macrocode}
@@ -5239,7 +5244,24 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_transform_preamble:
   {
+%    \end{macrocode}
+%
+% First, some tuning.
+%    \begin{macrocode}    
     \@@_transform_preamble_i:
+%    \end{macrocode}
+%
+% We will now actually make the preamble. The preamble provided by the final user (when
+% he uses an environment with preamble, such as |{NiceTabular}|, etc.) has been stored
+% in |\g_@@_user_preamble_tl|. Using that information, we will create 
+% |\g_@@_array_preamble_tl|, which will be the preamble that we will provide to
+% |{array}|.
+%    \begin{macrocode}
+    \exp_last_unbraced:No \@@_rec_preamble:n \g_@@_user_preamble_tl \s_stop
+%    \end{macrocode}
+%
+% Now, some post-treatment.
+%    \begin{macrocode}
     \@@_transform_preamble_ii:
   }
 %    \end{macrocode}
@@ -5270,6 +5292,15 @@ version 2005/12/01 or later.
 % of the symbol \verb+|+.
 %    \begin{macrocode}
     \int_zero:N \l_tmpa_int
+%    \end{macrocode}
+%
+% The parameter |\g_@@_false_columns_seq| stores number of occurrences
+% of a letter |F| (for a ``false column'').
+%    \begin{macrocode}
+    \seq_gclear:N \g_@@_false_columns_seq
+%    \end{macrocode}
+%
+%    \begin{macrocode}
     \tl_gclear:N \g_@@_array_preamble_tl 
     \str_if_eq:eeTF \l_@@_vlines_clist { all }
       { 
@@ -5283,19 +5314,6 @@ version 2005/12/01 or later.
               { ! { \skip_horizontal:N \arrayrulewidth } }
           }
       }
-%    \end{macrocode}
-% 
-% \bigskip
-% Now, we actually make the preamble (which will be given to |{array}|). It will
-% be stored in |\g_@@_array_preamble_tl|.
-%    \begin{macrocode}
-    \exp_last_unbraced:No \@@_rec_preamble:n \g_@@_user_preamble_tl \s_stop
-    \int_gset_eq:NN \g_@@_static_num_of_col_int \c@jCol
-%    \end{macrocode}
-%
-% \medskip
-%    \begin{macrocode}
-    \@@_replace_columncolor: 
   }
 %    \end{macrocode}
 %
@@ -5304,18 +5322,20 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_transform_preamble_ii:
   {
+    \int_gset_eq:NN \g_@@_static_num_of_col_int \c@jCol
+    \@@_replace_columncolor:
 %    \end{macrocode}
 % 
 % \medskip
 % If there were delimiters at the beginning or at the end of the preamble, the
 % environment |{NiceArray}| is transformed into an environment |{xNiceMatrix}|.
 %    \begin{macrocode}
-     \tl_if_eq:NNTF \g_@@_left_delim_tl \c_@@_dot_tl
-       { 
-         \tl_if_eq:NNF \g_@@_right_delim_tl \c_@@_dot_tl
-           { \bool_gset_true:N \g_@@_delims_bool } 
-       }
-       { \bool_gset_true:N \g_@@_delims_bool } 
+    \tl_if_eq:NNTF \g_@@_left_delim_tl \c_@@_dot_tl
+      { 
+        \tl_if_eq:NNF \g_@@_right_delim_tl \c_@@_dot_tl
+          { \bool_gset_true:N \g_@@_delims_bool } 
+      }
+      { \bool_gset_true:N \g_@@_delims_bool } 
 %    \end{macrocode}
 %
 % \medskip
@@ -5411,8 +5431,14 @@ version 2005/12/01 or later.
             \exp_last_unbraced:No \@@_rec_preamble:n \l_tmpb_tl
           }
           { 
-            \str_if_eq:nnTF { #1 } { S }
-              { \@@_fatal:n { unknown~column~type~S } }
+            \str_case:nnF { #1 }
+              {
+                { S } { \@@_fatal:n { unknown~column~type~S } }
+                { ; } { \@@_fatal:n { unknown~column~type~; } }
+                { R } { \@@_fatal:nn { unknown~column~type~RCL } { #1 } }
+                { C } { \@@_fatal:nn { unknown~column~type~RCL } { #1 } }
+                { L } { \@@_fatal:nn { unknown~column~type~RCL } { #1 } } 
+              }
               { \@@_fatal:nn { unknown~column~type } { #1 } }
           }
       }
@@ -5494,7 +5520,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\cs_new_protected:cpn { @@ _ F : } #1 % added 2026/06/28
+\cs_new_protected:cpn { @@ _ F : } #1 
   {
     \tl_gput_right:Nn \g_@@_array_preamble_tl
       {
@@ -5509,7 +5535,13 @@ version 2005/12/01 or later.
             \columncolor { nocolor }
           }
       }
-    \int_gincr:N \c@jCol
+    \int_gincr:N \c@jCol      
+%    \end{macrocode}
+% The sequence |\g_@@_false_columns_seq| is the list of the occurrences of the
+% letter~|F| (for the ``false columns''). However, as of now, it is used only in
+% some error messages.
+%    \begin{macrocode}
+    \seq_gput_right:Ne \g_@@_false_columns_seq { \arabic { jCol } }    
     \tl_gput_left:Ne \g_nicematrix_code_before_tl
       { \exp_not:N \EmptyColumn { \arabic{jCol} } } 
     \@@_rec_preamble_after_col:n
@@ -6163,17 +6195,14 @@ version 2005/12/01 or later.
 % \medskip
 % For |S| (of \pkg{siunitx}). 
 %    \begin{macrocode}
-\AtBeginDocument
+\AddToHook { package / siunitx / after }
   {
-    \IfPackageLoadedT { siunitx }
+    \cs_new_protected:Npn \@@_S: #1 #2
       {
-        \cs_new_protected:Npn \@@_S: #1 #2
-          {
-            \str_if_eq:nnTF { #2 } { [ } 
-              { \@@_make_preamble_S:w [ }
-              { \@@_make_preamble_S:w [ ] { #2 } }
-          }
-     }
+        \str_if_eq:nnTF { #2 } { [ } 
+          { \@@_make_preamble_S:w [ }
+          { \@@_make_preamble_S:w [ ] { #2 } }
+      }
   }
 %    \end{macrocode}
 % 
@@ -6186,7 +6215,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_siunitx:
   {
-    \IfPackageAtLeastF { siunitx } { 2026/03/26 }
+    \IfPackageAtLeastF { siunitx } { 2026/03/26 } 
       { \@@_fatal:n { siunitx~too~old } }
     \cs_gset_eq:NN \@@_test_siunitx: \prg_do_nothing: 
   }
@@ -6433,16 +6462,6 @@ version 2005/12/01 or later.
     \@@_rec_preamble:n 
   }
 %    \end{macrocode}
-% 
-% \bigskip
-%    \begin{macrocode}
-\cs_new_protected:cpn { @@ _ * : } #1 #2 #3
-  { 
-    \tl_clear:N \l_tmpa_tl
-    \int_step_inline:nn { #2 } { \tl_put_right:Nn \l_tmpa_tl { #3 } } 
-    \exp_last_unbraced:No \@@_rec_preamble:n \l_tmpa_tl
-  }
-%    \end{macrocode}
 %
 % \bigskip
 % The token |\NC@find| is at the head of the definition of the columns type done
@@ -6451,6 +6470,22 @@ version 2005/12/01 or later.
 \cs_new_protected:cpn { @@ _ \token_to_str:N \NC@find : } #1 
   { \@@_rec_preamble:n }
 %    \end{macrocode}
+%
+% 
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:cpn { @@ _ * : } #1 #2 #3
+  {
+    \tl_clear:N \l_tmpa_tl
+%    \end{macrocode}
+% We use the neutral token |\NC@find| as a kind of |\relax| to stop the analysis
+% after each iteration of the pattern.
+%    \begin{macrocode}
+    \int_step_inline:nn { #2 } { \tl_put_right:Nn \l_tmpa_tl { #3 \NC@find } }
+    \exp_last_unbraced:No \@@_rec_preamble:n \l_tmpa_tl
+  }
+%    \end{macrocode}
+%
 % 
 % \bigskip
 % For the case of a letter |X|. This specifier may take in an optional argument
@@ -7199,8 +7234,7 @@ version 2005/12/01 or later.
         \bool_if:NTF \l_@@_notes_para_bool
           {
             \begin { tabularnotes* }
-              \seq_map_inline:Nn \g_@@_notes_seq 
-                { \@@_one_tabularnote:nn ##1 } 
+              \seq_map_inline:Nn \g_@@_notes_seq { \@@_one_tabularnote:nn ##1 } 
               \strut 
             \end { tabularnotes* }
 %    \end{macrocode}
@@ -7211,8 +7245,7 @@ version 2005/12/01 or later.
           }
           {
             \tabularnotes 
-              \seq_map_inline:Nn \g_@@_notes_seq 
-                { \@@_one_tabularnote:nn ##1 } 
+              \seq_map_inline:Nn \g_@@_notes_seq { \@@_one_tabularnote:nn ##1 } 
               \strut 
             \endtabularnotes
           }
@@ -7653,18 +7686,23 @@ version 2005/12/01 or later.
 % We give a default value for |\g_tmpa_skip| (|0 pt plus 1 fill|) but we will
 % add some dimensions to it.
 %    \begin{macrocode}
-    \skip_gset:Nn \g_tmpa_skip { 0 pt~plus 1 fill } 
-    \bool_if:NF \l_@@_auto_columns_width_bool
-      { \dim_compare:nNnT \l_@@_columns_width_dim > \c_zero_dim }
+    \skip_gset:Nn \g_tmpa_skip { 0 pt~plus 1 fill }
+    \bool_if:NTF \l_@@_row_columns_width_bool 
+      { \skip_gadd:Nn \g_tmpa_skip { \box_ht_plus_dp:N \@arstrutbox } }
       {
-        \bool_lazy_and:nnTF 
-          \l_@@_auto_columns_width_bool 
-          { \bool_not_p:n \l_@@_block_auto_columns_width_bool }
-          { \skip_gadd:Nn \g_tmpa_skip \g_@@_max_cell_width_dim } 
-          { \skip_gadd:Nn \g_tmpa_skip \l_@@_columns_width_dim } 
-        \skip_gadd:Nn \g_tmpa_skip { 2 \col@sep } 
+        \bool_lazy_or:nnT
+          { \l_@@_auto_columns_width_bool }
+          { \dim_compare_p:nNn \l_@@_columns_width_dim > \c_zero_dim }
+          {
+            \skip_gadd:Nn \g_tmpa_skip { 2 \col@sep }
+            \bool_lazy_and:nnTF 
+              \l_@@_auto_columns_width_bool 
+              { \bool_not_p:n \l_@@_block_auto_columns_width_bool }
+              { \skip_gadd:Nn \g_tmpa_skip \g_@@_max_cell_width_dim } 
+              { \skip_gadd:Nn \g_tmpa_skip \l_@@_columns_width_dim } 
+          }
       }
-    \skip_horizontal:N \g_tmpa_skip 
+    \skip_horizontal:N \g_tmpa_skip % should be modified with \g_@@_false_columns_seq?
     \hbox
       {
         \@@_mark_position:n { 2 }
@@ -7691,7 +7729,12 @@ version 2005/12/01 or later.
 % The incrementation of the counter |\g_tmpa_int| must be done after the |\omit|
 % of the cell.
 %    \begin{macrocode}
-        \skip_horizontal:N \g_tmpa_skip 
+        \seq_if_in:NeTF \g_@@_false_columns_seq { \int_use:N \g_tmpa_int }
+          {
+            \dim_horizontal:N \l_@@_width_of_false_dim
+            \dim_horizontal:N \arrayrulewidth 
+          }
+          { \skip_horizontal:N \g_tmpa_skip }
         \@@_mark_position:n { \int_eval:n { \g_tmpa_int + 1 } } 
 %    \end{macrocode}
 % We create the |col| node on the right of the current column.
@@ -7829,7 +7872,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \cs_set_eq:NN \CodeAfter \@@_CodeAfter_i:
         \cs_set_eq:NN \Hline \@@_Hline_in_cell:
-        \cs_set_eq:NN \FalseRow \@@_FalseRow_in_cell: % added 2026-07-17
+        \cs_set_eq:NN \FalseRow \@@_FalseRow_in_cell: 
         \bool_gset_true:N \g_@@_after_col_zero_bool
         \@@_begin_of_row:
         \hbox_set:Nw \l_@@_cell_box 
@@ -7903,7 +7946,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
         \cs_set_eq:NN \CodeAfter \@@_CodeAfter_i:
         \cs_set_eq:NN \Hline \@@_Hline_in_cell:
-        \cs_set_eq:NN \FalseRow \@@_FalseRow_in_cell: % added 2026-07-17
+        \cs_set_eq:NN \FalseRow \@@_FalseRow_in_cell: 
 %    \end{macrocode}
 % With the flag |\g_@@_last_col_found_bool|, we will know that the ``last
 % column'' is really used.
@@ -8531,10 +8574,14 @@ version 2005/12/01 or later.
 % array\footnote{e.g. |\color[rgb]{0.5,0.5,0}|}. This command is used by
 % |\CT@arc@| but we use it also for compatibility with \pkg{colortbl}. But we
 % want also to be able to use color for the rules of the array when
-% \pkg{colortbl} is \emph{not} loaded. That's why we do the following
+% \pkg{colortbl} is \emph{not} loaded. That's why we use the following
 % instruction which is in the patch of the end of arrays done by \pkg{colortbl}.
 %    \begin{macrocode}
-    \cs_gset_eq:NN \CT@arc@ \@@_old_CT@arc@ 
+    \cs_gset_eq:NN \CT@arc@ \@@_old_CT@arc@
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \@@_test_false_columns:
   }
 %    \end{macrocode}
 %
@@ -8754,6 +8801,29 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_test_false_columns:
+  {
+    \seq_map_inline:Nn \g_@@_false_columns_seq
+      {
+        \int_step_inline:nn { \arabic { iRow } }
+          {
+            \cs_if_exist:cT
+              { pgf @ sh @ ns @ \@@_env: - ####1 - ##1 }
+              { \@@_err_test_false_columns:nn { ####1 } { ##1 } }
+          }
+      }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_err_test_false_columns:nn #1 #2
+  {
+    \@@_warning:nnn { Not~empty~cell~in~false~column } { #1 } { #2 }
+    \cs_gset_eq:NN \@@_err_test_false_columns:nn \use_none:nn
+  }
+%    \end{macrocode}
 % 
 % \bigskip
 % \section{We draw the dotted lines}
@@ -11654,7 +11724,6 @@ version 2005/12/01 or later.
 % column'' (number~$0$) or in the ``last column'' and that's why we filter
 % the sequence of the blocks (in the sequence |\l_tmpa_seq|).
 %    \begin{macrocode}
-        % modified 2026-02-18
         \seq_set_filter:NNn \l_tmpa_seq \g_@@_pos_of_blocks_seq  
           { \@@_not_in_exterior_p:nnnnn ##1 }
       }
@@ -11957,8 +12026,7 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % The following command corresponds to a radius of the corners equal to $0$~pt.
-% This command is used by the commands |\@@_rowcolors|, |\@@_columncolor| and
-% |\@@_rowcolor:n| (used in |\@@_rowcolor|). 
+% This command is used by the commands |\@@_rowcolors|, |\@@_columncolor|, etc.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cartesian_path: { \@@_cartesian_path:n \c_zero_dim }
 %    \end{macrocode}
@@ -12017,8 +12085,7 @@ version 2005/12/01 or later.
           { \tl_set:No \l_tmpb_tl { \int_use:N #2 } }
         \int_compare:nNnT \l_tmpb_tl > { #2 }
           { \tl_set:No \l_tmpb_tl { \int_use:N #2 } }
-        \int_step_inline:nnn \l_tmpa_tl \l_tmpb_tl
-          { \clist_put_right:Nn #1 { ####1 } }
+        \int_step_tokens:nnn \l_tmpa_tl \l_tmpb_tl { \clist_put_right:Nn #1 } 
       }
   }
 %    \end{macrocode}
@@ -12240,12 +12307,15 @@ version 2005/12/01 or later.
     \noalign
       {
         \skip_vertical:n
-          {
-            - \fp_to_dim:n { \normalbaselineskip * \arraystretch }
-            + \l_@@_width_of_false_dim
-          }
+          { - \box_ht_plus_dp:N \@arstrutbox + \l_@@_width_of_false_dim }
       }
+    \multicolumn { 1 } { c } { } % added 2026-08-21
     \rowcolor { nocolor }
+%    \end{macrocode}
+% We keep in memory a list of the |\FalseRow| because we use it with
+% |create-blocks-in-col|.
+%    \begin{macrocode}
+    \seq_gput_right:Ne \g_@@_false_rows_seq { \arabic { iRow } }
     \tl_gput_right:Ne \g_nicematrix_code_before_tl
       { \exp_not:N \EmptyRow { \arabic { iRow } } }
     \\
@@ -12985,18 +13055,19 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %
-% \medskip The following command is used in |\@@_draw_key_vlines:| and in
+% \medskip
+% The following command is used in |\@@_draw_key_vlines:| and in
 % |\@@_draw_key_hlines:|.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_lines_step_inline:n #1
   {
-      \int_step_inline:nnn 
-        { \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 2 1 }
-        { 
-          \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 
-            { #1 }
-            { \int_eval:n { #1 + 1 } } 
-        }
+    \int_step_inline:nnn 
+      { \bool_lazy_or:nnTF \g_@@_delims_bool \l_@@_except_borders_bool 2 1 }
+      {
+        #1
+        \bool_lazy_or:nnF \g_@@_delims_bool \l_@@_except_borders_bool 
+          { + 1 }
+      }
   }
 %    \end{macrocode}
 % 
@@ -13117,10 +13188,8 @@ version 2005/12/01 or later.
     \group_end:
   }
 %    \end{macrocode}
-%
 % 
-% 
-%
+% \bigskip
 % The boolean |\g_tmpa_bool| indicates whether the small horizontal rule will be
 % drawn. If we find that it is in a block (a real block, created by |\Block| or
 % |create-blocks-in-col| or a virtual block corresponding to a dotted line,
@@ -13613,8 +13682,8 @@ version 2005/12/01 or later.
 %
 % 
 %    \begin{macrocode}
-\tl_const:Nn \c_@@_forbidden_letters_tl { lcrpmbVX|()[]!@<> }
-\str_const:Nn \c_@@_forbidden_letters_str { lcrpmbVX|()[]!@<> }
+\tl_const:Nn \c_@@_forbidden_letters_tl { lcrpmbFVX|()[]!@<> }
+\str_const:Nn \c_@@_forbidden_letters_str { lcrpmbFVX|()[]!@<> }
 %    \end{macrocode}
 % 
 % \medskip
@@ -13834,6 +13903,7 @@ version 2005/12/01 or later.
     multiplicity .int_set:N = \l_@@_multiplicity_int , 
     color .code:n = \bool_set_true:N \l_@@_color_bool ,
     color .value_required:n = true ,
+    dashed .code:n = \@@_error:n { dashed~for~default-line~without~TikZ} ,
     dotted .code:n = \bool_set_true:N \l_@@_dotted_rule_bool ,
     dotted .value_forbidden:n = true ,
     total-width .code:n = { } , 
@@ -13848,7 +13918,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\AddToHook{ package / tikz / after } 
+\AddToHook { package / tikz / after } 
   {
     \keys_define:nn { nicematrix / default-line }
       {
@@ -13918,45 +13988,86 @@ version 2005/12/01 or later.
 % horizontal rule towards the right in the block delimited by the four arguments
 % |#1|, |#2|, |#3| and |#4|. If this rule would be in the block (it must not be
 % drawn), the boolean |\g_tmpa_bool| is set to |false|.
+%
+% \bigskip
+% Here is a version with the standard syntax of L3.
+% \begin{Verbatim}[formatcom=\small]
+% \cs_new_protected:Npn \@@_test_hline_in_block:nnnnn #1 #2 #3 #4 #5
+%   {
+%     \int_compare:nNnT \l_tmpa_tl > { #1 } 
+%       {
+%         \int_compare:nNnT \l_tmpa_tl < { #3 + 1 } 
+%           { 
+%             \int_compare:nNnT \l_tmpb_tl > { #2 - 1 } 
+%               { 
+%                 \int_compare:nNnT \l_tmpb_tl < { #4 + 1 } 
+%                   { \bool_gset_false:N \g_tmpa_bool }
+%               }
+%           }
+%       }
+%   }
+% \end{Verbatim}
+%
+% We will use a version a little more efficient.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_hline_in_block:nnnnn #1 #2 #3 #4 #5
   {
-    \int_compare:nNnT \l_tmpa_tl > { #1 } 
-      {
-        \int_compare:nNnT \l_tmpa_tl < { #3 + 1 } 
-          { 
-            \int_compare:nNnT \l_tmpb_tl > { #2 - 1 } 
-              { 
-                \int_compare:nNnT \l_tmpb_tl < { #4 + 1 } 
-                  { \bool_gset_false:N \g_tmpa_bool }
-              }
-          }
-      }
+    \if_int_compare:w \l_tmpa_tl > #1 
+      \if_int_compare:w \l_tmpa_tl > #3 \else:
+        \if_int_compare:w \l_tmpb_tl < #2 \else:
+          \if_int_compare:w \l_tmpb_tl > #4 \else:
+            \bool_gset_false:N \g_tmpa_bool
+          \fi:
+        \fi:
+      \fi:
+    \fi:
   }
 %    \end{macrocode}
 %
+% \bigskip
 % The same for vertical rules.
+%
+% Here is a version with the standard syntax of L3.
+%
+% \begin{Verbatim}
+% \cs_new_protected:Npn \@@_test_vline_in_block:nnnnn #1 #2 #3 #4 #5
+%   {
+%     \int_compare:nNnT \l_tmpa_tl > { #1 - 1 } 
+%       { 
+%         \int_compare:nNnT \l_tmpa_tl < { #3 + 1 } 
+%           { 
+%             \int_compare:nNnT \l_tmpb_tl > { #2 } 
+%               { 
+%                 \int_compare:nNnT \l_tmpb_tl < { #4 + 1 } 
+%                   { \bool_gset_false:N \g_tmpa_bool }
+%               }
+%           }
+%       }
+%   }
+% \end{Verbatim}
+%
+% We will use a version a little more efficient.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_vline_in_block:nnnnn #1 #2 #3 #4 #5
   {
-    \int_compare:nNnT \l_tmpa_tl > { #1 - 1 } 
-      { 
-        \int_compare:nNnT \l_tmpa_tl < { #3 + 1 } 
-          { 
-            \int_compare:nNnT \l_tmpb_tl > { #2 } 
-              { 
-                \int_compare:nNnT \l_tmpb_tl < { #4 + 1 } 
-                  { \bool_gset_false:N \g_tmpa_bool }
-              }
-          }
-      }
+    \if_int_compare:w \l_tmpa_tl < #1 \else:
+      \if_int_compare:w \l_tmpa_tl > #3 \else:
+        \if_int_compare:w \l_tmpb_tl > #2 
+          \if_int_compare:w \l_tmpb_tl > #4 \else:
+            \bool_gset_false:N \g_tmpa_bool 
+          \fi:
+        \fi:
+      \fi:
+    \fi:
   }
 %    \end{macrocode}
 %
+% \bigskip
+% Now, for the stroken blocks.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_hline_in_stroken_block:nnnn #1 #2 #3 #4
   {
-    \int_compare:nNnT \l_tmpb_tl > { #2 - 1 } 
+    \int_compare:nNnT \l_tmpb_tl < { #2 - 1 } 
       { 
         \int_compare:nNnT \l_tmpb_tl < { #4 + 1 } 
           {
@@ -14833,16 +14944,22 @@ version 2005/12/01 or later.
 % these values will be detected and interpreted as \emph{maximal possible
 % value} according to the actual size of the array).
 %    \begin{macrocode}
-    \bool_lazy_or:nnTF
-      { \tl_if_blank_p:n { #1 } }
-      { \str_if_eq_p:ee { * } { #1 } }
-      { \int_set:Nn \l_tmpa_int { 100 } }
-      { \int_set:Nn \l_tmpa_int { #1 } }
-    \bool_lazy_or:nnTF
-      { \tl_if_blank_p:n { #2 } }
-      { \str_if_eq_p:ee { * } { #2 } }
-      { \int_set:Nn \l_tmpb_int { 100 } }
-      { \int_set:Nn \l_tmpb_int { #2 } }
+    \int_set:Nn \l_tmpa_int
+      {
+        \bool_lazy_or:nnTF
+          { \tl_if_blank_p:n { #1 } }
+          { \str_if_eq_p:ee { * } { #1 } }
+          { 100 }
+          { #1 }
+      }
+    \int_set:Nn \l_tmpb_int
+      {
+        \bool_lazy_or:nnTF
+          { \tl_if_blank_p:n { #2 } }
+          { \str_if_eq_p:ee { * } { #2 } }
+          { 100 }
+          { #2 }
+      }
 %    \end{macrocode}
 %
 % \medskip
@@ -15269,23 +15386,11 @@ version 2005/12/01 or later.
         \hbox_gset:cn
           { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box }
           {
-            \IfFormatAtLeastTF { 2026-04-01}
-              {
-                \vbox_center:n
-                  { 
-                    \box_use:c
-                    { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box }
-                  } 
-              }
-              {
-                $ % $
-                \vcenter 
-                  { 
-                    \box_use:c
-                    { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box }
-                  } 
-                $ % $
-              }
+            \vbox_center:n
+              { 
+                \box_use:c
+                { g_@@_ block _ box _ \int_use:N \g_@@_block_box_int _ box }
+              } 
           }
       } 
   }
@@ -18576,18 +18681,20 @@ version 2005/12/01 or later.
     \clist_map_inline:Nn \g_@@_cbic_clist
       {
         \cs_set:cpn
-          {
-            pgf @ sh @ ns @ \@@_env:
-            - \int_eval:n { \c@iRow + 1 } - ##1 }
+          { pgf @ sh @ ns @ \@@_env: - \int_eval:n { \c@iRow + 1 } - ##1 }
           { rien }
 %    \end{macrocode}
 % |\l_tmpa_int| will be the first row of the block being created.
 %    \begin{macrocode}
         \int_set:Nn \l_tmpa_int { 1 }
         \int_step_inline:nn { \c@iRow + 1 }
-          { 
-            \cs_if_exist:cT 
-              { pgf @ sh @ ns @ \@@_env: - ####1 - ##1 }
+          {
+            \bool_set_false:N \l_tmpa_bool
+            \cs_if_exist:cT { pgf @ sh @ ns @ \@@_env: - ####1 - ##1 }
+              { \bool_set_true:N \l_tmpa_bool }
+            \seq_if_in:NnT \g_@@_false_rows_seq { ####1 }
+              { \bool_set_true:N \l_tmpa_bool }            
+            \bool_if:NT \l_tmpa_bool 
               {
                 \int_compare:nNnT { ####1 } > { \l_tmpa_int + 1 }
                   {
@@ -19099,7 +19206,31 @@ version 2005/12/01 or later.
     Misuse~of~\token_to_str:N \Hline. \\
     Error~in~the~row~ \int_use:N \c@iRow\ of~your~\@@_full_name_env:.~
     \token_to_str:N \Hline\ (like~\token_to_str:N \hline)~must~be~used~only~
-    at~the~beginning~of~a~row.~Your~command~will~be~ignored.
+    at~the~beginning~of~a~row.~Maybe~you~have~forgotten~a~\token_to_str:N \\.~
+    Your~command~will~be~ignored.
+  }
+%    \end{macrocode}
+%
+% \medskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_hdashedline:
+  { \@@_error:n { Misuse~of~hdashedline } }
+\cs_new_protected:Npn \@@_cdashedline:n #1 
+  { \@@_error:n { Misuse~of~cdashedline } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Misuse~of~hdashedline }
+  {
+    You~should~load~TikZ~(with~\token_to_str:N \usepackage \{tikz\})~in~order~
+    to~be~able~to~use~the~command~\token_to_str:N \hdashedline.~Your~command~
+    will~be~ignored.
+  }
+\@@_msg_new:nn { Misuse~of~cdashedline }
+  {
+    You~should~load~TikZ~(with~\token_to_str:N \usepackage \{tikz\})~in~order~
+    to~be~able~to~use~the~command~\token_to_str:N \cdashedline.~Your~command~
+    will~be~ignored.
   }
 %    \end{macrocode}
 % 
@@ -19212,6 +19343,7 @@ version 2005/12/01 or later.
     in~your~\@@_full_name_env: .~However,~you~can~go~on.
   }
 %    \end{macrocode}
+%
 % 
 %    \begin{macrocode}
 \@@_msg_new:nn { too~many~cols~for~matrix~with~last~col }
@@ -19253,6 +19385,17 @@ version 2005/12/01 or later.
     ~you~try~to~use~more~columns~than~allowed~by~your~
     \@@_full_name_env: . \@@_message_hdotsfor: \ The~maximal~number~of~columns~is~ 
     \int_use:N \g_@@_static_num_of_col_int \
+    %
+    \int_compare:nNnTF { \seq_count:N \g_@@_false_columns_seq } = 1
+      { (included~one~false~column:~letter~F)~ }
+      {
+        \int_compare:nNnT { \seq_count:N \g_@@_false_columns_seq } > 1
+          {
+            (included~\int_to_arabic:n { \seq_count:N \g_@@_false_columns_seq }~
+            false~columns:~letter~F)~
+          } 
+      }
+    %
     \bool_if:nT
       { \int_compare_p:n { \l_@@_first_col_int = 0 } || \g_@@_last_col_found_bool }
       { (plus~the~exterior~ones)~}
@@ -19269,12 +19412,32 @@ version 2005/12/01 or later.
     The~preamble~of~your~ \@@_full_name_env: \ is~
     '\exp_not:V \g_@@_user_preamble_tl'.~
     It~announces~ \int_use:N \g_@@_static_num_of_col_int \ 
-    columns~but~you~only~used~ \int_use:N \c@jCol .~The~columns~you~did~not~
+    columns~
+    \seq_if_empty:NF \g_@@_false_columns_seq
+      { (included~the~"false~columns"~with~the~letter~F)~ }
+    but~you~only~used~ \int_use:N \c@jCol .~The~columns~that~you~did~not~
     used~won't~be~created.~You~won't~have~similar~warning~till~the~end~of~the~document.
   }
 %    \end{macrocode}
 %
-%    \begin{macrocode}}
+%    \begin{macrocode}
+\str_const:Nn \@@_explanation_no_cell_nodes:
+  {
+    because~the~key~'no-cell-nodes'~is~in~force~
+    (you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
+    is~to~speed~compilation~up)
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { dots~without~cell~nodes }
+  {
+    Command~#1 forbidden.\\
+    You~can't~use~the~command~#1~\@@_explanation_no_cell_nodes:.~
+    Your~command~will~be~ignored.
+  }
+%    \end{macrocode}
+%    \begin{macrocode}
 \@@_msg_new:nn { Misuse~of~NiceTabularNotes }
   {
     Misuse~of~\token_to_str:N \NiceTabularNotes \\
@@ -19348,14 +19511,25 @@ version 2005/12/01 or later.
     If~you~go~on,~maybe~you~won't~have~the~expected~output.~You~should~
     consider~the~classical~command~\token_to_str:N \rotatebox.
   }
-%    \end{macrocode}  
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Not~empty~cell~in~false~column }
+  {
+    Not~empty~cell.\\
+    Your~cell~(#1-#2)~is~not~empty~although~the~column~#2~is~a~
+    "false~column"~(letter~F~in~the~preamble).~Recall~that~you~have~to~
+    put~*two*~ampersands~(&&). You~won't~have~similar~warning~till~
+    the~end~of~the~document.
+  }
+%    \end{macrocode}
 % 
 %    \begin{macrocode}
 \@@_msg_new:nn { TopRule~without~tikz } 
   {
     Misuse~of~#1\\     
     You~can't~use~the~command~ #1 because~TikZ~is~not~loaded.~
-    You~should~load~TikZ~with~\token_to_str:N \usepackage \{tikz\}.~
+    You~should~load~TikZ~(with~\token_to_str:N \usepackage \{tikz\}).~
     \IfPackageLoadedF { booktabs }
       { You~should~also~load~'booktabs'~
         with~\token_to_str:N \usepackage \{booktabs\}.~ }
@@ -19412,10 +19586,10 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \@@_msg_new:nn { draw-trees~with~no-cell-nodes }
   {
-     Incompatible~keys.\\
-    You~can't~use~the~key~'draw-trees-in-col'~here~because~the~key~'no-cell-nodes'~
-    is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
-    is~to~speed~compilation~up).~If~you~go~on,~that~key~will~be~ignored.
+    Incompatible~keys.\\
+    You~can't~use~the~key~'draw-trees-in-col'~
+    here~\@@_explanation_no_cell_nodes:.~
+    If~you~go~on,~that~key~will~be~ignored.
   }
 %    \end{macrocode}        
 % 
@@ -19423,9 +19597,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { corners~with~no-cell-nodes }
   {
     Incompatible~keys.\\
-    You~can't~use~the~key~'corners'~here~because~the~key~'no-cell-nodes'~
-    is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
-    is~to~speed~compilation~up).\\
+    You~can't~use~the~key~'corners'~here~\@@_explanation_no_cell_nodes:.~
     If~you~go~on,~that~key~will~be~ignored.
   }
 %    \end{macrocode}
@@ -19434,9 +19606,8 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { extra-nodes~with~no-cell-nodes }
   {
     Incompatible~keys.\\
-    You~can't~create~'extra~nodes'~here~because~the~key~'no-cell-nodes'~
-    is~in~force~(you~should~deactive~the~key~'no-cell-nodes'~whose~only~goal~
-    is~to~speed~compilation~up).~If~you~go~on,~those~extra~nodes~won't~be~created.
+    You~can't~create~'extra~nodes'~here~\@@_explanation_no_cell_nodes:.~
+    If~you~go~on,~those~extra~nodes~won't~be~created.
   }
 %    \end{macrocode}
 % 
@@ -19524,12 +19695,14 @@ version 2005/12/01 or later.
     The~available~keys~are~(in~alphabetic~order):~
     ccommand,~
     color,~
+    dashed \IfPackageLoadedF { tikz } { ~ (when~TikZ~is~loaded)} ,~    
     command,~
     dotted,~
     letter,~
     multiplicity,~
     sep-color,~
-    tikz,~and~total-width.
+    tikz \IfPackageLoadedF { tikz } { ~ (when~TikZ~is~loaded)},~
+    and~total-width.
   }
 %    \end{macrocode}
 %
@@ -19544,11 +19717,21 @@ version 2005/12/01 or later.
   {
     The~available~keys~are~(in~alphabetic~order):~
     color,~
+    dashed \IfPackageLoadedF { tikz } { ~ (when~TikZ~is~loaded)} ,~
     dotted,~
     multiplicity,~
     sep-color,~
-    tikz~(when~TikZ~is~loaded)~
+    tikz~\IfPackageLoadedF { tikz } { (when~TikZ~is~loaded)~}
     and~total-width.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { dashed~for~default-line~without~TikZ}
+  {
+    Key~'dashed'~forbidden.\\
+    If~you~want~to~use~the~value~'dashed'~for~'default-line',~
+    you~must~load~TikZ~(with~\token_to_str:N \usepackage \{tikz\}).
   }
 %    \end{macrocode}
 %
@@ -19699,7 +19882,9 @@ version 2005/12/01 or later.
   {
     siunitx~too~old\\
     You~can't~use~the~columns~'S'~because~your~version~of~'siunitx'~
-    is~too~old.~You~need~at~least~the~version~3.5.1~(2026/03/26).
+    is~too~old.~You~need~at~least~the~version~3.5.1~(2026/03/26)~and~
+    the~version~that~you~have~loaded~has~the~date:~
+    \str_range:cnn { ver @ siunitx . sty } { 1 } { 10 }.
   }
 %    \end{macrocode}
 % 
@@ -19769,7 +19954,7 @@ version 2005/12/01 or later.
   {
     Impossible~SubMatrix.\\
     It's~impossible~to~draw~your~ \token_to_str:N \SubMatrix \
-    because~the~key~'no-cell-nodes'~is~in~force.~
+    \@@_explanation_no_cell_nodes:.~
     This~ \token_to_str:N \SubMatrix \ will~be~ignored.
   }
 %    \end{macrocode}
@@ -19778,7 +19963,7 @@ version 2005/12/01 or later.
 \@@_msg_new:nnn { width~without~X~columns }
   {
     You~have~used~the~key~'width'~but~you~have~put~no~'X'~column~in~
-   the~preamble~(' \exp_not:V \g_@@_user_preamble_tl ')~of~your~ \@@_full_name_env: .~
+    the~preamble~(' \exp_not:V \g_@@_user_preamble_tl ')~of~your~ \@@_full_name_env: .~
     Your~key~will~be~ignored.
   }
   {
@@ -20023,16 +20208,37 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%
 %    \begin{macrocode}
 \@@_msg_new:nn { unknown~column~type~S~multicolumn }
   {
     Bad~column~type. \\
     The~column~type~'S'~in~the~command~\token_to_str:N \multicolumn \
     of~your~ \@@_full_name_env: \ is~unknown.~If~you~want~to~use~the~column~
-    type~'S'~of~siunitx,~you~should~load~that~package~with~
-    \token_to_str:N \usepackage \{siunitx\}.
+    type~'S'~of~siunitx,~you~should~load~that~package~(with~
+    \token_to_str:N \usepackage \{siunitx\}).
   }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { unknown~column~type~; }
+  {
+    Bad~column~type. \\
+    The~column~type~';'~in~your~ \@@_full_name_env: \ is~unknown.~
+    You~should~load~TikZ~(with~\token_to_str:N \usepackage \{tikz\})~
+    in~order~to~use~it~for~vertical~dashed~rules.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { unknown~column~type~RCL }
+  {
+    Bad~column~type. \\
+    The~column~type~'#1'~in~your~ \@@_full_name_env: \ is~unknown.~
+    Maybe~you~want~to~use~\str_lowercase:n { #1 }.
+  }
+%    \end{macrocode}
+% 
 % 
 %    \begin{macrocode}
 \@@_msg_new:nn { tabularnote~forbidden }
@@ -20091,11 +20297,11 @@ version 2005/12/01 or later.
 \@@_msg_new:nn { tikz~in~custom-line~without~tikz } 
   {
     TikZ~not~loaded. \\
-    You~have~used~the~key~'tikz'~in~the~definition~of~a~
+    You~have~used~the~key~'tikz'~(or~'dashed')~in~the~definition~of~a~
     customized~line~(with~'custom-line')~but~TikZ~is~not~loaded.~
     You~can~go~on~but~you~will~have~another~error~if~you~actually~
-    use~that~custom~line.~You~should~load~TikZ~~with~
-    \token_to_str:N \usepackage \{tikz\}.
+    use~that~custom~line.~You~should~load~TikZ~(with~
+    \token_to_str:N \usepackage \{tikz\}).
   }
 %    \end{macrocode}
 %
@@ -20105,8 +20311,8 @@ version 2005/12/01 or later.
     TikZ~not~loaded. \\
     You~have~used~the~key~'tikz'~in~a~key~'borders'~(of~a~
     command~' \token_to_str:N \Block ')~but~TikZ~is~not~loaded.~
-    Your~key~will~be~ignored.~You~should~load~TikZ~~with~
-    \token_to_str:N \usepackage \{tikz\}
+    Your~key~will~be~ignored.~You~should~load~TikZ~(with~
+    \token_to_str:N \usepackage \{tikz\}).
   }
 %    \end{macrocode}
 % 
@@ -20222,8 +20428,8 @@ version 2005/12/01 or later.
   {
     The~available~keys~are~(in~alphabetic~order):~&-in-blocks,~ampersand-in-blocks,~
     b,~B,~borders,~c,~draw,~fill,~hlines,~hvlines,~l,~name,~
-    opacity,~rounded-corners,~r,~respect-arraystretch,~rules/width,~t,~T,~tikz,~
-    transparent~and~vlines.  
+    opacity,~rounded-corners,~r,~respect-arraystretch,~rules/color,~rules/width,
+    ~t,~T,~tikz,~transparent~and~vlines.  
   }
 %    \end{macrocode}
 % 
@@ -20394,7 +20600,7 @@ version 2005/12/01 or later.
     small,~
     sub-matrix~(several~subkeys),~
     vlines,~
-    width-of-false,~
+    width-of-false(+),~
     xdots~(several~subkeys).
   }
 %    \end{macrocode}
@@ -20454,7 +20660,7 @@ version 2005/12/01 or later.
     small,~
     t,~
     vlines,~
-    width-of-false,~    
+    width-of-false(+),~    
     xdots/color,~
     xdots/shorten-start(+),~
     xdots/shorten-end(+),~
@@ -20523,7 +20729,7 @@ version 2005/12/01 or later.
     small,~
     t,~
     vlines,~
-    width-of-false,~    
+    width-of-false(+),~    
     xdots/color,~
     xdots/shorten-start(+),~
     xdots/shorten-end(+),~
@@ -20590,7 +20796,7 @@ version 2005/12/01 or later.
     t,~
     tabularnote,~
     vlines,~
-    width-of-false,~
+    width-of-false(+),~
     xdots/color,~
     xdots/shorten-start(+),~
     xdots/shorten-end(+),~

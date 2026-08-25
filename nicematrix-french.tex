@@ -20,7 +20,7 @@
     arrows.meta,
     decorations.pathreplacing,
     decorations.pathmorphing, % pour zigzag et random steps
-    calligraphy
+    calligraphy % doit être chargé *après* decorations.pathreplacing
   }
  
 
@@ -52,6 +52,7 @@
 \usepackage{varwidth}
 \usepackage{tcolorbox}
 \usepackage{adjustbox}
+\usepackage{hhline}
 \usepackage[auto-lang=false]{lipsum}
 
 \NewDocumentEnvironment {scope} {} {} {}
@@ -1248,7 +1249,9 @@ classiques.
 Dans les environnements de \pkg{nicematrix}, les filets verticaux spécifiés par
 \verb+|+ dans le préambule des environnements ne sont jamais coupés, même en cas
 de rangée incomplète ou de double filet horizontal spécifié par |\hline\hline|
-(il n'y a pas besoin d'utiliser l'extension \pkg{hhline}).
+(il n'y a pas besoin d'utiliser l'extension \pkg{hhline}\footnote{Mais
+  \pkg{hhline} \emph{peut} être utilisé avec \pkg{nicematrix}: voir
+  l'exemple~\ref{ex:hhline}, p.~\pageref{ex:hhline}.}).
 
 \medskip
 \begin{Code}[width=10cm,show-output,no-cell-nodes]
@@ -1269,8 +1272,8 @@ les clés |first-row| et |last-row|: cf.~\ref{exterior}, p.~\pageref{exterior}).
 
 \medskip
 Si on utilise |\multicolumn|, il n'y a pas besoin de rajouter les éventuels
-\verb+|+ ou \verb+||+ à la fin du motif (mais il est plus recommandable
-d'utiliser la commande |\Block| dans les environnements de \pkg{nicematrix}).
+\verb+|+ ou \verb+||+ à la fin du motif (mais, dans les environnements de
+\pkg{nicematrix}, il est souvent plus commode d'utiliser la commande |\Block|).
 
 
 \medskip
@@ -1310,7 +1313,8 @@ Marie & Pauline \\ \hline
 Bien sûr, dans cet exemple, il n'y a pas d'intérêt à utiliser |{NiceTabular}| et
 il vaut mieux utiliser l'environnement standard |{tabular}| mais peut-être voudra-t-on
 utiliser d'autres fonctionnalités de \pkg{nicematrix}. On aura aussi intérêt à considérer
-la commande |\EmptyRow| dans le |\CodeBefore| (cf. \ref{EmptyRow}, p.~\pageref{EmptyRow}).
+la commande |\FalseRow| (cf. \ref{FalseRow}, p.~\pageref{FalseRow}) quand on veut
+tracer des double-filets horizontaux.
 
 
 \subsubsection{La commande  \texttt{\textbackslash cline}}
@@ -1418,22 +1422,23 @@ la commande |\Hline|.
 \end{itemize}
 
 \medskip
-\textbf{Ces outils ont en commun de ne pas tracer les filets dans les blocs ni
-  dans les coins vides (quand la clé |corners| est utilisée), ni dans les
-  rangées et colonnes extérieures.}
+\textbf{Ces outils ont en commun la propriété de ne pas tracer les filets dans
+  les blocs ni dans les coins vides (quand la clé |corners| est utilisée), ni
+  dans les rangées et colonnes extérieures.}
 \begin{itemize}
 \item Les blocs en question sont :
 \begin{itemize}
 \item ceux créés par la commande |\Block|\footnote{Et aussi la commande |\multicolumn| même s'il
   est recommandé d'utiliser plutôt |\Block| quand on utilise l'extension
-  \pkg{nicematrix}.} de \pkg{nicematrix} présentée à la section~\ref{Block}, 
+  \pkg{nicematrix} (la commande |\multicolumn| garde néanmoins par rapport à |\Block| la caractéristique d'élargir
+  la dernière colonne au besoin).} de \pkg{nicematrix} présentée à la section~\ref{Block}, 
 p.~\pageref{Block};
 \item ceux créés par la clé |create-blocks-in-col| :
 cf.~\ref{create-blocks-in-col}, p.~\pageref{create-blocks-in-col};
 \item ceux délimités implicitement par des lignes en pointillés continues, créées
 par |\Cdots|, |\Vdots|, etc. : cf.~\ref{Cdots}, p.~\pageref{Cdots}.
 \end{itemize}
-\item Les coins sont créés par la clé |corners| détaillée un peu plus loin : cf.
+\item Les coins sont créés par la clé |corners| détaillée un peu plus loin : cf.~\ref{corners}, 
 p.~\pageref{corners}.
 \item Pour les rangées et colonnes extérieures, cf.~\ref{exterior}, p.~\pageref{exterior}.
 \end{itemize}
@@ -1443,7 +1448,7 @@ standard |\hline| et la commande |\Hline| proposée par \pkg{nicematrix}.
 
 Par ailleurs, la commande |\Hline| admet entre crochets un argument optionnel
 qui est une liste de couples \textsl{clé=valeur} qui décrivent un filet. Pour la
-description de ces clés, voir |custom-line|, à la section~\ref{custom-line},
+description de ces clés, voir la clé |custom-line|, à la section~\ref{custom-line},
 p.~\pageref{custom-line}.\footnote{Remarque technique. Si l'utilisateur définit
   une commande par-dessus la commande |\Hline|, il doit veiller à ce qu'elle
   soit \emph{développable} au sens de TeX (en utilisant
@@ -1611,7 +1616,7 @@ Quand la clé \Definition{corners}\footnote{La clé \texttt{corners} dont on par
   là n'a pas de rapport direct avec la clé \texttt{rounded-corners}, décrite
   dans la partie \ref{tabular-rounded-corners},
   p.~\pageref{tabular-rounded-corners}.} est utilisée, \pkg{nicematrix} calcule
-les coins vides et ces coins sont alors pris en compte par les outils de tracés
+les quatre coins vides et ces coins sont alors pris en compte par les outils de tracés
 de filets (les filets ne seront pas tracés dans ces coins vides).
 
 \medskip
@@ -1767,7 +1772,7 @@ $i$-$j$ ;\footnote{Il est recommandé de n'utiliser ces commandes qu'une seule
   commande.}
 
 \item la clé \Definition{letter} prend en argument une lettre\footnote{Les lettres
-  suivantes ne sont pas autorisées : \verb+lcrpmbVX|()[]!@<>+} qui pourra être
+  suivantes ne sont pas autorisées : \verb+lcrpmbFVX|()[]!@<>+} qui pourra être
 utilisée par l'utilisateur dans le préambule d'un environnement à préambule
 (comme |{NiceTabular}|) pour spécifier un filet vertical.
 \end{itemize}
@@ -1776,7 +1781,8 @@ utilisée par l'utilisateur dans le préambule d'un environnement à préambule
 On traite maintenant de la description du filet elle-même. Les options qui
 suivent peuvent aussi s'utiliser dans l'argument optionnel d'une commande
 |\Hline| individuelle ou dans l'argument optionnel d'un spécificateur «\verb+|+»
-dans un préambule d'environnement.
+dans un préambule d'environnement. Elles sont aussi utilisées par la clé
+|default-line|.
 
 \bigskip
 Il y a quatre possibilités :
@@ -2272,6 +2278,7 @@ sept   & \Block{1-2}{huit} \\
 \indexcommand{FalseRow}
 \index{F (lettre dans les préambules)}
 \label{FalseRow}
+\index{width-of-false}
 
 \colorbox{yellow!50}{\textbf{Nouveau 7.11}}
 
@@ -2282,12 +2289,12 @@ propose une commande |\FalseRow| et une lettre |F|.
 \smallskip
 La commande |\FalseRow| est à utiliser après une commande |\\| de fin de rangée.
 Elle crée une nouvelle rangée vidde dans la hauteur est égale au paramètre
-\Definition{width-of-false} (la valeur initiale de ce paramètre est égale à
+\Definition{width-of-false}$^+$ (la valeur initiale de ce paramètre est égale à
 2~pt, qui est la valeur initiale de |\doublerulesep|). Les filets et les fonds
 colorés ne s'appliqueront pas dans cette rangée.
 
 \smallskip
-La lettre |F| est à utiliser dans le préambule des environnements à préambules
+La lettre |F| est à utiliser dans le préambule des environnements à préambule
 (comme |{NiceTabular}|, |{NiceArray}|, etc.). Elle crée une colonne de largeur
 égale à la valeur du paramètre |width-of-false|. Les filets et les fonds colorés
 ne s'appliqueront pas dans cette colonne. Attention : cette colonne existe bien
@@ -2357,7 +2364,7 @@ C'est le cas avec \pkg{colortbl} avec lequel chaque case est coloriée
 individuellement, même si on utilise |\columncolor| ou |\rowcolor|.
 
 Concernant ce phénomène, Adobe Reader donne de meilleurs résultats que
-MuPDF (les versions récentes de MuPDF semblent avoir résolu ce problème).
+MuPDF. % (les versions récentes de MuPDF semblent avoir résolu ce problème).
 \end{itemize}
 
 L'extension \pkg{nicematrix} propose des outils qui permettent d'éviter ces
@@ -2801,7 +2808,10 @@ commande |\EmptyRow| est similaire.
 \end{NiceTabular}
 \end{Code}
 
-
+\medskip
+Ces commandes peuvent servir typiquement à composer plusieurs tableaux côte à
+côte. Si on souhaite tracer des double-filets, on devrait plutôt considérer la
+commande |\FalseRow| et la lettre~|F| (cf. \ref{FalseRow}, p.~\pageref{FalseRow}).
 
 
 
@@ -2910,7 +2920,7 @@ Voici un exemple d'utilisation de |\rowcolors| en conjonction avec |create-block
 \end{NiceTabular}
 \end{Code}
 
-\subsection{La couleur spécial «nocolor»}
+\subsection{La couleur spéciale «nocolor»}
 
 \index{nocolor}
 
@@ -5126,12 +5136,8 @@ p.~\pageref{ex:notes}.
 \index{trees (plusieurs sous-clés)}
 \index{arbres (clé «draw-trees-in-col»)}
 
-\colorbox{yellow!50}{\textbf{Nouveau 7.8}}
-
-\nobreak
-\smallskip
 La clé \Definition{draw-trees-in-col} prend en argument une liste de numéros de colonnes
-et, dans chacune de ces colonnes, dessine des arbres comme en propose
+et, dans chacune de ces colonnes, dessine des arbres comme en proposent
 les extensions \pkg{dirtree} et \pkg{dirtreex}.
 
 \medskip
@@ -5332,6 +5338,10 @@ $\begin{bNiceMatrix}\emph{[r]}
   \sin x & \cos x
 \end{bNiceMatrix}$
 \end{Code}
+
+\medskip
+La syntaxe est alors similaire à celle de l'environnement |{bmatrix*}|, fourni
+par l'extension \pkg{mathtools}.
 
 \medskip
 La clé |columns-type| peut être utilisée dans |\NiceMatrixOptions| à condition
@@ -5646,7 +5656,13 @@ si on se trouve dans le tableau principal, c'est-à-dire que l'on est ni dans le
 rangées extérieures, ni dans les colonnes extérieures. Si elle est utilisée hors
 d'un environnement de \pkg{nicematrix}, elle est sans effet.
 
-Pour un exemple d'utilisation, voir \url{tex.stackexchange.com/questions/488566} 
+
+Cette commande est disponible dans tous les environnements fournis par
+\pkg{nicematrix} (et aurait pu s'appler |\OnlyMainNiceTabular|).
+
+
+Pour des exemples d'utilisation, voir \url{tex.stackexchange.com/questions/488566} et
+également \url{tex.stackexchange.com/questions/73412}.
 
 
 
@@ -5786,6 +5802,8 @@ Puisque ces nœuds sont des nœuds \textsc{pgf}, on ne sera pas étonné d'appen
 sont tracés en utilisant un style \textsc{pgf} spécifique. Ce style est nommé
 |nicematrix/cell-node| et sa définition dans le fichier source |nicematrix.sty|
 est la suivante :
+
+\label{cell-node}
 
 \begin{Code}[annotation = false]
 \pgfset 
@@ -6369,8 +6387,9 @@ l'extension \pkg{underscore}. Si elle est chargée avant, une erreur sera levée
 \index{Ddots@\texttt{\textbackslash Ddots}}
 \index{Iddots@\texttt{\textbackslash Iddots}}
 
-Par défaut, toutes les lignes diagonales\footnote{On parle des lignes créées par
-  |\Ddots| et non des lignes créées par une commande |\line| dans le
+Par défaut, toutes les lignes de conduite pointillées qui sont
+diagonales\footnote{On parle des lignes créées par
+  |\Ddots| et |\Iddots| et non des lignes créées par une commande |\line| dans le
   |\CodeAfter|.} d'un même tableau sont «parallélisées». Cela signifie que la
 première diagonale est tracée et que, ensuite, les autres lignes sont tracées
 parallèlement à la première (par rotation autour de l'extrémité la plus à gauche
@@ -6591,13 +6610,14 @@ erronée dans certaines circonstances.
 
 
 \medskip
-L'extension \pkg{nicematrix} n'est pas parfaitement compatible avec l'extension
-\pkg{arydshln} (parce que cette extension redéfinit de nombreuses commandes
-internes de \pkg{array}) et les colonnes |V| de l'extension \pkg{boldline} ne
-sont pas prises en charge (car la lettre |V| est réservée pour les colonnes |V|
-de \pkg{varwidth}). De toutes manières, \pkg{nicematrix} fournit, avec la clé
-|custom-line| (cf.~\ref{custom-line}, p.~\pageref{custom-line}) des
-outils pour définir des filets en tiretés ou de différentes épaisseurs.
+L'extension \pkg{nicematrix} n'est pas compatible avec l'extension
+\pkg{arydshln} (parce que cette extension n'est plus compatible avec l'extension
+\pkg{array}, chargée par \pkg{nicematrix}) et les colonnes |V| de l'extension
+\pkg{boldline} ne sont pas prises en charge (car la lettre |V| est réservée pour
+les colonnes |V| de \pkg{varwidth}). De toutes manières, \pkg{nicematrix}
+fournit, avec la clé |custom-line| (cf.~\ref{custom-line},
+p.~\pageref{custom-line}) des outils pour définir des filets en tiretés ou de
+différentes épaisseurs.
 
 \medskip
 Les colonnes |d| de l'extension \pkg{dcolumn} ne sont pas prises en compte (mais
@@ -6844,11 +6864,14 @@ tous les filets sauf ceux sur les bords (qui sont, bien entendu, ajoutés par
 
 
 \begin{Code}[show-output]
-$\begin{NiceMatrix}[columns-width=1cm,hvlines]
+\color{blue}
+\[\begin{NiceArray}
+  [columns-width=1cm,hvlines,rules/color=black]
+  {>{\color{black}}cccccc}  
   f(x)   & \Block[C]{1-5}{+} \\
   f'(x)  & \Block[C]{1-2}{+} && \Block[C]{1-2}{+} && + \\
   f''(x) & - & \Block[C]{1-2}{-} && \Block[C]{1-2}{+} \\
-\end{NiceMatrix}$
+\end{NiceArray}\]
 \end{Code}
 
 \medskip
@@ -6884,6 +6907,35 @@ f     &   &   &   &   &         \\
 \end{NiceArray}$
 \end{Code}
 
+\subsection{Exemple de description d'une table de base de données}
+
+\index{hhline@\pkg{hhline} (extension)|textit}
+\label{ex:hhline}
+
+Dans l'exemple suivant, on utilise l'extension \pkg{hhline} (on aurait aussi pu
+utiliser \pkg{ehhline}) dans un environnement |{NiceTabular}| pour tracer le
+double trait horizontal traditionnel qui marque la clé primaire de la table.
+
+\medskip
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{hhline} % dans le préambule
+\end{Verbatim}
+
+\smallskip
+\begin{Code}[show-output,width=9cm,no-cell-nodes]
+\begin{NiceTabular}\myrlap{{>{\columncolor{red!15}}cllr}[vlines]}
+\Hline
+clé  & prénom & nom      & âge \\
+\emph{\hhline{=---}}
+2072 & Jean   & Marcier  & 68  \\     
+2073 & Claude & Beaumont & 23  \\
+\Hline
+\end{NiceTabular}
+\end{Code}
+
+\medskip
+Comme on le voit l'utilisation de la clé |vlines| a permis d'écrire |\hhline{=---}| et
+non \verb+\hhline{|=|-|-|-|}+.
 
 \subsection{Exemple d'utilisation de la clé borders de \texttt{\textbackslash Block}}
 
@@ -6915,7 +6967,7 @@ $\begin{pNiceMatrix}
 
 
 
-\subsection{Lignes de conduite en pointillés dans les matrices}
+\subsection{Lignes de conduite}
 
 \index{Pointillés@\textbf{Pointillés (lignes de conduite en ---)}|textit}
 
@@ -6971,8 +7023,7 @@ $\begin{pNiceMatrix}%
 \end{Code}
 
 
-
-\subsection{Des lignes de conduite qui ne sont plus pointillées}
+\bigskip
 
 \label{ex:no-longer-dotted-rules}
 
@@ -7583,13 +7634,19 @@ limiter à la matrice produit $C$ les lignes de conduite pointillées qui y sont
   du \texttt{\textbackslash CodeBefore})|textit}
 \index{CodeBefore@\texttt{\textbackslash CodeBefore}...\texttt{\textbackslash Body}|textit}
 
-Dans l'exemple suivant, on utilise le style PGF-TikZ |nicematrix/cell-node| pour faire
-tourner le contenu des cases (rotation que l'on compense ensuite en faisant
-tourner tout le tableau avec la commande |\adjustbox| de l'extension éponyme,
-qui doit donc être chargée préalablement).
+Dans l'exemple suivant, on utilise le style PGF-TikZ |nicematrix/cell-node|
+(cf.~\ref{cell-node}) pour faire tourner le contenu des cases (rotation que
+l'on compense ensuite en faisant tourner tout le tableau avec la commande
+|\adjustbox| de l'extension éponyme, qui doit donc être chargée préalablement).
 
 \medskip
-\begin{Code}
+
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{adjustbox} % dans le préambule
+\end{Verbatim}
+
+\medskip
+\begin{Code}[show-output]
 \pgfset 
   { 
     \emph{nicematrix/cell-node}/.append style = 
@@ -7615,31 +7672,7 @@ qui doit donc être chargée préalablement).
 \end{Code}
 
 
-
-\begin{center}
-\pgfset 
-  { 
-    nicematrix/cell-node/.append style = 
-      { text/rotate = 45, minimum size = 6 mm }
-  }%
-\setlength{\tabcolsep}{0pt}%
-\adjustbox{rotate = -45, set depth = 6mm + 1.414 \arrayrulewidth}
-  {\begin{NiceTabular} [ hvlines, corners=S, baseline = line-9 ] { cccccccc }
-   \CodeBefore
-     \chessboardcolors{red!15}{blue!15}
-   \Body
-     1 & 1 & 1  & 1  & 1  & 1 & 1 & 1 \\
-     1 & 2 & 3  & 4  & 5  & 6 & 7 \\
-     1 & 3 & 6  & 10 & 15 & 21 \\
-     1 & 4 & 10 & 20 & 35 \\
-     1 & 5 & 15 & 35 \\
-     1 & 6 & 21 \\
-     1 & 7 \\
-     1 
-   \end{NiceTabular}}
-\end{center}
-
-\medskip
+\bigskip
 Bien sûr, si on a de nombreux diagrammes à faire de la sorte, on recommande d'utiliser une
 extension dédiée comme \pkg{atableau}.
 

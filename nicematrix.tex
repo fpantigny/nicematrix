@@ -16,7 +16,7 @@
     arrows.meta,
     decorations.pathreplacing, % for \Hbrace and \Vbrace
     decorations.pathmorphing, % for zigzag and random steps
-    calligraphy
+    calligraphy % must be loaded *after* decorations.pathreplacing
   }
 
 \usepackage{enumitem}
@@ -47,6 +47,7 @@
 \usepackage{varwidth}
 \usepackage{tcolorbox}
 \usepackage{adjustbox}
+\usepackage{hhline}
 \usepackage[auto-lang=false]{lipsum}
 
 \NewDocumentEnvironment {scope} {} {} {}
@@ -315,7 +316,7 @@ the eponymous package.\footnote{In fact, it's possible to use directly the |X|
   p.~\pageref{X-columns}. Thus, it's possible to always avoid the environnement |{NiceTabularX}|}.
 
 \medskip
-The environment |\{NiceArrayWithDelims\}| is a generalisation of the environment
+The environment |{NiceArrayWithDelims}| is a generalisation of the environment
 |{NiceArray}| and its variants (cf.~\ref{NiceArrayWithDelims}, p.~\pageref{NiceArrayWithDelims}).
 
 \medskip
@@ -1137,7 +1138,8 @@ with the classical environments.
 In the environments of \pkg{nicematrix}, the vertical rules specified by
 \verb+|+ in the preambles of the environments are never broken, even by an
 incomplete row or by a double horizontal rule specified by |\hline\hline|
-(there is no need to use the package~\pkg{hhline}).
+(there is no need to use the package~\pkg{hhline}\footnote{But \pkg{hhline} may be
+used with \pkg{nicematrix}: see the example~\ref{ex:hhline}, p.~\pageref{ex:hhline}.}).
 
 \bigskip
 \begin{Code}[width=10cm,show-output]
@@ -1156,8 +1158,8 @@ keys |first-row| and |last-row|: cf.~\ref{exterior}, p.~\pageref{exterior}).
 
 \medskip
 If you use |\multicolumn| there is no need to add the potential \verb+|+ or
-\verb+||+ at the end of the little preamble (but it's recommanded to use the
-command |\Block| in the environments of \pkg{nicematrix}).
+\verb+||+ at the end of the little preamble (but, in the environments of
+\pkg{nicematrix}, it's often more practicable to use the command |\Block|).
 
 \bigbreak
 \index{booktabs@\pkg{booktabs} (package)}
@@ -1198,7 +1200,8 @@ Marie & Pauline \\ \hline
 Of course, in this case, there is no point using |{NiceTabular}| and it's better
 to use the standard environment |{tabular}| but maybe we will have to use other
 functionalities provided by \pkg{nicematrix}. One should also consider the
-command |\EmptyRow| in the |\CodeBefore| (cf.~\ref{EmptyRow}, p.~\pageref{EmptyRow}).
+command |\FalseRow| (cf.~\ref{FalseRow}, p.~\pageref{FalseRow}) for the tables with
+horizontal double rules.
 
 \bigskip
 \subsubsection{The command \texttt{\textbackslash cline}}
@@ -1304,9 +1307,11 @@ columns.}
 \begin{itemize} 
 \item These blocks are:
 \begin{itemize}
-\item the blocks created by the command |\Block|\footnote{And also the command |\multicolumn| but
-it's recommended to use instead |\Block| in the environments of
-\pkg{nicematrix}.} (cf.~\ref{Block}, p.~\pageref{Block});
+\item the blocks created by the command |\Block|\footnote{And also the command
+  |\multicolumn| but it's recommended to use instead |\Block| in the
+  environments of \pkg{nicematrix} (by the way, the command |\multicolumn| has
+  the feature, unlike |\Block|, that it enlarges the last column if necessary).}
+(cf.~\ref{Block}, p.~\pageref{Block});
 \item the blocks createad by the key |create-blocks-in-col|:
 (cf.~\ref{create-blocks-in-col}, p.~\pageref{create-blocks-in-col});
 \item the blocks implicitly delimited by the dotted leaders created
@@ -1489,7 +1494,7 @@ A & A & A & A & A & A \\
 When the key \Definition{corners}\footnote{The key |corners| that we describe now
 has no direct link with the key |rounded-corners| described in the part
 \ref{tabular-rounded-corners}, p.~\pageref{tabular-rounded-corners}.} is used,
-\pkg{nicematrix} computes the (empty) corners and these corners will be taken
+\pkg{nicematrix} computes the four (empty) corners and these corners will be taken
 into account by the tools for drawing the rules (the rules won't be drawn in
 the corners).
 
@@ -1642,7 +1647,7 @@ $i$-$j$.\footnote{It's recommended to use such commands only once in a row
   use of the command.}
 
 \item the key \Definition{letter} takes in as argument a letter\footnote{The following
-letters are forbidden: \verb+lcrpmbVX|()[]!@<>+} that the user will use in
+letters are forbidden: \verb+lcrpmbFVX|()[]!@<>+} that the user will use in
 the preamble of an environment with preamble (such as |{NiceTabular}| in order
 to specify a vertical rule.
 \end{itemize}
@@ -1651,7 +1656,7 @@ to specify a vertical rule.
 We will now speak of the keys which describe the rule itself. Those keys may
 also be used in the (optional) argument of an individual command |\Hline| or in
 the (optional) argument of a specifier ``\verb+|+'' in the preamble of an
-environment. 
+environment. They are also used for the key |default-line|.
 
 \bigskip
 There are four possibilities:
@@ -2170,7 +2175,7 @@ provides a command |\FalseRow| and a letter |F|.
 
 \smallskip
 The command |\FalseRow| must be used after a command |\\| of end of row. It
-creates a new empty row with a height equal to \Definition{width-of-false} (the
+creates a new empty row with a height equal to \Definition{width-of-false}$^+$ (the
 initial value of that parameter is 2~pt, which is the initial value of
 |\doublerulesep|). The rules and the colored backgrounds won't be drawn in that
 row.
@@ -2243,9 +2248,9 @@ phenomenon occurs when each cell is colored with its own instruction |fill|
 \pkg{colortbl}: each cell is colored on its own, even when |\columncolor| or
 |\rowcolor| is used.
 
-As for this phenomenon, Adobe Reader gives better results than MuPDF
-(however, it seems, that, in recent versions of MuPDF, the problem has
-been solved...).
+As for this phenomenon, Adobe Reader gives better results than MuPDF.
+% (however, it seems, that, in recent versions of MuPDF, the problem has
+% been solved...).
 \end{itemize}
 
 The package \pkg{nicematrix} provides tools to avoid both problems.
@@ -2670,6 +2675,10 @@ corresponding columns. The command |\EmptyRow| is similar for the rows.
 \end{NiceTabular}
 \end{Code}
 
+\medskip
+These commands may typically be used in order to compose several tabulars side
+by side. If you want to draw double-rules, you should insted consider the
+command |\FalseRow| and the letter~|F| (cf. \ref{FalseRow}, p.~\pageref{FalseRow}).
 
 
 \subsection{Color tools to be used inside the tabular}
@@ -2775,7 +2784,7 @@ Here is an example of use of |\rowcolors| in conjunction with |create-blocks-in-
 \end{Code}
 
 
-\subsection{The special color ``nocolor''}
+\subsection[The special color "nocolor"]{The special color ``nocolor''}
 
 \index{nocolor}
 
@@ -4921,11 +4930,6 @@ see~\ref{ex:notes}, p.~\pageref{ex:notes}.
 \index{trees (plusieurs sous-clés)}
 
 
-\colorbox{yellow!50}{\textbf{New 7.8}}
-
-\nobreak
-\smallskip
-
 The key \Definition{draw-trees-in-col} takes in as argument a list of
 numbers of columns and, in each of those columns, will draw a tree
 in the style the trees drawn by the packages \pkg{dirtree} and \pkg{dirtreex}.
@@ -5127,6 +5131,10 @@ $\begin{bNiceMatrix}\emph{[r]}
   \sin x & \cos x 
 \end{bNiceMatrix}$
 \end{Code}
+
+\medskip
+This syntax is similar to the syntax of the environment |{bmatrix*}|, fournie par
+l'exension \pkg{mathtools}.
 
 \medskip
 The key |columns-type| is available in |\NiceMatrixOptions| but with the
@@ -5449,8 +5457,11 @@ The command \DefinitionCommand{OnlyMainNiceMatrix} executes its argument only
 when it is in the main part of the array, that is to say when it is not in one
 of the exterior rows or one of the exterior columns. If it is used outside an
 environment of \pkg{nicematrix}, that command is no-op.
+That command is available in all the environments of \pkg{nicematrix}
+(and might have been called |\OnlyMainNiceTabular|).
 
-For an example of use, see \url{tex.stackexchange.com/questions/488566}
+For examples of use, see \url{tex.stackexchange.com/questions/488566} and
+\url{tex.stackexchange.com/questions/73412}.
 
 \section{Explicit use of TikZ with nicematrix}
 
@@ -5576,13 +5587,16 @@ In the following example, we have stroken all the nodes of the matrix.
 a & a + b & a + b + c \\
 a & a     & a + b  \\
 a & a     & a
-\end{pNiceMatrix}\]
+\end{pNiceMatrix}
+\]
 
 
 \bigskip
 Since those nodes are PGF nodes, one won't be surprised to learn that they are
 drawn by using a specific PGF style. That style is called |nicematrix/cell-node|
 and its definition in the source file |nicematrix.sty| is as follows:
+
+\label{cell-node}
 
 \begin{Code}[annotation = false]
 \pgfset 
@@ -6129,8 +6143,8 @@ a perfect output).
     \tl_gput_right:Ne \emph{\g_nicematrix_code_before_tl}
       { 
         \__pantigny_crossbox:nnn 
-          { \int_use:c { c@iRow } } 
-          { \int_use:c { c@jCol } }
+          { \arabic { iRow } } 
+          { \arabic { jCol } }
           { \exp_not:n { #1 } }
       }
     \ignorespaces 
@@ -6166,15 +6180,15 @@ Here is an example of use:
 First remark: the package \pkg{underscore} must be loaded before
 \pkg{nicematrix}. If it is loaded after, an error will be raised.
 
-\subsection{Diagonal lines} 
+\subsection{Diagonal dotted leaders} 
 
 \label{parallelization}
 \index{parallelize-diags}
 \index{Ddots@\texttt{\textbackslash Ddots}}
 \index{Iddots@\texttt{\textbackslash Iddots}}
 
-By default, all the diagonal lines\footnote{We speak of the lines created by
-|\Ddots| and not the lines created by a command |\line| in the |\CodeAfter|.} of a
+By default, all the diagonal dotted lines\footnote{We speak of the lines created by
+|\Ddots| or |\Iddots| and not the lines created by a command |\line| in the |\CodeAfter|.} of a
 same array are ``parallelized''. That means that the first diagonal line is
 drawn and, then, the other lines are drawn parallel to the first one (by
 rotation around the left-most extremity of the line). That's why the position
@@ -6388,11 +6402,11 @@ of LuaTeX-ja: the detection of the empty corners (cf.~\ref{corners}, p.~\pageref
 may be wrong in some circonstances.
 
 \medskip
-The package \pkg{nicematrix} is not fully compatible with the package
-\pkg{arydshln} (because this package redefines many internals of \pkg{array})
-and does not support the columns~|V| of \pkg{boldline} (because the letter |V| is
-reserved for the columns~|V| of \pkg{varwidth}). By any means, \pkg{nicematrix}
-provides, with the key |custom-line| (cf.~\ref{custom-line},
+The package \pkg{nicematrix} is not compatible with the package
+\pkg{arydshln} (because this package is no longer compatible with \pkg{array}, loaded by
+\pkg{nicematrix}) and does not support the columns~|V| of \pkg{boldline}
+(because the letter |V| is reserved for the columns~|V| of \pkg{varwidth}).
+By any means, \pkg{nicematrix} provides, with the key |custom-line| (cf.~\ref{custom-line},
 p.~\pageref{custom-line}), tools to draw dashed rules and rules of different
 widths. 
 
@@ -6526,7 +6540,7 @@ require a width equal to that value: |widest*=\value{tabularnote}|.
 \end{scope}
 
 
-\subsection[{Use of the key 'tikz' of the command \textbackslash
+\subsection[{Use of the key ``tikz'' of the command \textbackslash
 Block}]{Use of the key ``tikz'' of the command \texttt{\textbackslash Block}} 
 \label{tikz-key-examples}
 
@@ -6642,11 +6656,14 @@ the rules, except on the borders (which are, of course, added by \pkg{tcolorbox}
 
 
 \begin{Code}[show-output]
-$\begin{NiceMatrix}[columns-width=1cm,hvlines]
+\color{blue}
+\[\begin{NiceArray}
+  [columns-width=1cm,hvlines,rules/color=black]
+  {>{\color{black}}cccccc}  
   f(x)   & \Block[C]{1-5}{+} \\
   f'(x)  & \Block[C]{1-2}{+} && \Block[C]{1-2}{+} && + \\
   f''(x) & - & \Block[C]{1-2}{-} && \Block[C]{1-2}{+} \\
-\end{NiceMatrix}$
+\end{NiceArray}\]
 \end{Code}
 
 \bigskip
@@ -6684,7 +6701,36 @@ f     &   &   &   &   &         \\
 \end{NiceArray}$
 \end{Code}
 
+\subsection{Example of description of a table of a database}
 
+\index{hhline@\pkg{hhline} (package)|textit}
+\label{ex:hhline}
+
+In the following example, we use the extension \pkg{hhline} (it would have
+been also possible to use the package \pkg{ehhline}) in an environment
+|{NiceTabular}| in order to draw the double horizontal rule which is
+conventionnaly used to denote the primary key of the table.
+
+\medskip
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{hhline} % in the preamble
+\end{Verbatim}
+
+\smallskip
+\begin{Code}[show-output,width=9cm,no-cell-nodes]
+\begin{NiceTabular}\myrlap{{>{\columncolor{red!15}}cllr}[vlines]}
+\Hline
+key  & first name & last name & age \\
+\emph{\hhline{=---}}
+2072 & Jean       & Marcier  & 68  \\     
+2073 & Claude     & Beaumont & 23  \\
+\Hline
+\end{NiceTabular}
+\end{Code}
+
+\medskip
+As we see, thanks to the use of the key |vlines|, we have been able to write
+|\hhline{=---}| instead of \verb+\hhline{|=|-|-|-|}+.
 
 \subsection{Use of the key borders of the command \texttt{\textbackslash Block}}
 \label{ex:borders}
@@ -6715,7 +6761,7 @@ $\begin{pNiceMatrix}
 
 
 
-\subsection{Dotted leaders in the matrices}
+\subsection{Leaders in the matrices}
 
 \index{dotted@\textbf{Dotted leaders}|textit}
 
@@ -6770,7 +6816,7 @@ $\begin{pNiceMatrix}[vlines=-1,xdots/nullify,last-col]
 
 
 
-\subsection{Dotted leaders which are no longer dotted}
+\bigskip
 
 \label{ex:no-longer-dotted-rules}
 
@@ -7276,7 +7322,7 @@ $\begin{pNiceArray}{>{\strut}cccc}% <-- % mandatory
 \end{Code}
 
 \vspace{1cm}
-Or a more precise tuning, it's possible to use the command |\Block|.
+For a more precise tuning, it's possible to use the command |\Block|.
 
 \smallskip
 \begin{Verbatim}[formatcom = \footnotesize \color{gray}]
@@ -7383,13 +7429,18 @@ specified in the matrix product $C$ will be limited to that matrix).
 \index{CodeBefore@\texttt{\textbackslash CodeBefore}...\texttt{\textbackslash Body}|textit}
 
 In the following example, we use the style PGF/TikZ |nicematrix/cell-node|
-to rotate the contents of the cells (and, then, we compensate that rotation by
-a rotation of the whole tabular with the command |\adjustbox| of the eponymous
-package, which must be loaded previously).
+(cf.~\ref{cell-node}) to rotate the contents of the cells (and, then, we compensate
+that rotation by a rotation of the whole tabular with the command |\adjustbox|
+of the eponymous package, which must be loaded previously).
 
 
 \medskip
-\begin{Code}
+\begin{Verbatim}[formatcom = \footnotesize \color{gray}]
+\usepackage{adjustbox} % in the preamble
+\end{Verbatim}
+
+\medskip
+\begin{Code}[show-output]
 \pgfset 
   { 
     \emph{nicematrix/cell-node}/.append style = 
@@ -7415,37 +7466,14 @@ package, which must be loaded previously).
 \end{Code}
 
 
-\begin{center}
-\pgfset 
-  { 
-    nicematrix/cell-node/.append style = 
-      { text/rotate = 45, minimum size = 6 mm }
-  }%
-\setlength{\tabcolsep}{0pt}%
-\adjustbox{rotate = -45, set depth = 6mm + 1.414 \arrayrulewidth}
-  {\begin{NiceTabular} [ hvlines, corners=S, baseline = line-9 ] { cccccccc }
-   \CodeBefore
-     \chessboardcolors{red!15}{blue!15}
-   \Body
-     1 & 1 & 1  & 1  & 1  & 1 & 1 & 1 \\
-     1 & 2 & 3  & 4  & 5  & 6 & 7 \\
-     1 & 3 & 6  & 10 & 15 & 21 \\
-     1 & 4 & 10 & 20 & 35 \\
-     1 & 5 & 15 & 35 \\
-     1 & 6 & 21 \\
-     1 & 7 \\
-     1 
-   \end{NiceTabular}}
-\end{center}
-
-\medskip
+\bigskip
 Of course, if you have to draw many diagrams like this one, you should consider using a
 dedicated package, such as \pkg{atableau}.
 
 
 \newpage
 \vspace{1cm}
-\section{History}
+\section*{History}
 
 The development of the package \pkg{nicematrix} is done in the following GitHub
 depot:
@@ -7737,8 +7765,8 @@ Key |\color| for the command |\RowStyle|.
 
 \cleardoublepage
 
-\phantomsection
-% \addcontentsline{toc}{section}{Index}
+% \phantomsection
+\addcontentsline{toc}{section}{Index}
 
 \printindex
 
