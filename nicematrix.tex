@@ -672,7 +672,7 @@ which are the other keys in the list of keys provided as value to the key |tikz|
 of |\Block|.
 
 \smallskip
-\colorbox{yellow!50}{\textbf{New 7.11}} : Tow more precise keys, \Definition{xoffset}
+\colorbox{yellow!50}{\textbf{New 7.11}} : Two more precise keys, \Definition{xoffset}
 and \Definition{yoffset}, are provided.
 \end{itemize}
 
@@ -2677,7 +2677,7 @@ corresponding columns. The command |\EmptyRow| is similar for the rows.
 
 \medskip
 These commands may typically be used in order to compose several tabulars side
-by side. If you want to draw double-rules, you should insted consider the
+by side. If you want to draw double-rules, you should instead consider the
 command |\FalseRow| and the letter~|F| (cf. \ref{FalseRow}, p.~\pageref{FalseRow}).
 
 
@@ -3865,7 +3865,7 @@ with the keys |decorate| and |decoration|).
 
 \medskip
 For another example of use of |\Hbrace| and |\Vbrace|,
-see~(\ref{ex:no-longer-dotted-rules} p.~\pageref{ex:no-longer-dotted-rules}). 
+see~\ref{ex:no-longer-dotted-rules} p.~\pageref{ex:no-longer-dotted-rules}. 
 
 
 \medskip
@@ -5818,17 +5818,17 @@ delimited by the rules (if we consider that these rules are drawn).
 Here is an array composed with the following code:
 
 \medskip
-\begin{minipage}[c]{7cm}
+\begin{minipage}[c]{7.5cm}
 \begin{Verbatim}
 \large
-\begin{NiceTabular}{wl{2cm}ll}[hvlines]
+\begin{NiceTabular}{w{l}{2cm}ll}[hvlines]
   fraise & amande & abricot \\
   prune & pêche & poire  \\[1ex]
   noix & noisette & brugnon
 \end{NiceTabular}
 \end{Verbatim}
 \end{minipage}
-\hspace{1.5cm}
+\hspace{1cm}
 \begin{scope}
 \large
 \begin{NiceTabular}{wl{2cm}ll}[hvlines]
@@ -5839,10 +5839,10 @@ Here is an array composed with the following code:
 \end{scope}
 
 \vspace{1cm}
-\begin{minipage}[c]{7cm}
+\begin{minipage}[c]{7.5cm}
 Here, we have colored all the cells of the array with |\chessboardcolors|.
 \end{minipage}
-\hspace{1.5cm}
+\hspace{1cm}
 \begin{scope}
 \large
 \begin{NiceTabular}[c]{wl{2cm}ll}[hvlines,code-before = \chessboardcolors{red!15}{blue!15}]
@@ -5854,11 +5854,11 @@ noix & noisette & brugnon
 
 
 \vspace{1cm}
-\begin{minipage}[c]{7cm}
+\begin{minipage}[c]{7.5cm}
 Here are the ``large nodes'' of this array (without use of |margin|
 nor |extra-margin|).
 \end{minipage}
-\hspace{1.5cm}
+\hspace{1cm}
 \begin{scope}
 \large
 \begin{NiceTabular}[c]{w{l}{2cm}ll}[hvlines,create-large-nodes]
