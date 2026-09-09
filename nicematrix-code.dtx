@@ -1,3 +1,4 @@
+xit
 % \iffalse meta-comment  
 %
 % This file should be compiled with $lualatex$.
@@ -6482,10 +6483,11 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_rec_preamble_after_col:n #1
   {
-    \int_gincr:N \g_@@_static_num_of_col_int
+    % \int_gincr:N \g_@@_static_num_of_col_int
     \str_if_eq:nnTF { #1 } { < }
       { \@@_rec_preamble_after_col_i:n }
-      { 
+      {
+        \int_gincr:N \g_@@_static_num_of_col_int % modified 2026-09-09
         \str_if_eq:nnTF { #1 } { @ }
           { \@@_rec_preamble_after_col_ii:n }
           {

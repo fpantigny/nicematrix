@@ -2983,10 +2983,11 @@
   { \use:c { __nicematrix _ \token_to_str:N ) : } }
 \cs_new_protected:Npn \__nicematrix_rec_preamble_after_col:n #1
   {
-    \int_gincr:N \g__nicematrix_static_num_of_col_int
+    % \int_gincr:N \g__nicematrix_static_num_of_col_int
     \str_if_eq:nnTF { #1 } { < }
       { \__nicematrix_rec_preamble_after_col_i:n }
       {
+        \int_gincr:N \g__nicematrix_static_num_of_col_int % modified 2026-09-09
         \str_if_eq:nnTF { #1 } { @ }
           { \__nicematrix_rec_preamble_after_col_ii:n }
           {
@@ -7640,7 +7641,10 @@
         \bool_lazy_or:nnTF
           {
             \cs_if_exist_p:c
-              { pgf @ sh @ ns @ \__nicematrix_env: - \int_use:N \l_tmpa_int - \int_eval:n { #2 } }
+              {
+                pgf @ sh @ ns @ \__nicematrix_env: -
+                \int_use:N \l_tmpa_int - \int_eval:n { #2 }
+              }
           }
           { \__nicematrix_if_in_block_p:nn \l_tmpa_int { #2 } }
           {
