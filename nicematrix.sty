@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.11d}
-\def\myfiledate{2026/09/21}
+\def\myfileversion{7.12}
+\def\myfiledate{2026/10/07}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -378,6 +378,7 @@
 \bool_new:N \g__nicematrix_rotate_bool
 \bool_new:N \g__nicematrix_rotate_c_bool
 \bool_new:N \g__nicematrix_rotate_minus_bool
+\bool_new:N \g__nicematrix_FalseRow_bool
 \bool_new:N \l__nicematrix_X_bool
 \bool_new:N \l__nicematrix_V_of_X_bool
 \bool_new:N \g__nicematrix_V_of_X_bool
@@ -414,6 +415,7 @@
 \bool_new:N \l__nicematrix_bold_row_style_bool
 \clist_new:N \g__nicematrix_cbic_clist
 \clist_new:N \g__nicematrix_col_with_trees_clist
+\bool_new:N \l__nicematrix_empty_block_bool
 \cs_new:Npn \__nicematrix_full_name_env:
   {
     \str_if_eq:eeTF \g__nicematrix_com_or_env_str { command }
@@ -1483,10 +1485,13 @@
     \g__nicematrix_cell_after_hook_tl
     \bool_if:NT \g__nicematrix_rotate_bool \__nicematrix_rotate_cell_box:
     \__nicematrix_adjust_size_box:
-    \box_set_ht:Nn \l__nicematrix_cell_box
-      { \box_ht:N \l__nicematrix_cell_box + \l__nicematrix_cell_space_top_limit_dim }
-    \box_set_dp:Nn \l__nicematrix_cell_box
-      { \box_dp:N \l__nicematrix_cell_box + \l__nicematrix_cell_space_bottom_limit_dim }
+    \bool_if:NF \g__nicematrix_FalseRow_bool
+      {
+        \box_set_ht:Nn \l__nicematrix_cell_box
+          { \box_ht:N \l__nicematrix_cell_box + \l__nicematrix_cell_space_top_limit_dim }
+        \box_set_dp:Nn \l__nicematrix_cell_box
+          { \box_dp:N \l__nicematrix_cell_box + \l__nicematrix_cell_space_bottom_limit_dim }
+      }
     \__nicematrix_update_max_cell_width:
     \__nicematrix_update_for_first_and_last_row:
     \bool_if:NTF \g__nicematrix_empty_cell_bool
@@ -6533,8 +6538,12 @@
       {
         \skip_vertical:n
           { - \box_ht_plus_dp:N \@arstrutbox + \l__nicematrix_width_of_false_dim }
+        \bool_gset_true:N \g__nicematrix_FalseRow_bool
       }
-    \multicolumn { 1 } { @{} c @{} } { } % added 2026-08-21
+
+    \int_compare:nNnT \l__nicematrix_first_col_int = 0 { & }
+    \multicolumn { 1 } { @{} c @{} } {  }
+    \bool_gset_false:N \g__nicematrix_FalseRow_bool
     \clist_gput_right:Ne \g__nicematrix_false_rows_clist { \arabic { iRow } }
     \\
   }
@@ -6895,6 +6904,7 @@
 \socket_assign_plug:nn { nicematrix / vsegment } { standard }
 \socket_new_plug:nnn { nicematrix / vsegment } { multiple }
   {
+    \group_begin:
     \dim_add:Nn \l__nicematrix_x_initial_dim
       {
         - 0.5 \l__nicematrix_rule_width_after_dim
@@ -6934,6 +6944,7 @@
         \pgfpathlineto { \pgfpoint \l__nicematrix_x_initial_dim \l__nicematrix_y_final_dim }
       }
     \pgfusepathqstroke
+    \group_end:
   }
 \socket_new_plug:nnn { nicematrix / vsegment } { dotted }
   {
@@ -6970,7 +6981,9 @@
         { \clist_map_inline:Nn \l__nicematrix_vlines_clist }
         {
           \int_set:Nn \l__nicematrix_position_int { ##1 }
-          \socket_use:n { nicematrix / draw-vrule }
+          \int_compare:nNnTF { ##1 } > { \g__nicematrix_col_total_int + 1 }
+            { \__nicematrix_error:n { Column~outside~the~array } }
+            { \socket_use:n { nicematrix / draw-vrule } }
         }
     }
   }
@@ -7114,6 +7127,7 @@
 \socket_assign_plug:nn { nicematrix / hsegment } { standard }
 \socket_new_plug:nnn { nicematrix /  hsegment } { multiple }
   {
+    \group_begin:
     \dim_add:Nn \l__nicematrix_y_initial_dim
       {
         - 0.5 \l__nicematrix_rule_width_after_dim
@@ -7151,6 +7165,7 @@
         \pgfpathlineto { \pgfpoint \l__nicematrix_x_final_dim \l__nicematrix_y_initial_dim }
       }
     \pgfusepathqstroke
+    \group_end:
   }
 \socket_new_plug:nnn { nicematrix / hsegment } { dotted }
   {
@@ -7203,7 +7218,9 @@
         { \clist_map_inline:Nn \l__nicematrix_hlines_clist }
         {
           \int_set:Nn \l__nicematrix_position_int { ##1 }
-          \socket_use:n { nicematrix / draw-hrule }
+          \int_compare:nNnTF { ##1 } > { \g__nicematrix_row_total_int + 1 }
+            { \__nicematrix_error:n { Row~outside~the~array } }
+            { \socket_use:n { nicematrix / draw-hrule } }
         }
     }
   }
@@ -8426,6 +8443,10 @@
 \cs_generate_variant:Nn \__nicematrix_Block_vii:nnnnn { e e }
 \keys_define:nn { nicematrix / Block }
   {
+    empty .code:n =
+      \bool_set_true:N \l__nicematrix_empty_block_bool
+      \bool_set_true:N \l__nicematrix_transparent_bool ,
+    empty .value_forbidden:n = true ,
     ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
     &-in-blocks .meta:n = ampersand-in-blocks ,
     tikz .code:n =
@@ -8544,6 +8565,14 @@
     \int_compare:nNnT { #1 } = { #3 }
       { \str_set:Nn \l__nicematrix_vpos_block_str { t } }
     \keys_set:nn { nicematrix / Block } { #5 }
+    \bool_if:NT \l__nicematrix_empty_block_bool
+      {
+        \int_step_inline:nnn { #1 } { #3 }
+          {
+            \int_step_inline:nnn { #2 } { #4 }
+              { \cs_undefine:c { pgf @ sh @ ns @ \__nicematrix_env: - ##1 - ####1 } }
+          }
+      }
     \bool_if:NT \l__nicematrix_amp_in_blocks_bool
       { \tl_if_in:nnT { #6 } { & } { \bool_set_true:N \l__nicematrix_ampersand_bool } }
     \bool_lazy_and:nnT
@@ -11085,6 +11114,20 @@
     You~can't~use~the~command~#1 in~the~last~row~(exterior)~of~the~array.~
     Your~command~will~be~ignored.~You~can~try~to~delete~the~key~'last-row'.
   }
+\__nicematrix_msg_new:nn { Row~outside~the~array }
+  {
+    Row~outside~the~array \\
+    You~try,~with~the~key~'hlines',~to~draw~an~horizontal~rule~
+    at~the~position~\int_use:N \l__nicematrix_position_int\ but~it's~outside~the~array.~
+    It~will~be~ignored.
+  }
+\__nicematrix_msg_new:nn { Column~outside~the~array }
+  {
+    Column~outside~the~array \\
+    You~try,~with~the~key~'vlines',~to~draw~a~vertical~rule~at~the~position~
+    \int_use:N \l__nicematrix_position_int\ but~it's~outside~the~array.~
+    It~will~be~ignored.
+  }
 \__nicematrix_msg_new:nn { TopRule~without~booktabs }
   {
     Misuse~of~#1\\
@@ -11760,7 +11803,7 @@
   }
   {
     The~available~keys~are~(in~alphabetic~order):~&-in-blocks,~ampersand-in-blocks,~
-    b,~B,~borders,~c,~draw,~fill,~hlines,~hvlines,~l,~name,~
+    b,~B,~borders,~c,~draw,~empty,~fill,~hlines,~hvlines,~l,~name,~
     opacity,~rounded-corners,~r,~respect-arraystretch,~rules/color,~rules/width,
     ~t,~T,~tikz,~transparent~and~vlines.
   }
@@ -11876,6 +11919,7 @@
     cell-space-bottom-limit(+),~
     cell-space-limits(+),~
     cell-space-top-limit(+),~
+    color-of-false,~
     code-for-first-col(+),~
     code-for-first-row(+),~
     code-for-last-col(+),~
@@ -11936,6 +11980,7 @@
     code-for-first-row(+),~
     code-for-last-col(+),~
     code-for-last-row(+),~
+    color-of-false,~
     columns-width,~
     corners,~
     create-blocks-in-col,~
@@ -11995,6 +12040,7 @@
     code-for-first-row(+),~
     code-for-last-col(+),~
     code-for-last-row(+),~
+    color-of-false,~
     columns-type,~
     columns-width,~
     corners,~
@@ -12058,6 +12104,7 @@
     code-for-first-row(+),~
     code-for-last-col(+),~
     code-for-last-row(+),~
+    color-of-false,~
     columns-width,~
     corners,~
     custom-line,~

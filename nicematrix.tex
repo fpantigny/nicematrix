@@ -695,6 +695,16 @@ the rules: section~\ref{rules}, p.~\pageref{rules}). However, if the key
 \Definition{transparent} is used, the rules are drawn. For an example, see
 section~\ref{tikz-key-examples}, p.~\pageref{tikz-key-examples}. Caution:
 that key does not imply that the content of the block will be transparent!
+
+\item \index{empty (key of \texttt{\textbackslash Block})}
+
+\colorbox{yellow!50}{\textbf{New 7.12}}
+
+\nobreak
+With the key \Definition{empty}, all the cells of the block are declared as
+``empty'', which has impact on several functionalities of \pkg{nicematrix}, for
+example the key |corners| for the computation of the ``empty corners''
+(cf.~\ref{corners}, p.~\pageref{corners}).
 \end{itemize}
 
 There is also keys for the horizontal and vertical positions of the content of
@@ -1716,8 +1726,9 @@ blocks and corners as do all the rules of \pkg{nicematrix}).
 
 \bigskip
 The key |sep-color| with the value |white| may also be used in case of an
-horizontal double-rule on the top of a colored cell (if we want the space
-between both rules above the cell not colored by the color of the cell).
+horizontal double-rule on the top of a colored cell (unlike the case with |{tabular}|
+and \pkg{colortbl}, the color applies by default between the rules).
+
 
 \begin{scope}
 \NiceMatrixOptions
@@ -2169,6 +2180,7 @@ p.~\pageref{custom-line}).
 
 \colorbox{yellow!50}{\textbf{New 7.11}}
 
+\nobreak
 \smallskip
 For double rules perfectly compatible with the colored backgrounds, \pkg{nicematrix}
 provides a command |\FalseRow| and a letter |F|.
@@ -2196,20 +2208,19 @@ and two ampersands (|&&|) must be used in the rows that cross that column.
 \Body
 \diagbox{x}{y} && a & b \\
 \emph{\FalseRow}
-
 a              && b & a \\
 b              && a & b
 \end{NiceTabular}
 \end{Code}
 
-\medskip
-An additive syntax is provided for the key |width-of-false|. For example, it's
-possible to write:
+\bigskip
+\index{color-of-false}
+\colorbox{yellow!50}{\textbf{New 7.12}}
 
-\begin{Verbatim}
-\NiceMatrixOptions { width-of-false += -1 pt }
-\end{Verbatim}
-
+\nobreak
+\smallskip
+A key \Definition{color-of-false} is provided for the color of the backgrounds of
+those false rows and false columns.
 
 \index{Rules@\textbf{Rules in the tabulars}|)}
 
@@ -2332,6 +2343,10 @@ These commands respect the rounded corners if the key |rounded-corners|
 (cf.~\ref{tabular-rounded-corners}, p.~\pageref{tabular-rounded-corners}) has been used.
 
 \medskip
+These commands also apply the colored panels between the rules of the double
+rules (that's a difference with \pkg{colortbl}).
+
+\medskip
 All these commands accept an optional argument, between square brackets and
 in first position. That optional argument may contain two elements (separated
 by a comma)
@@ -2422,14 +2437,15 @@ p.~\pageref{columns-width}).
 
 \bigskip
 \item The command \Definition{\textbackslash rowcolor} takes its name from the
-command |\rowcolor| of \pkg{colortbl}. Its first mandatory argument is the
-color and the second is a comma-separated list of rows or interval of rows
-with the form $a$-$b$ (an interval of the form $a$- represent all the rows
-from the row $a$ until the end).
+command |\rowcolor| of \pkg{colortbl}. Its first mandatory argument is the color
+and the second is a comma-separated list of rows or interval of rows with the
+form $a$-$b$ (an interval of the form $a$- represent all the rows from the row
+$a$ until the end). Contrarily to the command |\rowcolor| of \pkg{colortbl},
+that commands applies also the color between the rules of a double rule.
 
 \medskip
 \begin{Code}[width=9cm,show-output,no-cell-nodes]
-$\begin{NiceArray}{lll}[hvlines] 
+$\begin{NiceArray}{|l|l||l|}[hlines] 
 \CodeBefore
   \emph{\rowcolor{red!15}{1,3-5,8-}}
 \Body
@@ -2442,7 +2458,6 @@ $\begin{NiceArray}{lll}[hvlines]
   a_7 & b_7 & c_7 \\
   a_8 & b_8 & c_8 \\
   a_9 & b_9 & c_9 \\
-  a_{10} & b_{10} & c_{10} \\
 \end{NiceArray}$
 \end{Code}
 
@@ -5106,8 +5121,9 @@ $\begin{pNiceArray}{\emph{S}cW{c}{1cm}c}[xdots/nullify,first-row]
 \end{Code}
 
 \medskip
-On the other hand, the |d| columns of the package \pkg{dcolumn} are not
-supported by \pkg{nicematrix}.
+On the other hand, the |d| columns of the package \pkg{dcolumn} and the
+|n|~columns of the package \pkg{numprint} are not supported by
+\pkg{nicematrix}.
 
 
 \subsection{Default column type in \texttt{\{NiceMatrix\}}}
@@ -5940,18 +5956,22 @@ and the node~$i+1$.
 These nodes are available in the |\CodeBefore| and the |\CodeAfter|.
 
 \begin{center}
-\begin{NiceTabular}{ccc}[hvlines,rules/width=1pt,rules/color=gray]
-       & tulipe   & lys \\
-  arum &          & violette mauve \\
-  muguet & dahlia 
+\begin{NiceTabular}{|c|c|c|}[rules={width=1pt,color=gray},no-cell-nodes]
+\Hline
+       & tulipe & lys \\
+\Hline 
+arum   &        & violette mauve \\
+\Hline
+muguet & dahlia \\
+\Hline
 \CodeAfter
-  \begin{tikzpicture}
-  \foreach \i in {1,1.5,2,2.5,3,3.5,4}
-    { 
-      \fill [red] (\i) circle (0.5mm) ; 
-      \node [red,above right] at (\i) {\tiny \i} ; 
-    } 
-  \end{tikzpicture}
+\begin{tikzpicture}
+\foreach \i in {1,1.5,2,2.5,3,3.5,4}
+  {
+    \fill [red] (\i) circle (0.5mm) ;
+    \node [red,above right] at (\i) {\tiny\i} ;
+  }
+\end{tikzpicture}
 \end{NiceTabular}
 \end{center}
 
@@ -6293,6 +6313,10 @@ A cell containing the command |\NotEmpty| is not empty (and a
 PGF/TikZ node is created in that cell).
 
 \medskip
+\item A cell within a block (command |\Block|) which uses the key |empty|
+is considered as empty.
+
+\medskip
 \item A cell with only a command |\Hspace| (or |\Hspace*|) is empty. This
 command |\Hspace| is a command defined by the package \pkg{nicematrix} with
 the same meaning as |\hspace| except that the cell where it is used is
@@ -6403,16 +6427,17 @@ may be wrong in some circonstances.
 
 \medskip
 The package \pkg{nicematrix} is not compatible with the package
-\pkg{arydshln} (because this package is no longer compatible with \pkg{array}, loaded by
-\pkg{nicematrix}) and does not support the columns~|V| of \pkg{boldline}
+\pkg{arydshln} and does not support the columns~|V| of \pkg{boldline}
 (because the letter |V| is reserved for the columns~|V| of \pkg{varwidth}).
-By any means, \pkg{nicematrix} provides, with the key |custom-line| (cf.~\ref{custom-line},
-p.~\pageref{custom-line}), tools to draw dashed rules and rules of different
-widths. 
+By any means, \pkg{nicematrix} provides tools to draw dashed rules (with the command
+|\hdashedline| and the letter |;|) and rules of different weights
+with the key |custom-line| (cf.~\ref{custom-line},
+p.~\pageref{custom-line}).
+
 
 \bigskip
-The columns |d| of \pkg{dcolumn} are not supported (but it's possible to use
-the columns |S| of \pkg{siunitx}).
+The columns |d| of \pkg{dcolumn} and the columns |n| of \pkg{numprint} are
+not supported (but it's possible to use the columns |S| of \pkg{siunitx}).
 
 
 \subsection{Compatibility with the Tagging Project of LaTeX}
@@ -7141,7 +7166,7 @@ composed with the maximal width, thanks to the boolean key
 -3 -46 29 -2 -15    ;
  9  10 -5  4   7
 \end{pNiceMatrix}$
-...
+etc.
 \emph{\end{NiceMatrixBlock}}
 \end{Code}
 
@@ -7493,16 +7518,26 @@ also available on the
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
 
+\subsection*{Changes between version 7.11 and 7.12}
+
+New key |color-of-false| for the color of the backgrounds of the rows and columns
+created by the command~|\FalseRow| and the letter~|F|.
+
+New key |empty| for the command |\Block|: all the cells of the block will be
+considered as empty (that's meaningful, for example, for the computation of the
+``empty corners'').
+
 \subsection*{Changes between version 7.10 and 7.11}
 
 New keys |xoffset| and |yoffset| in the key |tikz| of the command |\Block| (previously,
-there was only |offset| which is now a kind of conjunction of |xoffset| and |yoffset|.
+there was only |offset| which is now a kind of conjunction of |xoffset| and |yoffset|).
 
 New command |\FalseRow| and letter |F| (for a ``false column'').
 
 \subsection*{Changes between version 7.9 and 7.10}
 
-A generalisation of the key |corners| has been added with the values |N|, |S|, |W| and |E|.
+A generalisation of the key |corners| has been added with the values |N|, |S|, |W| and |E|
+(\emph{north}, \emph{south}, \emph{west} and \emph{east}).
 
 \subsection*{Changes between version 7.8 and 7.9}
 

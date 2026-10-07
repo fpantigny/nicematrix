@@ -768,6 +768,16 @@ Pour un exemple, voir la section~\ref{ex:tikz-key}, p.~\pageref{ex:tikz-key}.
 
 Attention : cette clé n'implique pas du tout que le contenu du bloc sera
 transparent.
+
+\item \index{empty (clé de \texttt{\textbackslash Block})}
+
+\colorbox{yellow!50}{\textbf{Nouveau 7.12}}
+
+\nobreak
+Avec la clé \Definition{empty}, toutes les cases du bloc seront déclarées «vides»,
+ce qui a un impact sur le comportement de plusieurs fonctionnalités de \pkg{nicematrix},
+comme la clé |corners| pour le calcul des coins vides (cf.~\ref{corners},
+p.~\pageref{corners}).
 \end{itemize}
 
 Il existe aussi des clés de positionnement horizontal et vertical du contenu du
@@ -1846,9 +1856,8 @@ Produit C & 5 & 4 & 1 \\
 
 \bigskip
 La clé |sep-color| avec la valeur |white| peut être en particulier utile en cas
-de filet double au-dessus d'une case colorée (pour éviter que la couleur ne
-s'applique aussi entre les deux filets).
-
+de filet double au-dessus d'une case colorée (en effet, contrairement à ce qui se passe
+avec |{tabular}| et \pkg{colortbl}, la couleur s'applique par défaut entre les deux filets).
 
 \begin{Code}[width=10cm,show-output]
 \NiceMatrixOptions
@@ -2282,6 +2291,7 @@ sept   & \Block{1-2}{huit} \\
 
 \colorbox{yellow!50}{\textbf{Nouveau 7.11}}
 
+\nobreak
 \smallskip
 Pour des double-filets parfaitement compatibles avec les fonds colorés, \pkg{nicematrix}
 propose une commande |\FalseRow| et une lettre |F|.
@@ -2310,19 +2320,19 @@ croise.
 \Body
 \diagbox{x}{y} && a & b \\
 \emph{\FalseRow}
-
 a              && b & a \\
 b              && a & b
 \end{NiceTabular}
 \end{Code}
 
-\medskip
-Une syntaxe additive est disponible pour la clé |width-of-false|. De ce fait, on peut écrire,
-par exemple :
+\bigskip
+\index{color-of-false (clé)}
+\colorbox{yellow!50}{\textbf{Nouveau 7.12}}
 
-\begin{Verbatim}
-\NiceMatrixOptions { width-of-false += -1 pt }
-\end{Verbatim}
+\smallskip
+\nobreak
+Une clé \Definition{color-of-false} est proposée pour la couleur de fond de ces
+fausses colonnes et fausses rangées.
 
   
 \index{Filets@\textbf{Filets dans les tableaux}|)}
@@ -2448,6 +2458,10 @@ Ces commandes respectent les coins arrondis si la clé |rounded-corners|
 utilisée.
 
 \medskip
+Ces commandes colorient également entre les filets des doubles filets (c'est une différence
+avec \pkg{colortbl}).
+
+\medskip
 Toutes ces commandes acceptent un argument optionnel, entre crochets et en
 première position. Cet argument optionel peut contenir deux éléments (séparés
 par une virgule) :
@@ -2541,12 +2555,13 @@ droite (cf.~\ref{columns-type}, p.~\pageref{columns-type}).
 commande |\rowcolor| de \pkg{colortbl}. Son premier argument obligatoire est la
 couleur et le deuxième est une liste de numéros de rangées ou bien d'intervalles
 de rangées sous la forme $a$-$b$ (un intervalle de la forme $a$- représente
-toutes les rangées à partir de la rangée~$a$).
+toutes les rangées à partir de la rangée~$a$). Remarquer que, contrairement à |\rowcolor|
+de \pkg{colortbl}, elle colorie aussi entre les double-filets.
 
 \medskip
 
 \begin{Code}[width=9cm,show-output,no-cell-nodes]
-$\begin{NiceArray}{lll}[hvlines]
+$\begin{NiceArray}{|l|l||l|}[hlines]
 \CodeBefore
   \emph{\rowcolor{red!15}{1,3-5,8-}}
 \Body
@@ -2559,7 +2574,6 @@ $\begin{NiceArray}{lll}[hvlines]
   a_7 & b_7 & c_7 \\
   a_8 & b_8 & c_8 \\
   a_9 & b_9 & c_9 \\
-  a_{10} & b_{10} & c_{10} \\
 \end{NiceArray}$
 \end{Code}
 
@@ -5312,8 +5326,9 @@ $\begin{pNiceArray}{\emph{S}cW{c}{1cm}c}[xdots/nullify,first-row]
 \end{Code}
 
 \medskip
-En revanche, les colonnes |d| de l'extension \pkg{dcolumn} ne sont \emph{pas} prises en
-charge par \pkg{nicematrix}.
+En revanche, les colonnes~|d| de l'extension \pkg{dcolumn} et les colonnes~|n|
+de l'extension \pkg{numprint} ne sont \emph{pas} prises en charge par
+\pkg{nicematrix}.
 
 
 
@@ -6135,14 +6150,18 @@ $i$|.5|, $i$|.6|, $i$|.7|, $i$|.75|, $i$|.8| et $i$|.9| intermédiaires entre le
 nœud~$i$ et le nœud~$i+1$.
 
 \smallskip
-Ces nœuds sont accessibles dans le
-|\CodeAfter| mais aussi dans le |\CodeBefore|.
+Ces nœuds sont accessibles dans le |\CodeAfter| mais aussi dans le
+|\CodeBefore|.
 
 \begin{center}
-\begin{NiceTabular}{ccc}[hvlines,rules={width=1pt,color=gray},no-cell-nodes]
+\begin{NiceTabular}{|c|c|c|}[rules={width=1pt,color=gray},no-cell-nodes]
+\Hline
        & tulipe & lys \\
+\Hline 
 arum   &        & violette mauve \\
-muguet & dahlia
+\Hline
+muguet & dahlia \\
+\Hline
 \CodeAfter
 \begin{tikzpicture}
 \foreach \i in {1,1.5,2,2.5,3,3.5,4}
@@ -6490,6 +6509,10 @@ la case est vide si (et seulement si) son rendu TeX est de largeur nulle.
 PGF-TikZ est créé pour cette case).
 
 \medskip
+\item Toute case située dans un bloc (commande |\Block|) qui utilise la clé |empty|
+est considérée comme vide.
+
+\medskip
 \item Une case avec seulement une commande |\Hspace| (ou |\Hspace*|) est vide.
 Cette commande |\Hspace| est une commande définie par l'extension
 \pkg{nicematrix} avec la même signification que |\hspace| excepté que la case où
@@ -6610,17 +6633,17 @@ erronée dans certaines circonstances.
 
 \medskip
 L'extension \pkg{nicematrix} n'est pas compatible avec l'extension
-\pkg{arydshln} (parce que cette extension n'est plus compatible avec l'extension
-\pkg{array}, chargée par \pkg{nicematrix}) et les colonnes |V| de l'extension
-\pkg{boldline} ne sont pas prises en charge (car la lettre |V| est réservée pour
-les colonnes |V| de \pkg{varwidth}). De toutes manières, \pkg{nicematrix}
-fournit, avec la clé |custom-line| (cf.~\ref{custom-line},
-p.~\pageref{custom-line}) des outils pour définir des filets en tiretés ou de
-différentes épaisseurs.
+\pkg{arydshln} et les colonnes |V| de l'extension \pkg{boldline} ne sont pas
+prises en charge (car la lettre |V| est réservée pour les colonnes |V| de
+\pkg{varwidth}). De toutes manières, \pkg{nicematrix} fournit des outils pour
+tracer des lignes en tiretés (commande |\hdashedline| et lettre |;|) ou de
+différentes épaisseurs, grâce à la clé |custom-line| (cf.~\ref{custom-line},
+p.~\pageref{custom-line}).
 
 \medskip
-Les colonnes |d| de l'extension \pkg{dcolumn} ne sont pas prises en compte (mais
-on peut utiliser les colonnes |S| de \pkg{siunitx}). 
+Les colonnes |d| de l'extension \pkg{dcolumn} et les colonnes |n| de l'extension
+\pkg{numprint} ne sont pas prises en compte (mais on peut utiliser les colonnes
+|S| de \pkg{siunitx}).
 
 
 
@@ -6664,7 +6687,6 @@ Voici un exemple de code qui va produire un PDF correctement balisé.
 
 
 \section{Exemples}
-
 
 \subsection{Notes dans les tableaux}
 
@@ -7348,7 +7370,7 @@ avec leur largeur maximale grâce à la clé booléenne
 0 -192 123 -3 -57  { L_3 \gets L_1+4L_3  } ;
 0 -64   41 -1 -19  { L_4 \gets 3L_1-4L_4 } ;
 \end{pNiceMatrix}$
-...
+etc.
 \emph{\end{NiceMatrixBlock}}
 \end{Code}
 \end{scope}

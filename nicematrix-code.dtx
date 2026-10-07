@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.11d}
-\def\myfiledate{2026/09/21}
+\def\myfileversion{7.12}
+\def\myfiledate{2026/10/07}
 %
 %
 %<*batchfile>  
@@ -1026,6 +1026,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \bool_new:N \g_@@_rotate_minus_bool
 %    \end{macrocode}
+%
+% \bigskip
+% The following flag will be raised when we are in a |\FalseRow|.
+%    \begin{macrocode}
+\bool_new:N \g_@@_FalseRow_bool
+%    \end{macrocode}
 % 
 % \bigskip
 % In a cell, it will be possible to know whether we are in a cell of a column of
@@ -1207,6 +1213,13 @@ version 2005/12/01 or later.
 % |\g_@@_col_with_trees_clist| is for |draw-trees-in-col|
 %   \begin{macrocode}
 \clist_new:N \g_@@_col_with_trees_clist
+%    \end{macrocode}
+%
+% \bigskip
+% The following parameter corresponds to the key |empty| of the command
+% |\Block|.
+%    \begin{macrocode}
+\bool_new:N \l_@@_empty_block_bool
 %    \end{macrocode}
 % 
 % 
@@ -3578,10 +3591,13 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-    \box_set_ht:Nn \l_@@_cell_box
-      { \box_ht:N \l_@@_cell_box + \l_@@_cell_space_top_limit_dim }
-    \box_set_dp:Nn \l_@@_cell_box
-      { \box_dp:N \l_@@_cell_box + \l_@@_cell_space_bottom_limit_dim }
+    \bool_if:NF \g_@@_FalseRow_bool
+      {
+        \box_set_ht:Nn \l_@@_cell_box
+          { \box_ht:N \l_@@_cell_box + \l_@@_cell_space_top_limit_dim }
+        \box_set_dp:Nn \l_@@_cell_box
+          { \box_dp:N \l_@@_cell_box + \l_@@_cell_space_bottom_limit_dim }
+      }
 %    \end{macrocode}
 %
 % We want to compute in |\g_@@_max_cell_width_dim| the width of the widest cell
@@ -3644,6 +3660,7 @@ version 2005/12/01 or later.
   } 
 %    \end{macrocode}
 %
+% 
 % \bigskip
 % The following command will be nullified in our redefinition of |\multicolumn|. 
 %    \begin{Verbatim}[formatcom=\small]
@@ -12552,17 +12569,26 @@ version 2005/12/01 or later.
       {
         \skip_vertical:n
           { - \box_ht_plus_dp:N \@arstrutbox + \l_@@_width_of_false_dim }
+%    \end{macrocode}
+% We raise |\g_@@_FalseRow_bool| to prevent the application of |cell-space-top-limit|
+% and |cell-space-bottom-limit|. We will revert that global switch right after.
+%    \begin{macrocode}
+        \bool_gset_true:N \g_@@_FalseRow_bool 
       }
-    \multicolumn { 1 } { @{} c @{} } { } % added 2026-08-21
+
+    \int_compare:nNnT \l_@@_first_col_int = 0 { & }
+    \multicolumn { 1 } { @{} c @{} } {  }
+    \bool_gset_false:N \g_@@_FalseRow_bool 
 %    \end{macrocode}
 % We keep in memory a list of the |\FalseRow| because we use it with
 % |create-blocks-in-col|.
 %    \begin{macrocode}
-    \clist_gput_right:Ne \g_@@_false_rows_clist { \arabic { iRow } }
+    \clist_gput_right:Ne \g_@@_false_rows_clist { \arabic { iRow } } 
     \\
   }
 %    \end{macrocode}
 %
+% 
 %    \begin{macrocode}
 \cs_new:Npn \@@_FalseRow_in_cell: { \@@_error:n { Misuse~of~FalseRow } }
 %    \end{macrocode}
@@ -13168,6 +13194,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \socket_new_plug:nnn { nicematrix / vsegment } { multiple }
   {
+    \group_begin:
     \dim_add:Nn \l_@@_x_initial_dim 
       { 
         - 0.5 \l_@@_rule_width_after_dim 
@@ -13207,6 +13234,7 @@ version 2005/12/01 or later.
         \pgfpathlineto { \pgfpoint \l_@@_x_initial_dim \l_@@_y_final_dim }
       }
     \pgfusepathqstroke
+    \group_end:
   }
 %    \end{macrocode}
 %
@@ -13286,7 +13314,9 @@ version 2005/12/01 or later.
         { \clist_map_inline:Nn \l_@@_vlines_clist }        
         { 
           \int_set:Nn \l_@@_position_int { ##1 }
-          \socket_use:n { nicematrix / draw-vrule }
+          \int_compare:nNnTF { ##1 } > { \g_@@_col_total_int + 1 }
+            { \@@_error:n { Column~outside~the~array } }
+            { \socket_use:n { nicematrix / draw-vrule } }
         }
     }
   }
@@ -13547,6 +13577,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \socket_new_plug:nnn { nicematrix /  hsegment } { multiple }
   {
+    \group_begin:
     \dim_add:Nn \l_@@_y_initial_dim 
       { 
         - 0.5 \l_@@_rule_width_after_dim 
@@ -13584,6 +13615,7 @@ version 2005/12/01 or later.
         \pgfpathlineto { \pgfpoint \l_@@_x_final_dim \l_@@_y_initial_dim }
       }
     \pgfusepathqstroke
+    \group_end:
   }
 %    \end{macrocode}
 %
@@ -13723,7 +13755,9 @@ version 2005/12/01 or later.
         { \clist_map_inline:Nn \l_@@_hlines_clist }
         { 
           \int_set:Nn \l_@@_position_int { ##1 }
-          \socket_use:n { nicematrix / draw-hrule } 
+          \int_compare:nNnTF { ##1 } > { \g_@@_row_total_int + 1 }
+            { \@@_error:n { Row~outside~the~array } }
+            { \socket_use:n { nicematrix / draw-hrule } }
         }
     }
   }
@@ -15815,6 +15849,10 @@ version 2005/12/01 or later.
 %   \begin{macrocode}
 \keys_define:nn { nicematrix / Block }
   {
+    empty .code:n =
+      \bool_set_true:N \l_@@_empty_block_bool
+      \bool_set_true:N \l_@@_transparent_bool ,
+    empty .value_forbidden:n = true ,
     ampersand-in-blocks .bool_set:N = \l_@@_amp_in_blocks_bool , 
     &-in-blocks .meta:n = ampersand-in-blocks ,
 %    \end{macrocode}
@@ -15995,6 +16033,14 @@ version 2005/12/01 or later.
     \int_compare:nNnT { #1 } = { #3 }
       { \str_set:Nn \l_@@_vpos_block_str { t } }
     \keys_set:nn { nicematrix / Block } { #5 }
+    \bool_if:NT \l_@@_empty_block_bool
+      {
+        \int_step_inline:nnn { #1 } { #3 }
+          {
+            \int_step_inline:nnn { #2 } { #4 }
+              { \cs_undefine:c { pgf @ sh @ ns @ \@@_env: - ##1 - ####1 } }
+          }
+      }
 %    \end{macrocode}
 % 
 %
@@ -19805,6 +19851,25 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
+\@@_msg_new:nn { Row~outside~the~array }
+  {
+    Row~outside~the~array \\
+    You~try,~with~the~key~'hlines',~to~draw~an~horizontal~rule~
+    at~the~position~\int_use:N \l_@@_position_int\ but~it's~outside~the~array.~
+    It~will~be~ignored.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { Column~outside~the~array }
+  {
+    Column~outside~the~array \\
+    You~try,~with~the~key~'vlines',~to~draw~a~vertical~rule~at~the~position~
+    \int_use:N \l_@@_position_int\ but~it's~outside~the~array.~
+    It~will~be~ignored.
+  }
+%    \end{macrocode}
+%    \begin{macrocode}
 \@@_msg_new:nn { TopRule~without~booktabs } 
   {
     Misuse~of~#1\\     
@@ -20750,7 +20815,7 @@ version 2005/12/01 or later.
   }
   {
     The~available~keys~are~(in~alphabetic~order):~&-in-blocks,~ampersand-in-blocks,~
-    b,~B,~borders,~c,~draw,~fill,~hlines,~hvlines,~l,~name,~
+    b,~B,~borders,~c,~draw,~empty,~fill,~hlines,~hvlines,~l,~name,~
     opacity,~rounded-corners,~r,~respect-arraystretch,~rules/color,~rules/width,
     ~t,~T,~tikz,~transparent~and~vlines.  
   }
@@ -20888,6 +20953,7 @@ version 2005/12/01 or later.
     cell-space-bottom-limit(+),~
     cell-space-limits(+),~
     cell-space-top-limit(+),~
+    color-of-false,~
     code-for-first-col(+),~
     code-for-first-row(+),~
     code-for-last-col(+),~
@@ -20953,6 +21019,7 @@ version 2005/12/01 or later.
     code-for-first-row(+),~
     code-for-last-col(+),~
     code-for-last-row(+),~
+    color-of-false,~
     columns-width,~
     corners,~
     create-blocks-in-col,~
@@ -21019,6 +21086,7 @@ version 2005/12/01 or later.
     code-for-first-row(+),~
     code-for-last-col(+),~
     code-for-last-row(+),~
+    color-of-false,~
     columns-type,~
     columns-width,~
     corners,~
@@ -21085,6 +21153,7 @@ version 2005/12/01 or later.
     code-for-first-row(+),~
     code-for-last-col(+),~
     code-for-last-row(+),~
+    color-of-false,~
     columns-width,~
     corners,~
     custom-line,~
