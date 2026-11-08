@@ -280,9 +280,9 @@ chargé par défaut).
 
 \medskip
 \indexcommand{NiceMatrixOptions}
-Une commande |\NiceMatrixOptions| est fournie pour régler les options (la portée
-des options fixées par cette commande est le groupe TeX courant : elles sont
-semi-globales).
+Une commande \DefinitionCommande{NiceMatrixOptions} est fournie pour régler les
+options (la portée des options fixées par cette commande est le groupe TeX
+courant : elles sont semi-globales).
 
 
 
@@ -2298,7 +2298,7 @@ propose une commande |\FalseRow| et une lettre |F|.
 
 \smallskip
 La commande |\FalseRow| est à utiliser après une commande |\\| de fin de rangée.
-Elle crée une nouvelle rangée vidde dans la hauteur est égale au paramètre
+Elle crée une nouvelle rangée vide dans la hauteur est égale au paramètre
 \Definition{width-of-false}$^+$ (la valeur initiale de ce paramètre est égale à
 2~pt, qui est la valeur initiale de |\doublerulesep|). Les filets et les fonds
 colorés ne s'appliqueront pas dans cette rangée.
@@ -3127,6 +3127,32 @@ $\begin{array}{c}
 \emph{\end{NiceMatrixBlock}}
 \end{Code}
 
+\bigskip
+\colorbox{yellow!50}{\bfseries Nouveau 7.13}
+
+\smallskip
+\nobreak
+\index{row-height (valeur pour columns-width)}
+On peut souhaiter créer un tableau avec un quadrillage parfaitement carré. Pour
+cela, \pkg{nicematrix} fournit pour la clé |columns-width| une valeur spéciale
+\Definition{row-height}. Avec cette valeur, les colonnes auront une largeur minimale absolue\footnote{On a précisé «absolue» pour signifier que l'espace inter-colonnes (|\tabcolsep| ou |\arraycolsep|) est mise à zéro.}
+égale à la hauteur totale (|\dp + \ht|) du \emph{strut} (\emph{étai} en français)
+utilisé par LaTeX pour régler la hauteur des rangées. Avec l'extension
+\pkg{array} (qui est chargée par \pkg{nicematrix}), ce \emph{strut} est
+ajustable avec |\arraystretch| et |\extrarowheight|.
+
+\medskip
+\begin{Code}[width=12cm,show-output]
+\renewcommand{\arraystretch}{1.5}
+$\begin{NiceArray}{cccc}[hvlines,\emph{columns-width=row-height}]
+a & b & c & d \\
+b & c & d & a \\
+c & d & a & b \\
+d & a & b & c
+\end{NiceArray}$
+\end{Code}
+
+
 \subsection{Les colonnes V de \texorpdfstring{\pkg{varwidth}}{varwidth}}
 
 \label{varwidth}
@@ -3140,7 +3166,7 @@ n'est que la largeur \emph{maximale} de la boîte créée. Dans le cas général
 largeur d'une boîte |{varwidth}| est la largeur naturelle de son contenu.
 
 \medbreak
-Cela est illustré avec les exemples suivants :
+Cela est illustré avec les exemples suivants.
 
 \medskip
 \begin{Code}[width=6cm,show-output]
@@ -3536,7 +3562,7 @@ $\begin{bNiceMatrix}
 
 \subsection{L'option xdots/nullify}
 
-\index{nullify-dots}
+\index{nullify-dots (obsolète)}
 \label{nullify-dots}
 
 Considérons la matrice suivante qui a été composée classiquement avec
@@ -3787,6 +3813,7 @@ $\begin{bNiceMatrix}
 \index{shorten-start (clé des lignes pointillées)}
 \index{horizontal-label(s) (clé des lignes pointillées)}
 \index{nullify (clé des lignes pointillées)}
+\index{number-of-dots (clé des lignes pointillées)}
 
 
 Les lignes pointillées tracées par |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|,
@@ -3796,12 +3823,13 @@ peuvent être paramétrées par les options suivantes (que l'on met entre croche
 après la commande) :
 %
 \begin{itemize}[beginpenalty=10000]
-\item |nullify| ; 
+\item |nullify| ;
 \item |horizontal-label(s)| ;
 \item |color| ;
 \item |radius| ; 
 \item |shorten-start|$^+$, |shorten-end|$^+$ et |shorten|$^+$ ;
 \item |inter| ;
+\item |number-of-dots| ;
 \item |line-style|
 \end{itemize}
 
@@ -3821,7 +3849,8 @@ niveau d'un environnement mais elles doivent alors être préfixées par |xdots|
 \item |xdots/color| ;
 \item |xdots/radius| ;
 \item |xdots/shorten-start|$^+$, |xdots/shorten-end|$^+$ et |xdots/shorten|$^+$ ;
-\item |xdots/inter| ; 
+\item |xdots/inter| ;
+\item |xdots/number-of-dots| ;
 \item |xdots/line-style|.
 \end{itemize}
 %
@@ -3865,6 +3894,14 @@ que l'on peut écrire, par exemple, |xdots/shorten = 0.6em| ou |xdots/shorten +=
 L'option \Definition{xdots/inter} indique la distance entre deux points. La
 valeur initiale est $0.45$~em (il est conseillé d'utiliser une unité de mesure
 dépendante de la fonte courante).
+
+\medskip
+\colorbox{yellow!50}{\bfseries{Nouveau 7.13}}
+
+\nobreak
+\smallskip
+La clé \Definition{xdots/number-of-dots} impose le nombre de points,
+indépendamment de la distance entre les deux cases à relier.
 
 \medskip
 \textbf{L'option \Definition{xdots/line-style}}
@@ -4104,13 +4141,13 @@ Pour cet exemple, on aurait aussi pu utiliser |{NiceArrayWithDelims}|
 et la clé |last-col| (cf. \ref{exterior}, p.~\pageref{exterior}).
 
 \bigskip
-Il y a un cas particulier : pour les délimiteurs |(|, |[| et |\{|\footnote{ Pour
+Il y a un cas particulier : pour les délimiteurs |(|, |[|, |\{|\footnote{ Pour
   les accolades, la protection par la contre-oblique est obligatoire (c'est
-  pourquoi on a écrit |\{|).}, et les délimiteurs fermants correspondants, les
-préfixes |\left| et |\right| sont facultatifs.\footnote{Pour les délimiteurs
-  \texttt{[} et \texttt{]}, les préfixes restent obligatoires en cas de conflit
-  de notation avec des crochets d'options de certains descripteurs de
-  colonnes.}
+  pourquoi on a écrit |\{|).} et |\lbrace|, et les délimiteurs fermants
+correspondants, les préfixes |\left| et |\right| sont facultatifs.\footnote{Pour
+  les délimiteurs \texttt{[} et \texttt{]}, les préfixes restent obligatoires en
+  cas de conflit de notation avec des crochets d'options de certains
+  descripteurs de colonnes.}
 
 
 \bigskip
@@ -4165,9 +4202,8 @@ couvrant pas toutes les rangées, on aura intérêt à considérer la commande
 \index{code-after}
 
 \label{code-after}
-On a présenté à la section \ref{code-before}, p.~\pageref{code-before} la clé
-|code-before|. Il existe en fait une clé similaire \Definition{code-after} qui
-peut être utilisée pour indiquer du code qui sera exécuté \emph{après} la
+L'extension \pkg{nicematrix} propose dans ses environnements un clé
+\Definition{code-after} pour spécifier du code qui sera exécuté \emph{après} la
 construction du tableau.
 
 \medskip
@@ -4197,6 +4233,30 @@ Par ailleurs, plusieurs commandes spéciales sont disponibles dans le
 \emph{Remarque} : Depuis la version 7.11a de \pkg{nicematrix}, le |\CodeAfter|
 est exécuté en mode mathématique, ce qui permet de nullifier les éventuels
 espaces insérés avec, par exemple, une commande |\SubMatrix|.
+
+\bigskip
+\colorbox{yellow!50}{\bfseries Nouveau 7.13}
+
+\smallskip
+\nobreak
+\index{overlap (clé)}
+La clé \Definition{overlap} contrôle si les éléments graphiques créés dans le
+|\CodeAfter| sont pris en compte ou non dans la \emph{bounding box} globale de
+l'environnement (|{NiceTabular}|, |{NiceMatrix}|, etc.).
+
+Quand la clé |overlap| possède la valeur |true|, ces éléments ne sont \emph{pas}
+pris en compte et peuvent «déborder» de la \emph{bounding box} et se superposer
+au reste du document LaTeX. À l'opposé, quand la clé |overlap| possède la valeur
+|false|, il n'y pas d'\emph{overlaping} car les éléments graphiques ajoutés dans
+le |\CodeAfter| sont pris en compte dans la \emph{bounding box}.
+
+{\bfseries La valeur initiale du paramètre |overlap| est |true| (et non pas
+  |false|).}
+
+\medskip
+\emph{Remarque} : Pour des raisons techniques, le réglage |overlap=false| n'est pas
+disponible dans le schéma de compilation historique |latex|-|dvips|-|ps2pdf| (ou Adobe
+Distiller).
 
 \subsection{La commande \texttt{\textbackslash line} dans le \texttt{\textbackslash CodeAfter}}
 
@@ -4523,9 +4583,16 @@ Il est possible de mettre des commandes |\\| dans ce dernier argument pour
 formater le label sur plusieurs lignes de texte.
 \end{itemize}
 
+\medskip
+Par défaut, aucun espace vertical n'est réservé pour l'accolade et son label. Pour
+que ce soit le cas, il faut utiliser le réglage |overlap=false|.
+
 \bigskip
-\begin{Code}[width=9cm,show-output]
-$\begin{pNiceMatrix}
+\begin{minipage}{10cm}
+\begin{Code}
+Voici un exemple :
+
+$\begin{pNiceMatrix}[overlap=false]
 1  & 2  & 3  & 4  & 5  & 6  \\
 11 & 12 & 13 & 14 & 15 & 16 \\
 \CodeAfter
@@ -4533,15 +4600,18 @@ $\begin{pNiceMatrix}
   \OverBrace{1-4}{2-6}{B}}
 \end{pNiceMatrix}$
 \end{Code}
+\end{minipage}
+\begin{minipage}{5cm}
+Voici un exemple :
 
-\bigskip
-Attention : aucun espace vertical n'est réservé par \pkg{nicematrix} pour ces
-accolades, ni pour leurs labels.\footnote{Voir à ce sujet: \url{https://tex.stackexchange.com/questions/685755}}
-
-On pourra comparer avec la commande |\Hbrace| (cf.~\ref{Hbrace},
-p.~\pageref{Hbrace}) qui s'utilise dans une rangée du tableau, rangée qui a nécessairement
-son propre espace vertical.
-
+$\begin{pNiceMatrix}[overlap=false]
+1  & 2  & 3  & 4  & 5  & 6  \\
+11 & 12 & 13 & 14 & 15 & 16 \\
+\CodeAfter
+  \OverBrace{1-1}{2-3}{A}
+  \OverBrace{1-4}{2-6}{B}
+\end{pNiceMatrix}$
+\end{minipage}
 
 \bigskip
 \index{color!clé de \texttt{\textbackslash OverBrace} et \texttt{\textbackslash
@@ -4637,8 +4707,7 @@ autres clés de l'argument de |\TikzEveryCell|.
 \end{Code}
 
 \bigskip
-\clearpage
-La commande |\TikzEveryCase| est, en fait, également disponible dans le |\CodeBefore|:
+La commande |\TikzEveryCell| est, en fait, également disponible dans le |\CodeBefore|:
 
 \medskip
 \begin{Code}[width=9cm,show-output]
@@ -4721,10 +4790,9 @@ cases non vides.
 \index{Legende@\textbf{Légende des tableaux}}
 
 
-L'environnement |{NiceTabular}| propose des clés \Definition{caption},
-\Definition{short-caption} et \Definition{label} à utiliser lorsque le
-tableau est inséré dans un environnment flottant (typiquement un
-environnement |{table}|).
+L'environnement |{NiceTabular}| propose des clés \Definition{caption}, \Definition{short-caption} et \Definition{label}
+à utiliser lorsque le tableau est inséré dans un environnement flottant (comme
+un environnement |{table}|).
 
 \smallskip
 L'intérêt d'utiliser cette clé |caption| plutôt que la commande classique
@@ -4797,8 +4865,8 @@ L'extension \pkg{nicematrix} propose aussi une commande
 composées à la fin du tableau avec une longueur pour les lignes de texte égale à
 la largeur du tableau (hors éventuelles colonnes extérieures spécifiées par
 |first-col| et |last-col|: cf.~\ref{exterior}, p.~\pageref{exterior}). Sans
-surprise, cette commande n'est disponible que dans les environnements de tableaux
-|{NiceTabular}|, |{NiceTabular*}| et |{NiceTabularX}|.
+surprise, cette commande n'est disponible que dans les environnements de
+tableaux : |{NiceTabular}|, |{NiceTabular*}| et |{NiceTabularX}|.
 
 
 \index{enumitem@\pkg{enumitem} (extension requise pour utiliser\newline
@@ -5698,8 +5766,9 @@ L'extension \pkg{nicematrix} crée un nœud PGF-TikZ\footnote{On rappelle que Ti
   que, en fait, les nœuds créés par \pkg{nicematrix} avec \textsc{pgf} sont en
   fait aussi utilisables avec TikZ. L'utilisateur final préférera sans doute les
   utiliser avec TikZ qu'avec \textsc{pgf}.} pour chaque \textbf{contenu} de case
-non vide du tableau considéré. Ces nœuds sont utilisés, entre autres, pour
-tracer les lignes en pointillés entre les cases du tableau.
+non vide du tableau considéré. Ces nœuds, qui par défaut, sont invisibles pour
+l'utilisateur, sont utilisés, entre autres, pour tracer les lignes en pointillés
+entre les cases du tableau.
 
 \smallskip
 Par défaut, ces nœuds ne sont pas disponibles dans le |\CodeBefore| (pour accélerer

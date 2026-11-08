@@ -1290,6 +1290,15 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \bool_new:N \l_@@_in_code_after_bool
 %    \end{macrocode}
+%
+% \bigskip
+% The following parameter corresponds to the key |overlap|. When that key is |false|
+% we will take into account the elements drawn by TikZ in the |\CodeAfter| in order
+% for the bounding box of the whole environment.
+%    \begin{macrocode}
+\bool_new:N \l_@@_overlap_bool      % added 2026/10/26
+\bool_set_true:N \l_@@_overlap_bool
+%    \end{macrocode}
 % 
 % 
 % \bigskip
@@ -1398,6 +1407,12 @@ version 2005/12/01 or later.
 \dim_new:N \g_@@_dp_ante_last_row_dim
 \dim_new:N \g_@@_ht_last_row_dim
 \dim_new:N \g_@@_dp_last_row_dim
+%    \end{macrocode}
+%
+% \bigskip
+% Will be used to compute the length of a dotted leader.
+%    \begin{macrocode}
+\dim_new:N \l_@@_l_dim
 %    \end{macrocode}
 % 
 % \bigskip
@@ -2355,7 +2370,14 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 % The unit is |em| and that's why we fix the dimension after the preamble.
-% 
+%
+%
+% \bigskip
+% The following counter corresponds to the key |xdots/number-of-dots|.
+%    \begin{macrocode}
+\int_new:N \l_@@_number_of_dots_int
+%    \end{macrocode}
+%
 % \bigskip
 % The following dimension is the radius of the dots for the dotted lines (when
 % |line-style| is equal to |standard|, which is the initial value). The initial
@@ -2460,6 +2482,8 @@ version 2005/12/01 or later.
 % |\vdots|, etc.).
 %    \begin{macrocode}
     nullify .bool_set:N = \l_@@_nullify_dots_bool ,
+    number-of-dots .int_set:N = \l_@@_number_of_dots_int ,
+    number-of-dots .value_required:n = true ,
     brace-shift .dim_set:N = \l_@@_brace_shift_dim ,
     brace-shift+ .code:n =
       \dim_add:Nn \l_@@_brace_shift_dim { #1 } ,
@@ -2570,6 +2594,18 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Global }
   {
+    overlap .choices:nn = { true , false }
+      {
+        \tl_if_eq:NnTF \l_keys_choice_tl { false }
+          {
+            \sys_if_output_dvi:TF
+             { \@@_error:n { overlap=false~in~dvi~mode } }
+             { \bool_set_false:N \l_@@_overlap_bool }
+          }
+          { \bool_set_true:N \l_@@_overlap_bool }
+      }
+      \bool_set_true:N \l_@@_overlap_bool , % added 2026/10/26
+    overlap .value_required:n = true ,
     width-of-false .dim_set:N = \l_@@_width_of_false_dim ,
     width-of-false .value_required:n = true ,
     width-of-false+ .code:n =
@@ -3774,37 +3810,66 @@ version 2005/12/01 or later.
 % \bigskip
 % The following command creates the \textsc{pgf} name of the node with, of
 % course, |\l_@@_cell_box| as the content. 
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_node_cell_active:
+\sys_if_engine_xetex:TF
   {
-    \pgfpicture 
-    \pgfsetbaseline \c_zero_dim
-    \pgfrememberpicturepositiononpagetrue
-    \pgfset { nicematrix / cell-node } 
-    \pgfnode 
-      { rectangle } 
-      { base } 
+    \cs_new_protected:Npn \@@_node_cell_active:
       {
+        \pgfpicture 
+        \pgfsetbaseline \c_zero_dim
+        \pgfrememberpicturepositiononpagetrue
+        \pgfset { nicematrix / cell-node } 
+        \pgfnode 
+          { rectangle } 
+          { base } 
+          {
 %    \end{macrocode}
 % The following instruction |\set@color| has been added on 2022/10/06. It's
 % necessary only with XeLaTeX and not with the other engines (we don't know why).
+% At the date of 2026/10/10, it's still mandatory.
+%
+% |\set@color| is defined by:\quad
+% |\special {color push \current@color }\aftergroup \reset@color|
 %    \begin{macrocode}
-        \sys_if_engine_xetex:T { \set@color }
-        \box_use:N \l_@@_cell_box 
-      }
-      { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol }
-      { \l_@@_pgf_node_code_tl }
-    \str_if_empty:NF \l_@@_name_str
+            \set@color 
+            \box_use:N \l_@@_cell_box 
+          }
+          { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol }
+          { \l_@@_pgf_node_code_tl }
+        \str_if_empty:NF \l_@@_name_str \@@_node_alias:
+        \endpgfpicture
+      }  
+    \cs_new_protected:Npn \@@_node_cell_inactive:
       {
-        \pgfnodealias
-          { \l_@@_name_str - \int_use:N \c@iRow - \int_use:N \c@jCol }
-          { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol } 
+        \set@color
+        \box_use_drop:N \l_@@_cell_box
       }
-    \endpgfpicture
+  }
+  {
+    \cs_new_protected:Npn \@@_node_cell_active:
+      {
+        \pgfpicture 
+        \pgfsetbaseline \c_zero_dim
+        \pgfrememberpicturepositiononpagetrue
+        \pgfset { nicematrix / cell-node } 
+        \pgfnode 
+          { rectangle } 
+          { base } 
+          { \box_use:N \l_@@_cell_box }
+          { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol }
+          { \l_@@_pgf_node_code_tl }
+        \str_if_empty:NF \l_@@_name_str \@@_node_alias:
+        \endpgfpicture
+      }  
+    \cs_new_protected:Npn \@@_node_cell_inactive:
+      { \box_use_drop:N \l_@@_cell_box }
   }
 \cs_set_eq:NN \@@_node_cell: \@@_node_cell_active:
-\cs_new_protected:Npn \@@_node_cell_inactive:
-  { \set@color \box_use_drop:N \l_@@_cell_box }
+\cs_new_protected:Npn \@@_node_alias:
+  {
+    \pgfnodealias
+      { \l_@@_name_str - \int_use:N \c@iRow - \int_use:N \c@jCol }
+      { \@@_env: - \int_use:N \c@iRow - \int_use:N \c@jCol } 
+  }
 %    \end{macrocode}
 % 
 % 
@@ -4857,52 +4922,6 @@ version 2005/12/01 or later.
   { 
 %    \end{macrocode}
 %
-%    \begin{macrocode}
-    \@@_provide_pgfsyspdfmark:
-    \bool_if:NT \g_@@_footnote_bool \savenotes
-%    \end{macrocode}
-% 
-% The aim of the following |\bgroup| (the corresponding |\egroup| is, of course,
-% at the end of the environment) is to be able to put an exposant to a matrix in
-% a mathematical formula.
-%    \begin{macrocode}
-    \bgroup
-%    \end{macrocode}
-%
-% \bigskip
-%    \begin{macrocode}
-    \tl_gset:Nn \g_@@_left_delim_tl { #1 }
-    \tl_gset:Nn \g_@@_right_delim_tl { #2 }
-    \tl_gset:Nn \g_@@_user_preamble_tl { #4 }
-    \tl_if_empty:NT \g_@@_user_preamble_tl { \@@_fatal:n { empty~preamble } } 
-%    \end{macrocode}
-%   
-%
-% \bigskip
-%    \begin{macrocode}
-    \int_gzero:N \g_@@_block_box_int
-    \dim_gzero:N \g_@@_width_last_col_dim
-    \dim_gzero:N \g_@@_width_first_col_dim
-    \bool_gset_false:N \g_@@_row_of_col_done_bool
-    \str_if_empty:NT \g_@@_name_env_str 
-      { \str_gset:Nn \g_@@_name_env_str { NiceArrayWithDelims } } 
-    \bool_if:NTF \l_@@_tabular_bool 
-      \mode_leave_vertical: 
-      \@@_test_if_math_mode: 
-    \bool_if:NT \l_@@_in_env_bool { \@@_fatal:n { Yet~in~env } } 
-    \bool_set_true:N \l_@@_in_env_bool
-%    \end{macrocode}
-% The command |\CT@arc@| contains the instruction of color for the rules of the
-% array\footnote{e.g. |\color[rgb]{0.5,0.5,0}|}. This command is used by |\CT@arc@| but
-% we use it also for compatibility with \pkg{colortbl}. But we want also to be
-% able to use color for the rules of the array when \pkg{colortbl} is \emph{not}
-% loaded. That's why we do the following instruction which is in the patch of
-% the beginning of arrays done by \pkg{colortbl}. Of course, we restore the
-% value of |\CT@arc@| at the end of our environment.
-%    \begin{macrocode}
-    \cs_gset_eq:cN { @@_old_CT@arc@ } \CT@arc@ 
-%    \end{macrocode}
-%
 % We deactivate TikZ externalization because we will use \textsc{pgf} pictures
 % with the options |overlay| and |remember picture| (or equivalent forms). We
 % deactivate with |\tikzexternaldisable| and not with
@@ -4923,8 +4942,37 @@ version 2005/12/01 or later.
     \bool_if:NF \l_@@_block_auto_columns_width_bool
       { \dim_gzero_new:N \g_@@_max_cell_width_dim }
 %    \end{macrocode}
-%
 % 
+%    \begin{macrocode}
+    \tl_gset:Nn \g_@@_left_delim_tl { #1 }
+    \tl_gset:Nn \g_@@_right_delim_tl { #2 }
+    \tl_gset:Nn \g_@@_user_preamble_tl { #4 }
+    \tl_if_empty:NT \g_@@_user_preamble_tl { \@@_fatal:n { empty~preamble } } 
+%    \end{macrocode}
+%   
+%
+% \bigskip
+%    \begin{macrocode}
+    \int_gzero:N \g_@@_block_box_int
+    \dim_gzero:N \g_@@_width_last_col_dim
+    \dim_gzero:N \g_@@_width_first_col_dim
+    \bool_gset_false:N \g_@@_row_of_col_done_bool
+    \str_if_empty:NT \g_@@_name_env_str 
+      { \str_gset:Nn \g_@@_name_env_str { NiceArrayWithDelims } }
+    \bool_if:NT \l_@@_in_env_bool { \@@_fatal:n { Yet~in~env } } 
+    \bool_set_true:N \l_@@_in_env_bool
+%    \end{macrocode}
+% The command |\CT@arc@| contains the instruction of color for the rules of the
+% array\footnote{e.g. |\color[rgb]{0.5,0.5,0}|}. This command is used by |\CT@arc@| but
+% we use it also for compatibility with \pkg{colortbl}. But we want also to be
+% able to use color for the rules of the array when \pkg{colortbl} is \emph{not}
+% loaded. That's why we do the following instruction which is in the patch of
+% the beginning of arrays done by \pkg{colortbl}. Of course, we restore the
+% value of |\CT@arc@| at the end of our environment.
+%    \begin{macrocode}
+    \cs_gset_eq:cN { @@_old_CT@arc@ } \CT@arc@ 
+%    \end{macrocode}
+%
 % The sequence |\g_@@_blocks_seq| will contain the characteristics of the blocks
 % (specified by |\Block|) of the array. The sequence |\g_@@_pos_of_blocks_seq|
 % will contain only the position of the blocks.
@@ -4969,6 +5017,16 @@ version 2005/12/01 or later.
       { \bool_set_true:N \l_@@_code_before_bool }
 %    \end{macrocode}
 % 
+%    \begin{macrocode}
+    \bool_if:NF \l_@@_overlap_bool
+      {
+        \box_gclear_new:N \g_@@_final_box % added 2026/10/26
+        \hbox_set:Nw \g_@@_final_box      %
+        \bool_if:NF \l_@@_tabular_bool { $ } % $
+      }      
+%    \end{macrocode}
+%
+% 
 % The set of keys is not exactly the same for |{NiceArray}| and for the variants
 % of |{NiceArray}| (|{pNiceArray}|, |{bNiceArray}|, etc.) because, for
 % |{NiceArray}|, we have the options |t|, |c|, |b| and |baseline|.
@@ -4979,6 +5037,24 @@ version 2005/12/01 or later.
     { #3 , #5 } 
 %    \end{macrocode}
 %
+% 
+%    \begin{macrocode}
+    \@@_provide_pgfsyspdfmark:
+    \bool_if:NT \g_@@_footnote_bool \savenotes
+%    \end{macrocode}
+% 
+% The aim of the following |\bgroup| (the corresponding |\egroup| is, of course,
+% at the end of the environment) is to be able to put an exposant to a matrix in
+% a mathematical formula.
+%    \begin{macrocode}
+    \bgroup
+    \bool_if:NTF \l_@@_tabular_bool 
+      \mode_leave_vertical: 
+      \@@_test_if_math_mode:
+%    \end{macrocode}      
+% 
+%
+
 % \bigskip 
 %    \begin{macrocode}
     \@@_set_CTarc:o \l_@@_rules_color_tl % noqa: w302
@@ -5144,17 +5220,11 @@ version 2005/12/01 or later.
                 \skip_vertical:n { - \l_tmpa_dim - \arrayrulewidth }
                 \hbox
                   {
-                    % \bool_if:NTF \l_@@_tabular_bool
-                    %   { \skip_horizontal:n { - \tabcolsep } }
-                    %   { \skip_horizontal:n { - \arraycolsep } }
                     \skip_horizontal:n
                       { - \bool_if:NTF \l_@@_tabular_bool \tabcolsep \arraycolsep } 
                     \@@_use_arraybox_with_notes_c:
                     \skip_horizontal:n
                       { - \bool_if:NTF \l_@@_tabular_bool \tabcolsep \arraycolsep } 
-                    % \bool_if:NTF \l_@@_tabular_bool
-                    %   { \skip_horizontal:n { - \tabcolsep } }
-                    %   { \skip_horizontal:n { - \arraycolsep } }
                   }
 %    \end{macrocode}
 % We take into account the ``last row'' (we have previously computed its total
@@ -5219,11 +5289,129 @@ version 2005/12/01 or later.
 % \bigskip
 %    \begin{macrocode}
     \bool_if:NT \g_@@_footnote_bool { \endsavenotes }
+%    \end{macrocode}
+% 
+%    \begin{macrocode}
+    \bool_if:NF \l_@@_overlap_bool % added 2026/10/26        
+      {
+        \bool_if:NF \l_@@_tabular_bool { $ } % $
+        \hbox_set_end:        
+%    \end{macrocode}
+% We have closed the box |\g_@@_final_box| which has been opened at the beginning of
+% |{NiceArrayWithDelims}|.
+%
+% Now, with the command |\@@_insert_final_box:|, we will insert |\g_@@_final_box| and
+% we will execute the |\CodeAfter|.
+%    \begin{macrocode}
+        \@@_insert_final_box:
+      }
   }
 %    \end{macrocode}
 % This is the end of the environment |{NiceArrayWithDelims}|.
 %
+% \bigskip
+%    \begin{macrocode}
+\AtBeginDocument
+  {
+    \IfPackageLoadedTF { tikz }
+      {
+        \cs_new_protected:Npn \@@_insert_final_box:
+          {
+            \begin { tikzpicture }
+              [ baseline, remember~picture, name~prefix = \@@_env: - ]
+            \node [anchor = base, inner~sep = 0pt] { \box_use_drop:N \g_@@_final_box } ;
+%    \end{macrocode}
 %
+% The final user may have put one or several |{tikzpicture}| in the
+% |\CodeAfter|. Since, we are yet in an |{tikzpicture}|, we convert the environment
+% into a environment |{scope}| (in order to be able to take into account TikZ options put
+% at the beginning of the environment.
+%    \begin{macrocode}
+            \group_begin:
+              \cs_set_eq:NN \tikzpicture \scope
+              \cs_set_eq:NN \endtikzpicture \endscope
+              \@@_exec_code_after:
+            \group_end:
+            \end { tikzpicture }
+          }
+      }
+      {
+        \cs_new_protected:Npn \@@_insert_final_box:
+          {
+            \pgfpicture
+            \pgfrememberpicturepositiononpagetrue
+            \pgfset { inner~sep = 0 pt }
+            \pgfnode { rectangle } { base } { \box_use_drop:N \g_@@_final_box } { } { }        
+            \@@_exec_code_after:
+            \pgfsetbaseline \c_zero_dim
+            \endpgfpicture
+          }
+      }
+  }
+%    \end{macrocode}
+% 
+% \bigskip
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_exec_code_after:
+  {
+    \bool_set_true:N \l_@@_in_code_after_bool    
+    \@@_security_font_commands:
+    \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: 
+    \cs_set_eq:NN \SubMatrix \@@_SubMatrix
+    \cs_set_eq:NN \UnderBrace \@@_UnderBrace
+    \cs_set_eq:NN \OverBrace \@@_OverBrace
+    \cs_set_eq:NN \ShowCellNames \@@_ShowCellNames
+    \cs_set_eq:NN \TikzEveryCell \@@_TikzEveryCell
+    \cs_set_eq:NN \line \@@_line
+%    \end{macrocode}
+% When |light-syntax| is used, we insert systematically a |\CodeAfter| in the
+% flow. Thus, it's possible to have two instructions |\CodeAfter| and the second
+% may be in |\g_nicematrix_code_after_tl|. That's why we set
+% |\CodeAfter| to be \textsl{no-op} now.
+%    \begin{macrocode}
+    \cs_set_eq:NN \CodeAfter \prg_do_nothing:
+%    \end{macrocode}
+% Since the |\CodeAfter| may begin with an
+% ``argument'' between square brackets of the options, we extract and treat that
+% potential ``argument'' with the command |\@@_CodeAfter_keys:|.
+%    \begin{macrocode}
+    \if_mode_math: 
+      \exp_last_unbraced:No \@@_CodeAfter_keys: \g_nicematrix_code_after_tl
+      \scan_stop:
+    \else:
+      $ % $    
+      \exp_last_unbraced:No \@@_CodeAfter_keys: \g_nicematrix_code_after_tl
+      \scan_stop:
+      $ % $      
+    \fi:
+    \tl_gclear:N \g_nicematrix_code_after_tl
+  }
+%    \end{macrocode}
+%
+% \bigskip
+%    \begin{macrocode}
+\AtBeginDocument
+  {
+    \IfPackageLoadedTF { tikz }
+      {
+        \cs_set:Npn \@@_exec_code_after_overlap:
+          {
+            \tikzset
+              { 
+                every~picture / .style = 
+                  { 
+                    overlay ,
+                    remember~picture ,
+                    name~prefix = \@@_env: - 
+                  }
+              }  
+            \@@_exec_code_after:
+          }
+      }
+      { \cs_set_eq:NN \@@_exec_code_after_overlap: \@@_exec_code_after: }
+  }
+%    \end{macrocode}
+% 
 % \bigskip
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_err_columns_not_used:
@@ -6371,7 +6559,8 @@ version 2005/12/01 or later.
       { \@@_make_preamble_iv:nn { #1 } { #2 } } 
   }
 \cs_set_eq:cc { @@ _ \token_to_str:N [ : } { @@ _ \token_to_str:N ( : } 
-\cs_set_eq:cc { @@ _ \token_to_str:N \{ : } { @@ _ \token_to_str:N ( : } 
+\cs_set_eq:cc { @@ _ \token_to_str:N \{ : } { @@ _ \token_to_str:N ( : }
+\cs_set_eq:cc { @@ _ \token_to_str:N \lbrace : } { @@ _ \token_to_str:N ( : } 
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -6392,7 +6581,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
-% In fact, if would be possible to define |\left| and |\right| as no-op.
+% In fact, it would be possible to define |\left| and |\right| as no-op.
 %    \begin{macrocode}
 \cs_new_protected:cpn { @@ _ \token_to_str:N \left : } #1 
   { \use:c { @@ _ \token_to_str:N ( : } }
@@ -6441,7 +6630,8 @@ version 2005/12/01 or later.
       }
   }
 \cs_set_eq:cc { @@ _ \token_to_str:N ] : } { @@ _ \token_to_str:N ) : } 
-\cs_set_eq:cc { @@ _ \token_to_str:N \} : } { @@ _ \token_to_str:N ) : } 
+\cs_set_eq:cc { @@ _ \token_to_str:N \} : } { @@ _ \token_to_str:N ) : }
+\cs_set_eq:cc { @@ _ \token_to_str:N \rbrace : } { @@ _ \token_to_str:N ) : } 
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -6827,8 +7017,13 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \int_compare:nNnT { #1 } > 1
       {
-        \seq_gput_right:Ne \g_@@_multicolumn_cells_seq         
-          { \int_use:N \c@iRow - \int_eval:n { \c@jCol + 1 } }
+        \seq_gput_right:Ne \g_@@_multicolumn_cells_seq 
+          {
+            % modified 2026-10-10
+            \int_compare:nNnTF \c@jCol = 0
+            { \int_eval:n { \c@iRow + 1 } - \int_eval:n { \c@jCol + 1 } } 
+            { \int_use:N \c@iRow - \int_eval:n { \c@jCol + 1 } }
+          }
         \seq_gput_right:Nn \g_@@_multicolumn_sizes_seq { #1 }  
         \seq_gput_right:Ne \g_@@_pos_of_blocks_seq
           { 
@@ -7978,7 +8173,7 @@ version 2005/12/01 or later.
       { 
 %    \end{macrocode}
 % At the beginning of the cell, we link |\CodeAfter| to a command which 
-% begins with |\\| (whereas the standard version of |\CodeAfter| begins does
+% begins with |\\| (whereas the standard version of |\CodeAfter| does
 % not).
 %    \begin{macrocode}
         \cs_set_eq:NN \CodeAfter \@@_CodeAfter_i:
@@ -8590,52 +8785,27 @@ version 2005/12/01 or later.
 %
 %    \begin{macrocode}
     \@@_deal_with_rounded_corners:
-    \legacy_if:nF { measuring@ } \@@_draw_rules: 
-    \tl_gclear:N \g_@@_rules_tl
-%    \end{macrocode}
-%
-% \bigskip
-% Now, the pre-code-after and then, the |\CodeAfter|.
-%    \begin{macrocode}
-    \IfPackageLoadedT { tikz }
-      {  
-        \tikzset
-          { 
-            every~picture / .style = 
-              { 
-                overlay ,
-                remember~picture ,
-                name~prefix = \@@_env: - 
-              }
-          }  
-      }
-    \cs_set_eq:NN \ar@ialign \@@_old_ar@ialign: 
-    \cs_set_eq:NN \SubMatrix \@@_SubMatrix
-    \cs_set_eq:NN \UnderBrace \@@_UnderBrace
-    \cs_set_eq:NN \OverBrace \@@_OverBrace
-    \cs_set_eq:NN \ShowCellNames \@@_ShowCellNames
-    \cs_set_eq:NN \TikzEveryCell \@@_TikzEveryCell
-    \cs_set_eq:NN \line \@@_line
 %    \end{macrocode}
 %
 % The LaTeX-style boolean |\ifmeasuring@| is used by \pkg{amsmath} during the
 % phase of measure in environments such as |{align}|, etc. 
 %    \begin{macrocode}
-    \legacy_if:nF { measuring@ } \g_@@_pre_code_after_tl
-    \tl_gclear:N \g_@@_pre_code_after_tl
-%    \end{macrocode}
-% When |light-syntax| is used, we insert systematically a |\CodeAfter| in the
-% flow. Thus, it's possible to have two instructions |\CodeAfter| and the second
-% may be in |\g_nicematrix_code_after_tl|. That's why we set
-% |\CodeAfter| to be \textsl{no-op} now.
-%    \begin{macrocode}
-    \cs_set_eq:NN \CodeAfter \prg_do_nothing:
+    \legacy_if:nF { measuring@ } \@@_draw_rules: 
+    \tl_gclear:N \g_@@_rules_tl
 %    \end{macrocode}
 %
 % We clear the list of the names of the potential |\SubMatrix| that will appear
 % in the |\CodeAfter| (unfortunately, that list has to be global).
 %    \begin{macrocode}
     \seq_gclear:N \g_@@_submatrix_names_seq
+%    \end{macrocode}
+%
+% Now, the pre-code-after and then, the |\CodeAfter|.
+% The LaTeX-style boolean |\ifmeasuring@| is used by \pkg{amsmath} during the
+% phase of measure in environments such as |{align}|, etc. 
+%    \begin{macrocode}
+    \legacy_if:nF { measuring@ } \g_@@_pre_code_after_tl
+    \tl_gclear:N \g_@@_pre_code_after_tl
 %    \end{macrocode}
 %
 % \medskip
@@ -8648,26 +8818,15 @@ version 2005/12/01 or later.
       { \@@_rescan_for_spanish:N \g_nicematrix_code_after_tl }
 %    \end{macrocode}
 %
-%    \begin{macrocode}
-    \bool_set_true:N \l_@@_in_code_after_bool
-    \@@_security_font_commands:
-%    \end{macrocode}
 % \medskip
-% And here's the |\CodeAfter|. Since the |\CodeAfter| may begin with an
-% ``argument'' between square brackets of the options, we extract and treat that
-% potential ``argument'' with the command |\@@_CodeAfter_keys:|.
+% And here's the |\CodeAfter| (when |overlap=false|, the |\CodeAfter|, we will
+% use a special structure with |\g_@@_final_box| and you will execute the |\CodeAfter|
+% just before the insertion of that box).
 %    \begin{macrocode}
-    \bool_set_true:N \l_@@_in_code_after_bool
-    \if_mode_math:
-      \exp_last_unbraced:No \@@_CodeAfter_keys: \g_nicematrix_code_after_tl
-      \scan_stop:
-    \else:
-      $ % $
-      \exp_last_unbraced:No \@@_CodeAfter_keys: \g_nicematrix_code_after_tl
-      \scan_stop:
-      $ % $    
-    \fi:
-    \tl_gclear:N \g_nicematrix_code_after_tl
+    \bool_if:NT \l_@@_overlap_bool \@@_exec_code_after_overlap:
+%    \end{macrocode}
+%
+%    \begin{macrocode}
     \clist_if_empty:NF \g_@@_col_with_trees_clist \@@_draw_trees:
     \group_end:
 %    \end{macrocode}
@@ -9090,7 +9249,7 @@ version 2005/12/01 or later.
 %
 % 
 % \bigskip
-% \section{We draw the dotted lines}
+% \section{We draw the dotted leaders}
 %
 % A dotted line will be said \emph{open} in one of its extremities when it stops
 % on the edge of the matrix and \emph{closed} otherwise. In the following
@@ -10002,7 +10161,7 @@ version 2005/12/01 or later.
 %
 %
 % \bigskip
-% First, the case of a dotted line open on both sides.
+% First, the case of a dotted line opened on both sides.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_actually_draw_Vdots_i:
   {
@@ -10567,7 +10726,6 @@ version 2005/12/01 or later.
 % The dimension |\l_@@_l_dim| is the length $\ell$ of the line to draw. We use
 % the floating point reals of the L3 programming layer to compute this length.
 %    \begin{macrocode}
-      \dim_zero_new:N \l_@@_l_dim
       \dim_set:Nn \l_@@_l_dim
         { 
           \fp_to_dim:n 
@@ -10589,7 +10747,7 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     \dim_compare:nNnT \l_@@_l_dim < \c_@@_max_l_dim 
       {
-        \dim_compare:nNnT \l_@@_l_dim > { 1 pt } 
+        \dim_compare:nNnT \l_@@_l_dim > { 1 pt }
           \@@_draw_standard_dotted_line_i: 
       }
     }
@@ -10613,21 +10771,6 @@ version 2005/12/01 or later.
 \cs_new_protected:Npn \@@_draw_standard_dotted_line_i:
   { 
 %    \end{macrocode}
-% The number of dots will be |\l_tmpa_int + 1|.
-%    \begin{macrocode}
-    \int_set:Nn \l_tmpa_int 
-      { 
-        \dim_ratio:nn 
-          { 
-            \l_@@_l_dim 
-            - \l_@@_xdots_shorten_start_dim 
-            - \l_@@_xdots_shorten_end_dim
-          } 
-          \l_@@_xdots_inter_dim 
-      }
-%    \end{macrocode}
-%
-% \medskip
 % The dimensions |\l_tmpa_dim| and |\l_tmpb_dim| are the coordinates of the
 % vector between two dots in the dotted line.
 %    \begin{macrocode}
@@ -10643,6 +10786,28 @@ version 2005/12/01 or later.
       }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+    \int_compare:nNnTF \l_@@_number_of_dots_int = \c_zero_int
+      {
+        \int_set:Nn \l_@@_number_of_dots_int
+          {
+            1 + 
+            \dim_ratio:nn 
+              { 
+                \l_@@_l_dim 
+                - \l_@@_xdots_shorten_start_dim 
+                - \l_@@_xdots_shorten_end_dim
+              } 
+              \l_@@_xdots_inter_dim 
+          }
+      }
+      {
+        \dim_zero:N \l_@@_xdots_shorten_start_dim
+        \dim_zero:N \l_@@_xdots_shorten_end_dim
+      }
+%     \end{macrocode}
+%
+% \medskip
 % In the loop over the dots, the dimensions |\l_@@_x_initial_dim| and
 % |\l_@@_y_initial_dim| will be used for the coordinates of the dots. But,
 % before the loop, we must move until the first dot.
@@ -10653,7 +10818,7 @@ version 2005/12/01 or later.
         ( \l_@@_x_final_dim - \l_@@_x_initial_dim ) *
         \dim_ratio:nn 
           { 
-            \l_@@_l_dim - \l_@@_xdots_inter_dim * \l_tmpa_int 
+            \l_@@_l_dim - \l_@@_xdots_inter_dim * ( \l_@@_number_of_dots_int - 1 )
             + \l_@@_xdots_shorten_start_dim - \l_@@_xdots_shorten_end_dim 
           }
           { 2 \l_@@_l_dim }
@@ -10663,13 +10828,16 @@ version 2005/12/01 or later.
         ( \l_@@_y_final_dim - \l_@@_y_initial_dim ) * 
         \dim_ratio:nn 
           { 
-            \l_@@_l_dim - \l_@@_xdots_inter_dim * \l_tmpa_int 
+            \l_@@_l_dim - \l_@@_xdots_inter_dim * ( \l_@@_number_of_dots_int - 1 ) 
             + \l_@@_xdots_shorten_start_dim  - \l_@@_xdots_shorten_end_dim 
           }
           { 2 \l_@@_l_dim } 
       }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
     \pgf@relevantforpicturesizefalse
-    \int_step_inline:nnn \c_zero_int \l_tmpa_int 
+    \int_step_inline:nn \l_@@_number_of_dots_int
       { 
         \pgfpathcircle 
           { \pgfpoint \l_@@_x_initial_dim \l_@@_y_initial_dim } 
@@ -10681,6 +10849,7 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% 
 % \bigskip
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_labels_standard_dotted_line:
@@ -11282,7 +11451,7 @@ version 2005/12/01 or later.
 % document (and that's why we are in a |\AtBeginDocument|).
 %    \begin{macrocode}
     \tl_set_rescan:Nnn \l_tmpa_tl { } 
-      { O { } m m ! O { } E { _ ^ : } { { } { } { } } } 
+      { O { } m m ! O { } E { _ ^ : } { { } { } { } } }
     \exp_args:NNo \NewDocumentCommand \@@_line \l_tmpa_tl
       {
         {
@@ -17744,7 +17913,7 @@ version 2005/12/01 or later.
   {
     \tl_gput_right:Ne \g_@@_pre_code_after_tl
       { 
-        \SubMatrix { #1 } { #2 } { #3 } { #4 } 
+        \@@_SubMatrix { #1 } { #2 } { #3 } { #4 } 
           [ 
             delimiters / color = \l_@@_delimiters_color_tl , 
             hlines = \l_@@_submatrix_hlines_clist ,
@@ -18377,12 +18546,17 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 %    \begin{macrocode}
+\NewDocumentCommand \@@_UnderBrace_null { O { } m m m O { } }   { \ignorespaces } 
+%    \end{macrocode}
+%
+%    \begin{macrocode}
 \NewDocumentCommand \@@_OverBrace { O { } m m m O { } }
   { 
     \@@_brace:nnnnn { #2 } { #3 } { #4 } { #1 , #5 } { over } 
     \ignorespaces
   } 
 %    \end{macrocode}
+%
 %
 % \medskip
 %    \begin{macrocode}
@@ -18430,10 +18604,13 @@ version 2005/12/01 or later.
       {
         \tl_clear:N \l_tmpa_tl 
         \keys_set:nn { nicematrix / Brace } { #4 }
-        \tl_if_empty:NF \l_tmpa_tl { \color \l_tmpa_tl } 
-        \pgfpicture 
-        \pgfrememberpicturepositiononpagetrue
-        \pgf@relevantforpicturesizefalse
+        \tl_if_empty:NF \l_tmpa_tl { \color \l_tmpa_tl }
+        \bool_if:NT \l_@@_overlap_bool
+          { 
+            \pgfpicture 
+            \pgfrememberpicturepositiononpagetrue
+            \pgf@relevantforpicturesizefalse 
+          }
         \bool_if:NT \l_@@_brace_left_shorten_bool 
           {
             \dim_set_eq:NN \l_@@_x_initial_dim \c_max_dim
@@ -18443,7 +18620,6 @@ version 2005/12/01 or later.
                   { pgf @ sh @ ns @ \@@_env: - ##1 - \l_@@_first_j_tl }
                   {
                     \pgfpointanchor { \@@_env: - ##1 - \l_@@_first_j_tl } { west }
-              
                     \dim_compare:nNnT \pgf@x < \l_@@_x_initial_dim 
                       { \dim_set_eq:NN \l_@@_x_initial_dim \pgf@x }
                   }
@@ -18477,11 +18653,11 @@ version 2005/12/01 or later.
             \@@_qpoint:n { col - \int_eval:n { \l_@@_last_j_tl + 1 } }
             \dim_set_eq:NN \l_@@_x_final_dim \pgf@x 
           }
-        \pgfset { inner~sep = \c_zero_dim } 
+        \pgfset { inner~sep = \c_zero_dim }
         \str_if_eq:eeTF { #5 } { under }
           { \@@_underbrace_i:n { #3 } }
           { \@@_overbrace_i:n { #3 } }
-        \endpgfpicture
+        \bool_if:NT \l_@@_overlap_bool { \endpgfpicture }
       }
     \group_end:
   }
@@ -18491,7 +18667,7 @@ version 2005/12/01 or later.
 % The argument is the text to put above the brace.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_overbrace_i:n #1
-  { 
+  {
     \@@_qpoint:n { row - \l_@@_first_i_tl }
     \pgftransformshift 
       { 
@@ -19073,34 +19249,36 @@ version 2005/12/01 or later.
   { \tl_put_right:Nn \@@_actually_color: \@@_ShowCellNames } % noqa
 %    \end{macrocode}
 %
+%
 % \bigskip
 %    \begin{macrocode}
 \NewDocumentCommand \@@_ShowCellNames { }
- {
-   \bool_if:NT \l_@@_in_code_after_bool
-     { 
-       \pgfpicture
-       \pgfrememberpicturepositiononpagetrue
-       \pgf@relevantforpicturesizefalse
-       \pgfpathrectanglecorners
-         { \@@_qpoint:n { 1 } }
-         { \@@_qpoint:n { \int_eval:n { 1 + \int_max:nn \c@iRow \c@jCol } } }
-       \pgfsetfillopacity { 0.75 }
-       \pgfsetfillcolor { white }
-       \pgfusepathqfill
-       \endpgfpicture
-     }
-   \dim_gzero_new:N \g_@@_tmpc_dim
-   \dim_gzero_new:N \g_@@_tmpd_dim
-   \dim_gzero_new:N \g_@@_tmpe_dim
-   \int_step_inline:nn \c@iRow 
-     {
-       \clist_if_in:NnF \g_@@_false_rows_clist { ##1 }
-         { \@@_show_cell_names_one_row:n { ##1 } }
-     }
- }
+  {
+    \bool_if:NT \l_@@_in_code_after_bool
+      { 
+        \pgfpicture
+        \pgfrememberpicturepositiononpagetrue
+        \pgf@relevantforpicturesizefalse
+        \pgfpathrectanglecorners
+          { \@@_qpoint:n { 1 } }
+          { \@@_qpoint:n { \int_eval:n { 1 + \int_max:nn \c@iRow \c@jCol } } }
+        \pgfsetfillopacity { 0.75 }
+        \pgfsetfillcolor { white }
+        \pgfusepathqfill
+        \endpgfpicture
+      }
+    \dim_gzero_new:N \g_@@_tmpc_dim
+    \dim_gzero_new:N \g_@@_tmpd_dim
+    \dim_gzero_new:N \g_@@_tmpe_dim
+    \int_step_inline:nn \c@iRow 
+      {
+        \clist_if_in:NnF \g_@@_false_rows_clist { ##1 }
+          { \@@_show_cell_names_one_row:n { ##1 } }
+      }
+  }
 %    \end{macrocode}
 %
+% 
 % \bigskip
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_show_cell_names_one_row:n #1
@@ -19879,6 +20057,15 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%
+%    \begin{macrocode}
+\@@_msg_new:nn { overlap=false~in~dvi~mode }
+  {
+    'overlap~=~false'~in~DVI~mode. \\
+    You~can't~set~that~option~because~you~are~in~DVI~mode.
+  }
+%    \end{macrocode}
+% 
 %    \begin{macrocode}
 \@@_msg_new:nn{ rotate~in~p~col }
   {
@@ -20126,14 +20313,15 @@ version 2005/12/01 or later.
   }
   {
     The~available~keys~are~(in~alphabetic~order):~
-    'color',~
-    'horizontal(s)-labels',~
-    'inter',~
-    'line-style',~
-    'nullify',~
-    'radius',~
-    'shorten',~
-    'shorten-end'~and~'shorten-start'.
+    color,~
+    horizontal(s)-labels,~
+    inter,~
+    line-style,~
+    nullify,~
+    number-of-dots,~
+    radius,~
+    shorten,~
+    shorten-end~and~shorten-start.
   }
 %    \end{macrocode}
 %

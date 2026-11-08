@@ -265,7 +265,7 @@ Most features of \pkg{nicematrix} may be used without explicit use of
 
 \medskip
 \indexcommand{NiceMatrixOptions}
-A command |\NiceMatrixOptions| is provided to fix the options (the
+A command \DefinitionCommand{NiceMatrixOptions} is provided to fix the options (the
 scope of the options fixed by this command is the current TeX group: they are
 semi-global). 
 
@@ -1069,7 +1069,7 @@ sub-blocks of \emph{the same size}.
 \end{Code}
 
 
-As we can see, the blocks (which was are in fact mono-cell blocks) are divided
+As can be seen, the blocks (which was are in fact mono-cell blocks) are divided
 into sub-blocks of the \emph{same size}. However, maybe the following code would
 be prefered.
 
@@ -2604,7 +2604,7 @@ The previous example uses the keys |first-row| and |first-col| which are
 described in the chapter concerning the ``exterior'' rows and columns
 (cf.~\ref{exterior}, p.~\pageref{exterior}). 
 
-As one can see, \emph{by default}, the coloring commands that we have described
+As can be seen, \emph{by default}, the coloring commands that we have described
 don't apply in those exterior rows and columns.
 
 However, it may still be possible to color in those rows and columns by
@@ -2990,6 +2990,31 @@ $\begin{array}{c}
 \end{array}$
 \emph{\end{NiceMatrixBlock}}
 \end{Code}
+
+\bigskip
+\colorbox{yellow!50}{\bfseries New 7.13}
+
+\smallskip
+\nobreak
+\index{row-height (value for columns-width}
+One may wish to create a tabular with actual square cells. In this aim, \pkg{nicematrix}
+provides for the key |columns-width| a special value called \Definition{row-height}.
+With that value, the columns will have a minimal absolute\footnote{We have use \emph{absolute} to mean that the inter-columns space (set by |\arraycolsep| or |\tabcolsep|) is set to $0$~pt by this option.} width equal to the total height
+(|\dp| + |\ht|) of the strut used by LaTeX to set the height of the rows. With the
+extension \pkg{array} (which is loaded by \pkg{nicematrix}), that strut may be customized
+with the |\arraystretch| and |\extrarowheight|.
+
+\medskip
+\begin{Code}[width=12cm,show-output]
+\renewcommand{\arraystretch}{1.5}
+$\begin{NiceArray}{cccc}[hvlines,\emph{columns-width=row-height}]
+a & b & c & d \\
+b & c & d & a \\
+c & d & a & b \\
+d & a & b & c
+\end{NiceArray}$
+\end{Code}
+
 
 \subsection{The columns V of \texorpdfstring{\pkg{varwidth}}{varwidth}}
 
@@ -3632,6 +3657,7 @@ $\begin{bNiceMatrix}
 \index{shorten-start (key for dotted rules)}
 \index{horizontal-label(s) (key for dotted rules)}
 \index{nullify (key for dotted rules)}
+\index{number-of-dots (key for dotted rules)}
 
 The dotted lines drawn by |\Ldots|, |\Cdots|, |\Vdots|, |\Ddots|, |\Iddots|,
 |\Hdotsfor| and |\Vdotsfor| (and by the command |\line| in the |\CodeAfter|
@@ -3645,6 +3671,7 @@ p.~\pageref{line-in-code-after}) may be customized by the following options
 \item |radius|;
 \item |shorten-start|$^+$, |shorten-end|$^+$ and |shorten|$^+$;
 \item |inter|;
+\item |number-of-dots|;
 \item |line-style|.
 \end{itemize}
 
@@ -3664,6 +3691,7 @@ must be prefixed by |xdots| (\textsl{xdots} to remind that it works for
 \item |xdots/radius|;
 \item |xdots/shorten-start|$^+$, |xdots/shorten-end|$^+$ and |xdots/shorten|$^+$;
 \item |xdots/inter|;
+\item |xdots/number-of-dots|;
 \item |xdots/line-style|.
 \end{itemize}
 
@@ -3708,6 +3736,15 @@ it's possible to write, for example, |xdots/shorten = 0.6em| but also
 The option \Definition{xdots/inter} fixes the length between the dots. The
 initial value is 0.45~em (it is recommended to use a unit of length dependent of
 the current font).
+
+\medskip
+\colorbox{yellow!50}{\bfseries{New 7.13}}
+
+\nobreak
+\smallskip
+The key \Definition{xdots/number-of-dots} fixes the number of dots,
+independently of the distance between the cells to rely.
+
 
 \bigskip
 \textbf{The option \Definition{xdots/line-style}}
@@ -3946,9 +3983,9 @@ p.~\pageref{NiceArrayWithDelims}) and the key |last-col| (cf.~\ref{exterior},
 p.~\pageref{exterior}).
 
 \bigskip
-There is a particular case: for the delimiters |(|, |[| and |\{|\footnote{For
+There is a particular case: for the delimiters |(|, |[| |\{|\footnote{For
   the braces, the protection by a backslash is mandatory (that's why we have
-  written |\{|).},
+  written |\{|).} and |\lbrace|,
 and the corresponding closing delimiters, the prefixes |\left| et |\right| are
 optional.\footnote{For the delimiters |[| and |]|, the prefixes remain mandatory
 when there is a conflict of notation with the square brackets for the options
@@ -4038,6 +4075,28 @@ present these commands.
 in mathematical mode and, therefore, the spurious spaces are deleted after a command such as
 |\SubMatrix|.
 
+
+\bigskip
+\colorbox{yellow!50}{\bfseries New 7.13}
+
+\smallskip
+\nobreak
+\index{overlap (key)}
+The key \Definition{overlap} controls whether the graphical elements drawn in the
+|\CodeAfter| are taken into account for the computation of the bounding box of
+the environment (|{NiceTabular}|, |{Nicematrix}|, etc.).
+
+When the key |overlap| is set on |true|, those elements are \emph{not} taken into
+account and they may overlap from the bounding box and be overwritten on the rest of the
+LaTeX document. On the opposite, when the key |overlap| is set on |false|, there is no
+overlaping because the element added by the |\CodeAfter| are taken into account for
+the determination of the bounding box.
+
+{\bfseries The initial value of the parameter |overlap| is |true| (and not |false|).}
+
+\medskip
+\emph{Remark}: For technical reasons, the tuning |overlap=false| is \emph{not} available
+in the historical way of compilation |latex|-|dvips|-|ps2pdf| (or Adobe Distiller).
 
 \subsection{The command \texttt{\textbackslash line} in the \texttt{\textbackslash CodeAfter}}
 
@@ -4352,24 +4411,35 @@ It's possible to use the command |\\| in this third argument in order to format
 the label on several lines.
 \end{itemize}
 
+\medskip
+By default there isn't any vertical space reserved for the brace and its label. In order
+to have one, it's necessary to use the tuning |overlap=false|.
+
 \bigskip
-\begin{Code}[width=9cm,show-output]
-$\begin{pNiceMatrix}
-  1  & 2  & 3  & 4  & 5  & 6  \\
-  11 & 12 & 13 & 14 & 15 & 16 \\
+\begin{minipage}{10cm}
+\begin{Code}
+Here is an example:
+
+$\begin{pNiceMatrix}[overlap=false]
+1  & 2  & 3  & 4  & 5  & 6  \\
+11 & 12 & 13 & 14 & 15 & 16 \\
 \CodeAfter
   \emph{\OverBrace{1-1}{2-3}{A}
   \OverBrace{1-4}{2-6}{B}}
 \end{pNiceMatrix}$
 \end{Code}
+\end{minipage}
+\begin{minipage}{5cm}
+Here is an example:
 
-\bigskip
-Caution: There is no vertical space reserved for those braces and their labels.\footnote{See:
-  \url{https://tex.stackexchange.com/questions/685755}}
-
-One may compare with the command |\Hbrace| (cf.~\ref{Hbrace},
-p.~\pageref{Hbrace}) which must be used within a row of the tabular, row which has
-necessarily its own vertical space.
+$\begin{pNiceMatrix}[overlap=false]
+1  & 2  & 3  & 4  & 5  & 6  \\
+11 & 12 & 13 & 14 & 15 & 16 \\
+\CodeAfter
+  \OverBrace{1-1}{2-3}{A}
+  \OverBrace{1-4}{2-6}{B}
+\end{pNiceMatrix}$
+\end{minipage}
 
 \bigskip
 \index{color!key of \texttt{\textbackslash OverBrace} and \texttt{\textbackslash
@@ -4400,7 +4470,7 @@ and |right-shorten|;
 \end{itemize}
 
 \bigskip
-\begin{Code}[width=9cm,show-output]
+\begin{Code}[width=10cm,show-output]
 $\begin{pNiceMatrix}
   1  & 2  & 3  & 4  & 5  & 6  \\
   11 & 12 & 13 & 14 & 15 & 16 \\
@@ -5492,12 +5562,10 @@ For examples of use, see \url{tex.stackexchange.com/questions/488566} and
 \index{no-cell-nodes}
 \label{no-cell-nodes}
 
-The package \pkg{nicematrix} creates a PGF/TikZ node\footnote{We recall that TikZ
-is a layer over PGF. The extension \pkg{nicematrix} loads PGF but does not
-load TikZ. We speak of PGF/TikZ nodes to emphase the fact that the PGF nodes
-created by \pkg{nicematrix} may be used with PGF but also with TikZ. The final
-user will probably prefer to use TikZ rather than PGF.} for the \textbf{content} of each (non-empty) cell of the array. These nodes are
-used to draw the dotted lines between the cells of the matrix (inter alia).
+The package \pkg{nicematrix} creates a PGF/TikZ node\footnote{We recall that TikZ is a layer over PGF. The extension \pkg{nicematrix} loads PGF but does not load TikZ. We speak of PGF/TikZ nodes to emphase the fact that the PGF nodes created by \pkg{nicematrix} may be used with PGF but also with TikZ. The final user will probably prefer to use TikZ rather than PGF.} for the \textbf{content} of each
+(non-empty) cell of the array. These nodes, which, by default, are invisible in
+the \textsc{pdf}, are used to draw the dotted lines between the cells of the
+matrix (inter alia).
 
 \smallskip
 By default, those nodes are not available in the |\CodeBefore| (in order to speed up
@@ -7135,7 +7203,7 @@ with the environment |{NiceMatrixBlock}| and its option |auto-columns-width|.
 \end{NiceMatrixBlock}
 
 \bigskip
-However, one can see that the last matrix is not perfectly aligned with
+However, as can be seen, the last matrix is not perfectly aligned with
 others. That's because, in LaTeX, the parenthesis have not exactly the same width
 (smaller parenthesis are a bit slimer).
 
@@ -7517,6 +7585,14 @@ also available on the
 \small
 \nolinkurl{https:www.tug.org/svn/texlive/trunk/Master/texmf-dist/tex/latex/nicematrix/nicematrix.sty}
 }
+
+\subsection*{Changes between version 7.12 and 7.13}
+
+New key |overlap|
+
+New key |xdots/number-of-dots|
+
+Special value |row-height| for |columns-width|
 
 \subsection*{Changes between version 7.11 and 7.12}
 
