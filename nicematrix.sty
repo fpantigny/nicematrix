@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.12}
-\def\myfiledate{2026/10/07}
+\def\myfileversion{7.13}
+\def\myfiledate{2026/11/09}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -2285,7 +2285,7 @@
             \exp_after:wN \left \g__nicematrix_left_delim_tl
             \vcenter
               {
-                \skip_vertical:n { - \l_tmpa_dim - \arrayrulewidth }
+                \skip_vertical:n { - \l_tmpa_dim } % - \arrayrulewidth  % 2026/11/09
                 \hbox
                   {
                     \skip_horizontal:n
@@ -2294,7 +2294,7 @@
                     \skip_horizontal:n
                       { - \bool_if:NTF \l__nicematrix_tabular_bool \tabcolsep \arraycolsep }
                   }
-                \skip_vertical:n { - \l_tmpb_dim  + \arrayrulewidth }
+                \skip_vertical:n { - \l_tmpb_dim  } % + \arrayrulewidth  % 2026/11/09
               }
             \exp_after:wN \right \g__nicematrix_right_delim_tl
             $ % $
@@ -2338,7 +2338,8 @@
           {
             \begin { tikzpicture }
               [ baseline, remember~picture, name~prefix = \__nicematrix_env: - ]
-            \node [anchor = base, inner~sep = 0pt] { \box_use_drop:N \g__nicematrix_final_box } ;
+            \node [anchor = base, inner~sep = 0pt]
+              { \box_use_drop:N \g__nicematrix_final_box } ;
             \group_begin:
               \cs_set_eq:NN \tikzpicture \scope
               \cs_set_eq:NN \endtikzpicture \endscope
@@ -2352,7 +2353,7 @@
           {
             \pgfpicture
             \pgfrememberpicturepositiononpagetrue
-            \pgfset { inner~sep = 0 pt }
+            \pgfset { inner~sep = \c_zero_dim }
             \pgfnode { rectangle } { base } { \box_use_drop:N \g__nicematrix_final_box } { } { }
             \__nicematrix_exec_code_after:
             \pgfsetbaseline \c_zero_dim
@@ -11246,8 +11247,8 @@
   }
 \__nicematrix_msg_new:nn { overlap=false~in~dvi~mode }
   {
-    'overlap~=~false'~in~dvi~mode. \\
-    You~can't~set~that~option~because~you~are~in~dvi~mode.
+    'overlap~=~false'~in~DVI~mode. \\
+    You~can't~set~that~option~because~you~are~in~DVI~mode.
   }
 \__nicematrix_msg_new:nn{ rotate~in~p~col }
   {

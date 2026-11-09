@@ -17,8 +17,8 @@
 %
 % \fi
 % \iffalse
-\def\myfileversion{7.12}
-\def\myfiledate{2026/10/07}
+\def\myfileversion{7.13}
+\def\myfiledate{2026/11/09}
 %
 %
 %<*batchfile>  
@@ -1857,7 +1857,7 @@ version 2005/12/01 or later.
 % The following internal parameters are for:
 % \begin{itemize}
 % \item |\Ldots| \emph{with both extremities open} (and hence also |\Hdotsfor| in an
-% exterior row;
+% exterior row);
 % \item when the special character ``|:|'' is used in order to put the label of
 % a so-called ``dotted line'' \emph{on the line}, a margin of
 % |\c_@@_innersep_middle_dim| will be added around the label.
@@ -3809,7 +3809,8 @@ version 2005/12/01 or later.
 %
 % \bigskip
 % The following command creates the \textsc{pgf} name of the node with, of
-% course, |\l_@@_cell_box| as the content. 
+% course, |\l_@@_cell_box| as the content.
+%    \begin{macrocode}
 \sys_if_engine_xetex:TF
   {
     \cs_new_protected:Npn \@@_node_cell_active:
@@ -3827,7 +3828,7 @@ version 2005/12/01 or later.
 % necessary only with XeLaTeX and not with the other engines (we don't know why).
 % At the date of 2026/10/10, it's still mandatory.
 %
-% |\set@color| is defined by:\quad
+% |\set@color| is defined by:
 % |\special {color push \current@color }\aftergroup \reset@color|
 %    \begin{macrocode}
             \set@color 
@@ -5016,7 +5017,11 @@ version 2005/12/01 or later.
     \tl_if_empty:NF \g_@@_pre_code_before_tl
       { \bool_set_true:N \l_@@_code_before_bool }
 %    \end{macrocode}
-% 
+%
+% When |overlap=false|, we compose the whole environment in a box
+% |\g_@@_final_box| and the, we will put that box as a node in a |{pgfpicture}|
+% (or |{tikzpicture}|) and we will compose the |\CodeAfter| within that picture
+% in order to take into account the |\CodeAfter| in the bounding box.
 %    \begin{macrocode}
     \bool_if:NF \l_@@_overlap_bool
       {
@@ -5217,7 +5222,7 @@ version 2005/12/01 or later.
 % We take into account the ``first row'' (we have previously computed its total
 % height in |\l_tmpa_dim|). The |\hbox:n| (or |\hbox|) is necessary here.
 %    \begin{macrocode}
-                \skip_vertical:n { - \l_tmpa_dim - \arrayrulewidth }
+                \skip_vertical:n { - \l_tmpa_dim } % - \arrayrulewidth  % 2026/11/09
                 \hbox
                   {
                     \skip_horizontal:n
@@ -5230,7 +5235,7 @@ version 2005/12/01 or later.
 % We take into account the ``last row'' (we have previously computed its total
 % height in |\l_tmpb_dim|). 
 %    \begin{macrocode}
-                \skip_vertical:n { - \l_tmpb_dim  + \arrayrulewidth }
+                \skip_vertical:n { - \l_tmpb_dim  } % + \arrayrulewidth  % 2026/11/09
               }
             \exp_after:wN \right \g_@@_right_delim_tl
             $ % $
@@ -5297,17 +5302,20 @@ version 2005/12/01 or later.
         \bool_if:NF \l_@@_tabular_bool { $ } % $
         \hbox_set_end:        
 %    \end{macrocode}
-% We have closed the box |\g_@@_final_box| which has been opened at the beginning of
-% |{NiceArrayWithDelims}|.
+% |\hbox_set:end:| closes the box |\g_@@_final_box| (opened at the beginning of
+% |{NiceArrayWithDelims}|).
 %
-% Now, with the command |\@@_insert_final_box:|, we will insert |\g_@@_final_box| and
-% we will execute the |\CodeAfter|.
+% Now, we will put that box as a node in a |{pgfpicture}| (or |{tikzpicture}|)
+% and we will compose the |\CodeAfter| within that picture in order to take into
+% account the |\CodeAfter| in the bounding box.
 %    \begin{macrocode}
         \@@_insert_final_box:
       }
   }
 %    \end{macrocode}
 % This is the end of the environment |{NiceArrayWithDelims}|.
+%
+%
 %
 % \bigskip
 %    \begin{macrocode}
@@ -5319,7 +5327,8 @@ version 2005/12/01 or later.
           {
             \begin { tikzpicture }
               [ baseline, remember~picture, name~prefix = \@@_env: - ]
-            \node [anchor = base, inner~sep = 0pt] { \box_use_drop:N \g_@@_final_box } ;
+            \node [anchor = base, inner~sep = 0pt]
+              { \box_use_drop:N \g_@@_final_box } ;
 %    \end{macrocode}
 %
 % The final user may have put one or several |{tikzpicture}| in the
@@ -5340,7 +5349,7 @@ version 2005/12/01 or later.
           {
             \pgfpicture
             \pgfrememberpicturepositiononpagetrue
-            \pgfset { inner~sep = 0 pt }
+            \pgfset { inner~sep = \c_zero_dim }
             \pgfnode { rectangle } { base } { \box_use_drop:N \g_@@_final_box } { } { }        
             \@@_exec_code_after:
             \pgfsetbaseline \c_zero_dim
@@ -12238,7 +12247,7 @@ version 2005/12/01 or later.
 % 
 % \bigskip
 % The command |\rowcolors| (available in the |\CodeBefore|) is a specialisation
-% of the more general command |\rowlistcolors|. The last argument, which is a
+% of the more general command |\rowlistcolors|. The last argument, which is an
 % optional argument between square brackets is provided by curryfication.
 %    \begin{macrocode}
 \NewDocumentCommand \@@_rowcolors { O { } m m m }
@@ -12271,7 +12280,7 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % \bigskip
-% The following command return |true| when the block intersects the row
+% The following command returns |true| when the block intersects the row
 % |\l_tmpa_int|. 
 %    \begin{macrocode}
 \prg_new_conditional:Nnn \@@_intersect_our_row:nnnnn { p }
@@ -12542,12 +12551,12 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \NewDocumentCommand \@@_cellcolor_error { O { } m }
   { \@@_error:n { cellcolor~in~Block } }
-% \end{macrocode}
+%    \end{macrocode}
 %
 %    \begin{macrocode}
 \NewDocumentCommand \@@_rowcolor_error { O { } m }
   { \@@_error:n { rowcolor~in~Block } }
-% \end{macrocode}
+%    \end{macrocode}
 % 
 % \bigskip
 % The following command will be linked to |\rowcolor| in the tabular.
@@ -17076,7 +17085,7 @@ version 2005/12/01 or later.
     \group_begin:
 %    \end{macrocode}
 % We are actually during the execution of the |\g_nicematrix_code_after_tl|.
-% In that context |\arrayrulewidth| is the widht of standard lines (we are drawing
+% In that context |\arrayrulewidth| is the width of standard lines (we are drawing
 % standard rules becuase, up to now, there is no way to draw the internal lines of a Block
 % with a style of TikZ).
 %    \begin{macrocode}
@@ -17184,8 +17193,8 @@ version 2005/12/01 or later.
     \CT@arc@
     \pgfsetlinewidth { 1.1 \l_@@_line_width_dim }
 %    \end{macrocode}
-% If there is one specification of borders (|right|, |left|, |top| or
-% |bottome|), we will raise the flag |\l_tmpa_bool| (and, if there isn't
+% If there is a specification of borders (|right|, |left|, |top| or
+% |bottom|), we will raise the flag |\l_tmpa_bool| (and, if there isn't
 % any specification of border, we will draw all the borders).
 %    \begin{macrocode}
     \bool_set_false:N \l_tmpa_bool 

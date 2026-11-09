@@ -583,7 +583,7 @@ the command |\rotate| provided by \pkg{nicematrix} (cf.~\ref{rotate}, p.~\pagere
 \begin{Code}[width=10.6cm,show-output]
 $\begin{bNiceArray}{cw{c}{1cm}c|c}[margin]
   \Block{3-3}\emph{<\Large>}{A} & & & 0 \\
-  0 & & & \Vdots \\
+  & & & \Vdots \\
   & & & 0 \\
   \hline
   0 & \Cdots& 0 & 0
@@ -4089,7 +4089,7 @@ the environment (|{NiceTabular}|, |{Nicematrix}|, etc.).
 When the key |overlap| is set on |true|, those elements are \emph{not} taken into
 account and they may overlap from the bounding box and be overwritten on the rest of the
 LaTeX document. On the opposite, when the key |overlap| is set on |false|, there is no
-overlaping because the element added by the |\CodeAfter| are taken into account for
+overlaping because the elements added by the |\CodeAfter| are taken into account for
 the determination of the bounding box.
 
 {\bfseries The initial value of the parameter |overlap| is |true| (and not |false|).}
