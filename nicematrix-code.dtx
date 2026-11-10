@@ -2603,9 +2603,7 @@ version 2005/12/01 or later.
              { \bool_set_false:N \l_@@_overlap_bool }
           }
           { \bool_set_true:N \l_@@_overlap_bool }
-      }
-      \bool_set_true:N \l_@@_overlap_bool , % added 2026/10/26
-    overlap .value_required:n = true ,
+      } ,
     width-of-false .dim_set:N = \l_@@_width_of_false_dim ,
     width-of-false .value_required:n = true ,
     width-of-false+ .code:n =
@@ -3111,7 +3109,7 @@ version 2005/12/01 or later.
 %
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / NiceMatrix }
-  { 
+  {
     last-col .code:n = \tl_if_empty:nTF { #1 }
                          {  
                            \bool_set_true:N \l_@@_last_col_without_value_bool
@@ -5018,6 +5016,17 @@ version 2005/12/01 or later.
       { \bool_set_true:N \l_@@_code_before_bool }
 %    \end{macrocode}
 %
+% The set of keys is not exactly the same for |{NiceArray}| and for the variants
+% of |{NiceArray}| (|{pNiceArray}|, |{bNiceArray}|, etc.) because, for
+% |{NiceArray}|, we have the options |t|, |c|, |b| and |baseline|.
+%    \begin{macrocode}
+    \bool_if:NTF \g_@@_delims_bool 
+      { \keys_set:nn { nicematrix / pNiceArray } }
+      { \keys_set:nn { nicematrix / NiceArray } }
+    { #3 , #5 } 
+%    \end{macrocode}
+%
+%
 % When |overlap=false|, we compose the whole environment in a box
 % |\g_@@_final_box| and the, we will put that box as a node in a |{pgfpicture}|
 % (or |{tikzpicture}|) and we will compose the |\CodeAfter| within that picture
@@ -5032,15 +5041,6 @@ version 2005/12/01 or later.
 %    \end{macrocode}
 %
 % 
-% The set of keys is not exactly the same for |{NiceArray}| and for the variants
-% of |{NiceArray}| (|{pNiceArray}|, |{bNiceArray}|, etc.) because, for
-% |{NiceArray}|, we have the options |t|, |c|, |b| and |baseline|.
-%    \begin{macrocode}
-    \bool_if:NTF \g_@@_delims_bool 
-      { \keys_set:nn { nicematrix / pNiceArray } }
-      { \keys_set:nn { nicematrix / NiceArray } }
-    { #3 , #5 } 
-%    \end{macrocode}
 %
 % 
 %    \begin{macrocode}
@@ -18034,9 +18034,12 @@ version 2005/12/01 or later.
       {
         \str_clear_new:N \l_@@_submatrix_name_str
         \keys_set:nn { nicematrix / SubMatrix } { #5 }
-        \pgfpicture 
-        \pgfrememberpicturepositiononpagetrue
-        \pgf@relevantforpicturesizefalse
+        \bool_if:NT \l_@@_overlap_bool  % 2026/11/10
+          {
+            \pgfpicture 
+            \pgfrememberpicturepositiononpagetrue
+            \pgf@relevantforpicturesizefalse
+          }
         \pgfset { inner~sep = \c_zero_dim }
         \dim_set_eq:NN \l_@@_x_initial_dim \c_max_dim
         \dim_set:Nn \l_@@_x_final_dim { - \c_max_dim }
@@ -18069,7 +18072,7 @@ version 2005/12/01 or later.
               { \@@_impossible_delimiter:n { right } }
               { \@@_sub_matrix_i:nnnn { #1 } { #4 } { #6 } { #7 } }
           }
-        \endpgfpicture
+        \bool_if:NT \l_@@_overlap_bool { \endpgfpicture } % 2026/11/10
       }
     \group_end:
     \ignorespaces

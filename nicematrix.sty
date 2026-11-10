@@ -899,9 +899,7 @@
              { \bool_set_false:N \l__nicematrix_overlap_bool }
           }
           { \bool_set_true:N \l__nicematrix_overlap_bool }
-      }
-      \bool_set_true:N \l__nicematrix_overlap_bool , % added 2026/10/26
-    overlap .value_required:n = true ,
+      } ,
     width-of-false .dim_set:N = \l__nicematrix_width_of_false_dim ,
     width-of-false .value_required:n = true ,
     width-of-false+ .code:n =
@@ -2195,16 +2193,16 @@
       }
     \tl_if_empty:NF \g__nicematrix_pre_code_before_tl
       { \bool_set_true:N \l__nicematrix_code_before_bool }
+    \bool_if:NTF \g__nicematrix_delims_bool
+      { \keys_set:nn { nicematrix / pNiceArray } }
+      { \keys_set:nn { nicematrix / NiceArray } }
+    { #3 , #5 }
     \bool_if:NF \l__nicematrix_overlap_bool
       {
         \box_gclear_new:N \g__nicematrix_final_box % added 2026/10/26
         \hbox_set:Nw \g__nicematrix_final_box      %
         \bool_if:NF \l__nicematrix_tabular_bool { $ } % $
       }
-    \bool_if:NTF \g__nicematrix_delims_bool
-      { \keys_set:nn { nicematrix / pNiceArray } }
-      { \keys_set:nn { nicematrix / NiceArray } }
-    { #3 , #5 }
     \__nicematrix_provide_pgfsyspdfmark:
     \bool_if:NT \g__nicematrix_footnote_bool \savenotes
     \bgroup
@@ -9868,9 +9866,12 @@
       {
         \str_clear_new:N \l__nicematrix_submatrix_name_str
         \keys_set:nn { nicematrix / SubMatrix } { #5 }
-        \pgfpicture
-        \pgfrememberpicturepositiononpagetrue
-        \pgf@relevantforpicturesizefalse
+        \bool_if:NT \l__nicematrix_overlap_bool  % 2026/11/10
+          {
+            \pgfpicture
+            \pgfrememberpicturepositiononpagetrue
+            \pgf@relevantforpicturesizefalse
+          }
         \pgfset { inner~sep = \c_zero_dim }
         \dim_set_eq:NN \l__nicematrix_x_initial_dim \c_max_dim
         \dim_set:Nn \l__nicematrix_x_final_dim { - \c_max_dim }
@@ -9900,7 +9901,7 @@
               { \__nicematrix_impossible_delimiter:n { right } }
               { \__nicematrix_sub_matrix_i:nnnn { #1 } { #4 } { #6 } { #7 } }
           }
-        \endpgfpicture
+        \bool_if:NT \l__nicematrix_overlap_bool { \endpgfpicture } % 2026/11/10
       }
     \group_end:
     \ignorespaces
