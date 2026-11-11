@@ -2471,39 +2471,24 @@ version 2005/12/01 or later.
 \dim_set:Nn \l_@@_width_of_false_dim { 2 pt }
 %    \end{macrocode}
 % 
-% \bigskip
-%    \begin{macrocode}
-\keys_define:nn { nicematrix / xdots }
-  {
-%    \end{macrocode}    
 % When the key |xdots/nullify| is used, the instructions like |\vdots| are
 % inserted within a |\hphantom| (and so the constructed matrix has exactly the
 % same size as a matrix constructed with the classical |{matrix}| and |\ldots|,
 % |\vdots|, etc.).
 %    \begin{macrocode}
+\keys_define:nn { nicematrix / xdots }
+  {
     nullify .bool_set:N = \l_@@_nullify_dots_bool ,
     number-of-dots .int_set:N = \l_@@_number_of_dots_int ,
     number-of-dots .value_required:n = true ,
     brace-shift .dim_set:N = \l_@@_brace_shift_dim ,
-    brace-shift+ .code:n =
-      \dim_add:Nn \l_@@_brace_shift_dim { #1 } ,
-    brace-shift+ .value_required:n = true ,
-    brace-shift~+ .meta:n = { brace-shift+ = #1 } ,
     Vbrace .bool_set:N = \l_@@_Vbrace_bool ,
     shorten-start .code:n = 
       \AtBeginDocument { \dim_set:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
     shorten-start .value_required:n = true ,        
-    shorten-start+ .code:n = 
-      \AtBeginDocument { \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
-    shorten-start~+ .meta:n = { shorten-start += #1 } ,
-    shorten-start+ .value_required:n = true ,
     shorten-end .code:n = 
       \AtBeginDocument { \dim_set:Nn \l_@@_xdots_shorten_end_dim { #1 } } ,
     shorten-end .value_required:n = true ,        
-    shorten-end+ .code:n = 
-      \AtBeginDocument { \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } } ,
-    shorten-end+ .value_required:n = true ,
-    shorten-end~+ .meta:n = { shorten-end += #1 } ,    
     shorten .code:n = 
       \AtBeginDocument 
         { 
@@ -2511,13 +2496,6 @@ version 2005/12/01 or later.
           \dim_set:Nn \l_@@_xdots_shorten_end_dim { #1 } 
         } ,
     shorten .value_required:n = true ,
-    shorten+ .code:n = 
-      \AtBeginDocument 
-        { 
-          \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } 
-          \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } 
-        } ,
-    shorten~+ .meta:n = { shorten+ = #1 } ,            
     horizontal-labels .bool_set:N = \l_@@_xdots_h_labels_bool , 
     horizontal-label .bool_set:N = \l_@@_xdots_h_labels_bool , 
     line-style .code:n = 
@@ -2557,6 +2535,49 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+% \bigskip
+%    \begin{macrocode}
+\str_compare:eNeTF { \ExplLoaderFileDate } < { 2026-11-10 }
+  {
+    \keys_define:nn { nicematrix / xdots }
+      {
+        brace-shift+ .code:n =
+          \dim_add:Nn \l_@@_brace_shift_dim { #1 } ,
+        brace-shift+ .value_required:n = true ,
+        brace-shift~+ .meta:n = { brace-shift+ = #1 } ,
+        shorten-start+ .code:n = 
+          \AtBeginDocument { \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
+        shorten-start~+ .meta:n = { shorten-start += #1 } ,
+        shorten-start+ .value_required:n = true ,
+        shorten-end+ .code:n = 
+          \AtBeginDocument { \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } } ,
+        shorten-end+ .value_required:n = true ,
+        shorten-end~+ .meta:n = { shorten-end += #1 } ,
+        shorten+ .code:n = 
+          \AtBeginDocument 
+            { 
+              \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } 
+              \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } 
+            } ,
+        shorten~+ .meta:n = { shorten+ = #1 }
+      }
+  }
+  {
+    \keys_define:nn { nicematrix / xdots }    
+      {
+        shorten-start .append_method:n = 
+          \AtBeginDocument { \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } } ,
+        shorten-end .append_method:n =
+          \AtBeginDocument { \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } } ,
+        shorten .append_method:n = 
+          \AtBeginDocument 
+            { 
+              \dim_add:Nn \l_@@_xdots_shorten_start_dim { #1 } 
+              \dim_add:Nn \l_@@_xdots_shorten_end_dim { #1 } 
+            } 
+      }
+   }
+%    \end{macrocode}    
 %
 % \bigskip
 %    \begin{macrocode}
@@ -2591,6 +2612,7 @@ version 2005/12/01 or later.
 % First, we define a set of keys ``|nicematrix / Global|'' which will be used
 % (with the mechanism of |.inherit:n|) by other sets of keys.
 %
+%
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Global }
   {
@@ -2606,18 +2628,10 @@ version 2005/12/01 or later.
       } ,
     width-of-false .dim_set:N = \l_@@_width_of_false_dim ,
     width-of-false .value_required:n = true ,
-    width-of-false+ .code:n =
-      \dim_add:Nn \l_@@_width_of_false_dim { #1 } ,
-    width-of-false+ .value_required:n = true ,
-    width-of-false~+ .meta:n = { width-of-false+ = #1 } ,
     color-of-false .tl_set:N = \l_@@_color_of_false_tl ,
     color-of-false .value_required:n = true ,
     fix-vertex .value_forbidden:n = true , 
     brace-shift .dim_set:N = \l_@@_brace_shift_dim ,
-    brace-shift+ .code:n =
-      \dim_add:Nn \l_@@_brace_shift_dim { #1 } ,
-    brace-shift+ .value_required:n = true ,
-    brace-shift~+ .meta:n = { brace-shift+ = #1 } ,
     caption-above .code:n = \@@_error_or_warning:n { caption-above~in~env } , 
     show-cell-names .code = \@@_error_or_warning:n { show-cell-names } ,
     color-inside .code:n = \@@_fatal:n { key~color-inside } ,
@@ -2658,28 +2672,13 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
     standard-cline .bool_set:N = \l_@@_standard_cline_bool ,
     cell-space-top-limit .dim_set:N = \l_@@_cell_space_top_limit_dim ,
-    cell-space-top-limit+ .code:n =
-      \dim_add:Nn \l_@@_cell_space_top_limit_dim { #1 } ,
-    cell-space-top-limit+ .value_required:n = true ,
-    cell-space-top-limit~+ .meta:n = { cell-space-top-limit+ = #1 } ,
     cell-space-bottom-limit .dim_set:N = \l_@@_cell_space_bottom_limit_dim ,
-    cell-space-bottom-limit+ .code:n =
-      \dim_add:Nn \l_@@_cell_space_bottom_limit_dim { #1 } ,
-    cell-space-bottom-limit+ .value_required:n = true ,
-    cell-space-bottom-limit~+ .meta:n = { cell-space-bottom-limit+ = #1 } ,
     cell-space-limits .meta:n = 
       {
         cell-space-top-limit = #1 ,
         cell-space-bottom-limit = #1 ,
       } ,
     cell-space-limits .value_required:n = true ,
-    cell-space-limits+ .meta:n = 
-      {
-        cell-space-top-limit += #1 ,
-        cell-space-bottom-limit += #1 ,
-      } ,
-    cell-space-limits+ .value_required:n = true ,
-    cell-space-limits~+ .meta:n = { cell-space-limits+ = #1 } ,    
     xdots .code:n = \keys_set:nn { nicematrix / xdots } { #1 } , 
     light-syntax .choices:nn = { true , false }
       {
@@ -2718,31 +2717,15 @@ version 2005/12/01 or later.
 
     code-for-first-col .tl_set:N = \l_@@_code_for_first_col_tl ,
     code-for-first-col .value_required:n = true ,
-    code-for-first-col+ .code:n =
-      { \tl_put_right:Nn \l_@@_code_for_first_col_tl { #1 } } ,
-    code-for-first-col+ .value_required:n = true ,
-    code-for-first-col~+ .meta:n = { code-for-first-col+ = #1 } ,
 
     code-for-last-col .tl_set:N = \l_@@_code_for_last_col_tl ,
     code-for-last-col .value_required:n = true ,
-    code-for-last-col+ .code:n =
-      { \tl_put_right:Nn \l_@@_code_for_last_col_tl { #1 } } ,
-    code-for-last-col+ .value_required:n = true ,
-    code-for-last-col~+ .meta:n = { code-for-last-col+ = #1 } ,
 
     code-for-first-row .tl_set:N = \l_@@_code_for_first_row_tl ,
     code-for-first-row .value_required:n = true ,
-    code-for-first-row+ .code:n =
-      { \tl_put_right:Nn \l_@@_code_for_first_row_tl { #1 } } ,
-    code-for-first-row+ .value_required:n = true ,
-    code-for-first-row~+ .meta:n = { code-for-first-row+ = #1 } ,
     
     code-for-last-row .tl_set:N = \l_@@_code_for_last_row_tl ,
     code-for-last-row .value_required:n = true ,
-    code-for-last-row+ .code:n =
-      { \tl_put_right:Nn \l_@@_code_for_first_col_tl { #1 } } ,
-    code-for-last-row+ .value_required:n = true ,
-    code-for-last-row~+ .meta:n = { code-for-last-row+ = #1 } ,
     
     hlines .clist_set:N = \l_@@_hlines_clist ,
     hlines .default:n = all ,
@@ -2825,6 +2808,64 @@ version 2005/12/01 or later.
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\str_compare:eNeTF { \ExplLoaderFileDate } < { 2026-11-10 }
+  {
+    \keys_define:nn { nicematrix / Global }
+      {
+        cell-space-limits+ .meta:n = 
+          {
+            cell-space-top-limit += #1 ,
+            cell-space-bottom-limit += #1 ,
+          } ,
+        cell-space-limits+ .value_required:n = true ,
+        cell-space-limits~+ .meta:n = { cell-space-limits+ = #1 } ,
+        width-of-false+ .code:n =
+          \dim_add:Nn \l_@@_width_of_false_dim { #1 } ,
+        width-of-false+ .value_required:n = true ,
+        width-of-false~+ .meta:n = { width-of-false+ = #1 } ,
+        brace-shift+ .code:n =
+          \dim_add:Nn \l_@@_brace_shift_dim { #1 } ,
+        brace-shift+ .value_required:n = true ,
+        brace-shift~+ .meta:n = { brace-shift+ = #1 } ,
+        cell-space-top-limit+ .code:n =
+          \dim_add:Nn \l_@@_cell_space_top_limit_dim { #1 } ,
+        cell-space-top-limit+ .value_required:n = true ,
+        cell-space-top-limit~+ .meta:n = { cell-space-top-limit+ = #1 } ,
+        cell-space-bottom-limit+ .code:n =
+          \dim_add:Nn \l_@@_cell_space_bottom_limit_dim { #1 } ,
+        cell-space-bottom-limit+ .value_required:n = true ,
+        cell-space-bottom-limit~+ .meta:n = { cell-space-bottom-limit+ = #1 } ,
+        code-for-first-col+ .code:n =
+          { \tl_put_right:Nn \l_@@_code_for_first_col_tl { #1 } } ,
+        code-for-first-col+ .value_required:n = true ,
+        code-for-first-col~+ .meta:n = { code-for-first-col+ = #1 } ,
+        code-for-last-col+ .code:n =
+          { \tl_put_right:Nn \l_@@_code_for_last_col_tl { #1 } } ,
+        code-for-last-col+ .value_required:n = true ,
+        code-for-last-col~+ .meta:n = { code-for-last-col+ = #1 } ,
+        code-for-first-row+ .code:n =
+          { \tl_put_right:Nn \l_@@_code_for_first_row_tl { #1 } } ,
+        code-for-first-row+ .value_required:n = true ,
+        code-for-first-row~+ .meta:n = { code-for-first-row+ = #1 } ,
+        code-for-last-row+ .code:n =
+          { \tl_put_right:Nn \l_@@_code_for_first_col_tl { #1 } } ,
+        code-for-last-row+ .value_required:n = true ,
+        code-for-last-row~+ .meta:n = { code-for-last-row+ = #1 }
+      }
+  }
+  {      
+    \keys_define:nn { nicematrix / Global }      
+      {
+        cell-space-limits .append_method:n = 
+          {
+            \dim_add:Nn \l_@@_cell_space_top_limit_dim { #1 } 
+            \dim_add:Nn \l_@@_cell_space_bottom_limit_dim { #1 }
+          } 
+      }
+  }
+%    \end{macrocode}
+%
 % \bigskip
 % We define a set of keys used by the environments of \pkg{nicematrix} (but not
 % by the command |\NiceMatrixOptions|). 
@@ -2897,6 +2938,7 @@ version 2005/12/01 or later.
   { \@@_error:nn { Duplicate~name } { #1 } }
 %    \end{macrocode}
 % 
+% 
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / notes }
   {
@@ -2904,12 +2946,6 @@ version 2005/12/01 or later.
     para .bool_set:N = \l_@@_notes_para_bool ,
     code-before .tl_set:N = \l_@@_notes_code_before_tl ,
     code-before .value_required:n = true ,
-    code-before+ .code:n =
-      \tl_put_right:Nn \l_@@_note_code_before_tl { #1 } ,
-    code-before+ .value_required:n = true ,
-    code-before~+ .code:n =
-      \tl_put_right:Nn \l_@@_note_code_before_tl { #1 } ,
-    code-before~+ .value_required:n = true ,
     code-after .tl_set:N = \l_@@_notes_code_after_tl ,
     code-after .value_required:n = true ,
     bottomrule .bool_set:N = \l_@@_notes_bottomrule_bool ,
@@ -2941,7 +2977,22 @@ version 2005/12/01 or later.
     unknown .code:n  =
       \@@_unknown_key:nn { nicematrix / notes } { Unknown~key~for~notes } 
   }
-%    \end{macrocode}  
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\str_compare:eNeT { \ExplLoaderFileDate } < { 2026-11-10 }
+  {
+    \keys_define:nn { nicematrix / notes }
+      {
+        code-before+ .code:n =
+          \tl_put_right:Nn \l_@@_note_code_before_tl { #1 } ,
+        code-before+ .value_required:n = true ,
+        code-before~+ .code:n =
+          \tl_put_right:Nn \l_@@_note_code_before_tl { #1 } ,
+        code-before~+ .value_required:n = true
+      }
+  }
+%    \end{macrocode}
 %
 % \bigskip
 % Sometimes, we want to have several arrays vertically juxtaposed in order to
@@ -8407,6 +8458,11 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \clist_map_inline:nn { p , b , B , v , V }
   {
+%    \end{macrocode}
+% You catch the potential options (between square brackets) right now (those options
+% won't be catched by |\NiceArrayWithDelims| (|{xNiceMatrix}| uses |{xNiceArray}| which
+% uses |\NiceArrayWithDelims| (and |\endNiceArrayWithDelims|).
+%    \begin{macrocode}
     \NewDocumentEnvironment { #1 NiceMatrix } { ! O { } }
       {
         \bool_gset_true:N \g_@@_delims_bool 
@@ -11591,30 +11647,17 @@ version 2005/12/01 or later.
 \cs_generate_variant:Nn \@@_put_in_row_style:n { e }
 %    \end{macrocode}
 % \medskip
+% 
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / RowStyle }
   {
     cell-space-top-limit .dim_set:N = \l_tmpa_dim ,
-    cell-space-top-limit+ .code:n =
-      \dim_set:Nn \l_tmpa_dim { \l_@@_cell_space_top_limit_dim + #1 } ,
-    cell-space-top-limit+ .value_required:n = true ,
-    cell-space-top-limit~+ .meta:n = { cell-space-top-limit+ = #1 } ,
     cell-space-bottom-limit .dim_set:N = \l_tmpb_dim ,
-    cell-space-bottom-limit+ .code:n =
-      \dim_set:Nn \l_tmpb_dim { \l_@@_cell_space_bottom_limit_dim + #1 } ,
-    cell-space-bottom-limit+ .value_required:n = true ,
-    cell-space-bottom-limit~+ .meta:n = { cell-space-bottom-limit+ = #1 } ,
     cell-space-limits .meta:n = 
       {
         cell-space-top-limit = #1 ,
         cell-space-bottom-limit = #1 ,
       } ,
-    cell-space-limits+ .meta:n = 
-      {
-        cell-space-top-limit += #1 ,
-        cell-space-bottom-limit += #1 ,
-      } ,
-    cell-space-limits~+ .meta:n = { cell-space-limits+ = #1 } ,
     color .tl_set:N = \l_@@_color_tl ,
     color .value_required:n = true ,
     bold .bool_set:N = \l_@@_bold_row_style_bool ,
@@ -11638,6 +11681,39 @@ version 2005/12/01 or later.
       \@@_unknown_key:nn
         { nicematrix / RowStyle }
         { Unknown~key~for~RowStyle } 
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\str_compare:eNeTF { \ExplLoaderFileDate } < { 2026-11-10 }
+  {
+    \keys_define:nn { nicematrix / RowStyle }
+      {
+        cell-space-top-limit+ .code:n =
+          \dim_set:Nn \l_tmpa_dim { \l_@@_cell_space_top_limit_dim + #1 } ,
+        cell-space-top-limit+ .value_required:n = true ,
+        cell-space-top-limit~+ .meta:n = { cell-space-top-limit+ = #1 } ,
+        cell-space-bottom-limit+ .code:n =
+          \dim_set:Nn \l_tmpb_dim { \l_@@_cell_space_bottom_limit_dim + #1 } ,
+        cell-space-bottom-limit+ .value_required:n = true ,
+        cell-space-bottom-limit~+ .meta:n = { cell-space-bottom-limit+ = #1 } ,
+        cell-space-limits+ .meta:n = 
+          {
+            cell-space-top-limit += #1 ,
+            cell-space-bottom-limit += #1 ,
+          } ,
+        cell-space-limits~+ .meta:n = { cell-space-limits+ = #1 }
+      }
+ }
+ {
+    \keys_define:nn { nicematrix / RowStyle }      
+      {
+        cell-space-limits .append_method:n = 
+          {
+            \dim_add:Nn \l_@@_cell_space_top_limit_dim { #1 } 
+            \dim_add:Nn \l_@@_cell_space_bottom_limit_dim { #1 }
+          } 
+      }
   }
 %    \end{macrocode}
 %
@@ -18804,6 +18880,7 @@ version 2005/12/01 or later.
 % \bigskip
 % The following set of keys will be used only for security since the keys will
 % be sent to the command |\Ldots| or |\Vdots|.
+%
 %    \begin{macrocode}
 \keys_define:nn { nicematrix / Hbrace }
   {
@@ -18813,16 +18890,34 @@ version 2005/12/01 or later.
     shorten .code:n = ,
     shorten-start .code:n = , 
     shorten-end .code:n = ,
-    shorten+ .code:n = ,
-    shorten-start+ .code:n = , 
-    shorten-end+ .code:n = ,
-    shorten~+ .code:n = ,
-    shorten-start~+ .code:n = , 
-    shorten-end~+ .code:n = ,
     brace-shift .code:n = ,
-    brace-shift+ .code:n = ,
-    brace-shift~+ .code:n = ,    
     unknown .code:n = \@@_fatal:n { Unknown~key~for~Hbrace } 
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\str_compare:eNeTF { \ExplLoaderFileDate } < { 2026-11-10 }
+  { 
+    \keys_define:nn { nicematrix / Hbrace }
+      {
+        shorten+ .code:n = ,
+        shorten-start+ .code:n = , 
+        shorten-end+ .code:n = ,
+        shorten~+ .code:n = ,
+        shorten-start~+ .code:n = , 
+        shorten-end~+ .code:n = ,
+        brace-shift+ .code:n = ,
+        brace-shift~+ .code:n =
+      }
+  }
+  { 
+    \keys_define:nn { nicematrix / Hbrace }
+      {
+        shorten .append_method:n = ,
+        shorten-start .append_method:n = , 
+        shorten-end .append_method:n = ,
+        brace-shift .append_method:n = ,
+      }
   }
 %    \end{macrocode}
 % 
@@ -20240,7 +20335,7 @@ version 2005/12/01 or later.
     Unknown~key.\\
     You~have~used~the~key~' \l_keys_key_str '~but~the~only~
     keys~allowed~for~the~commands~ \token_to_str:N \Hbrace \
-    and~ \token_to_str:N \Vbrace \ are:~'brace-shift(+)',~'color',~
+    and~ \token_to_str:N \Vbrace \ are:~'brace-shift',~'color',~
     'horizontal-label(s)',~'shorten'~'shorten-end'~
     and~'shorten-start'.
   }
@@ -21103,7 +21198,7 @@ version 2005/12/01 or later.
     The~available~keys~are~(in~alphabetic~order):~
     bottomrule,~
     code-after,~
-    code-before(+),~
+    code-before,~
     detect-duplicates,~
     enumitem-keys,~
     enumitem-keys-para,~
@@ -21125,9 +21220,9 @@ version 2005/12/01 or later.
   { 
     The~available~keys~are~(in~alphabetic~order):~
     bold,~
-    cell-space-top-limit(+),~
-    cell-space-bottom-limit(+),~
-    cell-space-limits(+),~
+    cell-space-top-limit,~
+    cell-space-bottom-limit,~
+    cell-space-limits,~
     color,~
     fill~(alias:~rowcolor),~
     nb-rows,~
@@ -21150,14 +21245,14 @@ version 2005/12/01 or later.
     allow-duplicate-names,~
     ampersand-in-blocks,~
     caption-above,~
-    cell-space-bottom-limit(+),~
-    cell-space-limits(+),~
-    cell-space-top-limit(+),~
+    cell-space-bottom-limit,~
+    cell-space-limits,~
+    cell-space-top-limit,~
     color-of-false,~
-    code-for-first-col(+),~
-    code-for-first-row(+),~
-    code-for-last-col(+),~
-    code-for-last-row(+),~
+    code-for-first-col,~
+    code-for-first-row,~
+    code-for-last-col,~
+    code-for-last-row,~
     corners,~
     custom-key,~
     create-extra-nodes,~
@@ -21189,7 +21284,7 @@ version 2005/12/01 or later.
     small,~
     sub-matrix~(several~subkeys),~
     vlines,~
-    width-of-false(+),~
+    width-of-false,~
     xdots~(several~subkeys).
   }
 %    \end{macrocode}
@@ -21215,10 +21310,10 @@ version 2005/12/01 or later.
     cell-space-limits,~
     cell-space-top-limit,~
     code-after,~
-    code-for-first-col(+),~
-    code-for-first-row(+),~
-    code-for-last-col(+),~
-    code-for-last-row(+),~
+    code-for-first-col,~
+    code-for-first-row,~
+    code-for-last-col,~
+    code-for-last-row,~
     color-of-false,~
     columns-width,~
     corners,~
@@ -21250,11 +21345,11 @@ version 2005/12/01 or later.
     small,~
     t,~
     vlines,~
-    width-of-false(+),~    
+    width-of-false,~    
     xdots/color,~
-    xdots/shorten-start(+),~
-    xdots/shorten-end(+),~
-    xdots/shorten(+)~and~
+    xdots/shorten-start,~
+    xdots/shorten-end,~
+    xdots/shorten~and~
     xdots/line-style.
   }
 %    \end{macrocode}
@@ -21282,10 +21377,10 @@ version 2005/12/01 or later.
     cell-space-limits,~
     cell-space-top-limit,~
     code-after,~
-    code-for-first-col(+),~
-    code-for-first-row(+),~
-    code-for-last-col(+),~
-    code-for-last-row(+),~
+    code-for-first-col,~
+    code-for-first-row,~
+    code-for-last-col,~
+    code-for-last-row,~
     color-of-false,~
     columns-type,~
     columns-width,~
@@ -21320,11 +21415,11 @@ version 2005/12/01 or later.
     small,~
     t,~
     vlines,~
-    width-of-false(+),~    
+    width-of-false,~    
     xdots/color,~
-    xdots/shorten-start(+),~
-    xdots/shorten-end(+),~
-    xdots/shorten(+)~and~
+    xdots/shorten-start,~
+    xdots/shorten-end,~
+    xdots/shorten~and~
     xdots/line-style.
   }
 %    \end{macrocode}
@@ -21349,10 +21444,10 @@ version 2005/12/01 or later.
     cell-space-limits,~
     cell-space-top-limit,~
     code-after,~
-    code-for-first-col(+),~
-    code-for-first-row(+),~
-    code-for-last-col(+),~
-    code-for-last-row(+),~
+    code-for-first-col,~
+    code-for-first-row,~
+    code-for-last-col,~
+    code-for-last-row,~
     color-of-false,~
     columns-width,~
     corners,~
@@ -21388,11 +21483,11 @@ version 2005/12/01 or later.
     t,~
     tabularnote,~
     vlines,~
-    width-of-false(+),~
+    width-of-false,~
     xdots/color,~
-    xdots/shorten-start(+),~
-    xdots/shorten-end(+),~
-    xdots/shorten(+)~and~
+    xdots/shorten-start,~
+    xdots/shorten-end,~
+    xdots/shorten~and~
     xdots/line-style.
   }
 %    \end{macrocode}

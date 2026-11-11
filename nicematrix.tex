@@ -172,8 +172,9 @@
 
 
 \title{The package \pkg{nicematrix}\thanks{This document corresponds to the
-    version~\myfileversion\space of \pkg{nicematrix}, at the date of~\myfiledate.}} 
-\author{F. Pantigny \\ \texttt{fpantigny@wanadoo.fr}}
+    version~\myfileversion\space of \pkg{nicematrix}, at the date
+    of~\myfiledate.}} \author{F. Pantigny \\
+  \texttt{fpantigny@wanadoo.fr}}
 
 
 \maketitle
@@ -365,8 +366,8 @@ $\begin{pmatrix}
 \bigskip
 \index{cellspace@\pkg{cellspace} (package)}
 Inspired by the package \pkg{cellspace} which deals with that problem, the
-package \pkg{nicematrix} provides two keys \Definition{cell-space-top-limit}$^+$
-and \Definition{cell-space-bottom-limit}$^+$ similar to the parameters of
+package \pkg{nicematrix} provides two keys \Definition{cell-space-top-limit}
+and \Definition{cell-space-bottom-limit} similar to the parameters of
 \pkg{cellspace} called |\cellspacetoplimit| and
 |\cellspacebottomlimit|.\footnote{One should remark that these parameters apply
   also to the columns of type |S| of \pkg{siunitx} whereas the package
@@ -376,13 +377,8 @@ and \Definition{cell-space-bottom-limit}$^+$ similar to the parameters of
 The initial values of these parameters is $0$~pt.
 
 \smallskip
-There is also a key \Definition{cell-space-limits}$^+$ to set both parameters at
+There is also a key \Definition{cell-space-limits} to set both parameters at
 once.
-
-\smallskip
-All these keys have a normal syntax but also an ``additive'' syntax. That means that it's
-possible to write, for example, |cell-space-limits = 2pt| but also |cell-space-limits += 1pt|.
-
 
 \medskip
 \begin{Code}[width=9cm,show-output]
@@ -2187,7 +2183,7 @@ provides a command |\FalseRow| and a letter |F|.
 
 \smallskip
 The command |\FalseRow| must be used after a command |\\| of end of row. It
-creates a new empty row with a height equal to \Definition{width-of-false}$^+$ (the
+creates a new empty row with a height equal to \Definition{width-of-false} (the
 initial value of that parameter is 2~pt, which is the initial value of
 |\doublerulesep|). The rules and the colored backgrounds won't be drawn in that
 row.
@@ -2832,8 +2828,8 @@ a list of \textsl{key=value} pairs.
 The key \Definition{nb-rows} sets the number of rows to which the specifications of
 the current command will apply (with the special value |*|, it will apply to all
 the following rows).
-\item The keys \Definition{cell-space-top-limit}$^+$, \Definition{cell-space-bottom-limit}$^+$
-and \Definition{cell-space-limits}$^+$ are available with the same meaning that the
+\item The keys \Definition{cell-space-top-limit}, \Definition{cell-space-bottom-limit}
+and \Definition{cell-space-limits} are available with the same meaning that the
 corresponding global keys (cf.~\ref{cell-space}, p.~\pageref{cell-space}).
 \item \index{rowcolor (key of \texttt{\textbackslash RowStyle})}
 \index{fill!key of \texttt{\textbackslash RowStyle}}
@@ -2844,11 +2840,6 @@ background and \Definition{opacity}\footnote{Caution: that feature creates instr
   transparency in the \textsc{pdf} and some readers of \textsc{pdf} don't
   support such instructions. The opacity is applied by using |\pgfsetfillopacity|.}
 sets its opacity.
-
-\medskip
-These commands have a normal syntax but also an ``additive'' syntax. That means that it's
-possible to write, for example, |cell-space-limits = 2pt| but also |cell-space-limits += 1pt|.
-
 
 \item If the key \Definition{rounded-corners} is used, that background will have
 rounded corners.
@@ -3230,16 +3221,10 @@ what we will do throughout the rest of the document.
 \index{code-for-last-row}
 \index{code-for-last-col}
 It's possible to control the appearance of these rows and columns with options
-\Definition{code-for-first-row}$^+$, \Definition{code-for-last-row}$^+$,
-\Definition{code-for-first-col}$^+$ and \Definition{code-for-last-col}$^+$. These
+\Definition{code-for-first-row}, \Definition{code-for-last-row},
+\Definition{code-for-first-col} and \Definition{code-for-last-col}. These
 options specify tokens that will be inserted before each cell of the
 corresponding row or column.
-
-
-Those keys have a normal syntax but also an ``additive'' syntax. For example, it's
-possible to write |code-for-first-row = \color{blue}| but also
-|code-for-first-row += \color{blue}| (in the latter case, the tokens are appended on the
-right of the current value of the parameter).
 
 \bigskip
 \begin{Code}[show-output]
@@ -3669,7 +3654,7 @@ p.~\pageref{line-in-code-after}) may be customized by the following options
 \item |horizontal-label(s)|;
 \item |color|;
 \item |radius|;
-\item |shorten-start|$^+$, |shorten-end|$^+$ and |shorten|$^+$;
+\item |shorten-start|, |shorten-end| and |shorten|;
 \item |inter|;
 \item |number-of-dots|;
 \item |line-style|.
@@ -3689,7 +3674,7 @@ must be prefixed by |xdots| (\textsl{xdots} to remind that it works for
 \item |xdots/horizontal-labels|;
 \item |xdots/color|;
 \item |xdots/radius|;
-\item |xdots/shorten-start|$^+$, |xdots/shorten-end|$^+$ and |xdots/shorten|$^+$;
+\item |xdots/shorten-start|, |xdots/shorten-end| and |xdots/shorten|;
 \item |xdots/inter|;
 \item |xdots/number-of-dots|;
 \item |xdots/line-style|.
@@ -3717,8 +3702,8 @@ The option \Definition{xdots/radius} fixes the radius of the dots. The initial v
 is 0.53~pt.
 
 \bigskip
-The keys \Definition{xdots/shorten-start}$^+$ and \Definition{xdots/shorten-end}$^+$ fix
-the margin at the extremities of the line. The key |xdots/shorten|$^+$ fixes both
+The keys \Definition{xdots/shorten-start} and \Definition{xdots/shorten-end} fix
+the margin at the extremities of the line. The key |xdots/shorten| fixes both
 parameters. The initial value is 0.3~em.\footnote{In fact, when 
   |xdots/shorten|, |xdots/shorten-start| and |xdots/shorten-end| are used in
   |\NiceMatrixOptions| or at the level of an environment (such as
@@ -3726,11 +3711,6 @@ parameters. The initial value is 0.3~em.\footnote{In fact, when
   corresponding to a non-empty content of a cell. When they are used for a command
   such as |\Cdots| (and, in that case, their names are |shorten|,
   |shorten-start| and |shorten-end|), they apply to all the extremities.}
-
-\medskip
-These keys have a normal syntax but also a ``additive'' syntax. That means that
-it's possible to write, for example, |xdots/shorten = 0.6em| but also
-|xdots/shorten += 3pt| (ant we remind that the initial value is \emph{not} zero!).
 
 \bigskip
 The option \Definition{xdots/inter} fixes the length between the dots. The
@@ -3858,10 +3838,8 @@ three arguments:
 \smallskip
 \index{brace-shift (key of \texttt{\textbackslash Hbrace} and \texttt{\textbackslash Vbrace})}
 
-A key \Definition{brace-shift}$^+$ is also provided to shift the brace (and its
-label) towards the exterior of the matrix. That key has a normal syntax but also an
-``additive'' syntax, which means that it's possible to write, for example,
-|brace-shift = 3pt| but also |brace-shift += 1pt|.
+A key \Definition{brace-shift} is also provided to shift the brace (and its
+label) towards the exterior of the matrix. 
 
 \item a mandatory argument which is the number of columns (for |\Hbrace|) or the
 number of rows (for |\Vbrace|) over which the command applies;
@@ -4967,7 +4945,7 @@ Initially, the style of list is defined by:\quad
 |afterlabel = \nobreak, itemjoin = \quad|
 
 
-\item The key \Definition{notes/code-before}$^+$ is a token list inserted by
+\item The key \Definition{notes/code-before} is a token list inserted by
 \pkg{nicematrix} just before the composition of the notes at the end of the tabular.
 
 Initial value: \textsl{empty}
@@ -4979,11 +4957,6 @@ he should use that key:
 \end{Verbatim}
 It's also possible to add |\raggedright| or |\RaggedRight| in that key (|\RaggedRight|
 is a command of \pkg{ragged2e}).
-
-The key |nodes/code-before| has a normal syntax, but also an ``additive syntax'',
-which means that it's possible to write, for example
-|notes/code-before += \footnotesize|. With that syntax, the tokens are appended
-on the \emph{right} of the current value of the parameter |notes/code-before|.
 
 \item The key \Definition{notes/detect-duplicates} activates the detection of
 the commands |\tabularnotes| with the same argument.
@@ -7564,9 +7537,15 @@ Of course, if you have to draw many diagrams like this one, you should consider 
 dedicated package, such as \pkg{atableau}.
 
 
+\vfill
+The site \verb|tikz.dev| provides a HTML version of this document:
+\url{https://tikz.dev/nicematrix}
+
 \newpage
 \vspace{1cm}
 \section*{History}
+
+
 
 The development of the package \pkg{nicematrix} is done in the following GitHub
 depot:

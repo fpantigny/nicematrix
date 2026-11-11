@@ -406,8 +406,8 @@ $\begin{pmatrix}
 
 \medskip
 En s'inspirant de l'extension \pkg{cellspace} qui traite de ce problème,
-l'extension \pkg{nicematrix} propose deux clés \Definition{cell-space-top-limit}$^+$
-et \Definition{cell-space-bottom-limit}$^+$ qui sont similaires aux deux paramètres
+l'extension \pkg{nicematrix} propose deux clés \Definition{cell-space-top-limit}
+et \Definition{cell-space-bottom-limit} qui sont similaires aux deux paramètres
 |\cellspacetoplimit| et |\cellspacebottomlimit| proposés par \pkg{cellspace}.\footnote{On
   remarquera que ces paramètres s'appliquent aussi aux colonnes de type |S| de
   \pkg{siunitx} alors que \pkg{cellspace} n'est pas utilisable avec ces
@@ -420,13 +420,8 @@ La valeur initiale de ces paramètres vaut $0$ pt.
 \index{cellspace@\pkg{cellspace} (extension)}
 
 \smallskip
-Il existe aussi une clé \Definition{cell-space-limits}$^+$ pour régler simultanément
+Il existe aussi une clé \Definition{cell-space-limits} pour régler simultanément
 les deux paramètres.
-
-\smallskip
-Ces clés acceptent une syntaxe normale et une syntaxe «additive», c'est-à-dire
-que l'on peut écrire, par exemple, |cell-space-limits = 3pt| ou
-|cell-space-limits += 2pt|.
 
 \medskip
 \begin{Code}[width=9cm,show-output,no-cell-nodes]
@@ -2299,7 +2294,7 @@ propose une commande |\FalseRow| et une lettre |F|.
 \smallskip
 La commande |\FalseRow| est à utiliser après une commande |\\| de fin de rangée.
 Elle crée une nouvelle rangée vide dans la hauteur est égale au paramètre
-\Definition{width-of-false}$^+$ (la valeur initiale de ce paramètre est égale à
+\Definition{width-of-false} (la valeur initiale de ce paramètre est égale à
 2~pt, qui est la valeur initiale de |\doublerulesep|). Les filets et les fonds
 colorés ne s'appliqueront pas dans cette rangée.
 
@@ -2970,8 +2965,8 @@ couples \textsl{clé=valeur}.
 La clé \Definition{nb-rows} indique le nombre de rangées consécutives concernées par
 les spécifications de cette commande (une valeur |*| signifie que toutes les
 rangées restantes seront concernées).
-\item Les clés \Definition{cell-space-top-limit}$^+$,
-\Definition{cell-space-bottom-limit}$^+$ et \Definition{cell-space-limits}$^+$
+\item Les clés \Definition{cell-space-top-limit},
+\Definition{cell-space-bottom-limit} et \Definition{cell-space-limits}
 sont disponibles avec le même effet que les clés globales de même nom
 (cf.~\ref{cell-space-limits}, p.~\pageref{cell-space-limits}).
 
@@ -3378,14 +3373,10 @@ C'est ce que nous ferons dans la suite.
 \index{code-for-last-col}
 
 On peut contrôler l'apparence de ces rangées et colonnes avec les options
-\Definition{code-for-first-row}$^+$, \Definition{code-for-last-row}$^+$,
-\Definition{code-for-first-col}$^+$ et \Definition{code-for-last-col}$^+$. Ces
+\Definition{code-for-first-row}, \Definition{code-for-last-row},
+\Definition{code-for-first-col} et \Definition{code-for-last-col}. Ces
 options sont des listes de tokens qui seront insérées au début de chaque case de
-la rangée ou de la colonne considérée. Ces clés ont une syntaxe normale mais
-aussi une syntaxe «additive», ce qui fait que l'on peut écrire, par exemple
-|code-for-first-row = \color{blue}| mais aussi
-|code-for-first-row += \color{blue}| (dans ce cas-là, les tokens sont ajoutés
-à droite de la valeur courante du paramètre).
+la rangée ou de la colonne considérée. 
 
 \bigskip
 \begin{Code}[show-output]
@@ -3827,7 +3818,7 @@ après la commande) :
 \item |horizontal-label(s)| ;
 \item |color| ;
 \item |radius| ; 
-\item |shorten-start|$^+$, |shorten-end|$^+$ et |shorten|$^+$ ;
+\item |shorten-start|, |shorten-end| et |shorten| ;
 \item |inter| ;
 \item |number-of-dots| ;
 \item |line-style|
@@ -3848,7 +3839,7 @@ niveau d'un environnement mais elles doivent alors être préfixées par |xdots|
 \item |xdots/horizontal-labels| ;
 \item |xdots/color| ;
 \item |xdots/radius| ;
-\item |xdots/shorten-start|$^+$, |xdots/shorten-end|$^+$ et |xdots/shorten|$^+$ ;
+\item |xdots/shorten-start|, |xdots/shorten-end| et |xdots/shorten| ;
 \item |xdots/inter| ;
 \item |xdots/number-of-dots| ;
 \item |xdots/line-style|.
@@ -3876,19 +3867,14 @@ L'option \Definition{xdots/radius} correspond au rayon des points circulaires qu
 tracés. La valeur initiale est $0.53$~pt.
 
 \medskip
-Les clés \Definition{xdots/shorten-start}$^+$ et \Definition{xdots/shorten-end}$^+$
+Les clés \Definition{xdots/shorten-start} et \Definition{xdots/shorten-end}
 indiquent la marge qui est laissée aux deux extrémités de la ligne. La clé
-\Definition{xdots/shorten}$^+$ fixe les deux clés simultanément. La valeur initiale
+\Definition{xdots/shorten} fixe les deux clés simultanément. La valeur initiale
 de $0.3$~em.\footnote{En fait, quand on utilise ces clés au niveau de
   |\NiceMatrixOptions| ou bien d'un environnement, seules les extrémités des
   lignes qui s'arrêtent au niveau d'un contenu non vide de case sont concernées.
   Quand on les utilise sur une commande |\Cdots| (ou |\Vdots|, etc.), toutes les 
   extrémités sont concernées.}
-
-Ces clés acceptent une syntaxe normale et une syntaxe «additive», c'est-à-dire
-que l'on peut écrire, par exemple, |xdots/shorten = 0.6em| ou |xdots/shorten += 4pt|
-(et on rappelle que la valeur initiale n'est pas nulle !).
-
 
 \medskip
 L'option \Definition{xdots/inter} indique la distance entre deux points. La
@@ -4021,10 +4007,8 @@ arguments:
 
 \smallskip
 \index{brace-shift (clé de \texttt{\textbackslash Hbrace} et \texttt{\textbackslash Vbrace})}
-Il existe aussi une clé \Definition{brace-shift}$^+$ pour déplacer l'accolade (et
-son label) vers l'extérieur de la matrice. Cette clé accepte une syntaxe normale
-et une syntaxe «additive», c'est-à-dire que l'on peut écrire, par exemple,
-|brace-shift = 3pt| ou |brace-shift += 2pt|.
+Il existe aussi une clé \Definition{brace-shift} pour déplacer l'accolade (et
+son label) vers l'extérieur de la matrice. 
 
 
 \item un deuxième argument, obligatoire, qui est le nombre de colonnes (pour
@@ -5037,7 +5021,7 @@ disponibles dans |\NiceMatrixOptions|. Ces clés ont un nom préfixé par |notes
 \item |notes/label-in-list|
 \item |notes/enumitem-keys|
 \item |notes/enumitem-keys-para|
-\item |notes/code-before|$^+$
+\item |notes/code-before|
 \item |notes/detect-duplicates|
 \item |notes/no-print|
 \end{itemize}
@@ -5164,7 +5148,7 @@ Initialement, le style de liste utilisé est défini par :\quad
 |afterlabel = \nobreak, itemjoin = \quad|
 
 
-\item La clé \Definition{notes/code-before}$^+$ est une liste de tokens qui seront
+\item La clé \Definition{notes/code-before} est une liste de tokens qui seront
 insérés avant la composition de la liste de notes.
 
 Valeur initiale : \textsl{vide}
@@ -5176,10 +5160,6 @@ Si on souhaite, par exemple, que les notes soient composées en gris et en
 \end{Verbatim}
 On peut aussi mettre dans cette clé |\raggedright| ou |\RaggedRight| (cette
 dernière est une commande de \pkg{ragged2e}).
-
-Cette clé admet une syntaxe normale mais aussi une syntaxe «additive», c'est-à-dire
-que l'on peut écrire, par exemple, |notes/code-before += \footnotesize| (les tokens rajoutés
-sont alors rajoutés à \emph{droite} de la valeur courante du paramètre).
 
 \item La clé \Definition{notes/detect-duplicates} active la détection des
 commandes |\tabularnote| qui ont le même argument (et alors une seule note est écrite sous le
@@ -7775,9 +7755,14 @@ extension dédiée comme \pkg{atableau}.
 
 \section*{Autre documentation}
 
+
+
 Le document |nicematrix.pdf| (fourni avec l'extension \pkg{nicematrix}) contient
 une traduction anglaise de la documentation ici présente ainsi qu'un historique
 des versions.
+
+Le site |tikz.dev| propose une version HTML de ce document :
+\url{https://tikz.dev/nicematrix}
 
 Le document |nicematrix-code.pdf| (fourni également avec l'extension
 \pkg{nicematrix}) contient le code LaTeX commenté (à partir du fichier
