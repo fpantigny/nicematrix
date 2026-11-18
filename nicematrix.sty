@@ -18,8 +18,8 @@
 %% and version 1.3 or later is part of all distributions of
 %% LaTeX version 2005/12/01 or later.
 %% 
-\def\myfileversion{7.13}
-\def\myfiledate{2026/11/09}
+\def\myfileversion{7.13a}
+\def\myfiledate{2026/11/18}
 \RequirePackage{pgfcore}
 \usepgfmodule{shapes}
 \ProvidesExplPackage
@@ -848,7 +848,7 @@
     unknown .code:n =
       \__nicematrix_unknown_key:nn { nicematrix / xdots } { Unknown~key~for~xdots }
   }
-\str_compare:eNeTF { \ExplLoaderFileDate } < { 2026-11-10 }
+\str_compare:eNeTF { \ExplFileDate } < { 2026-11-10 }
   {
     \keys_define:nn { nicematrix / xdots }
       {
@@ -957,10 +957,10 @@
     standard-cline .bool_set:N = \l__nicematrix_standard_cline_bool ,
     cell-space-top-limit .dim_set:N = \l__nicematrix_cell_space_top_limit_dim ,
     cell-space-bottom-limit .dim_set:N = \l__nicematrix_cell_space_bottom_limit_dim ,
-    cell-space-limits .meta:n =
+    cell-space-limits .code:n =
       {
-        cell-space-top-limit = #1 ,
-        cell-space-bottom-limit = #1 ,
+        \dim_set:Nn \l__nicematrix_cell_space_top_limit_dim { #1 }
+        \dim_set:Nn \l__nicematrix_cell_space_bottom_limit_dim { #1 }
       } ,
     cell-space-limits .value_required:n = true ,
     xdots .code:n = \keys_set:nn { nicematrix / xdots } { #1 } ,
@@ -1057,12 +1057,19 @@
     left-margin .default:n = \arraycolsep ,
     right-margin .dim_set:N = \l__nicematrix_right_margin_dim ,
     right-margin .default:n = \arraycolsep ,
-    margin .meta:n = { left-margin = #1 , right-margin = #1 } ,
+    margin .code:n =
+      {
+        \dim_set:Nn \l__nicematrix_left_margin_dim { #1 }
+        \dim_set:Nn \l__nicematrix_right_margin_dim { #1 }
+      } ,
     margin .default:n = \arraycolsep ,
     extra-left-margin .dim_set:N = \l__nicematrix_extra_left_margin_dim ,
     extra-right-margin .dim_set:N = \l__nicematrix_extra_right_margin_dim ,
-    extra-margin .meta:n =
-      { extra-left-margin = #1 , extra-right-margin = #1 } ,
+    extra-margin .code:n =
+      {
+        \dim_set:Nn \l__nicematrix_extra_right_margin_dim { #1 }
+        \dim_set:Nn \l__nicematrix_extra_right_margin_dim { #1 }
+      } ,
     extra-margin .value_required:n = true ,
     respect-arraystretch .code:n =
       \cs_set_eq:NN \__nicematrix_reset_arraystretch: \prg_do_nothing: ,
@@ -1070,7 +1077,7 @@
     pgf-node-code .tl_set:N = \l__nicematrix_pgf_node_code_tl ,
     pgf-node-code .value_required:n = true ,
   }
-\str_compare:eNeTF { \ExplLoaderFileDate } < { 2026-11-10 }
+\str_compare:eNeTF { \ExplFileDate } < { 2026-11-10 }
   {
     \keys_define:nn { nicematrix / Global }
       {
@@ -1209,7 +1216,7 @@
     unknown .code:n  =
       \__nicematrix_unknown_key:nn { nicematrix / notes } { Unknown~key~for~notes }
   }
-\str_compare:eNeT { \ExplLoaderFileDate } < { 2026-11-10 }
+\str_compare:eNeT { \ExplFileDate } < { 2026-11-10 }
   {
     \keys_define:nn { nicematrix / notes }
       {
@@ -6062,7 +6069,7 @@
         { nicematrix / RowStyle }
         { Unknown~key~for~RowStyle }
   }
-\str_compare:eNeTF { \ExplLoaderFileDate } < { 2026-11-10 }
+\str_compare:eNeTF { \ExplFileDate } < { 2026-11-10 }
   {
     \keys_define:nn { nicematrix / RowStyle }
       {
@@ -9804,7 +9811,11 @@
     extra-height .dim_set:N = \l__nicematrix_submatrix_extra_height_dim ,
     left-xshift .dim_set:N = \l__nicematrix_submatrix_left_xshift_dim ,
     right-xshift .dim_set:N = \l__nicematrix_submatrix_right_xshift_dim ,
-    xshift .meta:n = { left-xshift = #1, right-xshift = #1 } ,
+    xshift .code:n =
+      {
+        \dim_set:Nn \l__nicematrix_submatrix_left_xshift_dim { #1 }
+        \dim_set:Nn  \l__nicematrix_submatrix_right_xshift_dim { #1 }
+      } ,
     xshift .value_required:n = true ,
     delimiters / color .tl_set:N = \l__nicematrix_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
@@ -10429,7 +10440,7 @@
     brace-shift .code:n = ,
     unknown .code:n = \__nicematrix_fatal:n { Unknown~key~for~Hbrace }
   }
-\str_compare:eNeTF { \ExplLoaderFileDate } < { 2026-11-10 }
+\str_compare:eNeTF { \ExplFileDate } < { 2026-11-10 }
   {
     \keys_define:nn { nicematrix / Hbrace }
       {
@@ -11003,32 +11014,6 @@
   }
 \cs_new_protected:Npn \__nicematrix_unknown_key:nn #1 #2
   {
-    \str_if_eq:eeTF
-      { \str_item:Nn \l_keys_key_str { \str_count:N \l_keys_key_str } }
-      { + }
-      {
-        \str_set:Ne \l_tmpa_str
-          { \str_range:Nnn \l_keys_key_str { 1 } { \str_count:N \l_keys_key_str - 1 } }
-        \bool_set_false:N \l_tmpa_bool
-        \clist_map_inline:nn { #1 }
-          {
-            \keys_if_exist:neT { ##1 } { \l_tmpa_str }
-              {
-                \__nicematrix_error:n { key~without~+~exists }
-                \bool_set_true:N \l_tmpa_bool
-                \clist_map_break:
-              }
-          }
-        \bool_if:NF \l_tmpa_bool
-          {
-            \str_set:Ne \l_keys_key_str { \tl_trim_right_spaces:V \l_tmpa_str }
-            \__nicematrix_unknown_key_i:nn { #1 } { #2 }
-          }
-      }
-      { \__nicematrix_unknown_key_i:nn { #1 } { #2 } }
-  }
-\cs_new_protected:Npn \__nicematrix_unknown_key_i:nn #1 #2
-  {
     \str_set_eq:NN \l_tmpa_str \l_keys_key_str
     \str_replace_all:Nnn \l_tmpa_str { ~ } { - }
     \str_set:Ne \l_tmpa_str { \str_lowercase:f { \l_tmpa_str } }
@@ -11048,12 +11033,6 @@
         \bool_if:NF \g__nicematrix_messages_for_Overleaf_bool
           { \msg_info:nn { nicematrix } { #2~+ } }
       }
-  }
-\__nicematrix_msg_new:nn { key~without~+~exists }
-  {
-    Problem~with~a~key.\\
-    The~key~'\tl_trim_right_spaces:V \l_tmpa_str'~exists~but~does~not~accept~an~
-    additive~syntax~(with~+=).~It~will~be~ignored.
   }
 \__nicematrix_msg_new:nn { key~with~normal~form~exists }
   {
@@ -12115,7 +12094,6 @@
     code-for-first-row,~
     code-for-last-col,~
     code-for-last-row,~
-    corners,~
     custom-key,~
     create-extra-nodes,~
     create-medium-nodes,~
@@ -12135,7 +12113,7 @@
     matrix/columns-type,~
     no-cell-nodes,~
     notes~(several~subkeys),~
-    nullify-dots,~
+    overlap,~
     pgf-node-code,~
     renew-dots,~
     renew-matrix,~
@@ -12192,7 +12170,7 @@
     light-syntax-expanded,~
     name,~
     no-cell-nodes,~
-    nullify-dots,~
+    overlap,~
     pgf-node-code,~
     renew-dots,~
     respect-arraystretch,~
@@ -12254,7 +12232,7 @@
     light-syntax-expanded,~
     name,~
     no-cell-nodes,~
-    nullify-dots,~
+    overlap,~
     pgf-node-code,~
     r,~
     renew-dots,~
@@ -12319,7 +12297,7 @@
     name,~
     no-cell-nodes,~
     notes~(several~subkeys),~
-    nullify-dots,~
+    overlap,~
     pgf-node-code,~
     renew-dots,~
     respect-arraystretch,~
