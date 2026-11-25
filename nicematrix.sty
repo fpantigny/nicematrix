@@ -911,6 +911,8 @@
   }
 \keys_define:nn { nicematrix / Global }
   {
+    corners .clist_set:N = \l__nicematrix_corners_clist ,
+    corners .default:n = { NW , SW , NE , SE } ,
     overlap .choices:nn = { true , false }
       {
         \tl_if_eq:NnTF \l_keys_choice_tl { false }
@@ -932,7 +934,7 @@
     color-inside .code:n = \__nicematrix_fatal:n { key~color-inside } ,
     colortbl-like .code:n = \__nicematrix_fatal:n { key~color-inside } ,
     ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
-    &-in-blocks .meta:n = ampersand-in-blocks ,
+    &-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
     no-cell-nodes .choices:nn = { true , false }
       {
         \tl_if_eq:NnTF \l_keys_choice_tl { true }
@@ -1051,8 +1053,11 @@
     nullify-dots .bool_set:N = \l__nicematrix_nullify_dots_bool ,
     create-medium-nodes .bool_set:N = \l__nicematrix_medium_nodes_bool ,
     create-large-nodes .bool_set:N = \l__nicematrix_large_nodes_bool ,
-    create-extra-nodes .meta:n =
-      { create-medium-nodes , create-large-nodes } ,
+    create-extra-nodes .code:n =
+      {
+        \bool_set_true:N \l__nicematrix_medium_nodes_bool
+        \bool_set_true:N \l__nicematrix_large_nodes_bool
+      } ,
     left-margin .dim_set:N = \l__nicematrix_left_margin_dim ,
     left-margin .default:n = \arraycolsep ,
     right-margin .dim_set:N = \l__nicematrix_right_margin_dim ,
@@ -1129,19 +1134,20 @@
           {
             \dim_add:Nn \l__nicematrix_cell_space_top_limit_dim { #1 }
             \dim_add:Nn \l__nicematrix_cell_space_bottom_limit_dim { #1 }
+          } ,
+        margin .append_method:n =
+          {
+            \dim_add:Nn \l__nicematrix_left_margin_dim { #1 }
+            \dim_add:Nn \l__nicematrix_right_margin_dim { #1 }
           }
       }
   }
 \keys_define:nn { nicematrix / environments }
   {
-    draw-trees-in-col .code:n =
-      \clist_gput_right:Nn \g__nicematrix_col_with_trees_clist { #1 } ,
+    draw-trees-in-col .clist_gset:N = \g__nicematrix_col_with_trees_clist ,
     draw-trees-in-col .value_required:n = true ,
-    create-blocks-in-col .code:n =
-      \clist_gput_right:Nn \g__nicematrix_cbic_clist { #1 } ,
+    create-blocks-in-col .clist_gset:N = \g__nicematrix_cbic_clist ,
     create-blocks-in-col .value_required:n = true ,
-    corners .clist_set:N = \l__nicematrix_corners_clist ,
-    corners .default:n = { NW , SW , NE , SE } ,
     code-before .code:n =
       {
         \tl_if_empty:nF { #1 }
@@ -1329,8 +1335,8 @@
                          { \int_set:Nn \l__nicematrix_last_col_int { #1 } } ,
     columns-type .tl_set:N = \l__nicematrix_columns_type_tl ,
     columns-type .value_required:n = true ,
-    l .meta:n = { columns-type = l } ,
-    r .meta:n = { columns-type = r } ,
+    l .code:n = \tl_set:Nn \l__nicematrix_columns_type_tl { l } ,
+    r .code:n = \tl_set:Nn \l__nicematrix_columns_type_tl { r } ,
     delimiters / color .tl_set:N = \l__nicematrix_delimiters_color_tl ,
     delimiters / color .value_required:n = true ,
     delimiters / max-width .bool_set:N = \l__nicematrix_delimiters_max_width_bool ,
@@ -2710,7 +2716,8 @@
     S .value_forbidden:n = true ,
     p .code:n = \str_set:Nn \l__nicematrix_vpos_col_str { p } ,
     p .value_forbidden:n = true ,
-    t .meta:n = p ,
+    t .code:n = \str_set:Nn \l__nicematrix_vpos_col_str { p } ,
+    t .value_forbidden:n = true ,
     m .code:n = \str_set:Nn \l__nicematrix_vpos_col_str { m } ,
     m .value_forbidden:n = true ,
     b .code:n = \str_set:Nn \l__nicematrix_vpos_col_str { b } ,
@@ -6043,10 +6050,10 @@
   {
     cell-space-top-limit .dim_set:N = \l_tmpa_dim ,
     cell-space-bottom-limit .dim_set:N = \l_tmpb_dim ,
-    cell-space-limits .meta:n =
+    cell-space-limits .code:n =
       {
-        cell-space-top-limit = #1 ,
-        cell-space-bottom-limit = #1 ,
+        \dim_set:Nn \l__nicematrix_cell_space_bottom_limit_dim { #1 }
+        \dim_set:Nn \l__nicematrix_cell_space_top_limit_dim { #1 }
       } ,
     color .tl_set:N = \l__nicematrix_color_tl ,
     color .value_required:n = true ,
@@ -8243,7 +8250,8 @@
     B .value_forbidden:n = true ,
     m .code:n = \str_set:Nn \l__nicematrix_vpos_block_str c ,
     m .value_forbidden:n = true ,
-    v-center .meta:n = m ,
+    v-center .code:n = \str_set:Nn \l__nicematrix_vpos_block_str c ,
+    v-center .value_forbidden:n = true ,
     p .code:n = \bool_set_true:N \l__nicematrix_p_block_bool ,
     p .value_forbidden:n = true ,
     respect-arraystretch .code:n =
@@ -8619,7 +8627,7 @@
       \bool_set_true:N \l__nicematrix_transparent_bool ,
     empty .value_forbidden:n = true ,
     ampersand-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
-    &-in-blocks .meta:n = ampersand-in-blocks ,
+    &-in-blocks .bool_set:N = \l__nicematrix_amp_in_blocks_bool ,
     tikz .code:n =
       \IfPackageLoadedTF { tikz }
         { \seq_put_right:Nn \l__nicematrix_tikz_seq { { #1 } } }
@@ -8672,8 +8680,7 @@
     b .code:n = \str_set:Nn \l__nicematrix_vpos_block_str b ,
     B .code:n = \str_set:Nn \l__nicematrix_vpos_block_str B ,
     m .code:n = \str_set:Nn \l__nicematrix_vpos_block_str c ,
-    m .value_forbidden:n = true ,
-    v-center .meta:n = m ,
+    v-center .code:n = \str_set:Nn \l__nicematrix_vpos_block_str c ,
     p .code:n = \bool_set_true:N \l__nicematrix_p_block_bool ,
     p .value_forbidden:n = true ,
     name .str_set:N = \l__nicematrix_block_name_str ,
@@ -12094,6 +12101,7 @@
     code-for-first-row,~
     code-for-last-col,~
     code-for-last-row,~
+    corners,~
     custom-key,~
     create-extra-nodes,~
     create-medium-nodes,~

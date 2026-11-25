@@ -229,7 +229,7 @@ distribution such as MiKTeX, TeX Live or MacTeX.
 \emph{Remark}
 
 \nobreak
-If you use LaTeX via Internet with, for example, Overleaf or TeXPage, you
+If you use LaTeX via Internet with, (Overleaf, TeXPage, etc.) you
 can upload the file |nicematrix.sty| in the repertory of your 
 project in order to take full advantage of the latest version de
 \pkg{nicematrix}.\footnote{The latest version of the file
@@ -238,10 +238,10 @@ project in order to take full advantage of the latest version de
 \url{https://github.com/fpantigny/nicematrix/releases}}
 
 \medskip
-This package can be used with |xelatex|, |lualatex|, |pdflatex| but also by
-the classical workflow |latex|-|dvips|-|ps2pdf| (or Adobe Distiller).
-\textsl{However, the file nicematrix.dtx of the present documentation should
-be compiled with LuaLaTeX.}
+This package can be used with |pdflatex|, |xelatex|, |lualatex| and |retex|, but
+also by the classical workflow |latex|-|dvips|-|ps2pdf| (or Adobe Distiller).
+\textsl{However, the file nicematrix.dtx of the present documentation should be
+  compiled with LuaLaTeX ou retex.}
 
 \medskip
 This package requires and \textbf{loads} the packages \pkg{array},
@@ -266,9 +266,10 @@ Most features of \pkg{nicematrix} may be used without explicit use of
 
 \medskip
 \indexcommand{NiceMatrixOptions}
-A command \DefinitionCommand{NiceMatrixOptions} is provided to fix the options (the
-scope of the options fixed by this command is the current TeX group: they are
-semi-global). 
+A command \DefinitionCommand{NiceMatrixOptions} is provided to fix the options
+(the scope of the options fixed by this command is the current TeX group: they
+are semi-global). For these options, \pkg{nicematrix} uses the system
+\pkg{l3keys} of LaTeX~3.
 
 \newpage
 
@@ -3182,7 +3183,7 @@ section~\ref{Cdots}, p.~\pageref{Cdots}.
 \bigskip
 We have several remarks to do.
 \begin{itemize}[beginpenalty=10000]
-\item For the environments with an explicit preamble (i.e. |{NiceTabular}|,
+\item For the environments with an explicit preamble (i.e.\ |{NiceTabular}|,
 |{NiceArray}| and its variants), no letter must be given in that preamble for
 the potential first column and the potential last column: they will
 automatically (and necessarily) be of type |r| for the first column and |l|
@@ -4610,7 +4611,7 @@ command |\caption| and the key |label| corresponds, of course, to the command
 |\label|. 
 
 \smallskip
-See table \ref{t:tabularnote}, p.~\pageref{t:tabularnote}, for an example of
+See table~\ref{t:tabularnote}, p.~\pageref{t:tabularnote}, for an example of
 use the keys |caption| and |label|.
 
 \smallskip

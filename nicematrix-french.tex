@@ -230,30 +230,28 @@ L_n    & a_{n1}  & a_{n2}  & \Cdots  & a_{nn}
 \bottomrule
 \end{NiceTabular}
 
-
-
-\vspace{1cm}
+\vspace{8mm}
 
 L'extension \pkg{nicematrix} est entièrement contenue dans le fichier
 |nicematrix.sty|. Ce fichier peut être placé dans le répertoire courant ou dans
 une arborescence |texmf|. Le mieux reste néanmoins d'installer \pkg{nicematrix}
 avec une distribution TeX comme MiKTeX, TeX~Live ou MacTeX.
 
-\medskip
-\emph{Remarque} : Si vous utilisez un service LaTeX via Internet (ex. : Overleaf
-ou TeXPage) vous pouvez télécharger le fichier |nicematrix.sty| dans le dossier
-de votre projet pour bénéficier de la dernière version de
+\smallskip
+\emph{Remarque} : Si vous utilisez un service LaTeX via Internet (Overleaf,
+TeXPage, etc.) vous pouvez télécharger le fichier |nicematrix.sty| dans le
+dossier de votre projet pour bénéficier de la dernière version de
 \pkg{nicematrix}.\footnote{La dernière version de |nicematrix.sty| peut être
   téléchargée sur le dépôt GitHub de \pkg{nicematrix} : \newline \small
   \url{https://github.com/fpantigny/nicematrix/releases}}
 
-\medskip
-Cette extension peut être utilisée avec |xelatex|, |lualatex| et |pdflatex| mais
-aussi avec le cheminement classique |latex|-|dvips|-|ps2pdf| (ou Adobe
-Distiller). \textsl{Néanmoins, le fichier nicematrix-french.tex de la présente
-  documentation ne peut être compilé qu'avec LuaLaTeX.}
+\smallskip
+Cette extension peut être utilisée avec |pdflatex|, |xelatex|, |lualatex| et
+|retex| mais aussi avec le cheminement classique |latex|-|dvips|-|ps2pdf| (ou
+Adobe Distiller). \textsl{Néanmoins, le fichier nicematrix-french.tex de la
+  présente documentation ne peut être compilé qu'avec LuaLaTeX.}
 
-\medskip
+\smallskip
 Cette extension nécessite et charge les extensions \pkg{array}, \pkg{amsmath} et
 \pkg{pgfcore} ainsi que le module \pkg{shapes} de \textsc{pgf} (l'extension
 \pkg{tikz}, qui est une surcouche de \textsc{pgf}, n'est \emph{pas} chargée).
@@ -261,7 +259,7 @@ L'utilisateur final n'a qu'à charger l'extension \pkg{nicematrix} avec
 l'instruction habituelle : |\usepackage{nicematrix}|.
 
 
-\medskip
+\smallskip
 L'idée de \pkg{nicematrix} est de créer des nœuds \textsc{pgf} derrière les
 cases et les positions des filets des tableaux créés par \pkg{array} et de les
 utiliser pour développer de nouvelles fonctionnalités. Comme toujours avec
@@ -273,16 +271,17 @@ pour être utilisées à la compilation suivante. C'est pourquoi l'utilisation d
   |latexmk|).}. L'utilisateur ne doit pas utiliser la commande |\nofiles| (qui
 bloque l'écriture du fichier |aux|).
 
-\medskip
+\smallskip
 La plupart des fonctionnalités de \pkg{nicematrix} sont accessibles sans avoir à
 utiliser explicitement \textsc{pgf} ou TikZ (ce dernier n'est d'ailleurs pas
 chargé par défaut).
 
-\medskip
+\smallskip
 \indexcommand{NiceMatrixOptions}
 Une commande \DefinitionCommande{NiceMatrixOptions} est fournie pour régler les
 options (la portée des options fixées par cette commande est le groupe TeX
-courant : elles sont semi-globales).
+courant : elles sont semi-globales). Pour ces options, \pkg{nicematrix} utilise
+le système de clés \pkg{l3keys} de LaTeX 3.
 
 
 
